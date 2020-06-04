@@ -14,5 +14,11 @@ use App\Service\BaseService;
  */
 class AuthService extends BaseService
 {
+    public function userLogin()
+    {
+    }
 
+    public function userRegister()
+    {
+    }
 }

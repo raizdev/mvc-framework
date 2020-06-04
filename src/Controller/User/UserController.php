@@ -1,8 +1,11 @@
-<?php
-
+<?php declare(strict_types=1);
+/**
+ * Ares (https://ares.to)
+ *
+ * @license https://gitlab.com/arescms/ares-backend/LICENSE.md (GNU License)
+ */
 
 namespace App\Controller\User;
-
 
 use App\Controller\BaseController;
 use App\Service\User\UserService;

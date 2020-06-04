@@ -31,7 +31,7 @@ class UserRepository extends BaseRepository
         EntityManager $entityManager
     ) {
         parent::__construct($entityManager);
-        $this->repository = $entityManager->getRepository(User::class);
+        $this->repository = $this->getEntityManager()->getRepository(User::class);
     }
 
     /**

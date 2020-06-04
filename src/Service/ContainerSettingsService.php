@@ -16,12 +16,13 @@ class ContainerSettingsService
     private array $settings;
 
     /**
-     * Settings constructor.
+     * ContainerSettingsService constructor.
      *
      * @param   array  $settings
      */
-    public function __construct(array $settings)
-    {
+    public function __construct(
+        array $settings
+    ) {
         $this->settings = $settings;
     }
 
