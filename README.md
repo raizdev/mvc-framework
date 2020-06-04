@@ -41,6 +41,10 @@ Ares is here to stay.
 
 ### For our Backend we're using:
 
+Local Development:
+
+[**DDEV**](https://ddev.readthedocs.io/en/stable/)
+
 Framework used:
 
 [**Slim 4**](http://www.slimframework.com)
