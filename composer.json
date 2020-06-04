@@ -1,12 +1,13 @@
 {
-    "name": "dome/slim4-habbo-api",
-    "description": "this is an api for a habbo project",
+    "name": "dome/ares-habbo-api",
+    "description": "fast and convenient habbo api",
     "keywords": [
         "php",
         "habbo",
-        "api"
+        "api",
+        "ares"
     ],
-    "license": "MIT",
+    "license": "GNU",
     "authors": [
         {
             "name": "Dome",
@@ -24,7 +25,6 @@
         "tuupola/slim-jwt-auth": "^3.4"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.0",
         "symfony/console": "^4.2"
     },
     "config": {

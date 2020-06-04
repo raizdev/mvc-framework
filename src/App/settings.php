@@ -18,7 +18,7 @@ $settings['root']   = dirname(__DIR__);
 $settings['doctrine'] = [
     'dev_mode' => getenv('DB_DEV_MODE'),
 
-    'cache_dir' => $settings['root'] . '/Cache/doctrine',
+    'cache_dir' => $settings['root'] . '/App/Cache/doctrine',
 
     'metadata_dirs' => ['src/Entity'],
 
