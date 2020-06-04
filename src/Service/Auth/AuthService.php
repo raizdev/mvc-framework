@@ -5,11 +5,14 @@
  * @license https://gitlab.com/arescms/ares-backend/LICENSE.md (GNU License)
  */
 
-namespace App\Service;
+namespace App\Service\Auth;
+
+use App\Service\BaseService;
 
 /**
- * Class BaseService
+ * Class AuthService
  */
-abstract class BaseService
+class AuthService extends BaseService
 {
+
 }

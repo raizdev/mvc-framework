@@ -1,16 +1,18 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Ares (https://ares.to)
  *
  * @license https://gitlab.com/arescms/ares-backend/LICENSE.md (GNU License)
  */
-declare(strict_types=1);
 
 namespace App\Service\User;
 
 use App\Repository\User\UserRepository;
 use App\Service\BaseService;
 
+/**
+ * Class UserService
+ */
 class UserService extends BaseService
 {
     /**

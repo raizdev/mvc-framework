@@ -12,6 +12,9 @@ use App\Controller\BaseController;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
+/**
+ * Class StatusController
+ */
 class StatusController extends BaseController
 {
     private const API_NAME = 'Habbo API';

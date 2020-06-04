@@ -66,5 +66,8 @@ return [
         $config->addCustomStringFunction('MATCH', 'App\Service\MatchAgainstFunction');
 
         return \Doctrine\ORM\EntityManager::create($settings['doctrine']['connection'], $config);
+    },
+    \App\Service\ContainerSettingsService::class => function (ContainerInterface $container) {
+        return new \App\Service\ContainerSettingsService($container->get('settings'));
     }
 ];

@@ -9,6 +9,9 @@ use App\Service\User\UserService;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
+/**
+ * Class UserController
+ */
 class UserController extends BaseController
 {
     /**
