@@ -4,7 +4,6 @@
  *
  * @license https://gitlab.com/arescms/ares-backend/LICENSE.md (GNU License)
  */
-declare(strict_types=1);
 
 use App\Service\User\UserService;
 use DI\ContainerBuilder;
