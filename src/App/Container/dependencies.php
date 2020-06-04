@@ -68,5 +68,8 @@ return [
     },
     \App\Service\ContainerSettingsService::class => function (ContainerInterface $container) {
         return new \App\Service\ContainerSettingsService($container->get('settings'));
+    },
+    \App\Validation\Validator::class => function (ContainerInterface $container) {
+        return new \App\Validation\Validator;
     }
 ];

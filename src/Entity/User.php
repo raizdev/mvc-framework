@@ -33,7 +33,7 @@ class User
     /**
      * @ORM\Column(type="string", length=150)
      */
-    protected string $password;
+    private string $password;
 
     /**
      * @ORM\Column(type="string", length=150)

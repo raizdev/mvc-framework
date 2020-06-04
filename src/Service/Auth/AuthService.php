@@ -14,11 +14,14 @@ use App\Service\BaseService;
  */
 class AuthService extends BaseService
 {
-    public function userLogin()
+    public function performLogin()
     {
     }
 
-    public function userRegister()
+    /**
+     * @param   array  $data
+     */
+    public function performRegister(array $data)
     {
     }
 }

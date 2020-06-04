@@ -41,4 +41,8 @@ class UserRepository extends BaseRepository
     {
         return $this->repository->findAll();
     }
+
+    public function save(array $data)
+    {
+    }
 }
