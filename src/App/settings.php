@@ -13,13 +13,12 @@ $settings = [];
 
 // Path settings
 $settings['root']   = dirname(__DIR__);
-$settings['public'] = $settings['root'] . '/public';
 
 // Database Settings
 $settings['doctrine'] = [
-    'dev_mode' => true,
+    'dev_mode' => getenv('DB_DEV_MODE'),
 
-    'cache_dir' => __DIR__ . '/Cache/doctrine',
+    'cache_dir' => $settings['root'] . '/Cache/doctrine',
 
     'metadata_dirs' => ['src/Entity'],
 
@@ -46,42 +45,42 @@ $settings['logger'] = [
     'enabled_log_levels' => [
         // DEBUG
         [
-            'path'  => __DIR__ . '/Logs/info.log',
+            'path'  => $settings['root'] . '/Logs/info.log',
             'level' => Logger::DEBUG
         ],
         // INFO
         [
-            'path'  => __DIR__ . '/Logs/info.log',
+            'path'  => $settings['root'] . '/Logs/info.log',
             'level' => Logger::INFO
         ],
         // NOTICE
         [
-            'path'  => __DIR__ . '/Logs/info.log',
+            'path'  => $settings['root'] . '/Logs/info.log',
             'level' => Logger::NOTICE
         ],
         // WARNING
         [
-            'path'  => __DIR__ . '/Logs/warning.log',
+            'path'  => $settings['root'] . '/Logs/warning.log',
             'level' => Logger::WARNING
         ],
         // ERROR
         [
-            'path'  => __DIR__ . '/Logs/error.log',
+            'path'  => $settings['root'] . '/Logs/error.log',
             'level' => Logger::ERROR
         ],
         // CRITICAL
         [
-            'path'  => __DIR__ . '/Logs/critical.log',
+            'path'  => $settings['root'] . '/Logs/critical.log',
             'level' => Logger::CRITICAL
         ],
         // ALERT
         [
-            'path'  => __DIR__ . '/Logs/critical.log',
+            'path'  => $settings['root'] . '/Logs/critical.log',
             'level' => Logger::ALERT
         ],
         // EMERGENCY
         [
-            'path'  => __DIR__ . '/Logs/critical.log',
+            'path'  => $settings['root'] . '/Logs/critical.log',
             'level' => Logger::EMERGENCY
         ],
     ],
