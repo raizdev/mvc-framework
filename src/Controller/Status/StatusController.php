@@ -34,6 +34,10 @@ class StatusController extends BaseController
             'timestamp' => time()
         ];
 
-        return $this->jsonResponse($response, $message, 200);
+        return $this->jsonResponse(
+            $response,
+            $message,
+            200
+        );
     }
 }

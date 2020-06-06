@@ -13,9 +13,9 @@ use App\Service\ContainerSettingsService;
 use Firebase\JWT\JWT;
 
 /**
- * Class JWTService
+ * Class GenerateTokenService
  */
-class JWTService extends BaseService
+class GenerateTokenService extends BaseService
 {
     /**
      * @var ContainerSettingsService
@@ -41,7 +41,7 @@ class JWTService extends BaseService
      * @return string
      * @throws \Exception
      */
-    public function generateToken(User $user): string
+    public function execute(User $user): string
     {
         $durationInSec = getenv('WEB_TOKEN_DURATION');
         $tokenId       = base64_encode(random_bytes(32));

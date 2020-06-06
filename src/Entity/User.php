@@ -67,10 +67,14 @@ class User
 
     /**
      * @param $username
+     *
+     * @return User
      */
-    public function setUsername($username): void
+    public function setUsername(string $username): self
     {
         $this->username = $username;
+
+        return $this;
     }
 
     /**
@@ -85,10 +89,14 @@ class User
 
     /**
      * @param $ticket
+     *
+     * @return User
      */
-    public function setTicket($ticket): void
+    public function setTicket(string $ticket): self
     {
         $this->auth_ticket = $ticket;
+
+        return $this;
     }
 
     /**
@@ -103,9 +111,13 @@ class User
 
     /**
      * @param $password
+     *
+     * @return User
      */
-    public function setPassword($password): void
+    public function setPassword(string $password): self
     {
         $this->password = $password;
+
+        return $this;
     }
 }
