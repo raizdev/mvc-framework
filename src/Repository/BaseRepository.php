@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * Ares (https://ares.to)
  *
@@ -6,8 +7,6 @@
  */
 
 namespace App\Repository;
-
-use Doctrine\ORM\EntityManager;
 
 /**
  * Class BaseRepository

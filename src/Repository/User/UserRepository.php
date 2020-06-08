@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * Ares (https://ares.to)
  *
@@ -11,7 +12,6 @@ use App\Entity\User;
 use App\Repository\BaseRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 
 /**
