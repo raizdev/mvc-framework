@@ -34,7 +34,7 @@ class UserService extends BaseService
     /**
      * @return array|null
      */
-    public function fetchAll(): ?array
+    public function all(): ?array
     {
         return $this->userRepository->all();
     }

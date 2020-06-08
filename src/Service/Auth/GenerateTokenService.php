@@ -23,7 +23,7 @@ class GenerateTokenService extends BaseService
     private ContainerSettingsService $jwtSettings;
 
     /**
-     * JwtService constructor.
+     * GenerateTokenService constructor.
      *
      * @param   ContainerSettingsService  $jwtSettings
      */
@@ -60,10 +60,12 @@ class GenerateTokenService extends BaseService
             ]
         ];
 
+        $settings = $this->jwtSettings->get('jwt');
+
         return JWT::encode(
             $data,
-            $this->jwtSettings['secret'],
-            $this->jwtSettings['algorithm']
+            $settings['secret'],
+            $settings['algorithm']
         );
     }
 }

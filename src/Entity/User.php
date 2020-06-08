@@ -1,10 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Ares (https://ares.to)
  *
  * @license https://gitlab.com/arescms/ares-backend/LICENSE.md (GNU License)
  */
-declare(strict_types=1);
 
 namespace App\Entity;
 
@@ -73,6 +72,28 @@ class User
     public function setUsername(string $username): self
     {
         $this->username = $username;
+
+        return $this;
+    }
+
+    /**
+     * Gets Maail of User
+     *
+     * @ORM\return string
+     */
+    public function getMail(): ?string
+    {
+        return $this->mail;
+    }
+
+    /**
+     * @param   string  $mail
+     *
+     * @return User
+     */
+    public function setMail(string $mail): self
+    {
+        $this->mail = $mail;
 
         return $this;
     }

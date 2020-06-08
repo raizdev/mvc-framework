@@ -9,6 +9,7 @@ namespace App\Controller\Auth;
 
 use App\Controller\BaseController;
 use App\Service\Auth\AuthService;
+use App\Service\Auth\GenerateTokenService;
 use App\Validation\Validator;
 use Respect\Validation\Validator as v;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -23,23 +24,32 @@ class AuthController extends BaseController
      * @var Validator
      */
     private Validator $validator;
+
     /**
      * @var AuthService
      */
     private AuthService $authService;
 
     /**
+     * @var GenerateTokenService
+     */
+    private GenerateTokenService $generateTokenService;
+
+    /**
      * AuthController constructor.
      *
-     * @param   AuthService  $authService
-     * @param   Validator    $validator
+     * @param   AuthService           $authService
+     * @param   GenerateTokenService  $generateTokenService
+     * @param   Validator             $validator
      */
     public function __construct(
         AuthService $authService,
+        GenerateTokenService $generateTokenService,
         Validator $validator
     ) {
-        $this->authService = $authService;
-        $this->validator   = $validator;
+        $this->authService          = $authService;
+        $this->generateTokenService = $generateTokenService;
+        $this->validator            = $validator;
     }
 
     /**
@@ -61,7 +71,7 @@ class AuthController extends BaseController
             ], 422);
         }
 
-        $token = $this->authService->performLogin();
+        $token = $this->authService->login();
 
         return $this->jsonResponse($response, [
             'message' => 'Successfully logged in',
@@ -74,14 +84,16 @@ class AuthController extends BaseController
      * @param   Response  $response
      *
      * @return Response
+     * @throws \Exception
      */
     public function register(Request $request, Response $response): Response
     {
-        $validation = $this->validator->validate($request, [
-            'username'              => v::noWhitespace()->notEmpty()->unique()->notBlank(),
-            'mail'                  => v::noWhitespace()->notEmpty()->unique()->notBlank()->email(),
-            'password'              => v::notEmpty()->notBlank(),
-            'password_confirmation' => v::notEmpty()->notBlank()->equals($request->getAttribute('password_confirmation'))
+        $parsedData = $request->getParsedBody();
+
+        $validation = $this->validator->validate($parsedData, [
+            'username' => v::noWhitespace()->notEmpty()->notBlank(),
+            'mail'     => v::noWhitespace()->notEmpty()->notBlank()->email(),
+            'password' => v::notEmpty()->notBlank()
         ]);
 
         if ($validation->failed()) {
@@ -91,16 +103,17 @@ class AuthController extends BaseController
         }
 
         $data = [
-            'username' => $request->getAttribute('username'),
-            'password' => $request->getAttribute('password'),
-            'mail'     => $request->getAttribute('mail'),
+            'username' => $parsedData['username'],
+            'password' => $parsedData['password'],
+            'mail'     => $parsedData['mail'],
         ];
 
-        $token = $this->authService->performRegister($data);
+        $user  = $this->authService->register($data);
+        $token = $this->generateTokenService->execute($user);
 
         return $this->jsonResponse($response, [
-            'message' => 'Successfully logged in',
-            'token'   => $token
+            'message' => $user,
+            'token'   => $token,
         ], 200);
     }
 }

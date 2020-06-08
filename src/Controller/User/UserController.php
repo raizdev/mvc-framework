@@ -39,9 +39,9 @@ class UserController extends BaseController
      *
      * @return Response
      */
-    public function getAll(Request $request, Response $response): Response
+    public function all(Request $request, Response $response): Response
     {
-        $user = $this->userService->fetchAll();
+        $user = $this->userService->all();
 
         return $this->jsonResponse(
             $response,

@@ -29,12 +29,11 @@ class Validator
     {
         foreach ($rules as $field => $rule) {
             try {
-                $rule->setName($field)->assert($request->getParam($field));
+                $rule->setName($field)->assert($request[$field] ?? null);
             } catch (NestedValidationException $e) {
                 $this->errors[$field] = $e->getMessages();
             }
         }
-
         return $this;
     }
 
