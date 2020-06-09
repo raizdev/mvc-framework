@@ -1,4 +1,4 @@
 <?php
 declare(strict_types=1);
 
-(require __DIR__ . '/../src/App/bootstrap.php')->run();
+(require __DIR__ . '/../app/bootstrap.php')->run();

@@ -16,6 +16,8 @@ use Doctrine\ORM\ORMException;
 
 /**
  * Class UserRepository
+ *
+ * @package App\Repository\User
  */
 class UserRepository extends BaseRepository
 {
@@ -51,13 +53,6 @@ class UserRepository extends BaseRepository
 
     /**
      * @param   array  $data
-     */
-    public function save(array $data)
-    {
-    }
-
-    /**
-     * @param   array  $data
      *
      * @return User
      * @throws ORMException
@@ -79,5 +74,42 @@ class UserRepository extends BaseRepository
         $this->entityManager->flush();
 
         return $user;
+    }
+
+    /**
+     * @param $data
+     *
+     * @return object|null
+     */
+    public function findByUsername($data)
+    {
+        return $this->repository->findOneBy([
+            'username' => $data
+        ]);
+    }
+
+    /**
+     * @param   array  $data
+     *
+     * @return mixed|void
+     */
+    public function update(array $data)
+    {
+    }
+
+    /**
+     * @param   int  $id
+     *
+     * @return object
+     */
+    public function one(int $id): object
+    {
+    }
+
+    /**
+     * @param   int  $id
+     */
+    public function delete(int $id)
+    {
     }
 }

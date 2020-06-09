@@ -6,12 +6,14 @@
  * @license https://gitlab.com/arescms/ares-backend/LICENSE.md (GNU License)
  */
 
-namespace App\Validation;
+namespace App\Service;
 
 use Respect\Validation\Exceptions\NestedValidationException;
 
 /**
- * Class Validator
+ * Class ValidationService
+ *
+ * @package App\Service
  */
 class ValidationService
 {
@@ -21,16 +23,16 @@ class ValidationService
     private array $errors;
 
     /**
-     * @param          $request
+     * @param          $data
      * @param   array  $rules
      *
      * @return $this
      */
-    public function validate($request, array $rules): ValidationService
+    public function execute($data, array $rules): ValidationService
     {
         foreach ($rules as $field => $rule) {
             try {
-                $rule->setName($field)->assert($request[$field] ?? null);
+                $rule->setName($field)->assert($data[$field] ?? null);
             } catch (NestedValidationException $e) {
                 $this->errors[$field] = $e->getMessages();
             }

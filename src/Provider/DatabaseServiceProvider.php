@@ -15,17 +15,22 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Cache\FilesystemCache;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 
+/**
+ * Class DatabaseServiceProvider
+ *
+ * @package App\Provider
+ */
 class DatabaseServiceProvider extends AbstractServiceProvider
 {
     protected $provides = [
-        'entityManager'
+        EntityManager::class
     ];
 
     public function register()
     {
         $container = $this->getContainer();
 
-        $container->add('entityManager', function () use ($container) {
+        $container->add(EntityManager::class, function () use ($container) {
             $settings = $container->get('settings');
             $config   = Setup::createAnnotationMetadataConfiguration(
                 $settings['doctrine']['metadata_dirs'],

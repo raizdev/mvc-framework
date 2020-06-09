@@ -11,6 +11,11 @@ namespace App\Provider;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use Monolog\Logger;
 
+/**
+ * Class ConfigServiceProvider
+ *
+ * @package App\Provider
+ */
 class ConfigServiceProvider extends AbstractServiceProvider
 {
     protected $provides = [
@@ -41,9 +46,11 @@ class ConfigServiceProvider extends AbstractServiceProvider
                     ]
                 ],
 
-                'jwt' => [
+                'auth' => [
                     'secret'    => getenv('WEB_SECRET'),
-                    'algorithm' => 'HS256',
+                    'expires'   => getenv('WEB_TOKEN_DURATION'),
+                    'hash'      => PASSWORD_ARGON2ID,
+                    'algorithm' => 'HS256'
                 ],
 
                 'logger' => [

@@ -9,14 +9,14 @@
 namespace App\Controller\User;
 
 use App\Controller\BaseController;
-use App\Entity\User;
 use App\Repository\User\UserRepository;
-use League\Container\Container;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 /**
  * Class UserController
+ *
+ * @package App\Controller\User
  */
 class UserController extends BaseController
 {

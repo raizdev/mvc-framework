@@ -10,15 +10,15 @@
  * Registers our ServiceProviders
  */
 return [
-    //Adds our ConfigProvider
+    // Adds our ConfigProvider
     $container->addServiceProvider(
         new \App\Provider\ConfigServiceProvider()
     ),
-    //Adds our DatabaseProvider
+    // Adds our DatabaseProvider
     $container->addServiceProvider(
         new \App\Provider\DatabaseServiceProvider()
     ),
-    //Adds our LoggingProvider
+    // Adds our LoggingProvider
     $container->addServiceProvider(
         new \App\Provider\LoggingServiceProvider()
     )

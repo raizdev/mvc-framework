@@ -10,6 +10,11 @@ namespace App\Controller;
 
 use Psr\Http\Message\ResponseInterface as Response;
 
+/**
+ * Class BaseController
+ *
+ * @package App\Controller
+ */
 abstract class BaseController
 {
     /**

@@ -14,6 +14,8 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 /**
  * Class StatusController
+ *
+ * @package App\Controller\Status
  */
 class StatusController extends BaseController
 {

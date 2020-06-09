@@ -13,6 +13,8 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Class User
  *
+ * @package App\Entity
+ *
  * @ORM\Entity
  * @ORM\Table(name="users", uniqueConstraints={@ORM\UniqueConstraint(name="username", columns={"username"})}))
  */
@@ -32,8 +34,9 @@ class User
 
     /**
      * @ORM\Column(type="string", length=150)
+     * @ORM\Hidden
      */
-    private string $password;
+    public string $password;
 
     /**
      * @ORM\Column(type="string", length=150)

@@ -13,6 +13,11 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Monolog\Processor\UidProcessor;
 
+/**
+ * Class LoggingServiceProvider
+ *
+ * @package App\Provider
+ */
 class LoggingServiceProvider extends AbstractServiceProvider
 {
     protected $provides = [

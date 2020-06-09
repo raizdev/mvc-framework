@@ -10,6 +10,8 @@ namespace App\Exception;
 
 /**
  * Class BaseException
+ *
+ * @package App\Exception
  */
 abstract class BaseException extends \Exception
 {

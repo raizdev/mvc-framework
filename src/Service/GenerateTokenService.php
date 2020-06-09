@@ -8,40 +8,22 @@
 
 namespace App\Service;
 
-use App\Entity\User;
 use Firebase\JWT\JWT;
-use League\Container\Container;
 
 /**
  * Class GenerateTokenService
+ *
+ * @package App\Service
  */
 class GenerateTokenService
 {
     /**
-     * @var Container
-     */
-    private Container $container;
-
-    /**
-     * GenerateTokenService constructor.
+     * @param $data
      *
-     * @param   Container  $container
-     */
-    public function __construct(
-        Container $container
-    ) {
-        $this->container = $container;
-    }
-
-    /**
-     * Generates a JWT Token from user_id
-     *
-     * @param   User  $user
-     *
-     * @return string
+     * @return array
      * @throws \Exception
      */
-    public function execute(User $user): string
+    public function execute($data): array
     {
         $durationInSec = getenv('WEB_TOKEN_DURATION');
         $tokenId       = base64_encode(random_bytes(32));
@@ -56,16 +38,17 @@ class GenerateTokenService
             'nbf'  => $notBefore,
             'exp'  => $expire,
             'data' => [
-                'userId' => $user->getId(),
+                'userId' => $data,
             ]
         ];
 
-        $settings = $this->container->get('settings')['jwt'];
-
-        return JWT::encode(
-            $data,
-            $settings['secret'],
-            $settings['algorithm']
-        );
+        return [
+            'token'  => JWT::encode(
+                $data,
+                getenv('WEB_SECRET'),
+                getenv('WEB_ALGORITHM')
+            ),
+            'expire' => $expire
+        ];
     }
 }

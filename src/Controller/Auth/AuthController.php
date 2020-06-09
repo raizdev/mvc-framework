@@ -11,14 +11,15 @@ namespace App\Controller\Auth;
 use App\Controller\BaseController;
 use App\Repository\User\UserRepository;
 use App\Service\GenerateTokenService;
-use App\Validation\ValidationService;
-use League\Container\Container;
+use App\Service\ValidationService;
 use Respect\Validation\Validator as v;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 /**
  * Class AuthController
+ *
+ * @package App\Controller\Auth
  */
 class AuthController extends BaseController
 {
@@ -40,21 +41,18 @@ class AuthController extends BaseController
     /**
      * AuthController constructor.
      *
-     * @param   Container             $container
      * @param   GenerateTokenService  $generateTokenService
      * @param   ValidationService     $validationService
      * @param   UserRepository        $userRepository
      */
     public function __construct(
-        Container $container,
+        UserRepository $userRepository,
         GenerateTokenService $generateTokenService,
-        ValidationService $validationService,
-        UserRepository $userRepository
+        ValidationService $validationService
     ) {
-        parent::__construct($container);
+        $this->userRepository       = $userRepository;
         $this->generateTokenService = $generateTokenService;
         $this->validationService    = $validationService;
-        $this->userRepository       = $userRepository;
     }
 
     /**
@@ -65,9 +63,11 @@ class AuthController extends BaseController
      */
     public function login(Request $request, Response $response): Response
     {
-        $validation = $this->validationService->validate($request, [
-            'username' => v::noWhitespace()->notEmpty(),
-            'password' => v::notEmpty()
+        $parsedData = $request->getParsedBody();
+
+        $validation = $this->validationService->execute($parsedData, [
+            'username' => v::noWhitespace()->notEmpty()->stringType(),
+            'password' => v::notEmpty()->stringType()
         ]);
 
         if ($validation->failed()) {
@@ -76,11 +76,20 @@ class AuthController extends BaseController
             ], 422);
         }
 
-        $token = '123';
+        $user = $this->userRepository->findByUsername($parsedData['username']);
+
+        if (empty($user) || !password_verify($parsedData['password'], $user->password)) {
+            return $this->jsonResponse($response, [
+                'message' => 'Woops something went wrong'
+            ], 403);
+        }
+
+        $tokenInfo = $this->generateTokenService->execute($user->id);
 
         return $this->jsonResponse($response, [
-            'message' => 'Successfully logged in',
-            'token'   => $token
+            'message' => $user,
+            'token'   => $tokenInfo['token'],
+            'expires' => $tokenInfo['expire']
         ], 200);
     }
 
@@ -95,10 +104,10 @@ class AuthController extends BaseController
     {
         $parsedData = $request->getParsedBody();
 
-        $validation = $this->validationService->validate($parsedData, [
-            'username' => v::noWhitespace()->notEmpty()->notBlank(),
+        $validation = $this->validationService->execute($parsedData, [
+            'username' => v::noWhitespace()->notEmpty()->notBlank()->stringType(),
             'mail'     => v::noWhitespace()->notEmpty()->notBlank()->email(),
-            'password' => v::notEmpty()->notBlank()
+            'password' => v::notEmpty()->notBlank()->stringType()
         ]);
 
         if ($validation->failed()) {
@@ -113,12 +122,13 @@ class AuthController extends BaseController
             'mail'     => $parsedData['mail'],
         ];
 
-        $user  = $this->userRepository->create($data);
-        $token = $this->generateTokenService->execute($user);
+        $user      = $this->userRepository->create($data);
+        $tokenInfo = $this->generateTokenService->execute($user->getId());
 
         return $this->jsonResponse($response, [
             'message' => $user,
-            'token'   => $token,
+            'token'   => $tokenInfo['token'],
+            'expires' => $tokenInfo['expire']
         ], 200);
     }
 }
