@@ -20,6 +20,8 @@ use Psr\Http\Message\ServerRequestInterface as Request;
  * Class AuthController
  *
  * @package App\Controller\Auth
+ *
+ * @TODO Refactor Controller code
  */
 class AuthController extends BaseController
 {
@@ -113,6 +115,14 @@ class AuthController extends BaseController
         if ($validation->failed()) {
             return $this->jsonResponse($response, [
                 'message' => 'Please check your provided data'
+            ], 422);
+        }
+
+        $user = $this->userRepository->findByUsername($parsedData['username']);
+
+        if(!is_null($user)) {
+            return $this->jsonResponse($response, [
+                'message' => 'Username already exists'
             ], 422);
         }
 
