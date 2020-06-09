@@ -7,17 +7,17 @@
  */
 
 use App\Repository\User\UserRepository;
-use DI\ContainerBuilder;
-use Psr\Container\ContainerInterface;
+use League\Container\Container;
 
 /**
  * EM needs to be given to the repositories
  *
- * @param ContainerBuilder $containerBuilder
+ * @param   Container  $container
  */
 return [
-    UserRepository::class => function (ContainerInterface $container) {
-        $em = $container->get(\Doctrine\ORM\EntityManager::class);
+    $container->add('userRepository', function () use ($container) {
+        $em = $container->get('entityManager');
+
         return new UserRepository($em);
-    },
+    })
 ];

@@ -6,9 +6,6 @@
  * @license https://gitlab.com/arescms/ares-backend/LICENSE.md (GNU License)
  */
 
-use Slim\App;
-use DI\ContainerBuilder;
-
 require __DIR__ . '/../../vendor/autoload.php';
 
 $dotenv = new Dotenv\Dotenv(__DIR__ . '/../../');
@@ -23,30 +20,20 @@ $dotenv->required([
     'DB_PASS'
 ]);
 
-// Instantiate PHP-DI ContainerBuilder
-$containerBuilder = new ContainerBuilder();
+// Instantiate LeagueContainer
+$container = new \League\Container\Container();
 
-// Add container definitions
-$containerBuilder->addDefinitions(__DIR__ . '/Container/dependencies.php');
-
-// Set up and add repositories
-$containerBuilder->addDefinitions(__DIR__ . '/Container/repositories.php');
-
-// Set up and add services
-$containerBuilder->addDefinitions(__DIR__ . '/Container/services.php');
-
-// Build PHP-DI Container instance
-$container = $containerBuilder->build();
+\Slim\Factory\AppFactory::setContainer($container);
 
 // Create App instance
-$app = $container->get(App::class);
+$app = \Slim\Factory\AppFactory::create();
 
-// Register middleware
-$middleware = require __DIR__ . '/Container/middleware.php';
-$middleware($app);
+require_once __DIR__ . '/Container/repositories.php';
+
+require_once __DIR__ . '/Container/providers.php';
 
 // Routing
-$routes = require __DIR__ . '/../app/routes.php';
+$routes = require __DIR__ . '/../App/routes.php';
 $routes($app);
 
 return $app;

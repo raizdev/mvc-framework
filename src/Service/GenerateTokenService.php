@@ -6,32 +6,31 @@
  * @license https://gitlab.com/arescms/ares-backend/LICENSE.md (GNU License)
  */
 
-namespace App\Service\Auth;
+namespace App\Service;
 
 use App\Entity\User;
-use App\Service\BaseService;
-use App\Service\ContainerSettingsService;
 use Firebase\JWT\JWT;
+use League\Container\Container;
 
 /**
  * Class GenerateTokenService
  */
-class GenerateTokenService extends BaseService
+class GenerateTokenService
 {
     /**
-     * @var ContainerSettingsService
+     * @var Container
      */
-    private ContainerSettingsService $jwtSettings;
+    private Container $container;
 
     /**
      * GenerateTokenService constructor.
      *
-     * @param   ContainerSettingsService  $jwtSettings
+     * @param   Container  $container
      */
     public function __construct(
-        ContainerSettingsService $jwtSettings
+        Container $container
     ) {
-        $this->jwtSettings = $jwtSettings;
+        $this->container = $container;
     }
 
     /**
@@ -61,7 +60,7 @@ class GenerateTokenService extends BaseService
             ]
         ];
 
-        $settings = $this->jwtSettings->get('jwt');
+        $settings = $this->container->get('settings')['jwt'];
 
         return JWT::encode(
             $data,

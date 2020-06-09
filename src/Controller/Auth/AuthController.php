@@ -12,6 +12,7 @@ use App\Controller\BaseController;
 use App\Service\Auth\AuthService;
 use App\Service\Auth\GenerateTokenService;
 use App\Validation\Validator;
+use League\Container\Container;
 use Respect\Validation\Validator as v;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -39,15 +40,18 @@ class AuthController extends BaseController
     /**
      * AuthController constructor.
      *
+     * @param   Container             $container
      * @param   AuthService           $authService
      * @param   GenerateTokenService  $generateTokenService
      * @param   Validator             $validator
      */
     public function __construct(
+        Container $container,
         AuthService $authService,
         GenerateTokenService $generateTokenService,
         Validator $validator
     ) {
+        parent::__construct($container);
         $this->authService          = $authService;
         $this->generateTokenService = $generateTokenService;
         $this->validator            = $validator;

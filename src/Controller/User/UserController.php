@@ -9,7 +9,8 @@
 namespace App\Controller\User;
 
 use App\Controller\BaseController;
-use App\Service\User\UserService;
+use App\Repository\User\UserRepository;
+use League\Container\Container;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -19,19 +20,20 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class UserController extends BaseController
 {
     /**
-     * @var UserService
+     * @var UserRepository
      */
-    private UserService $userService;
+    private UserRepository $userRepository;
 
     /**
      * UserController constructor.
      *
-     * @param   UserService  $userService
+     * @param   Container  $container
      */
     public function __construct(
-        UserService $userService
+        Container $container
     ) {
-        $this->userService = $userService;
+        parent::__construct($container);
+        $this->userRepository = $container->get('userRepository');
     }
 
     /**
@@ -42,7 +44,7 @@ class UserController extends BaseController
      */
     public function all(Request $request, Response $response): Response
     {
-        $user = $this->userService->all();
+        $user = $this->userRepository->all();
 
         return $this->jsonResponse(
             $response,

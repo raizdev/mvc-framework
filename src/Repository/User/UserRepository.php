@@ -65,14 +65,15 @@ class UserRepository extends BaseRepository
     public function create(array $data): User
     {
         $user = new User();
-        $user->setUsername($data['username']);
-        $user->setMail($data['mail']);
-        $user->setPassword(password_hash(
-                $data['password'],
-                PASSWORD_ARGON2ID)
-        );
-        /* @TODO Make a secure ticket... */
-        $user->setTicket('21312312312');
+        $user
+            ->setUsername($data['username'])
+            ->setMail($data['mail'])
+            ->setPassword(password_hash(
+                    $data['password'],
+                    PASSWORD_ARGON2ID)
+            )
+            /* @TODO Make a secure ticket... */
+            ->setTicket('21312312312');
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();
