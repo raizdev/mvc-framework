@@ -13,7 +13,7 @@ use Respect\Validation\Exceptions\NestedValidationException;
 /**
  * Class Validator
  */
-class Validator
+class ValidationService
 {
     /**
      * @var array $errors
@@ -26,7 +26,7 @@ class Validator
      *
      * @return $this
      */
-    public function validate($request, array $rules): Validator
+    public function validate($request, array $rules): ValidationService
     {
         foreach ($rules as $field => $rule) {
             try {

@@ -9,9 +9,9 @@
 namespace App\Controller\Auth;
 
 use App\Controller\BaseController;
-use App\Service\Auth\AuthService;
-use App\Service\Auth\GenerateTokenService;
-use App\Validation\Validator;
+use App\Repository\User\UserRepository;
+use App\Service\GenerateTokenService;
+use App\Validation\ValidationService;
 use League\Container\Container;
 use Respect\Validation\Validator as v;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -23,38 +23,38 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class AuthController extends BaseController
 {
     /**
-     * @var Validator
-     */
-    private Validator $validator;
-
-    /**
-     * @var AuthService
-     */
-    private AuthService $authService;
-
-    /**
      * @var GenerateTokenService
      */
     private GenerateTokenService $generateTokenService;
 
     /**
+     * @var ValidationService
+     */
+    private ValidationService $validationService;
+
+    /**
+     * @var UserRepository
+     */
+    private UserRepository $userRepository;
+
+    /**
      * AuthController constructor.
      *
      * @param   Container             $container
-     * @param   AuthService           $authService
      * @param   GenerateTokenService  $generateTokenService
-     * @param   Validator             $validator
+     * @param   ValidationService     $validationService
+     * @param   UserRepository        $userRepository
      */
     public function __construct(
         Container $container,
-        AuthService $authService,
         GenerateTokenService $generateTokenService,
-        Validator $validator
+        ValidationService $validationService,
+        UserRepository $userRepository
     ) {
         parent::__construct($container);
-        $this->authService          = $authService;
         $this->generateTokenService = $generateTokenService;
-        $this->validator            = $validator;
+        $this->validationService    = $validationService;
+        $this->userRepository       = $userRepository;
     }
 
     /**
@@ -65,7 +65,7 @@ class AuthController extends BaseController
      */
     public function login(Request $request, Response $response): Response
     {
-        $validation = $this->validator->validate($request, [
+        $validation = $this->validationService->validate($request, [
             'username' => v::noWhitespace()->notEmpty(),
             'password' => v::notEmpty()
         ]);
@@ -76,7 +76,7 @@ class AuthController extends BaseController
             ], 422);
         }
 
-        $token = $this->authService->login();
+        $token = '123';
 
         return $this->jsonResponse($response, [
             'message' => 'Successfully logged in',
@@ -95,7 +95,7 @@ class AuthController extends BaseController
     {
         $parsedData = $request->getParsedBody();
 
-        $validation = $this->validator->validate($parsedData, [
+        $validation = $this->validationService->validate($parsedData, [
             'username' => v::noWhitespace()->notEmpty()->notBlank(),
             'mail'     => v::noWhitespace()->notEmpty()->notBlank()->email(),
             'password' => v::notEmpty()->notBlank()
@@ -113,7 +113,7 @@ class AuthController extends BaseController
             'mail'     => $parsedData['mail'],
         ];
 
-        $user  = $this->authService->register($data);
+        $user  = $this->userRepository->create($data);
         $token = $this->generateTokenService->execute($user);
 
         return $this->jsonResponse($response, [

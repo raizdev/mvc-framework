@@ -8,27 +8,10 @@
 
 namespace App\Controller;
 
-use League\Container\Container;
 use Psr\Http\Message\ResponseInterface as Response;
 
 abstract class BaseController
 {
-    /**
-     * @var Container
-     */
-    private Container $container;
-
-    /**
-     * BaseController constructor.
-     *
-     * @param   Container  $container
-     */
-    public function __construct(
-        Container $container
-    ) {
-        $this->container = $container;
-    }
-
     /**
      * @param   Response  $response
      * @param   mixed     $data

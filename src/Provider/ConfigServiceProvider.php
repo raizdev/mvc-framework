@@ -26,7 +26,7 @@ class ConfigServiceProvider extends AbstractServiceProvider
                 'doctrine' => [
                     'dev_mode' => getenv('DB_DEV_MODE'),
 
-                    'cache_dir' => '../src/App/Cache/doctrine',
+                    'cache_dir' => '../app/Cache/doctrine',
 
                     'metadata_dirs' => ['src/Entity'],
 
@@ -51,42 +51,42 @@ class ConfigServiceProvider extends AbstractServiceProvider
                     'enabled_log_levels' => [
                         // DEBUG
                         [
-                            'path'  => __DIR__ . '/Logs/info.log',
+                            'path'  => __DIR__ . '../../app/Logs/info.log',
                             'level' => Logger::DEBUG
                         ],
                         // INFO
                         [
-                            'path'  => __DIR__ . '/Logs/info.log',
+                            'path'  => __DIR__ . '../../app/Logs/info.log',
                             'level' => Logger::INFO
                         ],
                         // NOTICE
                         [
-                            'path'  => __DIR__ . '/Logs/info.log',
+                            'path'  => __DIR__ . '../../app/Logs/info.log',
                             'level' => Logger::NOTICE
                         ],
                         // WARNING
                         [
-                            'path'  => __DIR__ . '/Logs/warning.log',
+                            'path'  => __DIR__ . '../../app/Logs/warning.log',
                             'level' => Logger::WARNING
                         ],
                         // ERROR
                         [
-                            'path'  => __DIR__ . '/Logs/error.log',
+                            'path'  => __DIR__ . '../../app/Logs/error.log',
                             'level' => Logger::ERROR
                         ],
                         // CRITICAL
                         [
-                            'path'  => __DIR__ . '/Logs/critical.log',
+                            'path'  => __DIR__ . '../../app/Logs/critical.log',
                             'level' => Logger::CRITICAL
                         ],
                         // ALERT
                         [
-                            'path'  => __DIR__ . '/Logs/critical.log',
+                            'path'  => __DIR__ . '../../app/Logs/critical.log',
                             'level' => Logger::ALERT
                         ],
                         // EMERGENCY
                         [
-                            'path'  => __DIR__ . '/Logs/critical.log',
+                            'path'  => __DIR__ . '../../app/Logs/critical.log',
                             'level' => Logger::EMERGENCY
                         ],
                     ],

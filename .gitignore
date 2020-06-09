@@ -12,5 +12,5 @@
 .env
 /.scannerwork/
 /.phpunit.result.cache
-/src/Logs/
-/src/App/Cache/doctrine/
+/app/Logs
+/app/Cache

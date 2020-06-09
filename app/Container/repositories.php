@@ -10,14 +10,15 @@ use App\Repository\User\UserRepository;
 use League\Container\Container;
 
 /**
- * EM needs to be given to the repositories
+ * Registers our Repositories
  *
  * @param   Container  $container
  */
 return [
+    // Registers our UserRepository
     $container->add('userRepository', function () use ($container) {
-        $em = $container->get('entityManager');
+        $entityManager = $container->get('entityManager');
 
-        return new UserRepository($em);
+        return new UserRepository($entityManager);
     })
 ];

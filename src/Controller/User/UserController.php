@@ -9,6 +9,7 @@
 namespace App\Controller\User;
 
 use App\Controller\BaseController;
+use App\Entity\User;
 use App\Repository\User\UserRepository;
 use League\Container\Container;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -27,13 +28,12 @@ class UserController extends BaseController
     /**
      * UserController constructor.
      *
-     * @param   Container  $container
+     * @param   UserRepository  $userRepository
      */
     public function __construct(
-        Container $container
+        UserRepository $userRepository
     ) {
-        parent::__construct($container);
-        $this->userRepository = $container->get('userRepository');
+        $this->userRepository = $userRepository;
     }
 
     /**
