@@ -16,3 +16,4 @@
 /app/Cache
 /app/Keys/private.pem
 /app/Keys/public.pem
+/app/Logs/
