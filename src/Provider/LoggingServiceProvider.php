@@ -12,6 +12,7 @@ use League\Container\ServiceProvider\AbstractServiceProvider;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Monolog\Processor\UidProcessor;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class LoggingServiceProvider
@@ -21,14 +22,14 @@ use Monolog\Processor\UidProcessor;
 class LoggingServiceProvider extends AbstractServiceProvider
 {
     protected $provides = [
-        'logger'
+        LoggerInterface::class
     ];
 
     public function register()
     {
         $container = $this->getContainer();
 
-        $container->add('logger', function () use ($container) {
+        $container->add(LoggerInterface::class, function () use ($container) {
             $settings       = $container->get('settings');
             $loggerSettings = $settings['logger'];
             $logger         = new Logger($loggerSettings['name']);
