@@ -10,7 +10,7 @@ namespace App\Controller\Auth;
 
 use App\Controller\BaseController;
 use App\Repository\User\UserRepository;
-use App\Service\GenerateTokenService;
+use App\Service\TokenService;
 use App\Service\ValidationService;
 use Respect\Validation\Validator as v;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -20,16 +20,9 @@ use Psr\Http\Message\ServerRequestInterface as Request;
  * Class AuthController
  *
  * @package App\Controller\Auth
- *
- * @TODO Refactor Controller code
  */
 class AuthController extends BaseController
 {
-    /**
-     * @var GenerateTokenService
-     */
-    private GenerateTokenService $generateTokenService;
-
     /**
      * @var ValidationService
      */
@@ -41,20 +34,25 @@ class AuthController extends BaseController
     private UserRepository $userRepository;
 
     /**
+     * @var TokenService
+     */
+    private TokenService $tokenService;
+
+    /**
      * AuthController constructor.
      *
-     * @param   GenerateTokenService  $generateTokenService
-     * @param   ValidationService     $validationService
-     * @param   UserRepository        $userRepository
+     * @param   UserRepository     $userRepository
+     * @param   ValidationService  $validationService
+     * @param   TokenService       $tokenService
      */
     public function __construct(
         UserRepository $userRepository,
-        GenerateTokenService $generateTokenService,
-        ValidationService $validationService
+        ValidationService $validationService,
+        TokenService $tokenService
     ) {
-        $this->userRepository       = $userRepository;
-        $this->generateTokenService = $generateTokenService;
-        $this->validationService    = $validationService;
+        $this->userRepository    = $userRepository;
+        $this->validationService = $validationService;
+        $this->tokenService      = $tokenService;
     }
 
     /**
@@ -86,12 +84,16 @@ class AuthController extends BaseController
             ], 403);
         }
 
-        $tokenInfo = $this->generateTokenService->execute($user->id);
+        $token = $this->tokenService->createJwt([
+            'uid' => $parsedData['username'],
+        ]);
+
+        $lifetime = $this->tokenService->getLifetime();
 
         return $this->jsonResponse($response, [
             'message' => $user,
-            'token'   => $tokenInfo['token'],
-            'expires' => $tokenInfo['expire']
+            'token'   => $token,
+            'expires' => $lifetime
         ], 200);
     }
 
@@ -120,7 +122,7 @@ class AuthController extends BaseController
 
         $user = $this->userRepository->findByUsername($parsedData['username']);
 
-        if(!is_null($user)) {
+        if (!is_null($user)) {
             return $this->jsonResponse($response, [
                 'message' => 'Username already exists'
             ], 422);
@@ -132,13 +134,18 @@ class AuthController extends BaseController
             'mail'     => $parsedData['mail'],
         ];
 
-        $user      = $this->userRepository->create($data);
-        $tokenInfo = $this->generateTokenService->execute($user->getId());
+        $user = $this->userRepository->create($data);
+
+        $token = $this->tokenService->createJwt([
+            'uid' => $parsedData['username'],
+        ]);
+
+        $lifetime = $this->tokenService->getLifetime();
 
         return $this->jsonResponse($response, [
             'message' => $user,
-            'token'   => $tokenInfo['token'],
-            'expires' => $tokenInfo['expire']
+            'token'   => $token,
+            'expires' => $lifetime
         ], 200);
     }
 }

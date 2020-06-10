@@ -14,6 +14,7 @@ A blazing fast SPA for your Retro using Angular9 & Slim.
 4. [Who works on Ares?](#4-who-works-on-ares)
 5. [Support](#5-support)
 6. [Disclaimer](#6-disclaimer)
+7. [Setup](#7-setup)
 
 ---
 
@@ -86,3 +87,13 @@ All rights go to their respective owners.
 Ares is in no way endorsed, affiliated or associated with Sulake.
 
 Ares is a not for profit educational project.
+
+---
+
+## 7. Setup
+
+Generate JWT-Authentication Keys:
+
+1. openssl genrsa -out private.pem 512
+2. openssl rsa -in private.pem -outform PEM -pubout -out public.pem
+3. copy both files in app/Keys

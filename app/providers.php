@@ -21,5 +21,17 @@ return [
     // Adds our LoggingProvider
     $container->addServiceProvider(
         new \App\Provider\LoggingServiceProvider()
+    ),
+    // Adds our TokenProvider
+    $container->addServiceProvider(
+        new \App\Provider\TokenServiceProvider()
+    ),
+    // Adds our RouteProvider
+    $container->addServiceProvider(
+        new \App\Provider\RouteServiceProvider()
+    ),
+    // Adds our AppProvider and creates App
+    $container->addServiceProvider(
+        new \App\Provider\AppServiceProvider()
     )
 ];

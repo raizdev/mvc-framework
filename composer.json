@@ -17,12 +17,14 @@
     "require": {
         "ext-json": "*",
         "doctrine/orm": "^2.7.3",
+        "lcobucci/jwt": "^3.3.2",
         "league/container": "dev-master",
         "monolog/monolog": "^1.24",
+        "nesbot/carbon": "^2.0@dev",
         "respect/validation": "dev-master",
         "slim/psr7": "^0.5.0",
         "slim/slim": "^4.5.0",
-        "tuupola/slim-jwt-auth": "^3.4",
+        "symfony/polyfill-uuid": "^1.17@dev",
         "vlucas/phpdotenv": "^2.4"
     },
     "require-dev": {

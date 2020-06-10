@@ -6,6 +6,9 @@
  * @license https://gitlab.com/arescms/ares-backend/LICENSE.md (GNU License)
  */
 
+use Psr\Container\ContainerInterface;
+use Slim\App;
+
 require __DIR__ . '/../vendor/autoload.php';
 
 $dotEnv = new Dotenv\Dotenv(__DIR__ . '/../');
@@ -18,17 +21,17 @@ $container = new \League\Container\Container();
 
 // Enable Autowiring for our dependencies..
 $container->delegate(
-  new \League\Container\ReflectionContainer()
+    new \League\Container\ReflectionContainer()
 );
-
-// Sets our Container
-\Slim\Factory\AppFactory::setContainer($container);
-
-// Create App instance
-$app = \Slim\Factory\AppFactory::create();
 
 // Parse our providers
 require_once __DIR__ . '/providers.php';
+
+// Create App instance
+$app = $container->get(App::class);;
+
+// Registers our JWTClaimMiddleware Global
+$app->add(\App\Middleware\ClaimMiddleware::class);
 
 // Routing
 $routes = require __DIR__ . '/routes.php';

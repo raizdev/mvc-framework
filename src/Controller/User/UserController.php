@@ -28,12 +28,12 @@ class UserController extends BaseController
     /**
      * UserController constructor.
      *
-     * @param   UserRepository  $userRepository
+     * @param   UserRepository      $userRepository
      */
     public function __construct(
         UserRepository $userRepository
     ) {
-        $this->userRepository = $userRepository;
+        $this->userRepository     = $userRepository;
     }
 
     /**
@@ -49,6 +49,15 @@ class UserController extends BaseController
         return $this->jsonResponse(
             $response,
             $user,
+            200
+        );
+    }
+
+    public function user(Request $request, Response $response): Response
+    {
+        return $this->jsonResponse(
+            $response,
+            '',
             200
         );
     }

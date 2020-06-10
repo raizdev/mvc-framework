@@ -46,11 +46,17 @@ class ConfigServiceProvider extends AbstractServiceProvider
                     ]
                 ],
 
-                'auth' => [
-                    'secret'    => getenv('WEB_SECRET'),
-                    'expires'   => getenv('WEB_TOKEN_DURATION'),
-                    'hash'      => PASSWORD_ARGON2ID,
-                    'algorithm' => 'HS256'
+                'jwt' => [
+                    // The issuer name
+                    'issuer'      => getenv('WEB_NAME'),
+
+                    // Max lifetime in seconds
+                    'lifetime'    => getenv('WEB_TOKEN_DURATION'),
+
+                    // The private key
+                    'private_key' => getenv('WEB_SECRET_PRIVATE'),
+
+                    'public_key'  => getenv('WEB_SECRET_PUBLIC')
                 ],
 
                 'logger' => [
