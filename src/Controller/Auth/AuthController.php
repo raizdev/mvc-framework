@@ -78,7 +78,7 @@ class AuthController extends BaseController
 
         $user = $this->userRepository->findByUsername($parsedData['username']);
 
-        if (empty($user) || !password_verify($parsedData['password'], $user->password)) {
+        if (empty($user) || !password_verify($parsedData['password'], $user->getPassword())) {
             return $this->jsonResponse($response, [
                 'message' => 'Woops something went wrong'
             ], 403);
@@ -91,7 +91,7 @@ class AuthController extends BaseController
         $lifetime = $this->tokenService->getLifetime();
 
         return $this->jsonResponse($response, [
-            'message' => $user,
+            'message' => $user->getArrayCopy(),
             'token'   => $token,
             'expires' => $lifetime
         ], 200);

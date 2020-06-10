@@ -25,27 +25,27 @@ class User
      * @ORM\Column(name="id", type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    public int $id;
+    private int $id;
 
     /**
      * @ORM\Column(type="string", length=20)
      */
-    public string $username;
+    private string $username;
 
     /**
      * @ORM\Column(type="string", length=150)
      */
-    public string $password;
+    private string $password;
 
     /**
      * @ORM\Column(type="string", length=150)
      */
-    public string $mail;
+    private string $mail;
 
     /**
      * @ORM\Column(type="string", length=150)
      */
-    public string $auth_ticket;
+    private string $auth_ticket;
 
     /**
      * Get User id
@@ -143,5 +143,20 @@ class User
         $this->password = $password;
 
         return $this;
+    }
+
+    /**
+     * Returns a copy of the current Entity safely
+     *
+     * @return array
+     */
+    public function getArrayCopy(): array
+    {
+        return [
+            'id'          => $this->id,
+            'username'    => $this->username,
+            'mail'        => $this->mail,
+            'auth_ticket' => $this->auth_ticket
+        ];
     }
 }

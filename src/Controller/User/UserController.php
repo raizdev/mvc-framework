@@ -28,12 +28,12 @@ class UserController extends BaseController
     /**
      * UserController constructor.
      *
-     * @param   UserRepository      $userRepository
+     * @param   UserRepository  $userRepository
      */
     public function __construct(
         UserRepository $userRepository
     ) {
-        $this->userRepository     = $userRepository;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -44,11 +44,16 @@ class UserController extends BaseController
      */
     public function all(Request $request, Response $response): Response
     {
-        $user = $this->userRepository->all();
+        $users      = $this->userRepository->all();
+        $usersArray = [];
+
+        foreach ($users as $user) {
+            $usersArray[] = $user->getArrayCopy();
+        }
 
         return $this->jsonResponse(
             $response,
-            $user,
+            $usersArray,
             200
         );
     }

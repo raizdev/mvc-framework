@@ -79,7 +79,7 @@ class UserRepository extends BaseRepository
     /**
      * @param $data
      *
-     * @return object|null
+     * @return User|object
      */
     public function findByUsername($data)
     {
