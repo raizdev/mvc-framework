@@ -53,11 +53,17 @@ class UserController extends BaseController
         );
     }
 
+    /**
+     * @param   Request   $request
+     * @param   Response  $response
+     *
+     * @return Response
+     */
     public function user(Request $request, Response $response): Response
     {
         return $this->jsonResponse(
             $response,
-            '',
+            'works',
             200
         );
     }
