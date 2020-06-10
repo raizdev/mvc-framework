@@ -34,7 +34,6 @@ class User
 
     /**
      * @ORM\Column(type="string", length=150)
-     * @ORM\Hidden
      */
     public string $password;
 
@@ -51,7 +50,7 @@ class User
     /**
      * Get User id
      *
-     * @ORM\return integer
+     * @return integer
      */
     public function getId(): ?int
     {
@@ -61,7 +60,7 @@ class User
     /**
      * Gets Username of User
      *
-     * @ORM\return string
+     * @return string
      */
     public function getUsername(): ?string
     {
@@ -83,7 +82,7 @@ class User
     /**
      * Gets Maail of User
      *
-     * @ORM\return string
+     * @return string
      */
     public function getMail(): ?string
     {
@@ -105,7 +104,7 @@ class User
     /**
      * Gets Auth_ticket of User
      *
-     * @ORM\return string
+     * @return string
      */
     public function getTicket(): ?string
     {
@@ -127,7 +126,7 @@ class User
     /**
      * Gets Password of User
      *
-     * @ORM\return string
+     * @return string
      */
     public function getPassword(): ?string
     {
