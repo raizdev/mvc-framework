@@ -60,7 +60,7 @@ class ConfigServiceProvider extends AbstractServiceProvider
                 ],
 
                 'logger' => [
-                    'name'               => 'ares-event-log',
+                    'name'               => getenv('WEB_NAME') . '-event-log',
                     'enabled_log_levels' => [
                         // DEBUG
                         [

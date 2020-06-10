@@ -30,8 +30,9 @@ require_once __DIR__ . '/providers.php';
 // Create App instance
 $app = $container->get(App::class);;
 
-// Registers our JWTClaimMiddleware Global
+// Registers our JWTClaimMiddleware and CorsMiddleware Global
 $app->add(\App\Middleware\ClaimMiddleware::class);
+$app->add(\App\Middleware\CorsMiddleware::class);
 
 // Routing
 $routes = require __DIR__ . '/routes.php';
