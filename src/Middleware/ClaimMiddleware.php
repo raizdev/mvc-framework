@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Ares (https://ares.to)
+ *
+ * @license https://gitlab.com/arescms/ares-backend/LICENSE.md (GNU License)
+ */
+
 namespace App\Middleware;
 
 use App\Service\TokenService;
@@ -9,7 +15,9 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 /**
- * ClaimMiddleware.
+ * Class ClaimMiddleware
+ *
+ * @package App\Middleware
  */
 class ClaimMiddleware implements MiddlewareInterface
 {

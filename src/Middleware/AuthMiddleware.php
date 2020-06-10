@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Ares (https://ares.to)
+ *
+ * @license https://gitlab.com/arescms/ares-backend/LICENSE.md (GNU License)
+ */
+
 namespace App\Middleware;
 
 use App\Service\TokenService;
@@ -10,7 +16,9 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 /**
- * JWT Auth middleware.
+ * Class AuthMiddleware
+ *
+ * @package App\Middleware
  */
 class AuthMiddleware implements MiddlewareInterface
 {
