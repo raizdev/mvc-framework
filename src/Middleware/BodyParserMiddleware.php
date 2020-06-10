@@ -26,8 +26,10 @@ class BodyParserMiddleware implements MiddlewareInterface
      *
      * @return Response
      */
-    public function process(Request $request, RequestHandler $handler): Response
-    {
+    public function process(
+        Request $request,
+        RequestHandler $handler
+    ): Response {
         $contentType = $request->getHeaderLine('Content-Type');
 
         if (false !== strpos($contentType, 'application/json')) {

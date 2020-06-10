@@ -29,8 +29,10 @@ class CorsMiddleware implements MiddlewareInterface
      *
      * @return ResponseInterface The response
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
-    {
+    public function process(
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler
+    ): ResponseInterface {
         $routeContext   = RouteContext::fromRequest($request);
         $routingResults = $routeContext->getRoutingResults();
         $methods        = $routingResults->getAllowedMethods();
