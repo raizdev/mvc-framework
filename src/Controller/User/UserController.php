@@ -66,9 +66,12 @@ class UserController extends BaseController
      */
     public function user(Request $request, Response $response): Response
     {
+        $authUser = $this->getAuthUser($request);
+        $user     = $this->userRepository->find($authUser);
+
         return $this->jsonResponse(
             $response,
-            'works',
+            $user->getArrayCopy(),
             200
         );
     }

@@ -9,6 +9,7 @@
 namespace App\Controller;
 
 use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
 
 /**
  * Class BaseController
@@ -17,6 +18,23 @@ use Psr\Http\Message\ResponseInterface as Response;
  */
 abstract class BaseController
 {
+    /**
+     * If the user is in the JWT Token data its id is returned
+     *
+     * @param   Request  $request
+     *
+     * @return int|null
+     */
+    protected function getAuthUser(Request $request): ?int
+    {
+        $user = $request->getAttribute('uid');
+        if (isset($user)) {
+            return json_decode(json_encode($user), true);
+        }
+
+        return null;
+    }
+
     /**
      * @param   Response  $response
      * @param   mixed     $data

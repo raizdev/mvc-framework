@@ -85,7 +85,7 @@ class AuthController extends BaseController
         }
 
         $token = $this->tokenService->createJwt([
-            'uid' => $parsedData['username'],
+            'uid' => $user->getId(),
         ]);
 
         $lifetime = $this->tokenService->getLifetime();
@@ -137,15 +137,28 @@ class AuthController extends BaseController
         $user = $this->userRepository->create($data);
 
         $token = $this->tokenService->createJwt([
-            'uid' => $parsedData['username'],
+            'uid' => $user->getId(),
         ]);
 
         $lifetime = $this->tokenService->getLifetime();
 
         return $this->jsonResponse($response, [
-            'message' => $user,
+            'message' => $user->getArrayCopy(),
             'token'   => $token,
             'expires' => $lifetime
         ], 200);
+    }
+
+    /**
+     * @TODO TBD - Need to write something that unvalidates the token...
+     *
+     * @param   Request   $request
+     * @param   Response  $response
+     *
+     * @return Response
+     */
+    public function logout(Request $request, Response $response): Response
+    {
+
     }
 }
