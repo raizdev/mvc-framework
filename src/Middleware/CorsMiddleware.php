@@ -40,13 +40,9 @@ class CorsMiddleware implements MiddlewareInterface
 
         $response = $handler->handle($request);
 
-        $response = $response->withHeader('Access-Control-Allow-Origin', getenv('WEB_FRONTEND_LINK'));
-        $response = $response->withHeader('Access-Control-Allow-Methods', implode(', ', $methods));
-        $response = $response->withHeader('Access-Control-Allow-Headers', $requestHeaders ?: '*');
-
-        // Allow Ajax CORS requests with Authorization header
-        $response = $response->withHeader('Access-Control-Allow-Credentials', 'true');
-
-        return $response;
+        return $response->withHeader('Access-Control-Allow-Origin', getenv('WEB_FRONTEND_LINK'))
+                        ->withHeader('Access-Control-Allow-Methods', implode(', ', $methods))
+                        ->withHeader('Access-Control-Allow-Headers', $requestHeaders ?: '*')
+                        ->withHeader('Access-Control-Allow-Credentials', 'true');
     }
 }
