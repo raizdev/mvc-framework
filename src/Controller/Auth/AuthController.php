@@ -91,7 +91,6 @@ class AuthController extends BaseController
         $lifetime = $this->tokenService->getLifetime();
 
         return $this->jsonResponse($response, [
-            'message' => $user->getArrayCopy(),
             'token'   => $token,
             'expires' => $lifetime
         ], 200);
@@ -143,7 +142,6 @@ class AuthController extends BaseController
         $lifetime = $this->tokenService->getLifetime();
 
         return $this->jsonResponse($response, [
-            'message' => $user->getArrayCopy(),
             'token'   => $token,
             'expires' => $lifetime
         ], 200);

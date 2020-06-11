@@ -59,7 +59,7 @@ class ClaimMiddleware implements MiddlewareInterface
             $request     = $request->withAttribute('token', $parsedToken);
 
             // Append the user id as request attribute
-            $request = $request->withAttribute('uid', $parsedToken->getClaim('uid'));
+            $request = $request->withAttribute('ares_uid', $parsedToken->getClaim('uid'));
         }
 
         return $handler->handle($request);
