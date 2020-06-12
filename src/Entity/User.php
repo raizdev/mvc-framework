@@ -48,6 +48,11 @@ class User
     private string $look;
 
     /**
+     * @ORM\Column(type="string", length=35)
+     */
+    private ?string $motto;
+
+    /**
      * @ORM\Column(type="integer", length=20)
      */
     private int $credits;
@@ -65,7 +70,7 @@ class User
     /**
      * @ORM\Column(type="string", length=150)
      */
-    private string $auth_ticket;
+    private ?string $auth_ticket;
 
     /**
      * Get User id
@@ -137,6 +142,26 @@ class User
     public function setLook(string $look): self
     {
         $this->look = $look;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMotto(): ?string
+    {
+        return $this->motto;
+    }
+
+    /**
+     * @param   string  $motto
+     *
+     * @return User
+     */
+    public function setMotto(string $motto): self
+    {
+        $this->motto = $motto;
 
         return $this;
     }
@@ -258,6 +283,7 @@ class User
             'username'        => $this->username,
             'mail'            => $this->mail,
             'look'            => $this->look,
+            'motto'           => $this->motto,
             'credits'         => $this->credits,
             'vip_points'      => $this->vip_points,
             'activity_points' => $this->activity_points,
