@@ -35,12 +35,32 @@ class User
     /**
      * @ORM\Column(type="string", length=150)
      */
-    protected string $password;
+    private string $password;
 
     /**
      * @ORM\Column(type="string", length=150)
      */
     private string $mail;
+
+    /**
+     * @ORM\Column(type="string", length=200)
+     */
+    private string $look;
+
+    /**
+     * @ORM\Column(type="integer", length=20)
+     */
+    private int $credits;
+
+    /**
+     * @ORM\Column(type="integer", length=20)
+     */
+    private int $vip_points;
+
+    /**
+     * @ORM\Column(type="integer", length=20)
+     */
+    private int $activity_points;
 
     /**
      * @ORM\Column(type="string", length=150)
@@ -102,6 +122,87 @@ class User
     }
 
     /**
+     * @return string
+     */
+    public function getLook(): ?string
+    {
+        return $this->look;
+    }
+
+    /**
+     * @param   string  $look
+     *
+     * @return User
+     */
+    public function setLook(string $look): self
+    {
+        $this->look = $look;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCredits(): ?int
+    {
+        return $this->credits;
+    }
+
+    /**
+     * @param   int  $credits
+     *
+     * @return User
+     */
+    public function setCredits(int $credits): self
+    {
+        $this->credits = $credits;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getVipPoints(): ?int
+    {
+        return $this->vip_points;
+    }
+
+    /**
+     * @param   int  $vipPoints
+     *
+     * @return User
+     */
+    public function setVipPoints(int $vipPoints): self
+    {
+        $this->vip_points = $vipPoints;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getActivityPoints(): ?int
+    {
+        return $this->activity_points;
+    }
+
+    /**
+     * @param   int  $activityPoints
+     *
+     * @return User
+     */
+    public function setActivityPoints(int $activityPoints): self
+    {
+        $this->activity_points = $activityPoints;
+
+        return $this;
+    }
+
+
+    /**
      * Gets Auth_ticket of User
      *
      * @return string
@@ -153,10 +254,14 @@ class User
     public function getArrayCopy(): array
     {
         return [
-            'id'          => $this->id,
-            'username'    => $this->username,
-            'mail'        => $this->mail,
-            'auth_ticket' => $this->auth_ticket
+            'id'              => $this->id,
+            'username'        => $this->username,
+            'mail'            => $this->mail,
+            'look'            => $this->look,
+            'credits'         => $this->credits,
+            'vip_points'      => $this->vip_points,
+            'activity_points' => $this->activity_points,
+            'auth_ticket'     => $this->auth_ticket
         ];
     }
 }
