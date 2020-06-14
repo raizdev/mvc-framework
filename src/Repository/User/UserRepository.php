@@ -88,7 +88,12 @@ class UserRepository extends BaseRepository
         ]);
     }
 
-    public function find($id)
+    /**
+     * @param $id
+     *
+     * @return object|null
+     */
+    public function find($id): ?object
     {
         return $this->repository->find($id);
     }

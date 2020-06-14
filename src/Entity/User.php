@@ -60,12 +60,12 @@ class User
     /**
      * @ORM\Column(type="integer", length=20)
      */
-    private int $vip_points;
+    private int $points;
 
     /**
      * @ORM\Column(type="integer", length=20)
      */
-    private int $activity_points;
+    private int $pixels;
 
     /**
      * @ORM\Column(type="string", length=150)
@@ -189,19 +189,19 @@ class User
     /**
      * @return int
      */
-    public function getVipPoints(): ?int
+    public function getPoints(): ?int
     {
-        return $this->vip_points;
+        return $this->points;
     }
 
     /**
-     * @param   int  $vipPoints
+     * @param   int  $points
      *
      * @return User
      */
-    public function setVipPoints(int $vipPoints): self
+    public function setPoints(int $points): self
     {
-        $this->vip_points = $vipPoints;
+        $this->points = $points;
 
         return $this;
     }
@@ -209,19 +209,19 @@ class User
     /**
      * @return int
      */
-    public function getActivityPoints(): ?int
+    public function getPixels(): ?int
     {
-        return $this->activity_points;
+        return $this->pixels;
     }
 
     /**
-     * @param   int  $activityPoints
+     * @param   int  $pixels
      *
      * @return User
      */
-    public function setActivityPoints(int $activityPoints): self
+    public function setPixels(int $pixels): self
     {
-        $this->activity_points = $activityPoints;
+        $this->pixels = $pixels;
 
         return $this;
     }
@@ -279,15 +279,15 @@ class User
     public function getArrayCopy(): array
     {
         return [
-            'id'              => $this->id,
-            'username'        => $this->username,
-            'mail'            => $this->mail,
-            'look'            => $this->look,
-            'motto'           => $this->motto,
-            'credits'         => $this->credits,
-            'vip_points'      => $this->vip_points,
-            'activity_points' => $this->activity_points,
-            'auth_ticket'     => $this->auth_ticket
+            'id'          => $this->id,
+            'username'    => $this->username,
+            'mail'        => $this->mail,
+            'look'        => $this->look,
+            'motto'       => $this->motto,
+            'credits'     => $this->credits,
+            'points'      => $this->points,
+            'pixels'      => $this->pixels,
+            'auth_ticket' => $this->auth_ticket
         ];
     }
 }

@@ -6,7 +6,6 @@
  * @license https://gitlab.com/arescms/ares-backend/LICENSE.md (GNU License)
  */
 
-use Psr\Log\LoggerInterface;
 use Slim\App;
 
 /**
@@ -15,8 +14,8 @@ use Slim\App;
  * @param   App  $app
  */
 return function (App $app) {
-    $container = $app->getContainer();
-    $logger    = $container->get(LoggerInterface::class);
+    $container    = $app->getContainer();
+    $logger       = $container->get(\Psr\Log\LoggerInterface::class);
 
     $app->add(\App\Middleware\CorsMiddleware::class);
     $app->add(\App\Middleware\BodyParserMiddleware::class);
