@@ -42,7 +42,7 @@ class ClaimMiddleware implements MiddlewareInterface
         TokenService $tokenService,
         ResponseFactoryInterface $responseFactory
     ) {
-        $this->tokenService = $tokenService;
+        $this->tokenService    = $tokenService;
         $this->responseFactory = $responseFactory;
     }
 
@@ -67,16 +67,15 @@ class ClaimMiddleware implements MiddlewareInterface
                 // Append valid token
                 $parsedToken = $this->tokenService->createParsedToken($credentials);
                 $request     = $request->withAttribute('token', $parsedToken);
-    
+
                 // Append the user id as request attribute
                 $request = $request->withAttribute('ares_uid', $parsedToken->getClaim('uid'));
-            }   
-        } 
-        catch(InvalidArgumentException $e) {
+            }
+        } catch (InvalidArgumentException $e) {
             return $this->responseFactory->createResponse()
-                        ->withHeader('Access-Control-Allow-Origin', getenv('WEB_FRONTEND_LINK'))
-                        ->withHeader('Content-Type', 'application/json')
-                        ->withStatus(401, 'Unauthorized');
+                ->withHeader('Access-Control-Allow-Origin', getenv('WEB_FRONTEND_LINK'))
+                ->withHeader('Content-Type', 'application/json')
+                ->withStatus(401, 'Unauthorized');
         }
 
         return $handler->handle($request);

@@ -354,16 +354,16 @@ class User
     public function getArrayCopy(): array
     {
         return [
-            'id'                => $this->id,
-            'username'          => $this->username,
-            'mail'              => $this->mail,
-            'look'              => $this->look,
-            'motto'             => $this->motto,
-            'credits'           => $this->credits,
-            'points'            => $this->points,
-            'pixels'            => $this->pixels,
-            'auth_ticket'       => $this->auth_ticket,
-            'account_created'   => $this->account_created
+            'id'              => $this->id,
+            'username'        => $this->username,
+            'mail'            => $this->mail,
+            'look'            => $this->look,
+            'motto'           => $this->motto,
+            'credits'         => $this->credits,
+            'points'          => $this->points,
+            'pixels'          => $this->pixels,
+            'auth_ticket'     => $this->auth_ticket,
+            'account_created' => $this->account_created
         ];
     }
 }
