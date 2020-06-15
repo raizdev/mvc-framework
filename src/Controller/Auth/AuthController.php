@@ -128,9 +128,9 @@ class AuthController extends BaseController
         }
 
         $data = [
-            'username' => $parsedData['username'],
-            'password' => $parsedData['password'],
-            'mail'     => $parsedData['mail'],
+            'username'          => $parsedData['username'],
+            'password'          => $parsedData['password'],
+            'mail'              => $parsedData['mail']
         ];
 
         $user = $this->userRepository->create($data);

@@ -73,6 +73,21 @@ class User
     private ?string $auth_ticket;
 
     /**
+     * @ORM\Column(type="integer", length=15)
+     */
+    private int $account_created;
+
+    /**
+     * @ORM\Column(type="string", length=150)
+     */
+    private string $ip_register;
+
+    /**
+     * @ORM\Column(type="string", length=150)
+     */
+    private ?string $ip_current;
+
+    /**
      * Get User id
      *
      * @return integer
@@ -272,6 +287,66 @@ class User
     }
 
     /**
+     * @return int
+     */
+    public function getAccountCreated(): ?int
+    {
+        return $this->account_created;
+    }
+
+    /**
+     * @param   int  $timestamp
+     *
+     * @return User
+     */
+    public function setAccountCreated(int $timestamp): self
+    {
+        $this->account_created = $timestamp;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIPRegister(): string
+    {
+        return $this->ip_register;
+    }
+
+    /**
+     * @param   string  $ip
+     *
+     * @return User
+     */
+    public function setIPRegister(string $ip): self
+    {
+        $this->ip_register = $ip;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCurrentIP(): string
+    {
+        return $this->ip_current;
+    }
+
+    /**
+     * @param   string  $ip
+     *
+     * @return User
+     */
+    public function setCurrentIP(string $ip): self
+    {
+        $this->ip_current = $ip;
+
+        return $this;
+    }
+
+    /**
      * Returns a copy of the current Entity safely
      *
      * @return array
@@ -279,15 +354,16 @@ class User
     public function getArrayCopy(): array
     {
         return [
-            'id'          => $this->id,
-            'username'    => $this->username,
-            'mail'        => $this->mail,
-            'look'        => $this->look,
-            'motto'       => $this->motto,
-            'credits'     => $this->credits,
-            'points'      => $this->points,
-            'pixels'      => $this->pixels,
-            'auth_ticket' => $this->auth_ticket
+            'id'                => $this->id,
+            'username'          => $this->username,
+            'mail'              => $this->mail,
+            'look'              => $this->look,
+            'motto'             => $this->motto,
+            'credits'           => $this->credits,
+            'points'            => $this->points,
+            'pixels'            => $this->pixels,
+            'auth_ticket'       => $this->auth_ticket,
+            'account_created'   => $this->account_created
         ];
     }
 }

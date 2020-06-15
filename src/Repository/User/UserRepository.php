@@ -68,7 +68,15 @@ class UserRepository extends BaseRepository
                     PASSWORD_ARGON2ID)
             )
             /* @TODO Make a secure ticket... */
-            ->setTicket('21312312312');
+            ->setTicket('21312312312')
+            ->setLook('hd-180-1.ch-255-66.lg-280-110.sh-305-62.ha-1012-110.hr-828-61')
+            ->setMotto('ares ist cool')
+            ->setCredits(1337)
+            ->setPoints(1338)
+            ->setPixels(1339)
+            ->setIPRegister($_SERVER['REMOTE_ADDR'])
+            ->setCurrentIP($_SERVER['REMOTE_ADDR'])
+            ->setAccountCreated(time());
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();

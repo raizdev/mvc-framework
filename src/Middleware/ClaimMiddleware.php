@@ -9,10 +9,12 @@
 namespace App\Middleware;
 
 use App\Service\TokenService;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use InvalidArgumentException;
 
 /**
  * Class ClaimMiddleware
@@ -21,6 +23,11 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 class ClaimMiddleware implements MiddlewareInterface
 {
+    /**
+     * @var ResponseFactoryInterface
+     */
+    private ResponseFactoryInterface $responseFactory;
+
     /**
      * @var TokenService
      */
@@ -32,9 +39,11 @@ class ClaimMiddleware implements MiddlewareInterface
      * @param   TokenService  $tokenService
      */
     public function __construct(
-        TokenService $tokenService
+        TokenService $tokenService,
+        ResponseFactoryInterface $responseFactory
     ) {
         $this->tokenService = $tokenService;
+        $this->responseFactory = $responseFactory;
     }
 
     /**
@@ -53,13 +62,21 @@ class ClaimMiddleware implements MiddlewareInterface
         $type          = $authorization[0] ?? '';
         $credentials   = $authorization[1] ?? '';
 
-        if ($type === 'Bearer' && $this->tokenService->validateToken($credentials)) {
-            // Append valid token
-            $parsedToken = $this->tokenService->createParsedToken($credentials);
-            $request     = $request->withAttribute('token', $parsedToken);
-
-            // Append the user id as request attribute
-            $request = $request->withAttribute('ares_uid', $parsedToken->getClaim('uid'));
+        try {
+            if ($type === 'Bearer' && $this->tokenService->validateToken($credentials)) {
+                // Append valid token
+                $parsedToken = $this->tokenService->createParsedToken($credentials);
+                $request     = $request->withAttribute('token', $parsedToken);
+    
+                // Append the user id as request attribute
+                $request = $request->withAttribute('ares_uid', $parsedToken->getClaim('uid'));
+            }   
+        } 
+        catch(InvalidArgumentException $e) {
+            return $this->responseFactory->createResponse()
+                        ->withHeader('Access-Control-Allow-Origin', getenv('WEB_FRONTEND_LINK'))
+                        ->withHeader('Content-Type', 'application/json')
+                        ->withStatus(401, 'Unauthorized');
         }
 
         return $handler->handle($request);
