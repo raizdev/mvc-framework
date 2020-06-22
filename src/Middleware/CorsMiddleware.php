@@ -22,8 +22,6 @@ use Slim\Routing\RouteContext;
 class CorsMiddleware implements MiddlewareInterface
 {
     /**
-     * CorsMiddleware constructor
-     *
      * @param   ServerRequestInterface   $request  The request
      * @param   RequestHandlerInterface  $handler  The handler
      *

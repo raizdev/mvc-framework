@@ -74,7 +74,6 @@ class ClaimMiddleware implements MiddlewareInterface
             }
         } catch (InvalidArgumentException $e) {
             return $this->responseFactory->createResponse()
-                ->withHeader('Access-Control-Allow-Origin', getenv('WEB_FRONTEND_LINK'))
                 ->withHeader('Content-Type', 'application/json')
                 ->withStatus(401, 'Unauthorized');
         }

@@ -33,7 +33,7 @@ class AuthMiddleware implements MiddlewareInterface
     private TokenService $tokenService;
 
     /**
-     * Auth constructor.
+     * AuthMiddleware constructor.
      *
      * @param   TokenService              $tokenService
      * @param   ResponseFactoryInterface  $responseFactory
@@ -47,8 +47,6 @@ class AuthMiddleware implements MiddlewareInterface
     }
 
     /**
-     * Invoke middleware.
-     *
      * @param   ServerRequestInterface   $request  The request
      * @param   RequestHandlerInterface  $handler  The handler
      *

@@ -10,7 +10,7 @@ use Slim\App;
 
 return function (App $app) {
     // Enables Lazy CORS
-    $app->options('/{routes:.+}', function ($response) {
+    $app->options('/{routes:.+}', function ($request, $response, $arguments) {
         return $response;
     });
 
@@ -23,7 +23,7 @@ return function (App $app) {
     $app->post('/register', 'App\Controller\Auth\AuthController:register');
 
     // Catches every route that is not found
-    $app->map(['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], '/{routes:.+}', function ($request) {
+    $app->map(['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], '/{routes:.+}', function ($request, $response) {
         throw new \Slim\Exception\HttpNotFoundException($request);
     });
 };
