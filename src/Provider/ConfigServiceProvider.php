@@ -36,7 +36,7 @@ class ConfigServiceProvider extends AbstractServiceProvider
                     'metadata_dirs' => ['src/Entity'],
 
                     'connection' => [
-                        'driver'   => getenv('DB_DRIVER'),
+                        'driver'   => 'pdo_mysql',
                         'host'     => getenv('DB_HOST'),
                         'port'     => getenv('DB_PORT'),
                         'dbname'   => getenv('DB_NAME'),

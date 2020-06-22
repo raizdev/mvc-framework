@@ -34,9 +34,10 @@ class ClaimMiddleware implements MiddlewareInterface
     private TokenService $tokenService;
 
     /**
-     * The constructor.
+     * ClaimMiddleware constructor.
      *
-     * @param   TokenService  $tokenService
+     * @param TokenService             $tokenService
+     * @param ResponseFactoryInterface $responseFactory
      */
     public function __construct(
         TokenService $tokenService,
