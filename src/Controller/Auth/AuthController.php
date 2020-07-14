@@ -144,8 +144,8 @@ class AuthController extends BaseController
             'points'            => $this->config->get('hotel_settings.credits'),
             'pixels'            => $this->config->get('hotel_settings_pixels'),
             'motto'             => $this->config->get('hotel_settings_motto'),
-            'ip_register'       => $_SERVER['REMOTE_ADDR'],
-            'ip_current'        => $_SERVER['REMOTE_ADDR'],
+            'ip_register'       => $this->determineIp(),
+            'ip_current'        => $this->determineIp(),
             'account_created'   => time(),
             'auth_ticket'       => null
         ];

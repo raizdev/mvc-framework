@@ -44,6 +44,23 @@ abstract class BaseController
     }
 
     /**
+     * Determines the RealIP of the User and returns it
+     *
+     * @return int|null
+     */
+    protected function determineIp(): ?int
+    {
+        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+            $ip = $_SERVER['HTTP_CLIENT_IP'];
+        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        } else {
+            $ip = $_SERVER['REMOTE_ADDR'];
+        }
+        return $ip;
+    }
+
+    /**
      * @param Response $response
      * @param mixed    $data
      * @param int      $status
