@@ -1,13 +1,13 @@
 {
     "name": "dome/ares-habbo-api",
-    "description": "fast and convenient habbo api",
+    "description": "Fast and convenient Habbo API",
     "keywords": [
         "php",
         "habbo",
         "api",
-        "ares"
+        "slim"
     ],
-    "license": "GNU",
+    "license": "MIT",
     "authors": [
         {
             "name": "Dome",
@@ -21,14 +21,13 @@
         "league/container": "dev-master",
         "monolog/monolog": "^1.24",
         "nesbot/carbon": "^2.0@dev",
+        "phlak/config": "dev-master",
         "respect/validation": "dev-master",
         "slim/psr7": "^0.5.0",
         "slim/slim": "^4.5.0",
         "symfony/polyfill-uuid": "^1.17@dev",
-        "vlucas/phpdotenv": "^2.4"
-    },
-    "require-dev": {
-        "symfony/console": "^4.2"
+        "tuupola/cors-middleware": "dev-master",
+        "vlucas/phpdotenv": "^5.0@dev"
     },
     "config": {
         "sort-packages": true,

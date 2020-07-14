@@ -3,7 +3,7 @@
 /**
  * Ares (https://ares.to)
  *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE.md (GNU License)
+ * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
  */
 
 namespace App\Controller\Auth;
@@ -12,6 +12,7 @@ use App\Controller\BaseController;
 use App\Repository\User\UserRepository;
 use App\Service\TokenService;
 use App\Service\ValidationService;
+use PHLAK\Config\Config;
 use Respect\Validation\Validator as v;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -39,20 +40,28 @@ class AuthController extends BaseController
     private TokenService $tokenService;
 
     /**
+     * @var Config
+     */
+    private Config $config;
+
+    /**
      * AuthController constructor.
      *
-     * @param   UserRepository     $userRepository
-     * @param   ValidationService  $validationService
-     * @param   TokenService       $tokenService
+     * @param UserRepository    $userRepository
+     * @param ValidationService $validationService
+     * @param TokenService      $tokenService
+     * @param Config            $config
      */
     public function __construct(
         UserRepository $userRepository,
         ValidationService $validationService,
-        TokenService $tokenService
+        TokenService $tokenService,
+        Config $config
     ) {
         $this->userRepository    = $userRepository;
         $this->validationService = $validationService;
         $this->tokenService      = $tokenService;
+        $this->config            = $config;
     }
 
     /**
@@ -130,7 +139,15 @@ class AuthController extends BaseController
         $data = [
             'username'          => $parsedData['username'],
             'password'          => $parsedData['password'],
-            'mail'              => $parsedData['mail']
+            'mail'              => $parsedData['mail'],
+            'credits'           => $this->config->get('hotel_settings.credits'),
+            'points'            => $this->config->get('hotel_settings.credits'),
+            'pixels'            => $this->config->get('hotel_settings_pixels'),
+            'motto'             => $this->config->get('hotel_settings_motto'),
+            'ip_register'       => $_SERVER['REMOTE_ADDR'],
+            'ip_current'        => $_SERVER['REMOTE_ADDR'],
+            'account_created'   => time(),
+            'auth_ticket'       => null
         ];
 
         $user = $this->userRepository->create($data);

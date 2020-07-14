@@ -3,7 +3,7 @@
 /**
  * Ares (https://ares.to)
  *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE.md (GNU License)
+ * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
  */
 
 namespace App\Controller;
@@ -21,11 +21,11 @@ abstract class BaseController
     /**
      * If the user is in the JWT Token data its id is returned
      *
-     * @param   Request  $request
+     * @param Request $request
      *
      * @return int|null
      */
-    protected function getAuthUser(Request $request): ?int
+    protected function authUser(Request $request): ?int
     {
         $user = $request->getAttribute('ares_uid');
         if (isset($user)) {
@@ -36,9 +36,17 @@ abstract class BaseController
     }
 
     /**
-     * @param   Response  $response
-     * @param   mixed     $data
-     * @param   int       $status
+     * @param Request $request
+     */
+    protected function determineLang(Request $request)
+    {
+
+    }
+
+    /**
+     * @param Response $response
+     * @param mixed    $data
+     * @param int      $status
      *
      * @return Response
      */

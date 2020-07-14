@@ -3,7 +3,7 @@
 /**
  * Ares (https://ares.to)
  *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE.md (GNU License)
+ * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
  */
 
 namespace App\Repository\User;
@@ -34,13 +34,13 @@ class UserRepository extends BaseRepository
     /**
      * UserRepository constructor.
      *
-     * @param   EntityManager  $entityManager
+     * @param EntityManager $entityManager
      */
     public function __construct(
         EntityManager $entityManager
     ) {
         $this->entityManager = $entityManager;
-        $this->repository    = $entityManager->getRepository(User::class);
+        $this->repository = $entityManager->getRepository(User::class);
     }
 
     /**
@@ -52,7 +52,7 @@ class UserRepository extends BaseRepository
     }
 
     /**
-     * @param   array  $data
+     * @param array $data
      *
      * @return User
      * @throws ORMException
@@ -63,20 +63,16 @@ class UserRepository extends BaseRepository
         $user
             ->setUsername($data['username'])
             ->setMail($data['mail'])
-            ->setPassword(password_hash(
-                    $data['password'],
-                    PASSWORD_ARGON2ID)
-            )
-            /* @TODO Make a secure ticket... */
-            ->setTicket('21312312312')
-            ->setLook('hd-180-1.ch-255-66.lg-280-110.sh-305-62.ha-1012-110.hr-828-61')
-            ->setMotto('ares ist cool')
-            ->setCredits(1337)
-            ->setPoints(1338)
-            ->setPixels(1339)
-            ->setIPRegister($_SERVER['REMOTE_ADDR'])
-            ->setCurrentIP($_SERVER['REMOTE_ADDR'])
-            ->setAccountCreated(time());
+            ->setPassword(password_hash($data['password'], PASSWORD_ARGON2ID))
+            ->setTicket($data['auth_ticket'])
+            ->setLook($data['look'])
+            ->setMotto($data['motto'])
+            ->setCredits($data['credits'])
+            ->setPoints($data['points'])
+            ->setPixels($data['pixels'])
+            ->setIPRegister($data['ip_register'])
+            ->setCurrentIP($data['ip_current'])
+            ->setAccountCreated($data['account_created']);
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();
@@ -107,7 +103,7 @@ class UserRepository extends BaseRepository
     }
 
     /**
-     * @param   array  $data
+     * @param array $data
      *
      * @return mixed|void
      */
@@ -116,7 +112,7 @@ class UserRepository extends BaseRepository
     }
 
     /**
-     * @param   int  $id
+     * @param int $id
      *
      * @return object
      */
@@ -125,7 +121,7 @@ class UserRepository extends BaseRepository
     }
 
     /**
-     * @param   int  $id
+     * @param int $id
      */
     public function delete(int $id)
     {

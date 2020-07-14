@@ -3,7 +3,7 @@
 /**
  * Ares (https://ares.to)
  *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE.md (GNU License)
+ * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
  */
 
 namespace App\Middleware;
@@ -48,8 +48,6 @@ class ClaimMiddleware implements MiddlewareInterface
     }
 
     /**
-     * Invoke middleware.
-     *
      * @param   ServerRequestInterface   $request  The request
      * @param   RequestHandlerInterface  $handler  The handler
      *

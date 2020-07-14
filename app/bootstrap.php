@@ -3,15 +3,15 @@
 /**
  * Ares (https://ares.to)
  *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE.md (GNU License)
+ * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
  */
 
-use Psr\Container\ContainerInterface;
 use Slim\App;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$dotEnv = new Dotenv\Dotenv(__DIR__ . '/../');
+// Loads our environment config
+$dotEnv = Dotenv\Dotenv::createImmutable(__DIR__, '../.env');
 if (file_exists(__DIR__ . '/../' . '.env')) {
     $dotEnv->load();
 }
@@ -19,7 +19,7 @@ if (file_exists(__DIR__ . '/../' . '.env')) {
 // Instantiate LeagueContainer
 $container = new \League\Container\Container();
 
-// Enable Autowiring for our dependencies..
+// Enable Auto-wiring for our dependencies..
 $container->delegate(
     new \League\Container\ReflectionContainer()
 );
@@ -30,8 +30,8 @@ require_once __DIR__ . '/providers.php';
 // Create App instance
 $app = $container->get(App::class);;
 
-$middlewares = require_once __DIR__ . '/middlewares.php';
-$middlewares($app);
+$middleware = require_once __DIR__ . '/middleware.php';
+$middleware($app);
 
 // Routing
 $routes = require __DIR__ . '/routes.php';

@@ -3,7 +3,7 @@
 /**
  * Ares (https://ares.to)
  *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE.md (GNU License)
+ * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
  */
 
 namespace App\Controller\User;
@@ -66,7 +66,7 @@ class UserController extends BaseController
      */
     public function user(Request $request, Response $response): Response
     {
-        $authUser = $this->getAuthUser($request);
+        $authUser = $this->authUser($request);
         $user     = $this->userRepository->find($authUser);
 
         return $this->jsonResponse(

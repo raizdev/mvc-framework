@@ -3,13 +3,13 @@
 /**
  * Ares (https://ares.to)
  *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE.md (GNU License)
+ * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
  */
 
 use Slim\App;
 
 return function (App $app) {
-    // Enables Lazy CORS
+    // Enables Lazy CORS - Preflight Request
     $app->options('/{routes:.+}', function ($request, $response, $arguments) {
         return $response;
     });
@@ -24,6 +24,7 @@ return function (App $app) {
 
     // Catches every route that is not found
     $app->map(['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], '/{routes:.+}', function ($request, $response) {
-        throw new \Slim\Exception\HttpNotFoundException($request);
+        //throw new \Slim\Exception\HttpNotFoundException($request);
+        return $response;
     });
 };

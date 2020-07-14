@@ -3,7 +3,7 @@
 /**
  * Ares (https://ares.to)
  *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE.md (GNU License)
+ * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
  */
 
 namespace App\Entity;
@@ -120,7 +120,7 @@ class User
     }
 
     /**
-     * Gets Maail of User
+     * Gets Mail of User
      *
      * @return string
      */

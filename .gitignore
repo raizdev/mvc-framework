@@ -7,9 +7,9 @@
 /nbproject/
 /build/
 /cache/
-/.env
+/app/Config/environment.php
 .DS_Store
-.env
+app/Config/environment.php
 /.scannerwork/
 /.phpunit.result.cache
 /app/Logs
@@ -17,3 +17,4 @@
 /app/Keys/private.pem
 /app/Keys/public.pem
 /app/Logs/
+/.env
