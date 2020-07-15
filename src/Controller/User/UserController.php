@@ -21,14 +21,14 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class UserController extends BaseController
 {
     /**
-     * @var UserRepository
+     * @var UserRepository Gets the current UserRepository
      */
     private UserRepository $userRepository;
 
     /**
      * UserController constructor.
      *
-     * @param   UserRepository  $userRepository
+     * @param UserRepository $userRepository
      */
     public function __construct(
         UserRepository $userRepository
@@ -37,14 +37,16 @@ class UserController extends BaseController
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * Retrieves all User from the Database and copies an Array of Values from every User and returns it
+     *
+     * @param Request  $request
+     * @param Response $response
      *
      * @return Response
      */
     public function all(Request $request, Response $response): Response
     {
-        $users      = $this->userRepository->all();
+        $users = $this->userRepository->all();
         $usersArray = [];
 
         foreach ($users as $user) {
@@ -59,15 +61,25 @@ class UserController extends BaseController
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * Retrieves the logged in User via JWT - Token
+     *
+     * @param Request  $request
+     * @param Response $response
      *
      * @return Response
      */
     public function user(Request $request, Response $response): Response
     {
         $authUser = $this->authUser($request);
-        $user     = $this->userRepository->find($authUser);
+        $user = $this->userRepository->find($authUser);
+
+        if (!$user) {
+            return $this->jsonResponse(
+                $response,
+                'Couldnt find User!',
+                200
+            );
+        }
 
         return $this->jsonResponse(
             $response,

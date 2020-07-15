@@ -9,7 +9,6 @@
 namespace App\Controller\Status;
 
 use App\Controller\BaseController;
-use PHLAK\Config\Config;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
