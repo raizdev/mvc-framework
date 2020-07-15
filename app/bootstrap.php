@@ -37,4 +37,8 @@ $middleware($app);
 $routes = require __DIR__ . '/routes.php';
 $routes($app);
 
+// Sets our Route-Cache
+$routeCollector = $app->getRouteCollector();
+$routeCollector->setCacheFile('../tmp/Cache/routing/route.cache.php');
+
 return $app;

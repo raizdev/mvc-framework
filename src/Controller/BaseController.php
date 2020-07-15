@@ -46,7 +46,7 @@ abstract class BaseController
     /**
      * Determines the RealIP of the User and returns it
      *
-     * @return int|null
+     * @return int|null Returns the current User IP when given
      */
     protected function determineIp(): ?int
     {
@@ -61,11 +61,11 @@ abstract class BaseController
     }
 
     /**
-     * @param Response $response
-     * @param mixed    $data
-     * @param int      $status
+     * @param Response $response The current Response
+     * @param mixed    $data The Data given into the Function
+     * @param int      $status The StatusCode given to the Response
      *
-     * @return Response
+     * @return Response Returns a Response with the given Data
      */
     protected function jsonResponse(Response $response, $data = null, int $status = 200): Response
     {

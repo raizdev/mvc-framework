@@ -33,5 +33,9 @@ return [
     // Adds our AppProvider and creates App
     $container->addServiceProvider(
         new \App\Provider\AppServiceProvider()
+    ),
+    // Adds our CacheProvider to Cache Responses
+    $container->addServiceProvider(
+        new \App\Provider\CacheServiceProvider()
     )
 ];

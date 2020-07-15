@@ -68,7 +68,7 @@ class AuthController extends BaseController
      * @param   Request   $request
      * @param   Response  $response
      *
-     * @return Response
+     * @return Response Returns a Response with the given Data
      */
     public function login(Request $request, Response $response): Response
     {
@@ -109,7 +109,7 @@ class AuthController extends BaseController
      * @param   Request   $request
      * @param   Response  $response
      *
-     * @return Response
+     * @return Response Returns a Response with the given Data
      * @throws \Exception
      */
     public function register(Request $request, Response $response): Response
@@ -170,7 +170,7 @@ class AuthController extends BaseController
      * @param   Request   $request
      * @param   Response  $response
      *
-     * @return Response
+     * @return Response Returns a Response with the given Data
      */
     public function logout(Request $request, Response $response): Response
     {

@@ -39,10 +39,10 @@ class UserController extends BaseController
     /**
      * Retrieves all User from the Database and copies an Array of Values from every User and returns it
      *
-     * @param Request  $request
-     * @param Response $response
+     * @param Request  $request  The current incoming Request
+     * @param Response $response The current Response
      *
-     * @return Response
+     * @return Response Returns a Response with the given Data
      */
     public function all(Request $request, Response $response): Response
     {
@@ -63,10 +63,10 @@ class UserController extends BaseController
     /**
      * Retrieves the logged in User via JWT - Token
      *
-     * @param Request  $request
-     * @param Response $response
+     * @param Request  $request The current incoming Request
+     * @param Response $response The current Response
      *
-     * @return Response
+     * @return Response Returns a Response with the given Data
      */
     public function user(Request $request, Response $response): Response
     {

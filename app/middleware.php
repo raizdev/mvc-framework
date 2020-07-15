@@ -25,6 +25,7 @@ return function (App $app) {
         "credentials" => true,
         "cache" => 86400
     ]));
+    $app->add(\Slim\HttpCache\Cache::class);
     $app->add(\App\Middleware\BodyParserMiddleware::class);
     $app->add(\App\Middleware\ClaimMiddleware::class);
     $app->addRoutingMiddleware();

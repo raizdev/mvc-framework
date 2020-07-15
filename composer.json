@@ -23,9 +23,11 @@
         "nesbot/carbon": "^2.0@dev",
         "phlak/config": "dev-master",
         "respect/validation": "dev-master",
+        "slim/http-cache": "1.x-dev",
         "slim/psr7": "^0.5.0",
         "slim/slim": "^4.5.0",
         "symfony/polyfill-uuid": "^1.17@dev",
+        "symfony/var-dumper": "^5.2@dev",
         "tuupola/cors-middleware": "dev-master",
         "vlucas/phpdotenv": "^5.0@dev"
     },
