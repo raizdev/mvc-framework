@@ -46,9 +46,9 @@ abstract class BaseController
     /**
      * Determines the RealIP of the User and returns it
      *
-     * @return int|null Returns the current User IP when given
+     * @return string|null Returns the current User IP when given
      */
-    protected function determineIp(): ?int
+    protected function determineIp(): ?string
     {
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
             $ip = $_SERVER['HTTP_CLIENT_IP'];

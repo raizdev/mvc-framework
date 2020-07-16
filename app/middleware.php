@@ -20,8 +20,8 @@ return function (App $app) {
     $app->add(new Tuupola\Middleware\CorsMiddleware([
         "origin" => [$_ENV['WEB_FRONTEND_LINK']],
         "methods" => ["GET", "POST", "PUT", "PATCH", "DELETE"],
-        "headers.allow" => ["Authorization", "If-Match", "If-Unmodified-Since"],
-        "headers.expose" => ["Etag"],
+        "headers.allow" => ["Content-Type", "Authorization", "If-Match", "If-Unmodified-Since", "Origin"],
+        "headers.expose" => ["Content-Type", "Etag", "Authorization", "Origin"],
         "credentials" => true,
         "cache" => 86400
     ]));

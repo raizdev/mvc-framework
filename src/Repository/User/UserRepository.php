@@ -80,6 +80,11 @@ class UserRepository extends BaseRepository
         return $user;
     }
 
+    public function createTicket(array $data): ?string
+    {
+
+    }
+
     /**
      * @param $data
      *

@@ -24,7 +24,6 @@ return function (App $app) {
 
     // Catches every route that is not found
     $app->map(['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], '/{routes:.+}', function ($request, $response) {
-        //throw new \Slim\Exception\HttpNotFoundException($request);
-        return $response;
+        throw new \Slim\Exception\HttpNotFoundException($request);
     });
 };

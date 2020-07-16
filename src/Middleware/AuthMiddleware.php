@@ -61,6 +61,7 @@ class AuthMiddleware implements MiddlewareInterface
         if (!$token || !$this->tokenService->validateToken($token)) {
             return $this->responseFactory->createResponse()
                 ->withHeader('Content-Type', 'application/json')
+                ->withHeader('Allow-Origin', '*')
                 ->withStatus(401, 'Unauthorized');
         }
 

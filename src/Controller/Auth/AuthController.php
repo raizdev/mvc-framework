@@ -140,14 +140,15 @@ class AuthController extends BaseController
             'username'          => $parsedData['username'],
             'password'          => $parsedData['password'],
             'mail'              => $parsedData['mail'],
-            'credits'           => $this->config->get('hotel_settings.credits'),
-            'points'            => $this->config->get('hotel_settings.credits'),
-            'pixels'            => $this->config->get('hotel_settings_pixels'),
-            'motto'             => $this->config->get('hotel_settings_motto'),
+            'look'              => $this->config->get('hotel_settings.start_look'),
+            'credits'           => $this->config->get('hotel_settings.start_credits'),
+            'points'            => $this->config->get('hotel_settings.start_points'),
+            'pixels'            => $this->config->get('hotel_settings.start_pixels'),
+            'motto'             => $this->config->get('hotel_settings.start_motto'),
             'ip_register'       => $this->determineIp(),
             'ip_current'        => $this->determineIp(),
             'account_created'   => time(),
-            'auth_ticket'       => null
+            'auth_ticket'       => 'xddd'
         ];
 
         $user = $this->userRepository->create($data);
