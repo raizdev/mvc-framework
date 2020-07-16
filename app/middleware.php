@@ -23,7 +23,7 @@ return function (App $app) {
         "headers.allow" => ["Content-Type", "Authorization", "If-Match", "If-Unmodified-Since", "Origin"],
         "headers.expose" => ["Content-Type", "Etag", "Origin"],
         "credentials" => true,
-        "cache" => 86400
+        "cache" => $_ENV['TOKEN_DURATION']
     ]));
     $app->add(\Slim\HttpCache\Cache::class);
     $app->add(\App\Middleware\BodyParserMiddleware::class);
