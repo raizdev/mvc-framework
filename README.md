@@ -1,6 +1,6 @@
 # ![Ares A](https://i.imgur.com/1zelxEp.png)
 
-[![Discord](https://img.shields.io/discord/683417203546128387?color=%237289DA&label=Discord)](https://discord.gg/ZGWc4g) [![CodeFactor](https://www.codefactor.io/repository/github/arescms/ares/badge)](https://www.codefactor.io/repository/github/arescms/ares)
+[![Discord](https://img.shields.io/discord/683417203546128387?color=%237289DA&label=Discord)](https://discord.gg/pN7ZMFw) [![CodeFactor](https://www.codefactor.io/repository/github/arescms/ares/badge)](https://www.codefactor.io/repository/github/arescms/ares)
 
 A blazing fast SPA for your Retro using Angular9 & Slim.
 
@@ -76,7 +76,7 @@ Noteworthy Dependencies:
 
 ## 5. Support
 
-If you're searching from Help instead of opening an Issue here, please try on our [Discord](https://discord.gg/ZGWc4g)!
+If you're searching from Help instead of opening an Issue here, please try on our [Discord](https://discord.gg/pN7ZMFw)!
 
 ---
 
