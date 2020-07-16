@@ -22,7 +22,7 @@ A blazing fast SPA for your Retro using Angular9 & Slim.
 
 We looked, and we didn't find any good Habbo Retro CMS out there.
 
-All of them were either crappy coded, outdated or just didn't have the Features they Promised.
+All of them were either **crappy** coded, **outdated** or just didn't have the Features they **Promised**.
 
 We want to create something useful, fun to use and at the same time extremely fast.
 
