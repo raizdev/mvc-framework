@@ -21,7 +21,7 @@ return function (App $app) {
         "origin" => [$_ENV['WEB_FRONTEND_LINK']],
         "methods" => ["GET", "POST", "PUT", "PATCH", "DELETE"],
         "headers.allow" => ["Content-Type", "Authorization", "If-Match", "If-Unmodified-Since", "Origin"],
-        "headers.expose" => ["Content-Type", "Etag", "Authorization", "Origin"],
+        "headers.expose" => ["Content-Type", "Etag", "Origin"],
         "credentials" => true,
         "cache" => 86400
     ]));

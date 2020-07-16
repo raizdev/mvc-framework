@@ -27,7 +27,7 @@ class CacheServiceProvider extends AbstractServiceProvider
         $container = $this->getContainer();
 
         $container->add(Cache::class, function () {
-            return new Cache('public', 43200, true);
+            return new Cache('private', $_ENV['TOKEN_DURATION']);
         });
     }
 }
