@@ -8,13 +8,13 @@
 
 namespace App\Middleware;
 
-use App\Service\TokenService;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use InvalidArgumentException;
+use ReallySimpleJWT\Token;
 
 /**
  * Class ClaimMiddleware
@@ -29,27 +29,19 @@ class ClaimMiddleware implements MiddlewareInterface
     private ResponseFactoryInterface $responseFactory;
 
     /**
-     * @var TokenService
-     */
-    private TokenService $tokenService;
-
-    /**
      * ClaimMiddleware constructor.
      *
-     * @param TokenService             $tokenService
      * @param ResponseFactoryInterface $responseFactory
      */
     public function __construct(
-        TokenService $tokenService,
         ResponseFactoryInterface $responseFactory
     ) {
-        $this->tokenService    = $tokenService;
         $this->responseFactory = $responseFactory;
     }
 
     /**
-     * @param   ServerRequestInterface   $request  The request
-     * @param   RequestHandlerInterface  $handler  The handler
+     * @param ServerRequestInterface  $request The request
+     * @param RequestHandlerInterface $handler The handler
      *
      * @return ResponseInterface The response
      */
@@ -60,15 +52,16 @@ class ClaimMiddleware implements MiddlewareInterface
         $authorization = explode(' ', (string)$request->getHeaderLine('Authorization'));
         $type          = $authorization[0] ?? '';
         $credentials   = $authorization[1] ?? '';
+        $secret        = $_ENV['TOKEN_SECRET'];
 
         try {
-            if ($type === 'Bearer' && $this->tokenService->validateToken($credentials)) {
+            if ($type === 'Bearer' && Token::validate($credentials, $secret)) {
                 // Append valid token
-                $parsedToken = $this->tokenService->createParsedToken($credentials);
+                $parsedToken = Token::parser($credentials, $secret);
                 $request     = $request->withAttribute('token', $parsedToken);
 
                 // Append the user id as request attribute
-                $request = $request->withAttribute('ares_uid', $parsedToken->getClaim('uid'));
+                $request = $request->withAttribute('ares_uid', Token::getPayload($credentials, $secret)['uid']);
             }
         } catch (InvalidArgumentException $e) {
             return $this->responseFactory->createResponse()

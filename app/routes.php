@@ -21,6 +21,7 @@ return function (App $app) {
 
     $app->post('/login', 'App\Controller\Auth\AuthController:login');
     $app->post('/register', 'App\Controller\Auth\AuthController:register');
+    $app->post('/logout', 'App\Controller\Auth\AuthController:logout')->add(\App\Middleware\AuthMiddleware::class);
 
     // Catches every route that is not found
     $app->map(['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], '/{routes:.+}', function ($request, $response) {

@@ -52,19 +52,6 @@ class ConfigServiceProvider extends AbstractServiceProvider
                     ]
                 ],
 
-                'jwt' => [
-                    // The issuer name
-                    'issuer' => $_ENV['TOKEN_ISSUER'],
-
-                    // Max lifetime in seconds
-                    'lifetime' => $_ENV['TOKEN_DURATION'],
-
-                    // The private key
-                    'private_key' => $_ENV['TOKEN_PRIVATE'],
-
-                    'public_key' => $_ENV['TOKEN_PUBLIC']
-                ],
-
                 'logger' => [
                     'name' => $_ENV['WEB_NAME'] . '-event-log',
                     'enabled_log_levels' => [
