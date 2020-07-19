@@ -15,7 +15,6 @@ use App\Service\TokenService;
 use App\Service\ValidationService;
 use Exception;
 use PHLAK\Config\Config;
-use ReallySimpleJWT\Exception\ValidateException;
 use Respect\Validation\Validator as v;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -72,7 +71,7 @@ class AuthController extends BaseController
      * @param Response $response
      *
      * @return Response Returns a Response with the given Data
-     * @throws ValidateException
+     * @throws Exception
      */
     public function login(Request $request, Response $response): Response
     {

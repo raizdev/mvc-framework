@@ -3,13 +3,12 @@
 /**
  * Ares (https://ares.to)
  *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ * @license https://gitlab.com/arescms/ares-backend/LICENSE.md (GNU License)
  */
 
 namespace App\Service;
 
-use ReallySimpleJWT\Exception\ValidateException;
-use ReallySimpleJWT\Token;
+use Firebase\JWT\JWT;
 
 /**
  * Class TokenService
@@ -19,22 +18,32 @@ use ReallySimpleJWT\Token;
 class TokenService
 {
     /**
-     * Creates the JWT - Token and returns it
-     *
      * @param $id
      *
      * @return string
-     * @throws ValidateException
+     * @throws \Exception
      */
     public function execute($id): string
     {
-        $payload = [
-            'iat' => time(),
-            'uid' => $id,
-            'exp' => time() + $_ENV['TOKEN_DURATION'],
-            'iss' => $_ENV['TOKEN_ISSUER']
+        $durationInSec = $_ENV['TOKEN_DURATION'];
+        $tokenId = base64_encode(random_bytes(32));
+        $issuedAt = time();
+        $notBefore = $issuedAt + 2;
+        $expire = $notBefore + $durationInSec;
+
+        $data = [
+            'iat' => $issuedAt,
+            'jti' => $tokenId,
+            'iss' => $_ENV['TOKEN_ISSUER'],
+            'nbf' => $notBefore,
+            'exp' => $expire,
+            'ares_uid' => $id,
         ];
 
-        return Token::customPayload($payload, $_ENV['TOKEN_SECRET']);
+        return JWT::encode(
+            $data,
+            $_ENV['TOKEN_SECRET'],
+            $_ENV['TOKEN_ALGORITHM']
+        );
     }
 }
