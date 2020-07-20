@@ -27,7 +27,7 @@ abstract class BaseController
      */
     protected function authUser(Request $request): ?int
     {
-        $user = $request->getAttribute('ares_uid');
+        $user = $request->getAttribute('token')['ares_uid'];
         if (isset($user)) {
             return json_decode(json_encode($user), true);
         }
