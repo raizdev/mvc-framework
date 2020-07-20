@@ -24,6 +24,7 @@
         "slim/http-cache": "1.x-dev",
         "slim/psr7": "^0.5.0",
         "slim/slim": "^4.5.0",
+        "statical/statical": "dev-master",
         "tuupola/cors-middleware": "dev-master",
         "tuupola/slim-jwt-auth": "3.x-dev",
         "vlucas/phpdotenv": "^5.0@dev"
