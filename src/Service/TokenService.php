@@ -1,22 +1,14 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * Ares (https://ares.to)
  *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ * @license https://gitlab.com/arescms/ares-backend/LICENSE.md (GNU License)
  */
 
 namespace App\Service;
 
-use Carbon\Carbon;
-use InvalidArgumentException;
-use Lcobucci\JWT\Builder;
-use Lcobucci\JWT\Parser;
-use Lcobucci\JWT\Signer\Key;
-use Lcobucci\JWT\Signer\Rsa\Sha256;
-use Lcobucci\JWT\Token;
-use Lcobucci\JWT\ValidationData;
-use UnexpectedValueException;
+use Firebase\JWT\JWT;
 
 /**
  * Class TokenService
@@ -26,125 +18,32 @@ use UnexpectedValueException;
 class TokenService
 {
     /**
-     * @var string The issuer name
-     */
-    private string $issuer;
-
-    /**
-     * @var int Max lifetime in seconds
-     */
-    private int $lifetime;
-
-    /**
-     * @var string The private key
-     */
-    private string $privateKey;
-
-    /**
-     * @var string The public key
-     */
-    private string $publicKey;
-
-    /**
-     * @var Sha256 The signer
-     */
-    private Sha256 $signer;
-
-    /**
-     * TokenService Constructor.
+     * @param $id
      *
-     * @param   string  $issuer      The issuer name
-     * @param   int     $lifetime    The max lifetime
-     * @param   string  $privateKey  The private key as string
-     * @param   string  $publicKey   The public key as string
+     * @return string
+     * @throws \Exception
      */
-    public function __construct(
-        string $issuer,
-        int $lifetime,
-        string $privateKey,
-        string $publicKey
-    ) {
-        $this->issuer     = $issuer;
-        $this->lifetime   = $lifetime;
-        $this->privateKey = $privateKey;
-        $this->publicKey  = $publicKey;
-        $this->signer     = new Sha256();
-    }
-
-    /**
-     * Get JWT max lifetime.
-     *
-     * @return int The lifetime in seconds
-     */
-    public function getLifetime(): int
+    public function execute($id): string
     {
-        return $this->lifetime;
-    }
+        $durationInSec = $_ENV['TOKEN_DURATION'];
+        $tokenId = base64_encode(random_bytes(32));
+        $issuedAt = time();
+        $notBefore = $issuedAt + 2;
+        $expire = $notBefore + $durationInSec;
 
-    /**
-     * Create JSON web token.
-     *
-     * @param   array  $claims  The claims
-     *
-     * @return string The JWT
-     * @throws UnexpectedValueException
-     *
-     */
-    public function createJwt(array $claims): string
-    {
-        $issuedAt = Carbon::now()->getTimestamp();
+        $data = [
+            'iat' => $issuedAt,
+            'jti' => $tokenId,
+            'iss' => $_ENV['TOKEN_ISSUER'],
+            'nbf' => $notBefore,
+            'exp' => $expire,
+            'ares_uid' => $id,
+        ];
 
-        $builder = (new Builder())->issuedBy($this->issuer)
-            ->identifiedBy(uuid_create(), true)
-            ->issuedAt($issuedAt)
-            ->canOnlyBeUsedAfter($issuedAt)
-            ->expiresAt($issuedAt + $this->lifetime);
-
-        foreach ($claims as $name => $value) {
-            $builder = $builder->withClaim($name, $value);
-        }
-
-        return $builder->getToken($this->signer,
-            new Key('file://' . __DIR__ . '/../../' . $this->privateKey)
+        return JWT::encode(
+            $data,
+            $_ENV['TOKEN_SECRET'],
+            $_ENV['TOKEN_ALGORITHM']
         );
-    }
-
-    /**
-     * Parse token.
-     *
-     * @param   string  $token  The JWT
-     *
-     * @return Token The parsed token
-     * @throws InvalidArgumentException
-     *
-     */
-    public function createParsedToken(string $token): Token
-    {
-        return (new Parser())->parse($token);
-    }
-
-    /**
-     * Validate the access token.
-     *
-     * @param   string  $accessToken  The JWT
-     *
-     * @return bool The status
-     */
-    public function validateToken(string $accessToken): bool
-    {
-        $token = $this->createParsedToken($accessToken);
-
-        if (!$token->verify($this->signer, 'file://' . __DIR__ . '/../../' . $this->publicKey)) {
-            // Token signature is not valid
-            return false;
-        }
-
-        // Check whether the token has not expired
-        $data = new ValidationData();
-        $data->setCurrentTime(Carbon::now()->getTimestamp());
-        $data->setIssuer($token->getClaim('iss'));
-        $data->setId($token->getClaim('jti'));
-
-        return $token->validate($data);
     }
 }

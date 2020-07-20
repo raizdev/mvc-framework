@@ -26,10 +26,6 @@ return [
     $container->addServiceProvider(
         new \App\Provider\LoggingServiceProvider()
     ),
-    // Adds our TokenProvider
-    $container->addServiceProvider(
-        new \App\Provider\TokenServiceProvider()
-    ),
     // Adds our RouteProvider
     $container->addServiceProvider(
         new \App\Provider\RouteServiceProvider()
