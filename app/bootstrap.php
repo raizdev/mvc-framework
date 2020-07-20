@@ -37,6 +37,15 @@ $middleware($app);
 $routes = require __DIR__ . '/routes.php';
 $routes($app);
 
+// Sets our App Proxy
+$alias = 'App';
+$proxy = \App\Proxy\App::class;
+$manager = new Statical\Manager();
+$manager->addProxyInstance($alias, $proxy, $app);
+
+// Helper functions
+require_once __DIR__ . '/helpers.php';
+
 // Sets our Route-Cache
 $routeCollector = $app->getRouteCollector();
 $routeCollector->setCacheFile('../tmp/Cache/routing/route.cache.php');
