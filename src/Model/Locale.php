@@ -17,35 +17,36 @@ class Locale
     /**
      * @var string
      */
-    private $locale = '';
+    private string $locale = '';
 
     /**
      * @var string
      */
-    private $fallbackLocale= '';
+    private string $fallbackLocale = '';
 
     /**
      * @var array
      */
-    private $messages = [];
+    private array $messages = [];
 
     /**
      * @var array
      */
-    private $fallbackMessages = [];
+    private array $fallbackMessages = [];
 
     /**
      * @var LocaleHelper
      */
-    private $localeHelper;
+    private LocaleHelper $localeHelper;
 
     /**
      * Locale constructor.
      *
      * @param LocaleHelper $localeHelper
      */
-    public function __construct(LocaleHelper $localeHelper)
-    {
+    public function __construct(
+        LocaleHelper $localeHelper
+    ) {
         $this->localeHelper = $localeHelper;
     }
 

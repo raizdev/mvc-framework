@@ -17,15 +17,16 @@ class LocaleService
     /**
      * @var Locale
      */
-    private $locale;
+    private Locale $locale;
 
     /**
      * LocaleService constructor.
      *
      * @param Locale $locale
      */
-    public function __construct(Locale $locale)
-    {
+    public function __construct(
+        Locale $locale
+    ) {
         $this->locale = $locale;
     }
 
