@@ -10,6 +10,10 @@
  * Registers our ServiceProviders
  */
 return [
+    // Adds our LocaleProvider to add locales
+    $container->addServiceProvider(
+        new \App\Provider\LocaleServiceProvider()
+    ),
     // Adds our ConfigProvider
     $container->addServiceProvider(
         new \App\Provider\ConfigServiceProvider()
