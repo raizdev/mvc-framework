@@ -37,14 +37,6 @@ abstract class BaseController
     }
 
     /**
-     * @param Request $request
-     */
-    protected function determineLang(Request $request)
-    {
-
-    }
-
-    /**
      * Determines the RealIP of the User and returns it
      *
      * @return string|null Returns the current User IP when given
