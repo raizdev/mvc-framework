@@ -18,12 +18,14 @@ return function (App $app) {
     $app->get('/', 'App\Controller\Status\StatusController:getStatus');
 
     $app->group('/api/{locale}', function (RouteCollectorProxy $group) {
-        $group->get('/users', 'App\Controller\User\UserController:all');
-        $group->get('/user', 'App\Controller\User\UserController:user')->add(\App\Middleware\AuthMiddleware::class);
+        $group->group('', function (RouteCollectorProxy $group) {
+            $group->get('/users', 'App\Controller\User\UserController:all');
+            $group->get('/user', 'App\Controller\User\UserController:user');
+            $group->post('/logout', 'App\Controller\Auth\AuthController:logout');
+        })->add(\App\Middleware\AuthMiddleware::class);
 
         $group->post('/login', 'App\Controller\Auth\AuthController:login');
         $group->post('/register', 'App\Controller\Auth\AuthController:register');
-        $group->post('/logout', 'App\Controller\Auth\AuthController:logout');
     })->add(\App\Middleware\LocaleMiddleware::class);
 
 
