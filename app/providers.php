@@ -34,6 +34,10 @@ return [
     $container->addServiceProvider(
         new \App\Provider\AppServiceProvider()
     ),
+    // Adds our TokenProvider
+    $container->addServiceProvider(
+        new \App\Provider\TokenServiceProvider()
+    ),
     // Adds our CacheProvider to Cache Responses
     $container->addServiceProvider(
         new \App\Provider\CacheServiceProvider()
