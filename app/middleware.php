@@ -25,12 +25,9 @@ return function (App $app) {
         "credentials" => true,
         "cache" => $_ENV['TOKEN_DURATION']
     ]));
-    $app->add(new Tuupola\Middleware\JwtAuthentication([
-        "ignore" => ["/login", "/register"],
-        "secret" => $_ENV['TOKEN_SECRET']
-    ]));
-    $app->add(\Slim\HttpCache\Cache::class);
     $app->add(\App\Middleware\BodyParserMiddleware::class);
+    $app->add(\App\Middleware\ClaimMiddleware::class);
+    $app->add(\Slim\HttpCache\Cache::class);
     $app->addRoutingMiddleware();
 
     $app->addErrorMiddleware(true, true, true, $logger);

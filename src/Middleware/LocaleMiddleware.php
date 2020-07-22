@@ -15,6 +15,8 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * Class LocaleMiddleware
+ *
+ * @package App\Middleware
  */
 class LocaleMiddleware implements MiddlewareInterface
 {
@@ -27,7 +29,7 @@ class LocaleMiddleware implements MiddlewareInterface
     /**
      * @var Locale
      */
-    private $locale;
+    private Locale $locale;
 
     /**
      * LocaleMiddleware constructor.
