@@ -6,9 +6,9 @@
  * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
  */
 
-namespace Ares\Framework\Repository\User;
+namespace Ares\User\Repository;
 
-use Ares\Framework\Entity\User;
+use Ares\User\Entity\User;
 use Ares\Framework\Repository\BaseRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;

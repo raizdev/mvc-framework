@@ -35,7 +35,7 @@ class LocaleHelper
     /**
      * @return string
      */
-    protected function getPath(): string
+    private function getPath(): string
     {
         return app_dir() . '/Lang/';
     }
@@ -44,7 +44,7 @@ class LocaleHelper
      * @param string $locale
      * @return string
      */
-    protected function getFileName(string $locale): string
+    private function getFileName(string $locale): string
     {
         return $locale . '.json';
     }

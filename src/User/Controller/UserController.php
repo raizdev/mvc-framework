@@ -6,10 +6,10 @@
  * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
  */
 
-namespace Ares\Framework\Controller\User;
+namespace Ares\User\Controller;
 
 use Ares\Framework\Controller\BaseController;
-use Ares\Framework\Repository\User\UserRepository;
+use Ares\User\Repository\UserRepository;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 

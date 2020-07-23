@@ -6,7 +6,7 @@
  * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
  */
 
-namespace Ares\Framework\Exception;
+namespace Ares\User\Exception;
 
 /**
  * Class UserNotFoundException
