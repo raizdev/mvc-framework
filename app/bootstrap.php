@@ -39,7 +39,7 @@ $routes($app);
 
 // Sets our App Proxy
 $alias = 'App';
-$proxy = \App\Proxy\App::class;
+$proxy = \Ares\Framework\Proxy\App::class;
 $manager = new Statical\Manager();
 $manager->addProxyInstance($alias, $proxy, $app);
 
