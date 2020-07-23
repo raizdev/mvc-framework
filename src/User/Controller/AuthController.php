@@ -6,11 +6,11 @@
  * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
  */
 
-namespace Ares\Framework\Controller\Auth;
+namespace Ares\User\Controller;
 
 use Ares\Framework\Controller\BaseController;
-use Ares\Framework\Entity\User;
-use Ares\Framework\Repository\User\UserRepository;
+use Ares\User\Entity\User;
+use Ares\User\Repository\UserRepository;
 use Ares\Framework\Service\TokenService;
 use Ares\Framework\Service\ValidationService;
 use Exception;

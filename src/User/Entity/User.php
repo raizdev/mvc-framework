@@ -6,7 +6,7 @@
  * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
  */
 
-namespace Ares\Framework\Entity;
+namespace Ares\User\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 

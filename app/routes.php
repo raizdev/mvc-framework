@@ -19,13 +19,13 @@ return function (App $app) {
 
     $app->group('/api/{locale}', function (RouteCollectorProxy $group) {
         $group->group('', function (RouteCollectorProxy $group) {
-            $group->get('/users', 'Ares\Framework\Controller\User\UserController:all');
-            $group->get('/user', 'Ares\Framework\Controller\User\UserController:user');
-            $group->post('/logout', 'Ares\Framework\Controller\Auth\AuthController:logout');
+            $group->get('/users', 'Ares\User\Controller\UserController:all');
+            $group->get('/user', 'Ares\User\Controller\UserController:user');
+            $group->post('/logout', 'Ares\User\Controller\AuthController:logout');
         })->add(\Ares\Framework\Middleware\AuthMiddleware::class);
 
-        $group->post('/login', 'Ares\Framework\Controller\Auth\AuthController:login');
-        $group->post('/register', 'Ares\Framework\Controller\Auth\AuthController:register');
+        $group->post('/login', 'Ares\User\Controller\AuthController:login');
+        $group->post('/register', 'Ares\User\Controller\AuthController:register');
     })->add(\Ares\Framework\Middleware\LocaleMiddleware::class);
 
     // Catches every route that is not found
