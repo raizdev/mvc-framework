@@ -15,19 +15,18 @@ return function (App $app) {
         return $response;
     });
 
-    $app->get('/', 'App\Controller\Status\StatusController:getStatus');
+    $app->get('/', 'Ares\Framework\Controller\Status\StatusController:getStatus');
 
     $app->group('/api/{locale}', function (RouteCollectorProxy $group) {
         $group->group('', function (RouteCollectorProxy $group) {
-            $group->get('/users', 'App\Controller\User\UserController:all');
-            $group->get('/user', 'App\Controller\User\UserController:user');
-            $group->post('/logout', 'App\Controller\Auth\AuthController:logout');
-        })->add(\App\Middleware\AuthMiddleware::class);
+            $group->get('/users', 'Ares\User\Controller\UserController:all');
+            $group->get('/user', 'Ares\User\Controller\UserController:user');
+            $group->post('/logout', 'Ares\User\Controller\AuthController:logout');
+        })->add(\Ares\Framework\Middleware\AuthMiddleware::class);
 
-        $group->post('/login', 'App\Controller\Auth\AuthController:login');
-        $group->post('/register', 'App\Controller\Auth\AuthController:register');
-    })->add(\App\Middleware\LocaleMiddleware::class);
-
+        $group->post('/login', 'Ares\User\Controller\AuthController:login');
+        $group->post('/register', 'Ares\User\Controller\AuthController:register');
+    })->add(\Ares\Framework\Middleware\LocaleMiddleware::class);
 
     // Catches every route that is not found
     $app->map(['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], '/{routes:.+}', function ($request, $response) {

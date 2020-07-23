@@ -24,6 +24,9 @@ $container->delegate(
     (new League\Container\ReflectionContainer)->cacheResolutions()
 );
 
+// Helper functions
+require_once __DIR__ . '/helpers.php';
+
 // Parse our providers
 require_once __DIR__ . '/providers.php';
 
@@ -39,12 +42,9 @@ $routes($app);
 
 // Sets our App Proxy
 $alias = 'App';
-$proxy = \App\Proxy\App::class;
+$proxy = \Ares\Framework\Proxy\App::class;
 $manager = new Statical\Manager();
 $manager->addProxyInstance($alias, $proxy, $app);
-
-// Helper functions
-require_once __DIR__ . '/helpers.php';
 
 // Sets our Route-Cache
 $routeCollector = $app->getRouteCollector();

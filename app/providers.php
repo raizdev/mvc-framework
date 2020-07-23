@@ -12,34 +12,34 @@
 return [
     // Adds our LocaleProvider to add locales
     $container->addServiceProvider(
-        new \App\Provider\LocaleServiceProvider()
+        new \Ares\Framework\Provider\LocaleServiceProvider()
     ),
     // Adds our ConfigProvider
     $container->addServiceProvider(
-        new \App\Provider\ConfigServiceProvider()
+        new \Ares\Framework\Provider\ConfigServiceProvider()
     ),
     // Adds our DatabaseProvider
     $container->addServiceProvider(
-        new \App\Provider\DatabaseServiceProvider()
+        new \Ares\Framework\Provider\DatabaseServiceProvider()
     ),
     // Adds our LoggingProvider
     $container->addServiceProvider(
-        new \App\Provider\LoggingServiceProvider()
+        new \Ares\Framework\Provider\LoggingServiceProvider()
     ),
     // Adds our RouteProvider
     $container->addServiceProvider(
-        new \App\Provider\RouteServiceProvider()
+        new \Ares\Framework\Provider\RouteServiceProvider()
     ),
     // Adds our AppProvider and creates App
     $container->addServiceProvider(
-        new \App\Provider\AppServiceProvider()
+        new \Ares\Framework\Provider\AppServiceProvider()
     ),
     // Adds our TokenProvider
     $container->addServiceProvider(
-        new \App\Provider\TokenServiceProvider()
+        new \Ares\Framework\Provider\TokenServiceProvider()
     ),
     // Adds our CacheProvider to Cache Responses
     $container->addServiceProvider(
-        new \App\Provider\CacheServiceProvider()
+        new \Ares\Framework\Provider\CacheServiceProvider()
     )
 ];
