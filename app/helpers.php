@@ -5,8 +5,8 @@
  */
 if (!function_exists('__')) {
     function __(string $message, array $placeholder = []) {
-        $container = \App\Proxy\App::getContainer();
-        $localeService = $container->get(\App\Service\LocaleService::class);
+        $container = \Ares\Framework\Proxy\App::getContainer();
+        $localeService = $container->get(\Ares\Framework\Service\LocaleService::class);
         return $localeService->translate($message, $placeholder);
     }
 }
