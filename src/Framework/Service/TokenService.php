@@ -105,7 +105,7 @@ class TokenService
         }
 
         return $builder->getToken($this->signer,
-            new Key('file://' . __DIR__ . '/../../../' . $this->privateKey)
+            new Key('file://' . base_dir() . $this->privateKey)
         );
     }
 
@@ -134,7 +134,7 @@ class TokenService
     {
         $token = $this->createParsedToken($accessToken);
 
-        if (!$token->verify($this->signer, 'file://' . __DIR__ . '/../../../' . $this->publicKey)) {
+        if (!$token->verify($this->signer, 'file://' . base_dir() . $this->publicKey)) {
             // Token signature is not valid
             return false;
         }
