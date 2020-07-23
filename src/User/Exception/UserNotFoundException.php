@@ -8,6 +8,8 @@
 
 namespace Ares\User\Exception;
 
+use Ares\Framework\Exception\BaseException;
+
 /**
  * Class UserNotFoundException
  *
