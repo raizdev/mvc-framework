@@ -37,7 +37,7 @@ class LocaleHelper
      */
     protected function getPath(): string
     {
-        return '../../app/Lang/';
+        return app_dir() . '/Lang/';
     }
 
     /**

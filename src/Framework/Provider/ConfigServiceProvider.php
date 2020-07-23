@@ -37,7 +37,7 @@ class ConfigServiceProvider extends AbstractServiceProvider
                 'doctrine' => [
                     'dev_mode' => $_ENV['DB_DEV_MODE'],
 
-                    'cache_dir' => '../../tmp/Cache/doctrine',
+                    'cache_dir' => base_dir() . 'tmp/Cache/doctrine',
 
                     'metadata_dirs' => ['src/Entity'],
 
@@ -51,7 +51,6 @@ class ConfigServiceProvider extends AbstractServiceProvider
                         'charset' => 'utf8mb4'
                     ]
                 ],
-
                 'jwt' => [
                     // The issuer name
                     'issuer'      => $_ENV['WEB_NAME'],
@@ -64,48 +63,47 @@ class ConfigServiceProvider extends AbstractServiceProvider
 
                     'public_key'  => $_ENV['TOKEN_PUBLIC']
                 ],
-
                 'logger' => [
                     'name' => $_ENV['WEB_NAME'] . '-event-log',
                     'enabled_log_levels' => [
                         // DEBUG
                         [
-                            'path' => __DIR__ . '/../../../tmp/Logs/info.log',
+                            'path' => base_dir() . 'tmp/Logs/info.log',
                             'level' => Logger::DEBUG
                         ],
                         // INFO
                         [
-                            'path' => __DIR__ . '/../../../tmp/Logs/info.log',
+                            'path' => base_dir() . 'tmp/Logs/info.log',
                             'level' => Logger::INFO
                         ],
                         // NOTICE
                         [
-                            'path' => __DIR__ . '/../../../tmp/Logs/info.log',
+                            'path' => base_dir() . 'tmp/Logs/info.log',
                             'level' => Logger::NOTICE
                         ],
                         // WARNING
                         [
-                            'path' => __DIR__ . '/../../../tmp/Logs/warning.log',
+                            'path' => base_dir() . 'tmp/Logs/warning.log',
                             'level' => Logger::WARNING
                         ],
                         // ERROR
                         [
-                            'path' => __DIR__ . '/../../../tmp/Logs/error.log',
+                            'path' => base_dir() . 'tmp/Logs/error.log',
                             'level' => Logger::ERROR
                         ],
                         // CRITICAL
                         [
-                            'path' => __DIR__ . '/../../../tmp/Logs/critical.log',
+                            'path' => base_dir() . 'tmp/Logs/critical.log',
                             'level' => Logger::CRITICAL
                         ],
                         // ALERT
                         [
-                            'path' => __DIR__ . '/../../../tmp/Logs/critical.log',
+                            'path' => base_dir() . 'tmp/Logs/critical.log',
                             'level' => Logger::ALERT
                         ],
                         // EMERGENCY
                         [
-                            'path' => __DIR__ . '/../../../tmp/Logs/critical.log',
+                            'path' => base_dir() . 'tmp/Logs/critical.log',
                             'level' => Logger::EMERGENCY
                         ],
                     ],
