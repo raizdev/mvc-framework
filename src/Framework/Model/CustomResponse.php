@@ -42,7 +42,7 @@ class CustomResponse implements CustomResponseInterface
     /**
      * @return mixed
      */
-    public function respond(): string
+    public function getJson(): string
     {
         $response = [
             'status' => $this->getStatus(),

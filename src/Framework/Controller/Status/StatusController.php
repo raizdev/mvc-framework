@@ -35,7 +35,7 @@ class StatusController extends BaseController
             'version' => self::API_VERSION
         ]);
 
-        return $this->jsonResponse(
+        return $this->respond(
             $response,
             $customResponse
         );

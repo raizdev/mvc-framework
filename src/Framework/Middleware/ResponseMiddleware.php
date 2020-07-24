@@ -56,7 +56,7 @@ class ResponseMiddleware implements MiddlewareInterface
         $this->customResponse->setData(['asdf' => 'movie']);
 
         $response = $this->responseFactory->createResponse();
-        $response->getBody()->write($this->customResponse->respond());
+        $response->getBody()->write($this->customResponse->getJson());
 
         return $response;
     }

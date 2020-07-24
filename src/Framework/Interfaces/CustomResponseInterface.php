@@ -15,7 +15,7 @@ interface CustomResponseInterface
     /**
      * @return string
      */
-    public function respond(): string;
+    public function getJson(): string;
 
     /**
      * @return string

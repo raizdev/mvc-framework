@@ -9,6 +9,7 @@
 namespace Ares\User\Controller;
 
 use Ares\Framework\Controller\BaseController;
+use Ares\User\Exception\UserNotFoundException;
 use Ares\User\Repository\UserRepository;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -41,7 +42,6 @@ class UserController extends BaseController
      *
      * @param Request  $request  The current incoming Request
      * @param Response $response The current Response
-     *
      * @return Response Returns a Response with the given Data
      */
     public function all(Request $request, Response $response): Response
@@ -53,20 +53,21 @@ class UserController extends BaseController
             $usersArray[] = $user->getArrayCopy();
         }
 
-        return $this->jsonResponse(
+        $customResponse = response()->setData($usersArray);
+
+        return $this->respond(
             $response,
-            $usersArray,
-            200
+            $customResponse
         );
     }
 
     /**
      * Retrieves the logged in User via JWT - Token
      *
-     * @param Request  $request The current incoming Request
+     * @param Request $request The current incoming Request
      * @param Response $response The current Response
-     *
      * @return Response Returns a Response with the given Data
+     * @throws UserNotFoundException
      */
     public function user(Request $request, Response $response): Response
     {
@@ -74,17 +75,14 @@ class UserController extends BaseController
         $user = $this->userRepository->find($authUser);
 
         if (!$user) {
-            return $this->jsonResponse(
-                $response,
-                'Couldnt find User!',
-                200
-            );
+            throw new UserNotFoundException();
         }
 
-        return $this->jsonResponse(
+        $customResponse = response()->setData($user->getArrayCopy());
+
+        return $this->respond(
             $response,
-            $user->getArrayCopy(),
-            200
+            $customResponse
         );
     }
 }
