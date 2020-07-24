@@ -8,6 +8,7 @@
 
 namespace Ares\Framework\Controller;
 
+use Ares\Framework\Interfaces\CustomResponseInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -22,7 +23,6 @@ abstract class BaseController
      * If the user is in the JWT Token data its id is returned
      *
      * @param Request $request
-     *
      * @return int|null
      */
     protected function authUser(Request $request): ?int
@@ -54,17 +54,24 @@ abstract class BaseController
     }
 
     /**
-     * @param Response $response The current Response
-     * @param mixed    $data The Data given into the Function
-     * @param int      $status The StatusCode given to the Response
+     * Creates json response.
      *
+     * @param Response $response The current Response
+     * @param mixed $customResponse The Data given into the Function
      * @return Response Returns a Response with the given Data
      */
-    protected function jsonResponse(Response $response, $data = null, int $status = 200): Response
+    protected function jsonResponse(Response $response, CustomResponseInterface $customResponse): Response
     {
-        $response->getBody()->write(json_encode($data));
-        $response = $response->withStatus($status);
+        $response->getBody()->write($customResponse->respond());
 
-        return $response->withHeader('Content-Type', 'application/json');
+        return $response
+            ->withStatus(
+                $customResponse
+                    ->getCode()
+            )
+            ->withHeader(
+                'Content-Type',
+                'application/json'
+            );
     }
 }

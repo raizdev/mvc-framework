@@ -30,5 +30,6 @@ return function (App $app) {
     $app->add(\Slim\HttpCache\Cache::class);
     $app->addRoutingMiddleware();
 
-    $app->addErrorMiddleware(true, true, true, $logger);
+    $errorMiddleware = $app->addErrorMiddleware(true, true, true, $logger);
+    $errorMiddleware->setDefaultErrorHandler(\Ares\Framework\Handler\ErrorHandler::class);
 };
