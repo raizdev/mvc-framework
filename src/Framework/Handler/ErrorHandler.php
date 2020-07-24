@@ -59,7 +59,7 @@ class ErrorHandler implements ErrorHandlerInterface
             ->setStatus('error')
             ->setCode($exception->getCode())
             ->setMessage(get_class($exception))
-            ->setErrors([
+            ->addError([
                 'message' => $exception->getMessage(),
                 'trace' => $exception->getTraceAsString()
             ]);

@@ -56,10 +56,10 @@ interface CustomResponseInterface
     public function getErrors(): array;
 
     /**
-     * @param array $errors
+     * @param array $error
      * @return CustomResponseInterface
      */
-    public function setErrors(array $errors): CustomResponseInterface;
+    public function addError(array $error): CustomResponseInterface;
 
     /**
      * @return mixed

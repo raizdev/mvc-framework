@@ -136,12 +136,12 @@ class CustomResponse implements CustomResponseInterface
     }
 
     /**
-     * @param array $errors
+     * @param array $error
      * @return CustomResponseInterface
      */
-    public function setErrors(array $errors): CustomResponseInterface
+    public function addError(array $error): CustomResponseInterface
     {
-        $this->errors = $errors;
+        $this->errors[] = $error;
         return $this;
     }
 
