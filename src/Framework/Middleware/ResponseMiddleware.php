@@ -16,17 +16,19 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * Class ResponseMiddleware
+ *
+ * @package Ares\Framework\Middleware
  */
 class ResponseMiddleware implements MiddlewareInterface
 {
     /**
      * @var ResponseFactoryInterface
      */
-    private $responseFactory;
+    private ResponseFactoryInterface $responseFactory;
     /**
      * @var CustomResponse
      */
-    private $customResponse;
+    private CustomResponse $customResponse;
 
     /**
      * ResponseMiddleware constructor.

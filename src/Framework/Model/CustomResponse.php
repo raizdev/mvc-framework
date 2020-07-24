@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Ares (https://ares.to)
  *
@@ -11,28 +11,30 @@ use Ares\Framework\Interfaces\CustomResponseInterface;
 
 /**
  * Class Response
+ *
+ * @package Ares\Framework\Model
  */
 class CustomResponse implements CustomResponseInterface
 {
     /**
      * @var string
      */
-    private $status;
+    private string $status = '';
 
     /**
      * @var int
      */
-    private $code;
+    private int $code = 0;
 
     /**
      * @var string
      */
-    private $message;
+    private string $message = '';
 
     /**
      * @var array
      */
-    private $errors;
+    private array $errors = [];
 
     /**
      * @var mixed
