@@ -98,9 +98,7 @@ class AuthController extends BaseController
         }
 
         /** @var TokenService $token */
-        $token = $this->tokenService->createJwt([
-            'ares_uid' => $user->getId(),
-        ]);
+        $token = $this->tokenService->execute($user->getId());
 
         return $this->jsonResponse($response, [
             'code' => 200,
@@ -158,9 +156,7 @@ class AuthController extends BaseController
         $user = $this->userRepository->create($data);
 
         /** @var TokenService $token */
-        $token = $this->tokenService->createJwt([
-            'ares_uid' => $user->getId(),
-        ]);
+        $token = $this->tokenService->execute($user->getId());
 
         return $this->jsonResponse($response, [
             'code' => 200,

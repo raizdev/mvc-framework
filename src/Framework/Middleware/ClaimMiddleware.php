@@ -13,6 +13,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use ReallySimpleJWT\Token;
 
 /**
  * ClaimMiddleware.
@@ -52,14 +53,15 @@ class ClaimMiddleware implements MiddlewareInterface
         $authorization = explode(' ', (string)$request->getHeaderLine('Authorization'));
         $type          = $authorization[0] ?? '';
         $credentials   = $authorization[1] ?? '';
+        $secret        = $_ENV['TOKEN_SECRET'];
 
-        if ($type === 'Bearer' && $this->tokenService->validateToken($credentials)) {
+        if ($type === 'Bearer' && Token::validate($credentials, $secret)) {
             // Append valid token
-            $parsedToken = $this->tokenService->createParsedToken($credentials);
+            $parsedToken = Token::parser($credentials, $secret);
             $request     = $request->withAttribute('token', $parsedToken);
 
             // Append the user id as request attribute
-            $request = $request->withAttribute('ares_uid', $parsedToken->getClaim('ares_uid'));
+            $request = $request->withAttribute('ares_uid', Token::getPayload($credentials, $secret)['uid']);
         }
 
         return $handler->handle($request);
