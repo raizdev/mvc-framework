@@ -60,9 +60,9 @@ abstract class BaseController
      * @param mixed $customResponse The Data given into the Function
      * @return Response Returns a Response with the given Data
      */
-    protected function jsonResponse(Response $response, CustomResponseInterface $customResponse): Response
+    protected function respond(Response $response, CustomResponseInterface $customResponse): Response
     {
-        $response->getBody()->write($customResponse->respond());
+        $response->getBody()->write($customResponse->getJson());
 
         return $response
             ->withStatus(

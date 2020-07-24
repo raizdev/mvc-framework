@@ -66,7 +66,7 @@ class ErrorHandler implements ErrorHandlerInterface
 
         $response = $this->responseFactory->createResponse();
 
-        $response->getBody()->write($customResponse->respond());
+        $response->getBody()->write($customResponse->getJson());
 
         return $response->withStatus(500)->withHeader('Content-Type', 'application/json');
     }
