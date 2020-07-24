@@ -74,6 +74,29 @@ class ErrorHandler implements ErrorHandlerInterface
             $response = $response->withStatus(500);
         }
 
-        return $response->withHeader('Content-Type', 'application/problem+json');
+        return $this->getResponseWithCorsHeader($request, $response);
+    }
+
+    /**
+     * @param ResponseInterface $response
+     * @return ResponseInterface
+     */
+    private function getResponseWithCorsHeader(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+    {
+        $headers =  [
+            "Content-Type" => "application/problem+json",
+            "origin" => [$_ENV['WEB_FRONTEND_LINK']],
+            "methods" => ["GET", "POST", "PUT", "PATCH", "DELETE"],
+            "headers.allow" => ["Content-Type", "Authorization", "If-Match", "If-Unmodified-Since", "Origin"],
+            "headers.expose" => ["Content-Type", "Etag", "Origin"],
+            "credentials" => 'true',
+            "cache" => $_ENV['TOKEN_DURATION']
+        ];
+
+        foreach ($headers as $key => $header) {
+            $response = $response->withHeader($key, $header);
+        }
+
+        return $response;
     }
 }
