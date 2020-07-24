@@ -74,6 +74,6 @@ class ErrorHandler implements ErrorHandlerInterface
             $response = $response->withStatus(500);
         }
 
-        return $response->withHeader('Content-Type', 'application/json');
+        return $response->withHeader('Content-Type', 'application/problem+json');
     }
 }
