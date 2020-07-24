@@ -8,12 +8,12 @@
 
 namespace Ares\Framework\Middleware;
 
-use Ares\Framework\Service\TokenService;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use ReallySimpleJWT\Token;
 
 /**
  * JWT Auth middleware.
@@ -38,10 +38,8 @@ class AuthMiddleware implements MiddlewareInterface
      * @param   ResponseFactoryInterface  $responseFactory
      */
     public function __construct(
-        TokenService $tokenService,
         ResponseFactoryInterface $responseFactory
     ) {
-        $this->tokenService    = $tokenService;
         $this->responseFactory = $responseFactory;
     }
 
@@ -59,7 +57,7 @@ class AuthMiddleware implements MiddlewareInterface
     ): ResponseInterface {
         $token = explode(' ', (string)$request->getHeaderLine('Authorization'))[1] ?? '';
 
-        if (!$token || !$this->tokenService->validateToken($token)) {
+        if (!$token || !Token::validate($token, $_ENV['TOKEN_SECRET'])) {
             return $this->responseFactory->createResponse()
                 ->withHeader('Content-Type', 'application/json')
                 ->withStatus(401, 'Unauthorized');
