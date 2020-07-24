@@ -9,7 +9,7 @@
 namespace Ares\User\Controller;
 
 use Ares\Framework\Controller\BaseController;
-use Ares\User\Exception\UserNotFoundException;
+use Ares\User\Exception\UserException;
 use Ares\User\Repository\UserRepository;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -67,7 +67,7 @@ class UserController extends BaseController
      * @param Request $request The current incoming Request
      * @param Response $response The current Response
      * @return Response Returns a Response with the given Data
-     * @throws UserNotFoundException
+     * @throws UserException
      */
     public function user(Request $request, Response $response): Response
     {
@@ -75,7 +75,7 @@ class UserController extends BaseController
         $user = $this->userRepository->find($authUser);
 
         if (!$user) {
-            throw new UserNotFoundException();
+            throw new UserException(__('User already exists.'), 422);
         }
 
         $customResponse = response()->setData($user->getArrayCopy());
