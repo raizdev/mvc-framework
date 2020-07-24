@@ -83,7 +83,7 @@ class AuthController extends BaseController
         ]);
 
         if ($validation->failed()) {
-            return $this->jsonResponse($response, [
+            return $this->respond($response, [
                 'message' => 'Please check your provided data'
             ], 422);
         }
@@ -92,7 +92,7 @@ class AuthController extends BaseController
         $user = $this->userRepository->findByUsername($parsedData['username']);
 
         if (empty($user) || !password_verify($parsedData['password'], $user->getPassword())) {
-            return $this->jsonResponse($response, [
+            return $this->respond($response, [
                 'message' => 'Woops something went wrong'
             ], 403);
         }
@@ -100,10 +100,11 @@ class AuthController extends BaseController
         /** @var TokenService $token */
         $token = $this->tokenService->execute($user->getId());
 
-        return $this->jsonResponse($response, [
-            'code' => 200,
+        $customResponse = response()->setData([
             'token' => $token
-        ], 200);
+        ]);
+
+        return $this->respond($response, $customResponse);
     }
 
     /**
@@ -124,7 +125,7 @@ class AuthController extends BaseController
         ]);
 
         if ($validation->failed()) {
-            return $this->jsonResponse($response, [
+            return $this->respond($response, [
                 'message' => 'Please check your provided data'
             ], 422);
         }
@@ -133,7 +134,7 @@ class AuthController extends BaseController
         $user = $this->userRepository->findByUsername($parsedData['username']);
 
         if (!is_null($user)) {
-            return $this->jsonResponse($response, [
+            return $this->respond($response, [
                 'message' => 'Username already exists'
             ], 422);
         }
@@ -158,10 +159,11 @@ class AuthController extends BaseController
         /** @var TokenService $token */
         $token = $this->tokenService->execute($user->getId());
 
-        return $this->jsonResponse($response, [
-            'code' => 200,
+        $customResponse = response()->setData([
             'token' => $token
-        ], 200);
+        ]);
+
+        return $this->respond($response, $customResponse);
     }
 
     /**

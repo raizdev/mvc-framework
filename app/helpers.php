@@ -15,6 +15,18 @@ if (!function_exists('__')) {
     }
 }
 
+if (!function_exists('response')) {
+    /**
+     * Returns instance of custom response.
+     *
+     * @return \Ares\Framework\Interfaces\CustomResponseInterface
+     */
+    function response(): \Ares\Framework\Interfaces\CustomResponseInterface {
+        $container = \Ares\Framework\Proxy\App::getContainer();
+        return $container->get(\Ares\Framework\Model\CustomResponse::class);
+    }
+}
+
 if (!function_exists('app_dir')) {
     /**
      * Returns directory path of app.
