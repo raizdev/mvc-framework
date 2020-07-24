@@ -12,8 +12,7 @@ use Slim\Routing\RouteCollectorProxy;
 return function (App $app) {
     // Enables Lazy CORS - Preflight Request
     $app->options('/{routes:.+}', function ($request, $response, $arguments) {
-        /** @var \Psr\Http\Message\ResponseInterface $response */
-        return $response->withStatus(200);
+        return $response;
     });
 
     $app->get('/', 'Ares\Framework\Controller\Status\StatusController:getStatus');
