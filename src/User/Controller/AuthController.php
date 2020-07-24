@@ -10,6 +10,8 @@ namespace Ares\User\Controller;
 
 use Ares\Framework\Controller\BaseController;
 use Ares\User\Entity\User;
+use Ares\User\Exception\LoginException;
+use Ares\User\Exception\RegisterException;
 use Ares\User\Repository\UserRepository;
 use Ares\Framework\Service\TokenService;
 use Ares\Framework\Service\ValidationService;
@@ -83,18 +85,14 @@ class AuthController extends BaseController
         ]);
 
         if ($validation->failed()) {
-            return $this->respond($response, [
-                'message' => 'Please check your provided data'
-            ], 422);
+            throw new LoginException(__('Please check your provided data'), 422);
         }
 
         /** @var User $user */
         $user = $this->userRepository->findByUsername($parsedData['username']);
 
         if (empty($user) || !password_verify($parsedData['password'], $user->getPassword())) {
-            return $this->respond($response, [
-                'message' => 'Woops something went wrong'
-            ], 403);
+            throw new LoginException(__('Woops something went wrong.'), 403);
         }
 
         /** @var TokenService $token */
@@ -125,18 +123,14 @@ class AuthController extends BaseController
         ]);
 
         if ($validation->failed()) {
-            return $this->respond($response, [
-                'message' => 'Please check your provided data'
-            ], 422);
+            throw new RegisterException(__('Please check your provided data'), 422);
         }
 
         /** @var User $user */
         $user = $this->userRepository->findByUsername($parsedData['username']);
 
         if (!is_null($user)) {
-            return $this->respond($response, [
-                'message' => 'Username already exists'
-            ], 422);
+            throw new RegisterException(__('User already exists.'), 422);
         }
 
         $data = [
