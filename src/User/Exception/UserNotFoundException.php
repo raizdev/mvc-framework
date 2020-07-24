@@ -17,5 +17,6 @@ use Ares\Framework\Exception\BaseException;
  */
 class UserNotFoundException extends BaseException
 {
+    protected $code = 422;
     public $message = 'The user you requested does not exist.';
 }
