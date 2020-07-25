@@ -12,6 +12,7 @@ use Ares\User\Entity\User;
 use Ares\Framework\Repository\BaseRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 
 /**
@@ -46,20 +47,21 @@ class UserRepository extends BaseRepository
     /**
      * @return array
      */
-    public function all(): array
+    public function getList(): array
     {
         return $this->repository->findAll();
     }
 
     /**
+     * @param       $user
      * @param array $data
      *
      * @return User
      * @throws ORMException
+     * @throws OptimisticLockException
      */
-    public function create(array $data): User
+    public function create($user, array $data): User
     {
-        $user = new User();
         $user
             ->setUsername($data['username'])
             ->setMail($data['mail'])
@@ -108,11 +110,11 @@ class UserRepository extends BaseRepository
     }
 
     /**
-     * @param array $data
+     * @param object $model
      *
      * @return mixed|void
      */
-    public function update(array $data)
+    public function save(object $model): object
     {
     }
 
@@ -121,14 +123,16 @@ class UserRepository extends BaseRepository
      *
      * @return object
      */
-    public function one(int $id): object
+    public function get(int $id): object
     {
     }
 
     /**
      * @param int $id
+     *
+     * @return bool
      */
-    public function delete(int $id)
+    public function delete(int $id): bool
     {
     }
 }

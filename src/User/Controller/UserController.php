@@ -46,7 +46,7 @@ class UserController extends BaseController
      */
     public function all(Request $request, Response $response): Response
     {
-        $users = $this->userRepository->all();
+        $users = $this->userRepository->getList();
         $usersArray = [];
 
         foreach ($users as $user) {

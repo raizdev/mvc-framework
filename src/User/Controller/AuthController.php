@@ -140,7 +140,8 @@ class AuthController extends BaseController
             'auth_ticket' => 'xddd'
         ];
 
-        $user = $this->userRepository->create($data);
+        $user = new User();
+        $user = $this->userRepository->create($user ,$data);
 
         /** @var TokenService $token */
         $token = $this->tokenService->execute($user->getId());

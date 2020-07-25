@@ -16,35 +16,34 @@ namespace Ares\Framework\Interfaces;
 interface RepositoryInterface
 {
     /**
+     * Get object by id.
+     *
+     * @param int $id
+     * @return object|null
+     */
+    public function get(int $id): ?object;
+
+    /**
+     * Get array of objects by id.
+     *
      * @return array
      */
-    public function all(): array;
+    public function getList(): array;
 
     /**
-     * @param   int  $id
+     * Save object.
      *
+     * @param object $model
      * @return object
      */
-    public function one(int $id): object;
+    public function save(object $model): object;
 
     /**
-     * @param   array  $data
+     * Delete object by id.
      *
-     * @return mixed
+     * @param int $id
+     * @return bool
      */
-    public function update(array $data);
+    public function delete(int $id): bool;
 
-    /**
-     * @param   array  $data
-     *
-     * @return mixed
-     */
-    public function create(array $data);
-
-    /**
-     * @param   int  $id
-     *
-     * @return mixed
-     */
-    public function delete(int $id);
 }
