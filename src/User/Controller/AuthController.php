@@ -17,7 +17,6 @@ use Ares\Framework\Service\TokenService;
 use Ares\Framework\Service\ValidationService;
 use Exception;
 use PHLAK\Config\Config;
-use Respect\Validation\Validator as v;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
