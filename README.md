@@ -92,8 +92,4 @@ Ares is a not for profit educational project.
 
 ## 7. Setup
 
-Generate JWT-Authentication Keys:
-
-1. openssl genrsa -out private.pem 512
-2. openssl rsa -in private.pem -outform PEM -pubout -out public.pem
-3. copy both files in app/Keys
+// Coming Soon
