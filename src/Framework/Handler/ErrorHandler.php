@@ -7,6 +7,8 @@
 
 namespace Ares\Framework\Handler;
 
+use Ares\Framework\Exception\BaseException;
+use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\Framework\Model\CustomResponse as CustomResponse;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -63,14 +65,11 @@ class ErrorHandler implements ErrorHandlerInterface
         $customResponse = response()
             ->setStatus('error')
             ->setCode($exception->getCode())
-            ->setMessage(get_class($exception))
-            ->addError([
-                'message' => $exception->getMessage(),
-                'trace' => $exception->getTraceAsString()
-            ]);
+            ->setException(get_class($exception));
+
+        $this->addErrors($customResponse, $exception);
 
         $response = $this->responseFactory->createResponse();
-
         $response->getBody()->write($customResponse->getJson());
 
         try {
@@ -97,5 +96,35 @@ class ErrorHandler implements ErrorHandlerInterface
             ->withHeader('Access-Control-Allow-Credentials', 'true')
             ->withHeader("Content-Type", "application/problem+json");
 
+    }
+
+    /**
+     * @param CustomResponseInterface $customResponse
+     * @param Throwable $exception
+     * @return CustomResponseInterface
+     */
+    private function addErrors(CustomResponseInterface $customResponse, Throwable $exception): CustomResponseInterface
+    {
+        if (!$exception instanceof BaseException) {
+            return $customResponse->addError([
+                'message' => $exception->getMessage(),
+                'trace' => $exception->getTraceAsString()
+            ]);
+        }
+
+        $errors = $exception->getErrors();
+
+        if (!$errors) {
+            return $customResponse->addError([
+                'message' => $exception->getMessage(),
+                'trace' => $exception->getTraceAsString()
+            ]);
+        }
+
+        foreach ($errors as $error) {
+            $customResponse->addError($error);
+        }
+
+        return $customResponse;
     }
 }

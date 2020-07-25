@@ -20,7 +20,7 @@ class ValidationService
     /**
      * @var array $errors
      */
-    private array $errors;
+    private array $errors = [];
 
     /**
      * @param          $data
@@ -34,7 +34,10 @@ class ValidationService
             try {
                 $rule->setName($field)->assert($data[$field] ?? null);
             } catch (NestedValidationException $e) {
-                $this->errors[$field] = $e->getMessages();
+                $this->errors[] = [
+                    'field' => $field,
+                    'message' => $e->getMessages()[$field]
+                ];
             }
         }
         return $this;
@@ -46,5 +49,13 @@ class ValidationService
     public function failed(): bool
     {
         return !empty($this->errors);
+    }
+
+    /**
+     * @return array
+     */
+    public function getErrors(): array
+    {
+        return $this->errors;
     }
 }
