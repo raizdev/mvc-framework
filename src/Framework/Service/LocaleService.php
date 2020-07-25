@@ -11,6 +11,8 @@ use Ares\Framework\Model\Locale;
 
 /**
  * Class LocaleService
+ *
+ * @package Ares\Framework\Service
  */
 class LocaleService
 {
@@ -33,13 +35,14 @@ class LocaleService
     /**
      * Takes message and placeholder to translate them in given locale.
      *
-     * @param string $message
-     * @param array $placeholder
+     * @param string $key
+     * @param array  $placeholder
+     *
      * @return string
      */
-    public function translate(string $message, array $placeholder = []): string
+    public function translate(string $key, array $placeholder = []): string
     {
-        $message = $this->locale->translate($message);
+        $message = $this->locale->translate($key);
 
         if (!$placeholder) {
             return $message;

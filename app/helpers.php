@@ -4,14 +4,14 @@ if (!function_exists('__')) {
     /**
      * Takes message and placeholder to translate them to global locale.
      *
-     * @param string $message
+     * @param string $key
      * @param array $placeholder
      * @return mixed
      */
-    function __(string $message, array $placeholder = []) {
+    function __(string $key, array $placeholder = []) {
         $container = \Ares\Framework\Proxy\App::getContainer();
         $localeService = $container->get(\Ares\Framework\Service\LocaleService::class);
-        return $localeService->translate($message, $placeholder);
+        return $localeService->translate($key, $placeholder);
     }
 }
 

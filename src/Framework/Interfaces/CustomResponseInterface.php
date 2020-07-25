@@ -9,6 +9,8 @@ namespace Ares\Framework\Interfaces;
 
 /**
  * Interface ResponseInterface
+ *
+ * @package Ares\Framework\Interfaces
  */
 interface CustomResponseInterface
 {

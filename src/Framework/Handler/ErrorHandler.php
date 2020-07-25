@@ -22,12 +22,12 @@ class ErrorHandler implements ErrorHandlerInterface
     /**
      * @var ResponseFactoryInterface
      */
-    private $responseFactory;
+    private ResponseFactoryInterface $responseFactory;
 
     /**
      * @var CustomResponse
      */
-    private $customResponse;
+    private CustomResponse $customResponse;
 
     /**
      * ResponseMiddleware constructor.
@@ -53,8 +53,13 @@ class ErrorHandler implements ErrorHandlerInterface
      * @param bool $logErrorDetails
      * @return ResponseInterface
      */
-    public function __invoke(ServerRequestInterface $request, Throwable $exception, bool $displayErrorDetails, bool $logErrors, bool $logErrorDetails): ResponseInterface
-    {
+    public function __invoke(
+        ServerRequestInterface $request,
+        Throwable $exception,
+        bool $displayErrorDetails,
+        bool $logErrors,
+        bool $logErrorDetails
+    ): ResponseInterface {
         $customResponse = response()
             ->setStatus('error')
             ->setCode($exception->getCode())
@@ -74,29 +79,23 @@ class ErrorHandler implements ErrorHandlerInterface
             $response = $response->withStatus(500);
         }
 
-        return $this->getResponseWithCorsHeader($request, $response);
+        return $this->withCorsHeader($request, $response);
     }
 
     /**
-     * @param ResponseInterface $response
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface      $response
+     *
      * @return ResponseInterface
      */
-    private function getResponseWithCorsHeader(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
-    {
-        $headers =  [
-            "Content-Type" => "application/problem+json",
-            "origin" => [$_ENV['WEB_FRONTEND_LINK']],
-            "methods" => ["GET", "POST", "PUT", "PATCH", "DELETE"],
-            "headers.allow" => ["Content-Type", "Authorization", "If-Match", "If-Unmodified-Since", "Origin"],
-            "headers.expose" => ["Content-Type", "Etag", "Origin"],
-            "credentials" => 'true',
-            "cache" => $_ENV['TOKEN_DURATION']
-        ];
+    private function withCorsHeader(
+        ServerRequestInterface $request,
+        ResponseInterface $response
+    ): ResponseInterface {
+        return $response
+            ->withHeader('Access-Control-Allow-Origin', $_ENV['WEB_FRONTEND_LINK'])
+            ->withHeader('Access-Control-Allow-Credentials', 'true')
+            ->withHeader("Content-Type", "application/problem+json");
 
-        foreach ($headers as $key => $header) {
-            $response = $response->withHeader($key, $header);
-        }
-
-        return $response;
     }
 }
