@@ -85,7 +85,10 @@ class AuthController extends BaseController
         ]);
 
         if ($validation->failed()) {
-            throw new LoginException(__('Please check your provided data'), 422);
+            $loginException = new LoginException(__('Please check your provided data'), 422);
+            $loginException->setErrors($validation->getErrors());
+
+            throw $loginException;
         }
 
         /** @var User $user */
@@ -123,7 +126,10 @@ class AuthController extends BaseController
         ]);
 
         if ($validation->failed()) {
-            throw new RegisterException(__('Please check your provided data'), 422);
+            $registerException = new RegisterException(__('Please check your provided data'), 422);
+            $registerException->setErrors($validation->getErrors());
+
+            throw $registerException;
         }
 
         /** @var User $user */
