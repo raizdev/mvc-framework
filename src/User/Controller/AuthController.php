@@ -141,6 +141,8 @@ class AuthController extends BaseController
         ];
 
         $user = new User();
+
+        /** @var User $user */
         $user = $this->userRepository->create($user ,$data);
 
         /** @var TokenService $token */
@@ -154,7 +156,8 @@ class AuthController extends BaseController
     }
 
     /**
-     * @TODO TBD - Need to write something that unvalidates the token...
+     * Returns a response without the Authorization header
+     * We could blacklist the token with redis-cache
      *
      * @param Request  $request
      * @param Response $response
@@ -163,5 +166,6 @@ class AuthController extends BaseController
      */
     public function logout(Request $request, Response $response): Response
     {
+        return $response->withoutHeader('Authorization');
     }
 }
