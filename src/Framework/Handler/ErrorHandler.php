@@ -71,9 +71,11 @@ class ErrorHandler implements ErrorHandlerInterface
         bool $logErrors,
         bool $logErrorDetails
     ): ResponseInterface {
+        $statusCode = $exception->getCode() ?: 500;
+
         $customResponse = response()
             ->setStatus('error')
-            ->setCode($exception->getCode())
+            ->setCode($statusCode)
             ->setException(get_class($exception));
 
         $this->addErrors($customResponse, $exception);

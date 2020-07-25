@@ -79,17 +79,10 @@ class AuthController extends BaseController
     {
         $parsedData = $request->getParsedBody();
 
-        $validation = $this->validationService->execute($parsedData, [
-            'username' => v::noWhitespace()->notEmpty()->stringType(),
-            'password' => v::notEmpty()->stringType()
+        $this->validationService->validate($parsedData, [
+            'username' => 'required|min:3',
+            'password' => 'required'
         ]);
-
-        if ($validation->failed()) {
-            $loginException = new LoginException(__('Please check your provided data'), 422);
-            $loginException->setErrors($validation->getErrors());
-
-            throw $loginException;
-        }
 
         /** @var User $user */
         $user = $this->userRepository->findByUsername($parsedData['username']);
@@ -119,18 +112,11 @@ class AuthController extends BaseController
     {
         $parsedData = $request->getParsedBody();
 
-        $validation = $this->validationService->execute($parsedData, [
-            'username' => v::noWhitespace()->notEmpty()->notBlank()->stringType(),
-            'mail' => v::noWhitespace()->notEmpty()->notBlank()->email(),
-            'password' => v::notEmpty()->notBlank()->stringType()
+        $this->validationService->validate($parsedData, [
+            'username' => 'required|min:3',
+            'mail'     => 'required|email|min:9',
+            'password' => 'required'
         ]);
-
-        if ($validation->failed()) {
-            $registerException = new RegisterException(__('Please check your provided data'), 422);
-            $registerException->setErrors($validation->getErrors());
-
-            throw $registerException;
-        }
 
         /** @var User $user */
         $user = $this->userRepository->findByUsername($parsedData['username']);
