@@ -13,6 +13,8 @@ use League\Container\ServiceProvider\AbstractServiceProvider;
 
 /**
  * Class LocaleServiceProvider
+ *
+ * @package Ares\Framework\Provider
  */
 class LocaleServiceProvider extends AbstractServiceProvider
 {

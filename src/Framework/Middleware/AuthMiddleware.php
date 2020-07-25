@@ -17,6 +17,7 @@ use ReallySimpleJWT\Token;
 
 /**
  * JWT Auth middleware.
+ *
  * @package Ares\Framework\Middleware
  */
 class AuthMiddleware implements MiddlewareInterface
@@ -27,14 +28,8 @@ class AuthMiddleware implements MiddlewareInterface
     private ResponseFactoryInterface $responseFactory;
 
     /**
-     * @var TokenService
-     */
-    private TokenService $tokenService;
-
-    /**
      * Auth constructor.
      *
-     * @param   TokenService              $tokenService
      * @param   ResponseFactoryInterface  $responseFactory
      */
     public function __construct(
