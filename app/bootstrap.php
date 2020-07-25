@@ -47,7 +47,7 @@ $manager = new Statical\Manager();
 $manager->addProxyInstance($alias, $proxy, $app);
 
 // Sets our Route-Cache
-if($_ENV['API_DEBUG']) {
+if(!$_ENV['API_DEBUG']) {
     $routeCollector = $app->getRouteCollector();
     $routeCollector->setCacheFile('../tmp/Cache/routing/route.cache.php');
 }
