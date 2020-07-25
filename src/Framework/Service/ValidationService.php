@@ -8,47 +8,72 @@
 
 namespace Ares\Framework\Service;
 
-use Respect\Validation\Exceptions\NestedValidationException;
+use Ares\Framework\Exception\ValidationException;
+use Rakit\Validation\Validator;
 
 /**
- * Class ValidationService
+ * Class ValidatorService
  *
  * @package Ares\Framework\Service
  */
 class ValidationService
 {
     /**
+     * @var Validator
+     */
+    private Validator $validator;
+
+    /**
      * @var array $errors
      */
     private array $errors = [];
 
     /**
-     * @param          $data
-     * @param   array  $rules
+     * ValidationService constructor.
      *
-     * @return $this
+     * @param Validator $validator
      */
-    public function execute($data, array $rules): ValidationService
-    {
-        foreach ($rules as $field => $rule) {
-            try {
-                $rule->setName($field)->assert($data[$field] ?? null);
-            } catch (NestedValidationException $e) {
-                $this->errors[] = [
-                    'field' => $field,
-                    'message' => $e->getMessages()[$field]
-                ];
-            }
-        }
-        return $this;
+    public function __construct(
+        Validator $validator
+    ) {
+        $this->validator = $validator;
     }
 
     /**
-     * @return bool
+     * Validates the given data and returns an Exception if Validator fails
+     *
+     * @param       $data
+     * @param array $rules
+     *
+     * @return void
+     * @throws ValidationException
      */
-    public function failed(): bool
+    public function validate($data, array $rules): void
     {
-        return !empty($this->errors);
+        $validator = $this->validator->make($data, $rules);
+        $validator->validate();
+
+        if ($validator->fails()) {
+            $fields = $validator->errors()->toArray();
+
+            $errors = [];
+
+            foreach ($fields as $key => $messages) {
+                foreach ($messages as $message) {
+                    $errors[] = [
+                        'field' => $key,
+                        'message' => __($message, [$key])
+                    ];
+                }
+            }
+
+            $this->setErrors($errors);
+
+            $validationException = new ValidationException('', 422);
+            $validationException->setErrors($this->getErrors());
+
+            throw $validationException;
+        }
     }
 
     /**
@@ -57,5 +82,13 @@ class ValidationService
     public function getErrors(): array
     {
         return $this->errors;
+    }
+
+    /**
+     * @param $error
+     */
+    public function setErrors($error): void
+    {
+        $this->errors = $error;
     }
 }
