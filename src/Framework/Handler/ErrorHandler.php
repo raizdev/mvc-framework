@@ -13,6 +13,7 @@ use Ares\Framework\Model\CustomResponse as CustomResponse;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Log\LoggerInterface;
 use Slim\Interfaces\ErrorHandlerInterface;
 use Throwable;
 
@@ -32,17 +33,25 @@ class ErrorHandler implements ErrorHandlerInterface
     private CustomResponse $customResponse;
 
     /**
+     * @var LoggerInterface
+     */
+    private LoggerInterface $logger;
+
+    /**
      * ResponseMiddleware constructor.
      *
      * @param ResponseFactoryInterface $responseFactory
-     * @param CustomResponse $customResponse
+     * @param CustomResponse           $customResponse
+     * @param LoggerInterface          $logger
      */
     public function __construct(
         ResponseFactoryInterface $responseFactory,
-        CustomResponse $customResponse
+        CustomResponse $customResponse,
+        LoggerInterface $logger
     ) {
         $this->responseFactory = $responseFactory;
         $this->customResponse = $customResponse;
+        $this->logger = $logger;
     }
 
     /**
@@ -77,6 +86,9 @@ class ErrorHandler implements ErrorHandlerInterface
         } catch (\Exception $exception) {
             $response = $response->withStatus(500);
         }
+
+        /** @var \Exception $exception */
+        $this->logger->error($exception);
 
         return $this->withCorsHeader($request, $response);
     }
