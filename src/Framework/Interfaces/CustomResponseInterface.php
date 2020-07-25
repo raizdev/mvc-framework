@@ -44,13 +44,13 @@ interface CustomResponseInterface
     /**
      * @return string
      */
-    public function getMessage(): string;
+    public function getException(): string;
 
     /**
-     * @param string $message
+     * @param string $exception
      * @return CustomResponseInterface
      */
-    public function setMessage(string $message): CustomResponseInterface;
+    public function setException(string $exception): CustomResponseInterface;
 
     /**
      * @return array
