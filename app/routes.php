@@ -19,14 +19,19 @@ return function (App $app) {
 
     $app->group('/api/{locale}', function (RouteCollectorProxy $group) {
         $group->group('', function (RouteCollectorProxy $group) {
-            $group->get('/users', \Ares\User\Controller\UserController::class . ':all');
-            $group->get('/user', \Ares\User\Controller\UserController::class . ':user');
+            $group->group('/user', function (RouteCollectorProxy $group) {
+                $group->get('', \Ares\User\Controller\UserController::class . ':user');
+                $group->post('/locale', \Ares\User\Controller\UserController::class . ':updateLocale');
+            });
             $group->post('/logout', \Ares\User\Controller\AuthController::class . ':logout');
         })->add(\Ares\Framework\Middleware\AuthMiddleware::class);
 
         // Authentication
         $group->post('/login', \Ares\User\Controller\AuthController::class . ':login');
-        $group->post('/register', \Ares\User\Controller\AuthController::class . ':register');
+        $group->group('/register', function (RouteCollectorProxy $group) {
+            $group->post('', \Ares\User\Controller\AuthController::class . ':register');
+            $group->post('/check', \Ares\User\Controller\AuthController::class . ':check');
+        });
     })->add(\Ares\Framework\Middleware\LocaleMiddleware::class);
 
     // Catches every route that is not found

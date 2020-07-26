@@ -88,6 +88,11 @@ class User
     private ?string $ip_current;
 
     /**
+     * @ORM\Column(type="string", length=10)
+     */
+    private ?string $locale;
+
+    /**
      * Get User id
      *
      * @return integer
@@ -347,6 +352,26 @@ class User
     }
 
     /**
+     * @return string|null
+     */
+    public function getLocale(): ?string
+    {
+        return $this->locale;
+    }
+
+    /**
+     * @param string|null $locale
+     *
+     * @return User
+     */
+    public function setLocale(string $locale): self
+    {
+        $this->locale = $locale;
+
+        return $this;
+    }
+
+    /**
      * Returns a copy of the current Entity safely
      *
      * @return array
@@ -363,7 +388,8 @@ class User
             'points'          => $this->points,
             'pixels'          => $this->pixels,
             'auth_ticket'     => $this->auth_ticket,
-            'account_created' => $this->account_created
+            'account_created' => $this->account_created,
+            'locale'          => $this->locale
         ];
     }
 }

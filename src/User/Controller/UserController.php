@@ -9,8 +9,10 @@
 namespace Ares\User\Controller;
 
 use Ares\Framework\Controller\BaseController;
+use Ares\User\Entity\User;
 use Ares\User\Exception\UserException;
 use Ares\User\Repository\UserRepository;
+use Doctrine\ORM\ORMException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -38,30 +40,6 @@ class UserController extends BaseController
     }
 
     /**
-     * Retrieves all User from the Database and copies an Array of Values from every User and returns it
-     *
-     * @param Request  $request  The current incoming Request
-     * @param Response $response The current Response
-     * @return Response Returns a Response with the given Data
-     */
-    public function all(Request $request, Response $response): Response
-    {
-        $users = $this->userRepository->getList();
-        $usersArray = [];
-
-        foreach ($users as $user) {
-            $usersArray[] = $user->getArrayCopy();
-        }
-
-        $customResponse = response()->setData($usersArray);
-
-        return $this->respond(
-            $response,
-            $customResponse
-        );
-    }
-
-    /**
      * Retrieves the logged in User via JWT - Token
      *
      * @param Request $request The current incoming Request
@@ -71,18 +49,37 @@ class UserController extends BaseController
      */
     public function user(Request $request, Response $response): Response
     {
-        $authUser = $this->authUser($request);
-        $user = $this->userRepository->find($authUser);
-
-        if (!$user) {
-            throw new UserException(__('User already exists.'), 422);
-        }
-
-        $customResponse = response()->setData($user->getArrayCopy());
+        /** @var User $user */
+        $user = $this->getUser($this->userRepository, $request);
 
         return $this->respond(
             $response,
-            $customResponse
+            response()->setData($user->getArrayCopy())
+        );
+    }
+
+    /**
+     * Saves the given Language to the User
+     *
+     * @param Request  $request
+     * @param Response $response
+     *
+     * @return Response
+     * @throws ORMException
+     * @throws UserException
+     */
+    public function updateLocale(Request $request, Response $response): Response
+    {
+        $body = $request->getParsedBody();
+
+        $user = $this->getUser($this->userRepository, $request);
+        $user->setLocale($body['locale']);
+
+        $this->userRepository->save($user);
+
+        return $this->respond(
+            $response,
+            response()->setData($user->getArrayCopy())
         );
     }
 }
