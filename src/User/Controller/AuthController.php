@@ -105,7 +105,7 @@ class AuthController extends BaseController
         $this->validationService->validate($parsedData, [
             'username' => 'required|min:3',
             'mail' => 'required|email|min:9',
-            'password' => 'required:min6',
+            'password' => 'required|min:6',
             'password_confirmation' => 'required|same:password'
         ]);
 
