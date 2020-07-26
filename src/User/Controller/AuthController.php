@@ -12,6 +12,7 @@ use Ares\Framework\Controller\BaseController;
 use Ares\User\Entity\User;
 use Ares\User\Exception\LoginException;
 use Ares\User\Exception\RegisterException;
+use Ares\User\Exception\UserException;
 use Ares\User\Repository\UserRepository;
 use Ares\Framework\Service\TokenService;
 use Ares\Framework\Service\ValidationService;
@@ -84,7 +85,7 @@ class AuthController extends BaseController
         ]);
 
         /** @var User $user */
-        $user = $this->userRepository->findByUsername($parsedData['username']);
+        $user = $this->userRepository->getByUsername($parsedData['username']);
 
         if (empty($user) || !password_verify($parsedData['password'], $user->getPassword())) {
             throw new LoginException(__('Woops something went wrong.'), 403);
@@ -109,49 +110,67 @@ class AuthController extends BaseController
      */
     public function register(Request $request, Response $response): Response
     {
+        /** @var array $parsedData */
         $parsedData = $request->getParsedBody();
 
         $this->validationService->validate($parsedData, [
             'username' => 'required|min:3',
-            'mail'     => 'required|email|min:9',
+            'mail' => 'required|email|min:9',
             'password' => 'required'
         ]);
 
         /** @var User $user */
-        $user = $this->userRepository->findByUsername($parsedData['username']);
+        $user = $this->userRepository->getByUsername($parsedData['username']);
 
         if (!is_null($user)) {
             throw new RegisterException(__('User already exists.'), 422);
         }
 
-        $data = [
-            'username' => $parsedData['username'],
-            'password' => $parsedData['password'],
-            'mail' => $parsedData['mail'],
-            'look' => $this->config->get('hotel_settings.start_look'),
-            'credits' => $this->config->get('hotel_settings.start_credits'),
-            'points' => $this->config->get('hotel_settings.start_points'),
-            'pixels' => $this->config->get('hotel_settings.start_pixels'),
-            'motto' => $this->config->get('hotel_settings.start_motto'),
-            'ip_register' => $this->determineIp(),
-            'ip_current' => $this->determineIp(),
-            'account_created' => time(),
-            'auth_ticket' => 'xddd'
-        ];
-
         $user = new User();
+        $user->setUsername($parsedData['username'])
+            ->setPassword(password_hash(
+                $parsedData['password'],
+                PASSWORD_ARGON2ID))
+            ->setMail($parsedData['mail'])
+            ->setLook($this->config->get('hotel_settings.start_look'))
+            ->setCredits($this->config->get('hotel_settings.start_credits'))
+            ->setPoints($this->config->get('hotel_settings.start_points'))
+            ->setPixels($this->config->get('hotel_settings.start_pixels'))
+            ->setMotto($this->config->get('hotel_settings.start_motto'))
+            ->setIPRegister($this->determineIp())
+            ->setCurrentIP($this->determineIp())
+            ->setAccountCreated(time())
+            ->setTicket('lolxd');
+
 
         /** @var User $user */
-        $user = $this->userRepository->create($user ,$data);
+        $user = $this->userRepository->save($user);
 
         /** @var TokenService $token */
         $token = $this->tokenService->execute($user->getId());
 
-        $customResponse = response()->setData([
+        return $this->respond($response, response()->setData([
             'token' => $token
-        ]);
+        ]));
+    }
 
-        return $this->respond($response, $customResponse);
+    /**
+     * @param Request  $request
+     * @param Response $response
+     *
+     * @return Response
+     * @throws RegisterException
+     */
+    public function check(Request $request, Response $response): Response
+    {
+        $body = $request->getParsedBody();
+        $user = $this->userRepository->getBy($body);
+
+        if (is_null($user)) {
+            return $response;
+        }
+
+        throw new RegisterException(__('Entity already exists.'), 422);
     }
 
     /**

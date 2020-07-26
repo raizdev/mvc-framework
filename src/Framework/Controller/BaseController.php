@@ -9,6 +9,9 @@
 namespace Ares\Framework\Controller;
 
 use Ares\Framework\Interfaces\CustomResponseInterface;
+use Ares\User\Entity\User;
+use Ares\User\Exception\UserException;
+use Ares\User\Repository\UserRepository;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -25,15 +28,37 @@ abstract class BaseController
      * @param Request $request
      * @return int|null
      */
-    protected function authUser(Request $request): ?int
+    private function authUser(Request $request): ?int
     {
+        /** @var array $user */
         $user = $request->getAttribute('ares_uid');
         if (isset($user)) {
             return json_decode(json_encode($user), true);
         }
 
         return null;
+    }
 
+    /**
+     * @param UserRepository $userRepository
+     * @param Request        $request
+     *
+     * @return object
+     * @throws UserException
+     */
+    protected function getUser(UserRepository $userRepository, Request $request): object
+    {
+        /** @var array $authUser */
+        $authUser = $this->authUser($request);
+
+        /** @var User $user */
+        $user = $userRepository->get((int)$authUser);
+
+        if (!$user) {
+            throw new UserException(__('User doesnt exists.'), 404);
+        }
+
+        return $user;
     }
 
     /**
@@ -50,6 +75,7 @@ abstract class BaseController
         } else {
             $ip = $_SERVER['REMOTE_ADDR'];
         }
+
         return $ip;
     }
 
