@@ -1,4 +1,12 @@
 {
-  "This is our beautiful api written with %s.": "Das ist unsere schöne api, geschrieben mit %s.",
-  "validation.required": "Dies ist ein Pflichtfeld"
+  "general.failed": "Etwas ist schiefgelaufen",
+  "general.entity.exists": "Entity existiert bereits",
+
+  "validation.required": "Dies ist ein Pflichtfeld",
+  "validation.email": "Das Feld muss eine E-Mail sein",
+  "validation.same": "Die Felder müssen übereinstimmen",
+
+  "register.user.exists": "Username ist schon vergeben",
+  "register.email.exists": "E-Mail ist schon vergeben",
+  "register.failed": "Registration ist fehlgeschlagen"
 }
