@@ -29,7 +29,9 @@ class ValidationServiceProvider extends AbstractServiceProvider
      * @var array
      */
     public array $messages = [
-        'required' => 'validation.required'
+        'required' => 'validation.required',
+        'email'    => 'validation.email',
+        'same'     => 'validation.same'
     ];
 
     public function register()

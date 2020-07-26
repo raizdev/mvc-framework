@@ -9,15 +9,12 @@
 namespace Ares\User\Controller;
 
 use Ares\Framework\Controller\BaseController;
-use Ares\User\Entity\User;
-use Ares\User\Exception\LoginException;
 use Ares\User\Exception\RegisterException;
-use Ares\User\Exception\UserException;
 use Ares\User\Repository\UserRepository;
-use Ares\Framework\Service\TokenService;
 use Ares\Framework\Service\ValidationService;
+use Ares\User\Service\Auth\LoginService;
+use Ares\User\Service\Auth\RegisterService;
 use Exception;
-use PHLAK\Config\Config;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -34,41 +31,43 @@ class AuthController extends BaseController
     private ValidationService $validationService;
 
     /**
+     * @var LoginService
+     */
+    private LoginService $loginService;
+
+    /**
+     * @var RegisterService
+     */
+    private RegisterService $registerService;
+
+    /**
      * @var UserRepository
      */
     private UserRepository $userRepository;
 
     /**
-     * @var Config
-     */
-    private Config $config;
-
-    /**
-     * @var TokenService
-     */
-    private TokenService $tokenService;
-
-    /**
      * AuthController constructor.
      *
-     * @param UserRepository    $userRepository
      * @param ValidationService $validationService
-     * @param Config            $config
-     * @param TokenService      $tokenService
+     * @param LoginService      $loginService
+     * @param RegisterService   $registerService
+     * @param UserRepository    $userRepository
      */
     public function __construct(
-        UserRepository $userRepository,
         ValidationService $validationService,
-        Config $config,
-        TokenService $tokenService
+        LoginService $loginService,
+        RegisterService $registerService,
+        UserRepository $userRepository
     ) {
-        $this->userRepository = $userRepository;
         $this->validationService = $validationService;
-        $this->config = $config;
-        $this->tokenService = $tokenService;
+        $this->loginService = $loginService;
+        $this->registerService = $registerService;
+        $this->userRepository = $userRepository;
     }
 
     /**
+     * Logs the User in and parses a generated Token into response
+     *
      * @param Request  $request
      * @param Response $response
      *
@@ -80,28 +79,18 @@ class AuthController extends BaseController
         $parsedData = $request->getParsedBody();
 
         $this->validationService->validate($parsedData, [
-            'username' => 'required|min:3',
+            'username' => 'required',
             'password' => 'required'
         ]);
 
-        /** @var User $user */
-        $user = $this->userRepository->getByUsername($parsedData['username']);
-
-        if (empty($user) || !password_verify($parsedData['password'], $user->getPassword())) {
-            throw new LoginException(__('Woops something went wrong.'), 403);
-        }
-
-        /** @var TokenService $token */
-        $token = $this->tokenService->execute($user->getId());
-
-        $customResponse = response()->setData([
-            'token' => $token
-        ]);
+        $customResponse = $this->loginService->login($parsedData['username'], $parsedData['password']);
 
         return $this->respond($response, $customResponse);
     }
 
     /**
+     * Registers the User and parses a generated Token into the response
+     *
      * @param Request  $request
      * @param Response $response
      *
@@ -116,42 +105,16 @@ class AuthController extends BaseController
         $this->validationService->validate($parsedData, [
             'username' => 'required|min:3',
             'mail' => 'required|email|min:9',
-            'password' => 'required'
+            'password' => 'required:min6',
+            'password_confirmation' => 'required|same:password'
         ]);
 
-        /** @var User $user */
-        $user = $this->userRepository->getByUsername($parsedData['username']);
+        $parsedData['ip_register'] = $this->determineIp();
+        $parsedData['ip_current'] = $this->determineIp();
 
-        if (!is_null($user)) {
-            throw new RegisterException(__('User already exists.'), 422);
-        }
+        $customResponse = $this->registerService->register($parsedData);
 
-        $user = new User();
-        $user->setUsername($parsedData['username'])
-            ->setPassword(password_hash(
-                $parsedData['password'],
-                PASSWORD_ARGON2ID))
-            ->setMail($parsedData['mail'])
-            ->setLook($this->config->get('hotel_settings.start_look'))
-            ->setCredits($this->config->get('hotel_settings.start_credits'))
-            ->setPoints($this->config->get('hotel_settings.start_points'))
-            ->setPixels($this->config->get('hotel_settings.start_pixels'))
-            ->setMotto($this->config->get('hotel_settings.start_motto'))
-            ->setIPRegister($this->determineIp())
-            ->setCurrentIP($this->determineIp())
-            ->setAccountCreated(time())
-            ->setTicket('lolxd');
-
-
-        /** @var User $user */
-        $user = $this->userRepository->save($user);
-
-        /** @var TokenService $token */
-        $token = $this->tokenService->execute($user->getId());
-
-        return $this->respond($response, response()->setData([
-            'token' => $token
-        ]));
+        return $this->respond($response, $customResponse);
     }
 
     /**
@@ -170,7 +133,7 @@ class AuthController extends BaseController
             return $response;
         }
 
-        throw new RegisterException(__('Entity already exists.'), 422);
+        throw new RegisterException(__('general.entity.exists'), 422);
     }
 
     /**
