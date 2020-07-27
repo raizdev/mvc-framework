@@ -62,7 +62,7 @@ class ValidationService
                 foreach ($messages as $message) {
                     $errors[] = [
                         'field' => $key,
-                        'message' => __($message, [$key])
+                        'message' => __($message, [ucfirst($key)])
                     ];
                 }
             }
