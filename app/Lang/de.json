@@ -1,12 +1,12 @@
 {
   "general.failed": "Etwas ist schiefgelaufen",
-  "general.entity.exists": "Entity existiert bereits",
+  "general.entity.exists": "%s existiert bereits",
 
-  "validation.required": "Dies ist ein Pflichtfeld",
-  "validation.email": "Das Feld muss eine E-Mail sein",
-  "validation.same": "Die Felder müssen übereinstimmen",
+  "validation.required": "%s ist ein Pflichtfeld",
+  "validation.email": "Das Feld muss eine gültige E-Mail sein",
 
-  "register.user.exists": "Username ist schon vergeben",
-  "register.email.exists": "E-Mail ist schon vergeben",
+  "register.already.exists": "Username oder E-Mail ist schon vergeben",
+  "register.password.min": "Das Passwort muss mindestens 6 Zeichen lang sein",
+  "register.password.same": "Die Passwörter müssen übereinstimmen",
   "register.failed": "Registration ist fehlgeschlagen"
 }

@@ -69,12 +69,14 @@ class RegisterService
     public function register(array $data): CustomResponseInterface
     {
         /** @var User $user */
-        $user = $this->userRepository->getByUsername($data['username']);
+        $checkUser = $this->userRepository->getByUsername($data['username']);
+        $checkMail = $this->userRepository->getByMail($data['mail']);
 
-        if (!is_null($user)) {
-            throw new RegisterException(__('register.user.exists'), 422);
+        if (!is_null($checkUser) || !is_null($checkMail)) {
+            throw new RegisterException(__('register.already.exists'), 422);
         }
 
+        /** @var User $user */
         $user = $this->userRepository->save($this->getNewUser($data));
 
         /** @var TokenService $token */

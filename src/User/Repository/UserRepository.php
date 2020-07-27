@@ -57,6 +57,18 @@ class UserRepository extends BaseRepository
     }
 
     /**
+     * @param $mail
+     *
+     * @return User|object
+     */
+    public function getByMail(string $mail)
+    {
+        return $this->repository->findOneBy([
+            'mail' => $mail
+        ]);
+    }
+
+    /**
      * @param array $data
      *
      * @return object|null
