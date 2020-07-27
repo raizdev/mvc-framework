@@ -30,8 +30,9 @@ class ValidationServiceProvider extends AbstractServiceProvider
      */
     public array $messages = [
         'required' => 'validation.required',
-        'email'    => 'validation.email',
-        'same'     => 'validation.same'
+        'email' => 'validation.email',
+        'password_confirmation:same' => 'register.password.same',
+        'password:min' => 'register.password.min'
     ];
 
     public function register()
