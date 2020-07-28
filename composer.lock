@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9cf4df1a44508f300ebc62f26e60d777",
+    "content-hash": "bcbf7a09b2c3c9037fc5121cd7d62984",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -218,12 +218,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/collections.git",
-                "reference": "2fc1342333bdec48b7ea05beac0320fd621fc247"
+                "reference": "7de28ab9dcb94ee9447dbdc8050a9fa48bfed32d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/collections/zipball/2fc1342333bdec48b7ea05beac0320fd621fc247",
-                "reference": "2fc1342333bdec48b7ea05beac0320fd621fc247",
+                "url": "https://api.github.com/repos/doctrine/collections/zipball/7de28ab9dcb94ee9447dbdc8050a9fa48bfed32d",
+                "reference": "7de28ab9dcb94ee9447dbdc8050a9fa48bfed32d",
                 "shasum": ""
             },
             "require": {
@@ -275,7 +275,7 @@
                 "iterators",
                 "php"
             ],
-            "time": "2020-06-22T19:29:24+00:00"
+            "time": "2020-07-27T18:42:08+00:00"
         },
         {
             "name": "doctrine/common",
@@ -359,12 +359,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/dbal.git",
-                "reference": "b9985b5de85ed84b61e8a4c061f7a6209217d3b9"
+                "reference": "e7c4149a13f1267380a8061452816a1a33909dc1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/dbal/zipball/b9985b5de85ed84b61e8a4c061f7a6209217d3b9",
-                "reference": "b9985b5de85ed84b61e8a4c061f7a6209217d3b9",
+                "url": "https://api.github.com/repos/doctrine/dbal/zipball/e7c4149a13f1267380a8061452816a1a33909dc1",
+                "reference": "e7c4149a13f1267380a8061452816a1a33909dc1",
                 "shasum": ""
             },
             "require": {
@@ -446,7 +446,7 @@
                 "sqlserver",
                 "sqlsrv"
             ],
-            "time": "2020-07-23T19:31:48+00:00"
+            "time": "2020-07-25T16:05:48+00:00"
         },
         {
             "name": "doctrine/event-manager",
@@ -1834,12 +1834,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/rakit/validation.git",
-                "reference": "45a6c75c51f5ac3a9ef4db381e5b77b20e912cba"
+                "reference": "5088178fdf6658f9b5d72cd9b023ec58e66541d5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rakit/validation/zipball/45a6c75c51f5ac3a9ef4db381e5b77b20e912cba",
-                "reference": "45a6c75c51f5ac3a9ef4db381e5b77b20e912cba",
+                "url": "https://api.github.com/repos/rakit/validation/zipball/5088178fdf6658f9b5d72cd9b023ec58e66541d5",
+                "reference": "5088178fdf6658f9b5d72cd9b023ec58e66541d5",
                 "shasum": ""
             },
             "require": {
@@ -1867,7 +1867,7 @@
                 }
             ],
             "description": "PHP Laravel like standalone validation library",
-            "time": "2020-07-23T11:34:09+00:00"
+            "time": "2020-07-27T04:54:37+00:00"
         },
         {
             "name": "ralouphie/getallheaders",
@@ -2027,58 +2027,6 @@
                 "tokens"
             ],
             "time": "2020-06-09T07:34:22+00:00"
-        },
-        {
-            "name": "slim/http-cache",
-            "version": "1.x-dev",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/slimphp/Slim-HttpCache.git",
-                "reference": "3a7400fc229ee54cc3151e33fe4aea8d05818451"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/slimphp/Slim-HttpCache/zipball/3a7400fc229ee54cc3151e33fe4aea8d05818451",
-                "reference": "3a7400fc229ee54cc3151e33fe4aea8d05818451",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.2",
-                "psr/http-message": "^1.0",
-                "psr/http-server-middleware": "^1.0"
-            },
-            "require-dev": {
-                "phpstan/phpstan": "^0.12.28",
-                "phpunit/phpunit": "^8.5",
-                "slim/psr7": "^1.1",
-                "squizlabs/php_codesniffer": "^3.5"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Slim\\HttpCache\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Josh Lockhart",
-                    "email": "hello@joshlockhart.com",
-                    "homepage": "http://joshlockhart.com"
-                }
-            ],
-            "description": "Slim Framework HTTP cache middleware and service provider",
-            "homepage": "https://www.slimframework.com",
-            "keywords": [
-                "cache",
-                "framework",
-                "middleware",
-                "slim"
-            ],
-            "time": "2020-06-20T20:30:53+00:00"
         },
         {
             "name": "slim/psr7",
@@ -3354,7 +3302,6 @@
         "phlak/config": 20,
         "rakit/validation": 20,
         "rbdwllr/psr-jwt": 20,
-        "slim/http-cache": 20,
         "statical/statical": 20,
         "tuupola/cors-middleware": 20,
         "vlucas/phpdotenv": 20
