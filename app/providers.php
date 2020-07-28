@@ -34,10 +34,6 @@ return [
     $container->addServiceProvider(
         new \Ares\Framework\Provider\AppServiceProvider()
     ),
-    // Adds our CacheProvider to Cache Responses
-    $container->addServiceProvider(
-        new \Ares\Framework\Provider\CacheServiceProvider()
-    ),
     // Adds our ValidationProvider
     $container->addServiceProvider(
         new \Ares\Framework\Provider\ValidationServiceProvider()
