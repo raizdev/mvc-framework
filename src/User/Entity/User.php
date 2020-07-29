@@ -17,6 +17,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Entity
  * @ORM\Table(name="users", uniqueConstraints={@ORM\UniqueConstraint(name="username", columns={"username"})}))
+ * @ORM\HasLifecycleCallbacks
  */
 class User
 {
@@ -93,6 +94,17 @@ class User
     private ?string $locale;
 
     /**
+     * @ORM\Column(type="datetime")
+     */
+    protected \DateTime $created_at;
+
+    /**
+     * @ORM\Column(type="datetime", nullable = true)
+     */
+    protected \DateTime $updated_at;
+
+
+    /**
      * Get User id
      *
      * @return integer
@@ -135,7 +147,7 @@ class User
     }
 
     /**
-     * @param   string  $mail
+     * @param string $mail
      *
      * @return User
      */
@@ -155,7 +167,7 @@ class User
     }
 
     /**
-     * @param   string  $look
+     * @param string $look
      *
      * @return User
      */
@@ -175,7 +187,7 @@ class User
     }
 
     /**
-     * @param   string  $motto
+     * @param string $motto
      *
      * @return User
      */
@@ -195,7 +207,7 @@ class User
     }
 
     /**
-     * @param   int  $credits
+     * @param int $credits
      *
      * @return User
      */
@@ -215,7 +227,7 @@ class User
     }
 
     /**
-     * @param   int  $points
+     * @param int $points
      *
      * @return User
      */
@@ -235,7 +247,7 @@ class User
     }
 
     /**
-     * @param   int  $pixels
+     * @param int $pixels
      *
      * @return User
      */
@@ -300,7 +312,7 @@ class User
     }
 
     /**
-     * @param   int  $timestamp
+     * @param int $timestamp
      *
      * @return User
      */
@@ -320,7 +332,7 @@ class User
     }
 
     /**
-     * @param   string  $ip
+     * @param string $ip
      *
      * @return User
      */
@@ -340,7 +352,7 @@ class User
     }
 
     /**
-     * @param   string  $ip
+     * @param string $ip
      *
      * @return User
      */
@@ -372,6 +384,26 @@ class User
     }
 
     /**
+     * Gets triggered only on insert
+     *
+     * @ORM\PrePersist
+     */
+    public function onPrePersist()
+    {
+        $this->created_at = new \DateTime("now");
+    }
+
+    /**
+     * Gets triggered every time on update
+     *
+     * @ORM\PreUpdate
+     */
+    public function onPreUpdate()
+    {
+        $this->updated_at = new \DateTime("now");
+    }
+
+    /**
      * Returns a copy of the current Entity safely
      *
      * @return array
@@ -379,17 +411,19 @@ class User
     public function getArrayCopy(): array
     {
         return [
-            'id'              => $this->id,
-            'username'        => $this->username,
-            'mail'            => $this->mail,
-            'look'            => $this->look,
-            'motto'           => $this->motto,
-            'credits'         => $this->credits,
-            'points'          => $this->points,
-            'pixels'          => $this->pixels,
-            'auth_ticket'     => $this->auth_ticket,
+            'id' => $this->id,
+            'username' => $this->username,
+            'mail' => $this->mail,
+            'look' => $this->look,
+            'motto' => $this->motto,
+            'credits' => $this->credits,
+            'points' => $this->points,
+            'pixels' => $this->pixels,
+            'auth_ticket' => $this->auth_ticket,
             'account_created' => $this->account_created,
-            'locale'          => $this->locale
+            'locale' => $this->locale,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at
         ];
     }
 }

@@ -19,7 +19,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 /**
  * Class UserController
  *
- * @package Ares\Framework\Controller\User
+ * @package Ares\User\Controller
  */
 class UserController extends BaseController
 {
