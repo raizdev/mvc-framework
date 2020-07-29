@@ -6,20 +6,20 @@
  * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
  */
 
-namespace Ares\User\Repository;
+namespace Ares\News\Repository;
 
-use Ares\User\Entity\User;
-use Ares\Framework\Repository\BaseRepository;
+use Ares\Framework\Interfaces\RepositoryInterface;
+use Ares\News\Entity\News;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\ORMException;
 
 /**
- * Class UserRepository
+ * Class NewsRepository
  *
- * @package Ares\User\Repository
+ * @package Ares\News\Repository
  */
-class UserRepository extends BaseRepository
+class NewsRepository implements RepositoryInterface
 {
     /**
      * @var EntityRepository
@@ -32,55 +32,22 @@ class UserRepository extends BaseRepository
     private EntityManager $entityManager;
 
     /**
-     * UserRepository constructor.
+     * NewsRepository constructor.
      *
      * @param EntityManager $entityManager
      */
     public function __construct(
         EntityManager $entityManager
     ) {
-        $this->repository = $entityManager->getRepository(User::class);
-    }
-
-    /**
-     * @param $username
-     *
-     * @return User|object
-     */
-    public function getByUsername(string $username)
-    {
-        return $this->repository->findOneBy([
-            'username' => $username
-        ]);
-    }
-
-    /**
-     * @param $mail
-     *
-     * @return User|object
-     */
-    public function getByMail(string $mail)
-    {
-        return $this->repository->findOneBy([
-            'mail' => $mail
-        ]);
-    }
-
-    /**
-     * @param array $data
-     *
-     * @return object|null
-     */
-    public function getBy(array $data): ?object
-    {
-        return $this->repository->findOneBy($data);
+        $this->entityManager = $entityManager;
+        $this->repository = $entityManager->getRepository(News::class);
     }
 
     /**
      * Get object by id.
      *
      * @param int $id
-     * @return User|null
+     * @return News|null
      */
     public function get(int $id): ?object
     {
@@ -98,7 +65,7 @@ class UserRepository extends BaseRepository
     /**
      * @param object $model
      *
-     * @return User
+     * @return News
      * @throws ORMException
      */
     public function save(object $model): object

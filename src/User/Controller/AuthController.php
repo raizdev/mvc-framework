@@ -21,7 +21,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 /**
  * Class AuthController
  *
- * @package Ares\Framework\Controller\Auth
+ * @package Ares\User\Controller\Auth
  */
 class AuthController extends BaseController
 {
