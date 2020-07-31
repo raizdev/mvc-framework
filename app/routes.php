@@ -15,17 +15,18 @@ return function (App $app) {
         return $response;
     });
 
-    $app->get('/', 'Ares\Framework\Controller\Status\StatusController:getStatus');
+    $app->get('/', \Ares\Framework\Controller\Status\StatusController::class . ':getStatus');
 
     $app->group('/api/{locale}', function (RouteCollectorProxy $group) {
         $group->group('', function (RouteCollectorProxy $group) {
-            $group->get('/users', 'Ares\User\Controller\UserController:all');
-            $group->get('/user', 'Ares\User\Controller\UserController:user');
-            $group->post('/logout', 'Ares\User\Controller\AuthController:logout');
+            $group->get('/users', \Ares\User\Controller\UserController::class . ':all');
+            $group->get('/user', \Ares\User\Controller\UserController::class . ':user');
+            $group->post('/logout', \Ares\User\Controller\AuthController::class . ':logout');
         })->add(\Ares\Framework\Middleware\AuthMiddleware::class);
 
-        $group->post('/login', 'Ares\User\Controller\AuthController:login');
-        $group->post('/register', 'Ares\User\Controller\AuthController:register');
+        // Authentication
+        $group->post('/login', \Ares\User\Controller\AuthController::class . ':login');
+        $group->post('/register', \Ares\User\Controller\AuthController::class . ':register');
     })->add(\Ares\Framework\Middleware\LocaleMiddleware::class);
 
     // Catches every route that is not found

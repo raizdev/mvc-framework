@@ -9,6 +9,8 @@ namespace Ares\Framework\Interfaces;
 
 /**
  * Interface ResponseInterface
+ *
+ * @package Ares\Framework\Interfaces
  */
 interface CustomResponseInterface
 {
@@ -42,13 +44,13 @@ interface CustomResponseInterface
     /**
      * @return string
      */
-    public function getMessage(): string;
+    public function getException(): string;
 
     /**
-     * @param string $message
+     * @param string $exception
      * @return CustomResponseInterface
      */
-    public function setMessage(string $message): CustomResponseInterface;
+    public function setException(string $exception): CustomResponseInterface;
 
     /**
      * @return array
@@ -56,10 +58,10 @@ interface CustomResponseInterface
     public function getErrors(): array;
 
     /**
-     * @param array $errors
+     * @param array $error
      * @return CustomResponseInterface
      */
-    public function setErrors(array $errors): CustomResponseInterface;
+    public function addError(array $error): CustomResponseInterface;
 
     /**
      * @return mixed

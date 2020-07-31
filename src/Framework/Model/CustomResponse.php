@@ -29,7 +29,7 @@ class CustomResponse implements CustomResponseInterface
     /**
      * @var string
      */
-    private string $message = '';
+    private string $exception = '';
 
     /**
      * @var array
@@ -42,14 +42,14 @@ class CustomResponse implements CustomResponseInterface
     private $data;
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getJson(): string
     {
         $response = [
             'status' => $this->getStatus(),
             'code' => $this->getCode(),
-            'message' => $this->getMessage(),
+            'exception' => $this->getException(),
             'errors' => $this->getErrors(),
             'data' => $this->getData()
         ];
@@ -104,22 +104,22 @@ class CustomResponse implements CustomResponseInterface
     /**
      * @return string
      */
-    public function getMessage(): string
+    public function getException(): string
     {
-        if (!$this->message) {
+        if (!$this->exception) {
             return '';
         }
 
-        return $this->message;
+        return $this->exception;
     }
 
     /**
-     * @param string $message
+     * @param string $exception
      * @return CustomResponseInterface
      */
-    public function setMessage(string $message): CustomResponseInterface
+    public function setException(string $exception): CustomResponseInterface
     {
-        $this->message = $message;
+        $this->exception = $exception;
         return $this;
     }
 
@@ -136,12 +136,12 @@ class CustomResponse implements CustomResponseInterface
     }
 
     /**
-     * @param array $errors
+     * @param array $error
      * @return CustomResponseInterface
      */
-    public function setErrors(array $errors): CustomResponseInterface
+    public function addError(array $error): CustomResponseInterface
     {
-        $this->errors = $errors;
+        $this->errors[] = $error;
         return $this;
     }
 

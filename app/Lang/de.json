@@ -1,3 +1,4 @@
 {
-  "This is our beautiful api written with %s.": "Das ist unsere schöne api, geschrieben mit %s."
+  "This is our beautiful api written with %s.": "Das ist unsere schöne api, geschrieben mit %s.",
+  "validation.required": "Dies ist ein Pflichtfeld"
 }

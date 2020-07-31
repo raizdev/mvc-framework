@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 /**
  * Ares (https://ares.to)
@@ -9,10 +9,10 @@
 namespace Ares\Framework\Exception;
 
 /**
- * Class BaseException
+ * Class ValidationException
  *
  * @package Ares\Framework\Exception
  */
-abstract class BaseException extends \Exception
+class ValidationException extends BaseException
 {
 }

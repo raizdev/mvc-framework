@@ -10,12 +10,13 @@ namespace Ares\User\Controller;
 
 use Ares\Framework\Controller\BaseController;
 use Ares\User\Entity\User;
+use Ares\User\Exception\LoginException;
+use Ares\User\Exception\RegisterException;
 use Ares\User\Repository\UserRepository;
 use Ares\Framework\Service\TokenService;
 use Ares\Framework\Service\ValidationService;
 use Exception;
 use PHLAK\Config\Config;
-use Respect\Validation\Validator as v;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -77,24 +78,16 @@ class AuthController extends BaseController
     {
         $parsedData = $request->getParsedBody();
 
-        $validation = $this->validationService->execute($parsedData, [
-            'username' => v::noWhitespace()->notEmpty()->stringType(),
-            'password' => v::notEmpty()->stringType()
+        $this->validationService->validate($parsedData, [
+            'username' => 'required|min:3',
+            'password' => 'required'
         ]);
-
-        if ($validation->failed()) {
-            return $this->respond($response, [
-                'message' => 'Please check your provided data'
-            ], 422);
-        }
 
         /** @var User $user */
         $user = $this->userRepository->findByUsername($parsedData['username']);
 
         if (empty($user) || !password_verify($parsedData['password'], $user->getPassword())) {
-            return $this->respond($response, [
-                'message' => 'Woops something went wrong'
-            ], 403);
+            throw new LoginException(__('Woops something went wrong.'), 403);
         }
 
         /** @var TokenService $token */
@@ -118,25 +111,17 @@ class AuthController extends BaseController
     {
         $parsedData = $request->getParsedBody();
 
-        $validation = $this->validationService->execute($parsedData, [
-            'username' => v::noWhitespace()->notEmpty()->notBlank()->stringType(),
-            'mail' => v::noWhitespace()->notEmpty()->notBlank()->email(),
-            'password' => v::notEmpty()->notBlank()->stringType()
+        $this->validationService->validate($parsedData, [
+            'username' => 'required|min:3',
+            'mail'     => 'required|email|min:9',
+            'password' => 'required'
         ]);
-
-        if ($validation->failed()) {
-            return $this->respond($response, [
-                'message' => 'Please check your provided data'
-            ], 422);
-        }
 
         /** @var User $user */
         $user = $this->userRepository->findByUsername($parsedData['username']);
 
         if (!is_null($user)) {
-            return $this->respond($response, [
-                'message' => 'Username already exists'
-            ], 422);
+            throw new RegisterException(__('User already exists.'), 422);
         }
 
         $data = [
@@ -154,7 +139,10 @@ class AuthController extends BaseController
             'auth_ticket' => 'xddd'
         ];
 
-        $user = $this->userRepository->create($data);
+        $user = new User();
+
+        /** @var User $user */
+        $user = $this->userRepository->create($user ,$data);
 
         /** @var TokenService $token */
         $token = $this->tokenService->execute($user->getId());
@@ -167,7 +155,8 @@ class AuthController extends BaseController
     }
 
     /**
-     * @TODO TBD - Need to write something that unvalidates the token...
+     * Returns a response without the Authorization header
+     * We could blacklist the token with redis-cache
      *
      * @param Request  $request
      * @param Response $response
@@ -176,5 +165,6 @@ class AuthController extends BaseController
      */
     public function logout(Request $request, Response $response): Response
     {
+        return $response->withoutHeader('Authorization');
     }
 }

@@ -55,24 +55,24 @@ class Locale
     /**
      * Takes message and placeholder to translate them in given locale.
      *
-     * @param string $message
+     * @param string $key
      * @return string
      */
-    public function translate(string $message): string
+    public function translate(string $key): string
     {
         $messages = $this->getMessages();
 
-        if (!array_key_exists($message, $messages)) {
+        if (!array_key_exists($key, $messages)) {
             $messages = $this->getFallbackMessages();
 
-            if (!array_key_exists($message, $messages)) {
-                return $message;
+            if (!array_key_exists($key, $messages)) {
+                return $key;
             } else {
-                return $messages[$message];
+                return $messages[$key];
             }
         }
 
-        return $messages[$message];
+        return $messages[$key];
     }
 
     /**
