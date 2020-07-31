@@ -13,6 +13,7 @@ use Ares\Framework\Repository\BaseRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\ORMException;
+use Doctrine\Persistence\ObjectRepository;
 
 /**
  * Class UserRepository
@@ -22,7 +23,7 @@ use Doctrine\ORM\ORMException;
 class UserRepository extends BaseRepository
 {
     /**
-     * @var EntityRepository
+     * @var EntityRepository|ObjectRepository
      */
     private $repository;
 
@@ -39,6 +40,7 @@ class UserRepository extends BaseRepository
     public function __construct(
         EntityManager $entityManager
     ) {
+        $this->entityManager = $entityManager;
         $this->repository = $entityManager->getRepository(User::class);
     }
 

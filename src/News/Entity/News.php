@@ -8,15 +8,15 @@
 
 namespace Ares\News\Entity;
 
+use Ares\User\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\ManyToOne;
 
 /**
  * Class News
  *
  * @package Ares\Framework\Entity
  *
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Ares\News\Repository\NewsRepository")
  * @ORM\Table(name="ares_news", uniqueConstraints={@ORM\UniqueConstraint(name="title", columns={"title"})}))
  * @ORM\HasLifecycleCallbacks
  */
@@ -51,7 +51,6 @@ class News
 
     /**
      * @ORM\Column(type="integer", length=20)
-     * @ManyToOne(targetEntity="User")
      */
     private int $author;
 
@@ -165,7 +164,7 @@ class News
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getAuthor(): ?int
     {

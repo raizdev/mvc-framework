@@ -18,11 +18,19 @@ return function (App $app) {
     $app->get('/', \Ares\Framework\Controller\Status\StatusController::class . ':getStatus');
 
     $app->group('/api/{locale}', function (RouteCollectorProxy $group) {
-        $group->group('', function (RouteCollectorProxy $group) {
-            $group->group('/user', function (RouteCollectorProxy $group) {
+        $group->group('', function ($group) {
+            // User
+            $group->group('/user', function ($group) {
                 $group->get('', \Ares\User\Controller\UserController::class . ':user');
                 $group->post('/locale', \Ares\User\Controller\UserController::class . ':updateLocale');
             });
+            // News
+            $group->group('/news', function($group) {
+                $group->get('', \Ares\News\Controller\NewsController::class . ':list');
+                $group->get('/{id}', \Ares\News\Controller\NewsController::class . ':news');
+                $group->get('/slide', \Ares\News\Controller\NewsController::class . ':slide');
+            });
+            // De-Authentication
             $group->post('/logout', \Ares\User\Controller\AuthController::class . ':logout');
         })->add(\Ares\Framework\Middleware\AuthMiddleware::class);
 

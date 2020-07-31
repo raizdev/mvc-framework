@@ -8,21 +8,22 @@
 
 namespace Ares\News\Repository;
 
-use Ares\Framework\Interfaces\RepositoryInterface;
+use Ares\Framework\Repository\BaseRepository;
 use Ares\News\Entity\News;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\ORMException;
+use Doctrine\Persistence\ObjectRepository;
 
 /**
  * Class NewsRepository
  *
  * @package Ares\News\Repository
  */
-class NewsRepository implements RepositoryInterface
+class NewsRepository extends BaseRepository
 {
     /**
-     * @var EntityRepository
+     * @var EntityRepository|ObjectRepository
      */
     private $repository;
 
@@ -74,6 +75,19 @@ class NewsRepository implements RepositoryInterface
         $this->entityManager->flush();
 
         return $model;
+    }
+
+    /**
+     * @param      $criteria
+     * @param null $orderBy
+     * @param null $limit
+     * @param null $offset
+     *
+     * @return array|object[]
+     */
+    public function getBy($criteria, $orderBy = null, $limit = null, $offset = null): object
+    {
+        return $this->repository->findBy($criteria, $orderBy, $limit, $offset);
     }
 
     /**
