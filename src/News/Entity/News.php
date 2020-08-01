@@ -16,7 +16,7 @@ use Doctrine\ORM\Mapping\OneToOne;
 /**
  * Class News
  *
- * @package Ares\Framework\Entity
+ * @package Ares\News\Entity
  *
  * @ORM\Entity
  * @ORM\Table(name="ares_news", uniqueConstraints={@ORM\UniqueConstraint(name="title", columns={"title"})}))
@@ -53,7 +53,6 @@ class News
 
     /**
      * @OneToOne(targetEntity="\Ares\User\Entity\User")
-     * @JoinColumn(name="author", referencedColumnName="id")
      */
     private ?User $author;
 
