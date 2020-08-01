@@ -53,7 +53,7 @@ class NewsController extends BaseController
         $article = $this->newsRepository->get((int)$args['id']);
 
         if(is_null($article)) {
-            throw new NewsException(__('No specific News found'));
+            throw new NewsException(__('No specific News found'), 404);
         }
 
         return $this->respond(

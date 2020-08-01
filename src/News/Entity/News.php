@@ -37,6 +37,11 @@ class News
     private string $title;
 
     /**
+     * @ORM\Column(type="string", length=100)
+     */
+    private string $slug;
+
+    /**
      * @ORM\Column(type="string", length=150)
      */
     private string $description;
@@ -99,6 +104,26 @@ class News
     public function setTitle(string $title): self
     {
         $this->title = $title;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSlug(): string
+    {
+        return $this->slug;
+    }
+
+    /**
+     * @param string $slug
+     *
+     * @return News
+     */
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
 
         return $this;
     }
@@ -251,6 +276,7 @@ class News
         return [
             'id' => $this->getId(),
             'title' => $this->getTitle(),
+            'slug' => $this->getSlug(),
             'description' => $this->getDescription(),
             'content' => $this->getContent(),
             'image' => $this->getImage(),
