@@ -75,7 +75,7 @@ class NewsController extends BaseController
     {
         $articles = $this->newsRepository->getList([], ['id' => 'DESC'], (int)$args['total']);
 
-        if (is_null($articles)) {
+        if (empty($articles)) {
             throw new NewsException(__('No News were found'), 404);
         }
 
@@ -102,7 +102,7 @@ class NewsController extends BaseController
         /** @var News $articles */
         $articles = $this->newsRepository->getList([]);
 
-        if(is_null($articles)) {
+        if(empty($articles)) {
             throw new NewsException(__('No News were found'), 404);
         }
 
