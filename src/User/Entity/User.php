@@ -428,13 +428,11 @@ class User
         return [
             'id' => $this->getId(),
             'username' => $this->getUsername(),
-            'mail' => $this->getMail(),
             'look' => $this->getLook(),
             'motto' => $this->getMotto(),
             'credits' => $this->getCredits(),
             'points' => $this->getPoints(),
             'pixels' => $this->getPixels(),
-            'auth_ticket' => $this->getTicket(),
             'account_created' => $this->getAccountCreated(),
             'locale' => $this->getLocale(),
             'created_at' => $this->getCreatedAt(),
