@@ -39,7 +39,7 @@ class ConfigServiceProvider extends AbstractServiceProvider
 
                     'cache_dir' => base_dir() . 'tmp/Cache/doctrine',
 
-                    'metadata_dirs' => ['src/Entity'],
+                    'metadata_dirs' => ['src'],
 
                     'connection' => [
                         'driver' => 'pdo_mysql',

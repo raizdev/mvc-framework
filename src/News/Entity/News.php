@@ -10,13 +10,15 @@ namespace Ares\News\Entity;
 
 use Ares\User\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\OneToOne;
 
 /**
  * Class News
  *
  * @package Ares\Framework\Entity
  *
- * @ORM\Entity(repositoryClass="Ares\News\Repository\NewsRepository")
+ * @ORM\Entity
  * @ORM\Table(name="ares_news", uniqueConstraints={@ORM\UniqueConstraint(name="title", columns={"title"})}))
  * @ORM\HasLifecycleCallbacks
  */
@@ -50,9 +52,10 @@ class News
     private ?string $image;
 
     /**
-     * @ORM\Column(type="integer", length=20)
+     * @OneToOne(targetEntity="\Ares\User\Entity\User")
+     * @JoinColumn(name="author", referencedColumnName="id")
      */
-    private int $author;
+    private ?User $author;
 
     /**
      * @ORM\Column(type="integer", length=20)
@@ -164,19 +167,19 @@ class News
     }
 
     /**
-     * @return int|null
+     * @return User|null
      */
-    public function getAuthor(): ?int
+    public function getAuthor(): ?User
     {
         return $this->author;
     }
 
     /**
-     * @param int $author
+     * @param User $author
      *
      * @return News
      */
-    public function setAuthor(int $author): self
+    public function setAuthor(User $author): self
     {
         $this->author = $author;
 
@@ -201,6 +204,22 @@ class News
         $this->hidden = $hidden;
 
         return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getCreatedAt(): \DateTime
+    {
+        return $this->created_at;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getUpdatedAt(): \DateTime
+    {
+        return $this->updated_at;
     }
 
     /**
@@ -231,15 +250,15 @@ class News
     public function getArrayCopy(): array
     {
         return [
-            'id' => $this->id,
-            'title' => $this->title,
-            'description' => $this->description,
-            'content' => $this->content,
-            'image' => $this->image,
-            'author' => $this->author,
-            'hidden' => $this->hidden,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at
+            'id' => $this->getId(),
+            'title' => $this->getTitle(),
+            'description' => $this->getDescription(),
+            'content' => $this->getContent(),
+            'image' => $this->getImage(),
+            'author' => $this->getAuthor()->getArrayCopy(),
+            'hidden' => $this->getHidden(),
+            'created_at' => $this->getCreatedAt(),
+            'updated_at' => $this->getUpdatedAt()
         ];
     }
 }

@@ -56,14 +56,6 @@ class NewsRepository extends BaseRepository
     }
 
     /**
-     * @return array
-     */
-    public function getList(): array
-    {
-        return $this->repository->findAll();
-    }
-
-    /**
      * @param object $model
      *
      * @return News
@@ -85,7 +77,7 @@ class NewsRepository extends BaseRepository
      *
      * @return array|object[]
      */
-    public function getBy($criteria, $orderBy = null, $limit = null, $offset = null): object
+    public function getList($criteria, $orderBy = null, $limit = null, $offset = null): object
     {
         return $this->repository->findBy($criteria, $orderBy, $limit, $offset);
     }

@@ -90,11 +90,16 @@ class UserRepository extends BaseRepository
     }
 
     /**
-     * @return array
+     * @param      $criteria
+     * @param null $orderBy
+     * @param null $limit
+     * @param null $offset
+     *
+     * @return array|object[]
      */
-    public function getList(): array
+    public function getList($criteria, $orderBy = null, $limit = null, $offset = null): object
     {
-        return $this->repository->findAll();
+        return $this->repository->findBy($criteria, $orderBy, $limit, $offset);
     }
 
     /**

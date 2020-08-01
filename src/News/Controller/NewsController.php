@@ -71,7 +71,7 @@ class NewsController extends BaseController
      */
     public function slide(Request $request, Response $response): Response
     {
-        $articles = $this->newsRepository->getBy([], 'DESC', 3);
+        $articles = $this->newsRepository->getList([], 'DESC', 3);
 
         if (is_null($articles)) {
             throw new NewsException(__('No News were found'), 404);
@@ -98,7 +98,7 @@ class NewsController extends BaseController
     public function list(Request $request, Response $response): Response
     {
         /** @var News $articles */
-        $articles = $this->newsRepository->getList();
+        $articles = $this->newsRepository->getList([]);
 
         if(is_null($articles)) {
             throw new NewsException(__('No News were found'), 404);

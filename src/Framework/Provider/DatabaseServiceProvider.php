@@ -32,7 +32,7 @@ class DatabaseServiceProvider extends AbstractServiceProvider
 
         $container->add(EntityManager::class, function () use ($container) {
             $settings = $container->get('settings');
-            $config   = Setup::createAnnotationMetadataConfiguration(
+            $config = Setup::createAnnotationMetadataConfiguration(
                 $settings['doctrine']['metadata_dirs'],
                 $settings['doctrine']['dev_mode']
             );
@@ -47,7 +47,6 @@ class DatabaseServiceProvider extends AbstractServiceProvider
                     $settings['doctrine']['cache_dir']
                 )
             );
-            $config->addCustomStringFunction('MATCH', 'Ares\Framework\Service\MatchAgainstFunction');
 
             return EntityManager::create($settings['doctrine']['connection'], $config);
         });

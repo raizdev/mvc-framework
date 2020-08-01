@@ -26,9 +26,14 @@ interface RepositoryInterface
     /**
      * Get array of objects by id.
      *
-     * @return array
+     * @param array $criteria
+     * @param null  $orderBy
+     * @param null  $limit
+     * @param null  $offset
+     *
+     * @return object
      */
-    public function getList(): array;
+    public function getList(array $criteria, $orderBy = null, $limit = null, $offset = null): object;
 
     /**
      * Save object.

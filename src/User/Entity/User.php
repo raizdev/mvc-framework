@@ -258,7 +258,6 @@ class User
         return $this;
     }
 
-
     /**
      * Gets Auth_ticket of User
      *
@@ -384,6 +383,22 @@ class User
     }
 
     /**
+     * @return \DateTime
+     */
+    public function getCreatedAt(): \DateTime
+    {
+        return $this->created_at;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getUpdatedAt(): \DateTime
+    {
+        return $this->updated_at;
+    }
+
+    /**
      * Gets triggered only on insert
      *
      * @ORM\PrePersist
@@ -411,19 +426,19 @@ class User
     public function getArrayCopy(): array
     {
         return [
-            'id' => $this->id,
-            'username' => $this->username,
-            'mail' => $this->mail,
-            'look' => $this->look,
-            'motto' => $this->motto,
-            'credits' => $this->credits,
-            'points' => $this->points,
-            'pixels' => $this->pixels,
-            'auth_ticket' => $this->auth_ticket,
-            'account_created' => $this->account_created,
-            'locale' => $this->locale,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at
+            'id' => $this->getId(),
+            'username' => $this->getUsername(),
+            'mail' => $this->getMail(),
+            'look' => $this->getLook(),
+            'motto' => $this->getMotto(),
+            'credits' => $this->getCredits(),
+            'points' => $this->getPoints(),
+            'pixels' => $this->getPixels(),
+            'auth_ticket' => $this->getTicket(),
+            'account_created' => $this->getAccountCreated(),
+            'locale' => $this->getLocale(),
+            'created_at' => $this->getCreatedAt(),
+            'updated_at' => $this->getUpdatedAt()
         ];
     }
 }
