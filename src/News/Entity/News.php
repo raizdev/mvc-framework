@@ -57,7 +57,7 @@ class News
     private ?User $author;
 
     /**
-     * @ORM\Column(type="integer", length=20)
+     * @ORM\Column(type="integer", columnDefinition="ENUM('0',1')")
      */
     private int $hidden;
 

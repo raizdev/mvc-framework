@@ -19,6 +19,7 @@ return function (App $app) {
 
     $app->group('/api/{locale}', function (RouteCollectorProxy $group) {
         $group->group('', function ($group) {
+
             // User
             $group->group('/user', function ($group) {
                 $group->get('', \Ares\User\Controller\UserController::class . ':user');
@@ -30,6 +31,13 @@ return function (App $app) {
                 $group->get('/{id}', \Ares\News\Controller\NewsController::class . ':news');
                 $group->get('/slide', \Ares\News\Controller\NewsController::class . ':slide');
             });
+
+            // Rooms
+            $group->group('/rooms', function($group) {
+                $group->get('', \Ares\News\Controller\NewsController::class . ':list');
+                $group->get('/{id}', \Ares\News\Controller\NewsController::class . ':room');
+            });
+
             // De-Authentication
             $group->post('/logout', \Ares\User\Controller\AuthController::class . ':logout');
         })->add(\Ares\Framework\Middleware\AuthMiddleware::class);
@@ -40,6 +48,7 @@ return function (App $app) {
             $group->post('', \Ares\User\Controller\AuthController::class . ':register');
             $group->post('/check', \Ares\User\Controller\AuthController::class . ':check');
         });
+        $group->get('/user/online', \Ares\User\Controller\UserController::class . ':onlineUser');
     })->add(\Ares\Framework\Middleware\LocaleMiddleware::class);
 
     // Catches every route that is not found

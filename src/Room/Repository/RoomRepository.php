@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 /**
  * Ares (https://ares.to)
@@ -6,21 +6,21 @@
  * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
  */
 
-namespace Ares\News\Repository;
+namespace Ares\Room\Repository;
 
 use Ares\Framework\Repository\BaseRepository;
-use Ares\News\Entity\News;
+use Ares\Room\Entity\Room;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ObjectRepository;
 
 /**
- * Class NewsRepository
+ * Class RoomRepository
  *
- * @package Ares\News\Repository
+ * @package Ares\Room\Repository
  */
-class NewsRepository extends BaseRepository
+class RoomRepository extends BaseRepository
 {
     /**
      * @var EntityRepository|ObjectRepository
@@ -41,14 +41,14 @@ class NewsRepository extends BaseRepository
         EntityManager $entityManager
     ) {
         $this->entityManager = $entityManager;
-        $this->repository = $entityManager->getRepository(News::class);
+        $this->repository = $entityManager->getRepository(Room::class);
     }
 
     /**
      * Get object by id.
      *
      * @param int $id
-     * @return News|null
+     * @return Room|null
      */
     public function get(int $id): ?object
     {
@@ -58,7 +58,7 @@ class NewsRepository extends BaseRepository
     /**
      * @param object $model
      *
-     * @return News
+     * @return Room
      * @throws ORMException
      */
     public function save(object $model): object

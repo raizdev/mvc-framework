@@ -103,6 +103,16 @@ class UserRepository extends BaseRepository
     }
 
     /**
+     * @param array $criteria
+     *
+     * @return int
+     */
+    public function count(array $criteria): int
+    {
+        return $this->repository->count($criteria);
+    }
+
+    /**
      * @param object $model
      *
      * @return User

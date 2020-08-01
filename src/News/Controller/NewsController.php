@@ -18,7 +18,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 /**
  * Class NewsController
  *
- * @package Ares\User\Controller
+ * @package Ares\News\Controller
  */
 class NewsController extends BaseController
 {

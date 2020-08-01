@@ -89,6 +89,11 @@ class User
     private ?string $ip_current;
 
     /**
+     * @ORM\Column(type="integer", columnDefinition="ENUM('0',1','2')")
+     */
+    private int $online;
+
+    /**
      * @ORM\Column(type="string", length=10)
      */
     private ?string $locale;
@@ -122,6 +127,26 @@ class User
     public function getUsername(): ?string
     {
         return $this->username;
+    }
+
+    /**
+     * @return int
+     */
+    public function getOnline(): int
+    {
+        return $this->online;
+    }
+
+    /**
+     * @param int $online
+     *
+     * @return User
+     */
+    public function setOnline(int $online): self
+    {
+        $this->online = $online;
+
+        return $this;
     }
 
     /**
@@ -434,6 +459,7 @@ class User
             'points' => $this->getPoints(),
             'pixels' => $this->getPixels(),
             'account_created' => $this->getAccountCreated(),
+            'online' => $this->getOnline(),
             'locale' => $this->getLocale(),
             'created_at' => $this->getCreatedAt(),
             'updated_at' => $this->getUpdatedAt()
