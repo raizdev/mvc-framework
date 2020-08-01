@@ -30,14 +30,14 @@ return function (App $app) {
             // News
             $group->group('/news', function($group) {
                 $group->get('', \Ares\News\Controller\NewsController::class . ':list');
-                $group->get('/{id}', \Ares\News\Controller\NewsController::class . ':news');
-                $group->get('/slide', \Ares\News\Controller\NewsController::class . ':slide');
+                $group->get('/{id:[0-9]+}', \Ares\News\Controller\NewsController::class . ':news');
+                $group->get('/slide/{total:[0-9]+}', \Ares\News\Controller\NewsController::class . ':slide');
             });
 
             // Rooms
             $group->group('/rooms', function($group) {
                 $group->get('', \Ares\News\Controller\NewsController::class . ':list');
-                $group->get('/{id}', \Ares\News\Controller\NewsController::class . ':room');
+                $group->get('/{id:[0-9]+}', \Ares\News\Controller\NewsController::class . ':room');
             });
 
             // De-Authentication

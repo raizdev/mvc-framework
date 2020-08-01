@@ -42,15 +42,15 @@ class RoomController extends BaseController
     /**
      * @param Request  $request
      * @param Response $response
-     * @param          $id
+     * @param          $args
      *
      * @return Response
      * @throws RoomException
      */
-    public function room(Request $request, Response $response, $id): Response
+    public function room(Request $request, Response $response, $args): Response
     {
         /** @var Room $room */
-        $room = $this->roomRepository->get((int)$id);
+        $room = $this->roomRepository->get((int)$args['id']);
 
         if(is_null($room)) {
             throw new RoomException(__('No specific Room found'));

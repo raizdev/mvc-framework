@@ -42,15 +42,15 @@ class NewsController extends BaseController
      * @param Request  $request
      * @param Response $response
      *
-     * @param          $id
+     * @param          $args
      *
      * @return Response
      * @throws NewsException
      */
-    public function news(Request $request, Response $response, $id): Response
+    public function news(Request $request, Response $response, $args): Response
     {
         /** @var News $article */
-        $article = $this->newsRepository->get((int)$id);
+        $article = $this->newsRepository->get((int)$args['id']);
 
         if(is_null($article)) {
             throw new NewsException(__('No specific News found'));
@@ -66,12 +66,14 @@ class NewsController extends BaseController
      * @param Request  $request
      * @param Response $response
      *
+     * @param          $args
+     *
      * @return Response
      * @throws NewsException
      */
-    public function slide(Request $request, Response $response): Response
+    public function slide(Request $request, Response $response, $args): Response
     {
-        $articles = $this->newsRepository->getList([], 'DESC', 3);
+        $articles = $this->newsRepository->getList([], ['id' => 'DESC'], (int)$args['total']);
 
         if (is_null($articles)) {
             throw new NewsException(__('No News were found'), 404);
