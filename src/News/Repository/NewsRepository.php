@@ -77,7 +77,7 @@ class NewsRepository extends BaseRepository
      *
      * @return array|object[]
      */
-    public function getList($criteria, $orderBy = null, $limit = null, $offset = null): object
+    public function getList($criteria, $orderBy = null, $limit = null, $offset = null): array
     {
         return $this->repository->findBy($criteria, $orderBy, $limit, $offset);
     }
