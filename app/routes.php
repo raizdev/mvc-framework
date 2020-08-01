@@ -15,11 +15,13 @@ return function (App $app) {
         return $response;
     });
 
+    // Status
     $app->get('/', \Ares\Framework\Controller\Status\StatusController::class . ':getStatus');
 
     $app->group('/api/{locale}', function (RouteCollectorProxy $group) {
-        $group->group('', function ($group) {
 
+        // Only Accessible if LoggedIn
+        $group->group('', function ($group) {
             // User
             $group->group('/user', function ($group) {
                 $group->get('', \Ares\User\Controller\UserController::class . ':user');
@@ -48,6 +50,8 @@ return function (App $app) {
             $group->post('', \Ares\User\Controller\AuthController::class . ':register');
             $group->post('/check', \Ares\User\Controller\AuthController::class . ':check');
         });
+
+        // Global Routes
         $group->get('/user/online', \Ares\User\Controller\UserController::class . ':onlineUser');
     })->add(\Ares\Framework\Middleware\LocaleMiddleware::class);
 
