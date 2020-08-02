@@ -9,7 +9,6 @@
 namespace Ares\Room\Controller;
 
 use Ares\Framework\Controller\BaseController;
-
 use Ares\Room\Entity\Room;
 use Ares\Room\Exception\RoomException;
 use Ares\Room\Repository\RoomRepository;
@@ -74,7 +73,7 @@ class RoomController extends BaseController
         /** @var Room $rooms */
         $rooms = $this->roomRepository->getList([]);
 
-        if(is_null($rooms)) {
+        if(empty($rooms)) {
             throw new RoomException(__('No Rooms were found'), 404);
         }
 
