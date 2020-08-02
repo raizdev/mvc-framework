@@ -1,8 +1,12 @@
 <?php
 
+/**
+ * Ares (https://ares.to)
+ *
+ * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ */
 
 namespace Ares\Guild\Repository;
-
 
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Guild\Entity\Guild;
@@ -11,6 +15,11 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ObjectRepository;
 
+/**
+ * Class GuildRepository
+ *
+ * @package Ares\Guild\Repository
+ */
 class GuildRepository extends BaseRepository
 {
     /**

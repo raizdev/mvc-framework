@@ -1,8 +1,13 @@
 <?php
 
+/**
+ * Ares (https://ares.to)
+ *
+ * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ */
+
 
 namespace Ares\Ban\Repository;
-
 
 use Ares\Ban\Entity\Ban;
 use Ares\Framework\Repository\BaseRepository;
@@ -11,6 +16,11 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ObjectRepository;
 
+/**
+ * Class BanRepository
+ *
+ * @package Ares\Ban\Repository
+ */
 class BanRepository extends BaseRepository
 {
     /**
