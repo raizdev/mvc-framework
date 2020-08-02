@@ -30,6 +30,7 @@ return function (App $app) {
             // News
             $group->group('/articles', function($group) {
                 $group->get('', \Ares\Article\Controller\ArticleController::class . ':list');
+                $group->get('/pinned', \Ares\Article\Controller\ArticleController::class . ':pinned');
                 $group->get('/{id:[0-9]+}', \Ares\Article\Controller\ArticleController::class . ':article');
                 $group->get('/slide/{total:[0-9]+}[/{offset}]', \Ares\Article\Controller\ArticleController::class . ':slide');
             });

@@ -22,6 +22,8 @@ use Psr\Http\Message\ServerRequestInterface as Request;
  */
 class ArticleController extends BaseController
 {
+    private const IS_PINNED = 1;
+
     /**
      * @var ArticleRepository
      */
@@ -59,6 +61,35 @@ class ArticleController extends BaseController
         return $this->respond(
             $response,
             response()->setData($article->getArrayCopy())
+        );
+    }
+
+    /**
+     * @param Request  $request
+     * @param Response $response
+     *
+     * @return Response
+     * @throws ArticleException
+     */
+    public function pinned(Request $request, Response $response): Response
+    {
+        /** @var array $pinnedArticles */
+        $pinnedArticles = $this->articleRepository->getList([
+            'pinned' => self::IS_PINNED
+        ]);
+
+        if(empty($pinnedArticles)) {
+            throw new ArticleException(__('No Pinned Articles found'));
+        }
+
+        $list = [];
+        foreach ($pinnedArticles as $pinnedArticle) {
+            $list[] = $pinnedArticle->getArrayCopy();
+        }
+
+        return $this->respond(
+            $response,
+            response()->setData($list)
         );
     }
 
