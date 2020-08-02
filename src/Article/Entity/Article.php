@@ -76,7 +76,7 @@ class Article
     protected \DateTime $updated_at;
 
     /**
-     * Get User id
+     * Get Article id
      *
      * @return integer
      */

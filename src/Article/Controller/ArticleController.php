@@ -73,7 +73,10 @@ class ArticleController extends BaseController
      */
     public function slide(Request $request, Response $response, $args): Response
     {
-        $articles = $this->articleRepository->getList([], ['id' => 'DESC'], (int)$args['total']);
+        $total = $args['total'] ?? 0;
+        $offset = $args['offset'] ?? 0;
+
+        $articles = $this->articleRepository->getList([], ['id' => 'DESC'], (int)$total, (int)$offset);
 
         if (empty($articles)) {
             throw new ArticleException(__('No Articles were found'), 404);
