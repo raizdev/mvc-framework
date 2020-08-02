@@ -22,6 +22,9 @@ use Psr\Http\Message\ServerRequestInterface as Request;
  */
 class ArticleController extends BaseController
 {
+    /*
+     * Represents the Value of pinned Articles
+     */
     private const IS_PINNED = 1;
 
     /**
