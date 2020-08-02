@@ -6,21 +6,21 @@
  * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
  */
 
-namespace Ares\News\Repository;
+namespace Ares\Article\Repository;
 
 use Ares\Framework\Repository\BaseRepository;
-use Ares\News\Entity\News;
+use Ares\Article\Entity\Article;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ObjectRepository;
 
 /**
- * Class NewsRepository
+ * Class ArticleRepository
  *
- * @package Ares\News\Repository
+ * @package Ares\Article\Repository
  */
-class NewsRepository extends BaseRepository
+class ArticleRepository extends BaseRepository
 {
     /**
      * @var EntityRepository|ObjectRepository
@@ -33,7 +33,7 @@ class NewsRepository extends BaseRepository
     private EntityManager $entityManager;
 
     /**
-     * NewsRepository constructor.
+     * ArticleRepository constructor.
      *
      * @param EntityManager $entityManager
      */
@@ -41,14 +41,14 @@ class NewsRepository extends BaseRepository
         EntityManager $entityManager
     ) {
         $this->entityManager = $entityManager;
-        $this->repository = $entityManager->getRepository(News::class);
+        $this->repository = $entityManager->getRepository(Article::class);
     }
 
     /**
      * Get object by id.
      *
      * @param int $id
-     * @return News|null
+     * @return Article|null
      */
     public function get(int $id): ?object
     {
@@ -58,7 +58,7 @@ class NewsRepository extends BaseRepository
     /**
      * @param object $model
      *
-     * @return News
+     * @return Article
      * @throws ORMException
      */
     public function save(object $model): object

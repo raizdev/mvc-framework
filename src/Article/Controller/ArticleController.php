@@ -6,36 +6,36 @@
  * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
  */
 
-namespace Ares\News\Controller;
+namespace Ares\Article\Controller;
 
 use Ares\Framework\Controller\BaseController;
-use Ares\News\Entity\News;
-use Ares\News\Exception\NewsException;
-use Ares\News\Repository\NewsRepository;
+use Ares\Article\Entity\Article;
+use Ares\Article\Exception\ArticleException;
+use Ares\Article\Repository\ArticleRepository;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 /**
- * Class NewsController
+ * Class ArticleController
  *
- * @package Ares\News\Controller
+ * @package Ares\Article\Controller
  */
-class NewsController extends BaseController
+class ArticleController extends BaseController
 {
     /**
-     * @var NewsRepository
+     * @var ArticleRepository
      */
-    private NewsRepository $newsRepository;
+    private ArticleRepository $articleRepository;
 
     /**
-     * NewsController constructor.
+     * ArticleController constructor.
      *
-     * @param NewsRepository $newsRepository
+     * @param ArticleRepository $articleRepository
      */
     public function __construct(
-        NewsRepository $newsRepository
+        ArticleRepository $articleRepository
     ) {
-        $this->newsRepository = $newsRepository;
+        $this->articleRepository = $articleRepository;
     }
 
     /**
@@ -45,15 +45,15 @@ class NewsController extends BaseController
      * @param          $args
      *
      * @return Response
-     * @throws NewsException
+     * @throws ArticleException
      */
-    public function news(Request $request, Response $response, $args): Response
+    public function article(Request $request, Response $response, $args): Response
     {
-        /** @var News $article */
-        $article = $this->newsRepository->get((int)$args['id']);
+        /** @var Article $article */
+        $article = $this->articleRepository->get((int)$args['id']);
 
         if(is_null($article)) {
-            throw new NewsException(__('No specific News found'), 404);
+            throw new ArticleException(__('No specific Article found'), 404);
         }
 
         return $this->respond(
@@ -69,14 +69,14 @@ class NewsController extends BaseController
      * @param          $args
      *
      * @return Response
-     * @throws NewsException
+     * @throws ArticleException
      */
     public function slide(Request $request, Response $response, $args): Response
     {
-        $articles = $this->newsRepository->getList([], ['id' => 'DESC'], (int)$args['total']);
+        $articles = $this->articleRepository->getList([], ['id' => 'DESC'], (int)$args['total']);
 
         if (empty($articles)) {
-            throw new NewsException(__('No News were found'), 404);
+            throw new ArticleException(__('No Article were found'), 404);
         }
 
         $list = [];
@@ -95,15 +95,15 @@ class NewsController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws NewsException
+     * @throws ArticleException
      */
     public function list(Request $request, Response $response): Response
     {
-        /** @var News $articles */
-        $articles = $this->newsRepository->getList([]);
+        /** @var Article $articles */
+        $articles = $this->articleRepository->getList([]);
 
         if(empty($articles)) {
-            throw new NewsException(__('No News were found'), 404);
+            throw new ArticleException(__('No Article were found'), 404);
         }
 
         $list = [];

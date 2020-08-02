@@ -6,7 +6,7 @@
  * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
  */
 
-namespace Ares\News\Entity;
+namespace Ares\Article\Entity;
 
 use Ares\User\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
@@ -14,15 +14,15 @@ use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\OneToOne;
 
 /**
- * Class News
+ * Class Article
  *
- * @package Ares\News\Entity
+ * @package Ares\Article\Entity
  *
  * @ORM\Entity
- * @ORM\Table(name="ares_news", uniqueConstraints={@ORM\UniqueConstraint(name="title", columns={"title"})}))
+ * @ORM\Table(name="ares_articles", uniqueConstraints={@ORM\UniqueConstraint(name="title", columns={"title"})}))
  * @ORM\HasLifecycleCallbacks
  */
-class News
+class Article
 {
     /**
      * @ORM\Id
@@ -87,7 +87,7 @@ class News
     }
 
     /**
-     * Gets Title of News
+     * Gets Title of Article
      *
      * @return string
      */
@@ -99,7 +99,7 @@ class News
     /**
      * @param string $title
      *
-     * @return News
+     * @return Article
      */
     public function setTitle(string $title): self
     {
@@ -119,7 +119,7 @@ class News
     /**
      * @param string $slug
      *
-     * @return News
+     * @return Article
      */
     public function setSlug(string $slug): self
     {
@@ -129,7 +129,7 @@ class News
     }
 
     /**
-     * Gets Description of News
+     * Gets Description of Article
      *
      * @return string
      */
@@ -141,7 +141,7 @@ class News
     /**
      * @param string $description
      *
-     * @return News
+     * @return Article
      */
     public function setDescription(string $description): self
     {
@@ -161,7 +161,7 @@ class News
     /**
      * @param string $content
      *
-     * @return News
+     * @return Article
      */
     public function setContent(string $content): self
     {
@@ -181,7 +181,7 @@ class News
     /**
      * @param string $image
      *
-     * @return News
+     * @return Article
      */
     public function setImage(string $image): self
     {
@@ -201,7 +201,7 @@ class News
     /**
      * @param User $author
      *
-     * @return News
+     * @return Article
      */
     public function setAuthor(User $author): self
     {
@@ -221,7 +221,7 @@ class News
     /**
      * @param int $hidden
      *
-     * @return News
+     * @return Article
      */
     public function setHidden(int $hidden): self
     {
