@@ -1,8 +1,12 @@
 <?php
 
+/**
+ * Ares (https://ares.to)
+ *
+ * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ */
 
 namespace Ares\Messenger\Controller;
-
 
 use Ares\Framework\Controller\BaseController;
 use Ares\Messenger\Exception\MessengerException;
@@ -12,6 +16,11 @@ use Ares\User\Repository\UserRepository;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
+/**
+ * Class MessengerController
+ *
+ * @package Ares\Messenger\Controller
+ */
 class MessengerController extends BaseController
 {
     /**

@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Ares (https://ares.to)
+ *
+ * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ */
+
 namespace Ares\Messenger\Repository;
 
 use Ares\Framework\Repository\BaseRepository;
@@ -9,6 +15,11 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ObjectRepository;
 
+/**
+ * Class MessengerRepository
+ *
+ * @package Ares\Messenger\Repository
+ */
 class MessengerRepository extends BaseRepository
 {
     /**
