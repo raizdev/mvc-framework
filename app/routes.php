@@ -34,6 +34,13 @@ return function (App $app) {
                 $group->get('/slide/{total:[0-9]+}[/{offset}]', \Ares\Article\Controller\ArticleController::class . ':slide');
             });
 
+            // Friends
+            $group->group('/friends', function ($group) {
+                $group->get('', \Ares\Messenger\Controller\MessengerController::class . ':friends');
+                // @TODO Make Friend-Requests
+                $group->get('/requests', \Ares\Messenger\Controller\MessengerController::class . ':friends');
+            });
+
             // Rooms
             $group->group('/rooms', function($group) {
                 $group->get('', \Ares\Room\Controller\RoomController::class . ':list');

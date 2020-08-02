@@ -4,7 +4,9 @@
 namespace Ares\Messenger\Exception;
 
 
-class MessengerException
+use Ares\Framework\Exception\BaseException;
+
+class MessengerException extends BaseException
 {
 
 }

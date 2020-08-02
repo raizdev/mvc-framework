@@ -1,6 +1,7 @@
 {
   "general.failed": "Etwas ist schiefgelaufen",
   "general.entity.exists": "%s existiert bereits",
+  "general.banned": "Du bist gebannt aus dem Grund: %s",
 
   "validation.required": "%s ist ein Pflichtfeld",
   "validation.email": "Das Feld muss eine gültige E-Mail sein",

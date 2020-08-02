@@ -81,8 +81,8 @@ class LoginService
             'user' => $user->getId()
         ], ['id' => 'DESC']);
 
-        if ($isBanned->getBanExpire() > time()) {
-            throw new BanException(__('You are banned'), 401);
+        if (!is_null($isBanned) && $isBanned->getBanExpire() > time()) {
+            throw new BanException(__('general.banned', [$isBanned->getBanReason()]), 401);
         }
 
         /** @var TokenService $token */
