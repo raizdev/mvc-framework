@@ -8,7 +8,11 @@
 
 namespace Ares\Room\Entity;
 
+use Ares\Guild\Entity\Guild;
+use Ares\User\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\OneToOne;
 
 /**
  * Class Room
@@ -16,6 +20,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @package Ares\Room\Entity
  *
  * @ORM\Entity
+ * @ORM\Table(name="rooms")
  */
 class Room
 {
@@ -27,9 +32,10 @@ class Room
     private int $id;
 
     /**
-     * @ORM\Column(type="integer", length=11)
+     * @OneToOne(targetEntity="\Ares\User\Entity\User")
+     * @JoinColumn(name="owner_id", referencedColumnName="id")
      */
-    private int $owner;
+    private ?User $owner;
 
     /**
      * @ORM\Column(type="integer", length=50)
@@ -57,9 +63,10 @@ class Room
     private int $users_max;
 
     /**
-     * @ORM\Column(type="integer", length=11)
+     * @OneToOne(targetEntity="\Ares\Guild\Entity\Guild")
+     * @JoinColumn(name="guild_id", referencedColumnName="id")
      */
-    private int $guild;
+    private ?Guild $guild;
 
     /**
      * @ORM\Column(type="integer", length=11)
@@ -87,19 +94,19 @@ class Room
     }
 
     /**
-     * @return int
+     * @return User|null
      */
-    public function getOwner(): int
+    public function getOwner(): ?User
     {
         return $this->owner;
     }
 
     /**
-     * @param int $owner
+     * @param User $owner
      *
      * @return Room
      */
-    public function setOwner(int $owner): self
+    public function setOwner(User $owner): self
     {
         $this->owner = $owner;
 
@@ -207,19 +214,19 @@ class Room
     }
 
     /**
-     * @return int
+     * @return Guild|null
      */
-    public function getGuild(): int
+    public function getGuild(): ?Guild
     {
         return $this->guild;
     }
 
     /**
-     * @param int $guild
+     * @param Guild $guild
      *
      * @return Room
      */
-    public function setGuild(int $guild): self
+    public function setGuild(Guild $guild): self
     {
         $this->guild = $guild;
 
@@ -255,13 +262,13 @@ class Room
     {
         return [
             'id' => $this->getId(),
-            'owner' => $this->getOwner(),
+            'owner' => $this->getOwner()->getArrayCopy(),
             'name' => $this->getName(),
             'description' => $this->getDescription(),
             'state' => $this->getState(),
             'users' => $this->getUsers(),
             'users_max' => $this->getUsersMax(),
-            'guild' => $this->getGuild(),
+            'guild' => $this->getGuild()->getArrayCopy(),
             'score' => $this->getScore()
         ];
     }

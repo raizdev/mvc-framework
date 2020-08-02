@@ -4,33 +4,103 @@
 namespace Ares\Ban\Repository;
 
 
+use Ares\Ban\Entity\Ban;
 use Ares\Framework\Repository\BaseRepository;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\ORMException;
+use Doctrine\Persistence\ObjectRepository;
 
 class BanRepository extends BaseRepository
 {
+    /**
+     * @var EntityRepository|ObjectRepository
+     */
+    private $repository;
 
+    /**
+     * @var EntityManager
+     */
+    private EntityManager $entityManager;
+
+    /**
+     * BanRepository constructor.
+     *
+     * @param EntityManager $entityManager
+     */
+    public function __construct(
+        EntityManager $entityManager
+    ) {
+        $this->entityManager = $entityManager;
+        $this->repository = $entityManager->getRepository(Ban::class);
+    }
+
+    /**
+     * Get object by id.
+     *
+     * @param int $id
+     * @return Ban|null
+     */
     public function get(int $id): ?object
     {
-        // TODO: Implement get() method.
+        return $this->repository->find($id);
     }
 
-    public function getList(array $criteria, $orderBy = null, $limit = null, $offset = null): array
-    {
-        // TODO: Implement getList() method.
-    }
-
-    public function count(array $criteria): int
-    {
-        // TODO: Implement count() method.
-    }
-
+    /**
+     * @param object $model
+     *
+     * @return Ban
+     * @throws ORMException
+     */
     public function save(object $model): object
     {
-        // TODO: Implement save() method.
+        $this->entityManager->persist($model);
+        $this->entityManager->flush();
+
+        return $model;
     }
 
+    /**
+     * @param      $criteria
+     * @param null $orderBy
+     * @param null $limit
+     * @param null $offset
+     *
+     * @return array|object[]
+     */
+    public function getList($criteria, $orderBy = null, $limit = null, $offset = null): array
+    {
+        return $this->repository->findBy($criteria, $orderBy, $limit, $offset);
+    }
+
+    /**
+     * @param array $criteria
+     *
+     * @return int
+     */
+    public function count(array $criteria): int
+    {
+        return $this->repository->count($criteria);
+    }
+
+    /**
+     * Delete object by id.
+     *
+     * @param int $id
+     * @return bool
+     * @throws ORMException
+     */
     public function delete(int $id): bool
     {
-        // TODO: Implement delete() method.
+        $model = $this->get($id);
+
+        if (!$model) {
+            return false;
+        }
+
+        $this->entityManager->remove($model);
+        $this->entityManager->flush();
+
+        return true;
     }
 }

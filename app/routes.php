@@ -36,8 +36,9 @@ return function (App $app) {
 
             // Rooms
             $group->group('/rooms', function($group) {
-                $group->get('', \Ares\Article\Controller\ArticleController::class . ':list');
-                $group->get('/{id:[0-9]+}', \Ares\Article\Controller\ArticleController::class . ':room');
+                $group->get('', \Ares\Room\Controller\RoomController::class . ':list');
+                $group->get('/{id:[0-9]+}', \Ares\Room\Controller\RoomController::class . ':room');
+                $group->get('/slide/{total:[0-9]+}[/{offset}]', \Ares\Room\Controller\RoomController::class . ':slide');
             });
 
             // De-Authentication
