@@ -6,7 +6,7 @@
  * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
  */
 
-namespace Ares\Article\Entity;
+namespace Ares\News\Entity;
 
 use Ares\User\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
@@ -14,15 +14,15 @@ use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\OneToOne;
 
 /**
- * Class Article
+ * Class News
  *
- * @package Ares\Article\Entity
+ * @package Ares\News\Entity
  *
  * @ORM\Entity
- * @ORM\Table(name="ares_articles", uniqueConstraints={@ORM\UniqueConstraint(name="title", columns={"title"})}))
+ * @ORM\Table(name="ares_news", uniqueConstraints={@ORM\UniqueConstraint(name="title", columns={"title"})}))
  * @ORM\HasLifecycleCallbacks
  */
-class Article
+class News
 {
     /**
      * @ORM\Id
@@ -87,7 +87,7 @@ class Article
     }
 
     /**
-     * Gets Title of Article
+     * Gets Title of News
      *
      * @return string
      */
@@ -99,7 +99,7 @@ class Article
     /**
      * @param string $title
      *
-     * @return Article
+     * @return News
      */
     public function setTitle(string $title): self
     {
@@ -119,7 +119,7 @@ class Article
     /**
      * @param string $slug
      *
-     * @return Article
+     * @return News
      */
     public function setSlug(string $slug): self
     {
@@ -129,7 +129,7 @@ class Article
     }
 
     /**
-     * Gets Description of Article
+     * Gets Description of News
      *
      * @return string
      */
@@ -141,7 +141,7 @@ class Article
     /**
      * @param string $description
      *
-     * @return Article
+     * @return News
      */
     public function setDescription(string $description): self
     {
@@ -161,7 +161,7 @@ class Article
     /**
      * @param string $content
      *
-     * @return Article
+     * @return News
      */
     public function setContent(string $content): self
     {
@@ -181,7 +181,7 @@ class Article
     /**
      * @param string $image
      *
-     * @return Article
+     * @return News
      */
     public function setImage(string $image): self
     {
@@ -201,7 +201,7 @@ class Article
     /**
      * @param User $author
      *
-     * @return Article
+     * @return News
      */
     public function setAuthor(User $author): self
     {
@@ -221,7 +221,7 @@ class Article
     /**
      * @param int $hidden
      *
-     * @return Article
+     * @return News
      */
     public function setHidden(int $hidden): self
     {

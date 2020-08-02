@@ -6,16 +6,16 @@
  * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
  */
 
-namespace Ares\Article\Exception;
+namespace Ares\News\Exception;
 
 
 use Ares\Framework\Exception\BaseException;
 
 /**
- * Class ArticleException
+ * Class NewsException
  *
- * @package Ares\Article\Exception
+ * @package Ares\News\Exception
  */
-class ArticleException extends BaseException
+class NewsException extends BaseException
 {
 }
