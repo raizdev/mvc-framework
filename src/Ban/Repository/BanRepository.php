@@ -56,6 +56,17 @@ class BanRepository extends BaseRepository
     }
 
     /**
+     * @param      $criteria
+     * @param null $orderBy
+     *
+     * @return Ban|null
+     */
+    public function getBy($criteria, $orderBy = null): ?object
+    {
+        return $this->repository->findOneBy($criteria, $orderBy);
+    }
+
+    /**
      * @param object $model
      *
      * @return Ban

@@ -77,12 +77,12 @@ class LoginService
         }
 
         /** @var Ban $isBanned */
-        $isBanned = $this->banRepository->count([
+        $isBanned = $this->banRepository->getBy([
             'user' => $user->getId()
-        ]);
+        ], ['id' => 'DESC']);
 
-        if ($isBanned) {
-            throw new BanException(__('You are banned'), 403);
+        if ($isBanned->getBanExpire() > time()) {
+            throw new BanException(__('You are banned'), 401);
         }
 
         /** @var TokenService $token */
