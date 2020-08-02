@@ -18,7 +18,7 @@ use Doctrine\ORM\Mapping\OneToOne;
  *
  * @package Ares\Ban\Entity
  *
- * @ORM\Entity(repositoryClass="Ares\Guild\Repository\GuildRepository")
+ * @ORM\Entity
  * @ORM\Table(name="bans")
  */
 class Ban

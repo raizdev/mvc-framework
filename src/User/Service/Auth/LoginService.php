@@ -8,6 +8,9 @@
 
 namespace Ares\User\Service\Auth;
 
+use Ares\Ban\Entity\Ban;
+use Ares\Ban\Exception\BanException;
+use Ares\Ban\Repository\BanRepository;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\Framework\Service\TokenService;
 use Ares\User\Entity\User;
@@ -33,16 +36,24 @@ class LoginService
     private TokenService $tokenService;
 
     /**
+     * @var BanRepository
+     */
+    private BanRepository $banRepository;
+
+    /**
      * LoginService constructor.
      *
      * @param UserRepository $userRepository
-     * @param TokenService $tokenService
+     * @param BanRepository  $banRepository
+     * @param TokenService   $tokenService
      */
     public function __construct(
         UserRepository $userRepository,
+        BanRepository $banRepository,
         TokenService $tokenService
     ) {
         $this->userRepository = $userRepository;
+        $this->banRepository = $banRepository;
         $this->tokenService = $tokenService;
     }
 
@@ -54,6 +65,7 @@ class LoginService
      *
      * @return CustomResponseInterface
      * @throws LoginException|ValidateException
+     * @throws BanException
      */
     public function login(string $username, string $password): CustomResponseInterface
     {
@@ -62,6 +74,15 @@ class LoginService
 
         if (empty($user) || !password_verify($password, $user->getPassword())) {
             throw new LoginException(__('general.failed'), 403);
+        }
+
+        /** @var Ban $isBanned */
+        $isBanned = $this->banRepository->count([
+            'user' => $user->getId()
+        ]);
+
+        if ($isBanned) {
+            throw new BanException(__('You are banned'), 403);
         }
 
         /** @var TokenService $token */

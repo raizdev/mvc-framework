@@ -66,6 +66,11 @@ class Article
     private int $hidden;
 
     /**
+     * @ORM\Column(type="integer", columnDefinition="ENUM('0',1')")
+     */
+    private int $pinned;
+
+    /**
      * @ORM\Column(type="datetime")
      */
     protected \DateTime $created_at;
@@ -230,6 +235,26 @@ class Article
     }
 
     /**
+     * @return int
+     */
+    public function getPinned(): int
+    {
+        return $this->pinned;
+    }
+
+    /**
+     * @param int $pinned
+     *
+     * @return Article
+     */
+    public function setPinned(int $pinned): self
+    {
+        $this->pinned = $pinned;
+
+        return $this;
+    }
+
+    /**
      * @return \DateTime
      */
     public function getCreatedAt(): \DateTime
@@ -281,6 +306,7 @@ class Article
             'image' => $this->getImage(),
             'author' => $this->getAuthor()->getArrayCopy(),
             'hidden' => $this->getHidden(),
+            'pinned' => $this->getPinned(),
             'created_at' => $this->getCreatedAt(),
             'updated_at' => $this->getUpdatedAt()
         ];

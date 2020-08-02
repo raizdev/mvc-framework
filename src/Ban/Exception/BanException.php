@@ -17,5 +17,4 @@ use Ares\Framework\Exception\BaseException;
  */
 class BanException extends BaseException
 {
-
 }

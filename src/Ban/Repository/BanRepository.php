@@ -6,7 +6,6 @@
  * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
  */
 
-
 namespace Ares\Ban\Repository;
 
 use Ares\Ban\Entity\Ban;
