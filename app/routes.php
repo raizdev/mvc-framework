@@ -28,16 +28,16 @@ return function (App $app) {
                 $group->post('/locale', \Ares\User\Controller\UserController::class . ':updateLocale');
             });
             // News
-            $group->group('/news', function($group) {
-                $group->get('', \Ares\News\Controller\NewsController::class . ':list');
-                $group->get('/{id:[0-9]+}', \Ares\News\Controller\NewsController::class . ':news');
-                $group->get('/slide/{total:[0-9]+}', \Ares\News\Controller\NewsController::class . ':slide');
+            $group->group('/articles', function($group) {
+                $group->get('', \Ares\Article\Controller\ArticleController::class . ':list');
+                $group->get('/{id:[0-9]+}', \Ares\Article\Controller\ArticleController::class . ':article');
+                $group->get('/slide/{total:[0-9]+}', \Ares\Article\Controller\ArticleController::class . ':slide');
             });
 
             // Rooms
             $group->group('/rooms', function($group) {
-                $group->get('', \Ares\News\Controller\NewsController::class . ':list');
-                $group->get('/{id:[0-9]+}', \Ares\News\Controller\NewsController::class . ':room');
+                $group->get('', \Ares\Article\Controller\ArticleController::class . ':list');
+                $group->get('/{id:[0-9]+}', \Ares\Article\Controller\ArticleController::class . ':room');
             });
 
             // De-Authentication
