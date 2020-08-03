@@ -30,7 +30,7 @@ class ArticleController extends BaseController
     /*
      * Represents the Value of Visible Articles
     */
-    private const VISIBLE = 1;
+    private const IS_VISIBLE = 1;
 
     /**
      * @var ArticleRepository
@@ -84,7 +84,7 @@ class ArticleController extends BaseController
         /** @var array $pinnedArticles */
         $pinnedArticles = $this->articleRepository->getList([
             'pinned' => self::IS_PINNED,
-            'hidden' => self::VISIBLE
+            'hidden' => self::IS_VISIBLE
         ]);
 
         if (empty($pinnedArticles)) {
@@ -117,7 +117,7 @@ class ArticleController extends BaseController
         $offset = $args['offset'] ?? 0;
 
         $articles = $this->articleRepository->getList([
-            'hidden' => self::VISIBLE
+            'hidden' => self::IS_VISIBLE
         ], ['id' => 'DESC'], (int)$total, (int)$offset);
 
         if (empty($articles)) {
@@ -146,7 +146,7 @@ class ArticleController extends BaseController
     {
         /** @var Article $articles */
         $articles = $this->articleRepository->getList([
-            'hidden' => self::VISIBLE
+            'hidden' => self::IS_VISIBLE
         ]);
 
         if (empty($articles)) {

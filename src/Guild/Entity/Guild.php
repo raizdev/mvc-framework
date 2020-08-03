@@ -19,8 +19,9 @@ use Doctrine\ORM\Mapping\OneToOne;
  *
  * @package Ares\Guild\Entity
  *
- * @ORM\Entity(repositoryClass="Ares\Guild\Repository\GuildRepository")
+ * @ORM\Entity
  * @ORM\Table(name="guilds")
+ * @ORM\HasLifecycleCallbacks
  */
 class Guild
 {
@@ -38,7 +39,7 @@ class Guild
     private ?User $creator;
 
     /**
-     * @ORM\Column(type="integer", length=50)
+     * @ORM\Column(type="string", length=50)
      */
     private string $name;
 
@@ -215,7 +216,6 @@ class Guild
             'creator' => $this->getCreator()->getArrayCopy(),
             'name' => $this->getName(),
             'description' => $this->getDescription(),
-            'room' => $this->getRoom()->getArrayCopy(),
             'badge' => $this->getBadge(),
             'date_created' => $this->getDateCreated()
         ];

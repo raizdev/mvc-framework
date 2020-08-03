@@ -51,7 +51,7 @@ class RoomController extends BaseController
         /** @var Room $room */
         $room = $this->roomRepository->get((int)$args['id']);
 
-        if(is_null($room)) {
+        if (is_null($room)) {
             throw new RoomException(__('No specific Room found'));
         }
 
@@ -104,7 +104,7 @@ class RoomController extends BaseController
         /** @var Room $rooms */
         $rooms = $this->roomRepository->getList([]);
 
-        if(empty($rooms)) {
+        if (empty($rooms)) {
             throw new RoomException(__('No Rooms were found'), 404);
         }
 

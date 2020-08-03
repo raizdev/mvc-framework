@@ -21,6 +21,7 @@ use Doctrine\ORM\Mapping\OneToOne;
  *
  * @ORM\Entity
  * @ORM\Table(name="rooms")
+ * @ORM\HasLifecycleCallbacks
  */
 class Room
 {
@@ -38,7 +39,7 @@ class Room
     private ?User $owner;
 
     /**
-     * @ORM\Column(type="integer", length=50)
+     * @ORM\Column(type="string", length=50)
      */
     private string $name;
 
@@ -64,7 +65,7 @@ class Room
 
     /**
      * @OneToOne(targetEntity="\Ares\Guild\Entity\Guild")
-     * @JoinColumn(name="guild_id", referencedColumnName="id")
+     * @JoinColumn(name="guild_id", referencedColumnName="id", nullable=true)
      */
     private ?Guild $guild;
 
@@ -230,7 +231,7 @@ class Room
     {
         $this->guild = $guild;
 
-        return $$this;
+        return $this;
     }
 
     /**
@@ -254,6 +255,16 @@ class Room
     }
 
     /**
+     * @ORM\PostLoad
+     */
+    public function loadNullGuild()
+    {
+        if ($this->guild->getId() == 0) {
+            $this->guild = null;
+        }
+    }
+
+    /**
      * Returns a copy of the current Entity safely
      *
      * @return array
@@ -268,7 +279,7 @@ class Room
             'state' => $this->getState(),
             'users' => $this->getUsers(),
             'users_max' => $this->getUsersMax(),
-            'guild' => $this->getGuild()->getArrayCopy(),
+            'guild' => (is_null($this->getGuild()) ? $this->getGuild() : $this->getGuild()->getArrayCopy()),
             'score' => $this->getScore()
         ];
     }

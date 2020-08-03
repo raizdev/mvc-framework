@@ -27,12 +27,19 @@ return function (App $app) {
                 $group->get('', \Ares\User\Controller\UserController::class . ':user');
                 $group->post('/locale', \Ares\User\Controller\UserController::class . ':updateLocale');
             });
-            // News
+            // Articles
             $group->group('/articles', function($group) {
                 $group->get('', \Ares\Article\Controller\ArticleController::class . ':list');
                 $group->get('/pinned', \Ares\Article\Controller\ArticleController::class . ':pinned');
                 $group->get('/{id:[0-9]+}', \Ares\Article\Controller\ArticleController::class . ':article');
                 $group->get('/slide/{total:[0-9]+}[/{offset}]', \Ares\Article\Controller\ArticleController::class . ':slide');
+            });
+
+            // Guilds
+            $group->group('/guilds', function($group) {
+                $group->get('', \Ares\Guild\Controller\GuildController::class . ':list');
+                $group->get('/{id:[0-9]+}', \Ares\Guild\Controller\GuildController::class . ':guild');
+                $group->get('/slide/{total:[0-9]+}[/{offset}]', \Ares\Guild\Controller\GuildController::class . ':slide');
             });
 
             // Friends
