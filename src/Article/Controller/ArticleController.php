@@ -93,7 +93,7 @@ class ArticleController extends BaseController
 
         $list = [];
         foreach ($pinnedArticles as $pinnedArticle) {
-            $list[] = [$pinnedArticle->getArrayCopy()];
+            $list[] = $pinnedArticle->getArrayCopy();
         }
 
         return $this->respond(
@@ -118,9 +118,7 @@ class ArticleController extends BaseController
 
         $articles = $this->articleRepository->getList([
             'hidden' => self::VISIBLE
-        ], [
-            'id' => 'DESC'
-        ], (int)$total, (int)$offset);
+        ], ['id' => 'DESC'], (int)$total, (int)$offset);
 
         if (empty($articles)) {
             throw new ArticleException(__('No Articles were found'), 404);
