@@ -111,7 +111,7 @@ class ArticleController extends BaseController
      * @return Response
      * @throws ArticleException
      */
-    public function slide(Request $request, Response $response, $args): Response
+    public function list(Request $request, Response $response, $args): Response
     {
         $total = $args['total'] ?? 0;
         $offset = $args['offset'] ?? 0;
@@ -119,35 +119,6 @@ class ArticleController extends BaseController
         $articles = $this->articleRepository->getList([
             'hidden' => self::IS_VISIBLE
         ], ['id' => 'DESC'], (int)$total, (int)$offset);
-
-        if (empty($articles)) {
-            throw new ArticleException(__('No Articles were found'), 404);
-        }
-
-        $list = [];
-        foreach ($articles as $article) {
-            $list[] = $article->getArrayCopy();
-        }
-
-        return $this->respond(
-            $response,
-            response()->setData($list)
-        );
-    }
-
-    /**
-     * @param Request  $request
-     * @param Response $response
-     *
-     * @return Response
-     * @throws ArticleException
-     */
-    public function list(Request $request, Response $response): Response
-    {
-        /** @var Article $articles */
-        $articles = $this->articleRepository->getList([
-            'hidden' => self::IS_VISIBLE
-        ]);
 
         if (empty($articles)) {
             throw new ArticleException(__('No Articles were found'), 404);

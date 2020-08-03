@@ -70,39 +70,12 @@ class RoomController extends BaseController
      * @return Response
      * @throws RoomException
      */
-    public function slide(Request $request, Response $response, $args): Response
+    public function list(Request $request, Response $response, $args): Response
     {
         $total = $args['total'] ?? 0;
         $offset = $args['offset'] ?? 0;
 
         $rooms = $this->roomRepository->getList([], ['id' => 'DESC'], (int)$total, (int)$offset);
-
-        if (empty($rooms)) {
-            throw new RoomException(__('No Rooms were found'), 404);
-        }
-
-        $list = [];
-        foreach ($rooms as $room) {
-            $list[] = $room->getArrayCopy();
-        }
-
-        return $this->respond(
-            $response,
-            response()->setData($list)
-        );
-    }
-
-    /**
-     * @param Request  $request
-     * @param Response $response
-     *
-     * @return Response
-     * @throws RoomException
-     */
-    public function list(Request $request, Response $response): Response
-    {
-        /** @var Room $rooms */
-        $rooms = $this->roomRepository->getList([]);
 
         if (empty($rooms)) {
             throw new RoomException(__('No Rooms were found'), 404);

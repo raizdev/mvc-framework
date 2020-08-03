@@ -29,17 +29,16 @@ return function (App $app) {
             });
             // Articles
             $group->group('/articles', function($group) {
-                $group->get('', \Ares\Article\Controller\ArticleController::class . ':list');
+                $group->get('/list/{total:[0-9]+}[/{offset}]', \Ares\Article\Controller\ArticleController::class . ':list');
                 $group->get('/pinned', \Ares\Article\Controller\ArticleController::class . ':pinned');
                 $group->get('/{id:[0-9]+}', \Ares\Article\Controller\ArticleController::class . ':article');
-                $group->get('/slide/{total:[0-9]+}[/{offset}]', \Ares\Article\Controller\ArticleController::class . ':slide');
             });
 
             // Guilds
             $group->group('/guilds', function($group) {
+                $group->get('/list/{total:[0-9]+}[/{offset}]', \Ares\Guild\Controller\GuildController::class . ':list');
                 $group->get('', \Ares\Guild\Controller\GuildController::class . ':list');
                 $group->get('/{id:[0-9]+}', \Ares\Guild\Controller\GuildController::class . ':guild');
-                $group->get('/slide/{total:[0-9]+}[/{offset}]', \Ares\Guild\Controller\GuildController::class . ':slide');
             });
 
             // Friends
@@ -51,9 +50,8 @@ return function (App $app) {
 
             // Rooms
             $group->group('/rooms', function($group) {
-                $group->get('', \Ares\Room\Controller\RoomController::class . ':list');
+                $group->get('/list/{total:[0-9]+}[/{offset}]', \Ares\Room\Controller\RoomController::class . ':list');
                 $group->get('/{id:[0-9]+}', \Ares\Room\Controller\RoomController::class . ':room');
-                $group->get('/slide/{total:[0-9]+}[/{offset}]', \Ares\Room\Controller\RoomController::class . ':slide');
             });
 
             // De-Authentication
