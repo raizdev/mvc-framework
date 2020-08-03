@@ -27,15 +27,16 @@ return function (App $app) {
                 $group->get('', \Ares\User\Controller\UserController::class . ':user');
                 $group->post('/locale', \Ares\User\Controller\UserController::class . ':updateLocale');
             });
+
             // Articles
-            $group->group('/articles', function($group) {
+            $group->group('/articles', function ($group) {
                 $group->get('/list/{total:[0-9]+}[/{offset}]', \Ares\Article\Controller\ArticleController::class . ':list');
                 $group->get('/pinned', \Ares\Article\Controller\ArticleController::class . ':pinned');
                 $group->get('/{id:[0-9]+}', \Ares\Article\Controller\ArticleController::class . ':article');
             });
 
             // Guilds
-            $group->group('/guilds', function($group) {
+            $group->group('/guilds', function ($group) {
                 $group->get('/list/{total:[0-9]+}[/{offset}]', \Ares\Guild\Controller\GuildController::class . ':list');
                 $group->get('', \Ares\Guild\Controller\GuildController::class . ':list');
                 $group->get('/{id:[0-9]+}', \Ares\Guild\Controller\GuildController::class . ':guild');
@@ -43,13 +44,13 @@ return function (App $app) {
 
             // Friends
             $group->group('/friends', function ($group) {
-                $group->get('', \Ares\Messenger\Controller\MessengerController::class . ':friends');
+                $group->get('/list/{total:[0-9]+}[/{offset}]', \Ares\Messenger\Controller\MessengerController::class . ':list');
                 // @TODO Make Friend-Requests
                 $group->get('/requests', \Ares\Messenger\Controller\MessengerController::class . ':friends');
             });
 
             // Rooms
-            $group->group('/rooms', function($group) {
+            $group->group('/rooms', function ($group) {
                 $group->get('/list/{total:[0-9]+}[/{offset}]', \Ares\Room\Controller\RoomController::class . ':list');
                 $group->get('/{id:[0-9]+}', \Ares\Room\Controller\RoomController::class . ':room');
             });
