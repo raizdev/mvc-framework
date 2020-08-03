@@ -55,7 +55,7 @@ class MessengerController extends BaseController
      * @throws UserException
      * @throws MessengerException
      */
-    public function list(Request $request, Response $response, $args): Response
+    public function friends(Request $request, Response $response, $args): Response
     {
         $total = $args['total'] ?? 0;
         $offset = $args['offset'] ?? 0;

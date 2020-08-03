@@ -44,7 +44,7 @@ return function (App $app) {
 
             // Friends
             $group->group('/friends', function ($group) {
-                $group->get('/list/{total:[0-9]+}[/{offset}]', \Ares\Messenger\Controller\MessengerController::class . ':list');
+                $group->get('/{total:[0-9]+}[/{offset}]', \Ares\Messenger\Controller\MessengerController::class . ':friends');
                 // @TODO Make Friend-Requests
                 $group->get('/requests', \Ares\Messenger\Controller\MessengerController::class . ':friends');
             });
