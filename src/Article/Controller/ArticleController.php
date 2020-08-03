@@ -27,6 +27,11 @@ class ArticleController extends BaseController
      */
     private const IS_PINNED = 1;
 
+    /*
+     * Represents the Value of Visible Articles
+    */
+    private const VISIBLE = 1;
+
     /**
      * @var ArticleRepository
      */
@@ -39,7 +44,8 @@ class ArticleController extends BaseController
      */
     public function __construct(
         ArticleRepository $articleRepository
-    ) {
+    )
+    {
         $this->articleRepository = $articleRepository;
     }
 
@@ -57,7 +63,7 @@ class ArticleController extends BaseController
         /** @var Article $article */
         $article = $this->articleRepository->get((int)$args['id']);
 
-        if(is_null($article)) {
+        if (is_null($article)) {
             throw new ArticleException(__('No specific Article found'), 404);
         }
 
@@ -78,16 +84,17 @@ class ArticleController extends BaseController
     {
         /** @var array $pinnedArticles */
         $pinnedArticles = $this->articleRepository->getList([
-            'pinned' => self::IS_PINNED
+            'pinned' => self::IS_PINNED,
+            'hidden' => self::VISIBLE
         ]);
 
-        if(empty($pinnedArticles)) {
+        if (empty($pinnedArticles)) {
             throw new ArticleException(__('No Pinned Articles found'));
         }
 
         $list = [];
         foreach ($pinnedArticles as $pinnedArticle) {
-            $list[] = $pinnedArticle->getArrayCopy();
+            $list[] = [$pinnedArticle->getArrayCopy()];
         }
 
         return $this->respond(
@@ -110,7 +117,11 @@ class ArticleController extends BaseController
         $total = $args['total'] ?? 0;
         $offset = $args['offset'] ?? 0;
 
-        $articles = $this->articleRepository->getList([], ['id' => 'DESC'], (int)$total, (int)$offset);
+        $articles = $this->articleRepository->getList([
+            'hidden' => self::VISIBLE
+        ], [
+            'id' => 'DESC'
+        ], (int)$total, (int)$offset);
 
         if (empty($articles)) {
             throw new ArticleException(__('No Articles were found'), 404);
@@ -137,9 +148,11 @@ class ArticleController extends BaseController
     public function list(Request $request, Response $response): Response
     {
         /** @var Article $articles */
-        $articles = $this->articleRepository->getList([]);
+        $articles = $this->articleRepository->getList([
+            'hidden' => self::VISIBLE
+        ]);
 
-        if(empty($articles)) {
+        if (empty($articles)) {
             throw new ArticleException(__('No Articles were found'), 404);
         }
 
