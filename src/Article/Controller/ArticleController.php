@@ -44,8 +44,7 @@ class ArticleController extends BaseController
      */
     public function __construct(
         ArticleRepository $articleRepository
-    )
-    {
+    ) {
         $this->articleRepository = $articleRepository;
     }
 
