@@ -8,51 +8,28 @@
 
 namespace Ares\Messenger\Repository;
 
-use Ares\Framework\Repository\BaseRepository;
+use Ares\Framework\Interfaces\RepositoryInterface;
 use Ares\Messenger\Entity\MessengerFriendship;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\ORMException;
-use Doctrine\Persistence\ObjectRepository;
+use Jhg\DoctrinePagination\ORM\PaginatedRepository;
 
 /**
  * Class MessengerRepository
  *
  * @package Ares\Messenger\Repository
  */
-class MessengerRepository extends BaseRepository
+class MessengerRepository extends PaginatedRepository implements RepositoryInterface
 {
-    /**
-     * @var EntityRepository|ObjectRepository
-     */
-    private $repository;
-
-    /**
-     * @var EntityManager
-     */
-    private EntityManager $entityManager;
-
-    /**
-     * NewsRepository constructor.
-     *
-     * @param EntityManager $entityManager
-     */
-    public function __construct(
-        EntityManager $entityManager
-    ) {
-        $this->entityManager = $entityManager;
-        $this->repository = $entityManager->getRepository(MessengerFriendship::class);
-    }
-
     /**
      * Get object by id.
      *
      * @param int $id
+     *
      * @return MessengerFriendship|null
      */
     public function get(int $id): ?object
     {
-        return $this->repository->find($id);
+        return $this->find($id);
     }
 
     /**
@@ -63,8 +40,8 @@ class MessengerRepository extends BaseRepository
      */
     public function save(object $model): object
     {
-        $this->entityManager->persist($model);
-        $this->entityManager->flush();
+        $this->getEntityManager()->persist($model);
+        $this->getEntityManager()->flush();
 
         return $model;
     }
@@ -79,7 +56,7 @@ class MessengerRepository extends BaseRepository
      */
     public function getList($criteria, $orderBy = null, $limit = null, $offset = null): array
     {
-        return $this->repository->findBy($criteria, $orderBy, $limit, $offset);
+        return $this->findBy($criteria, $orderBy, $limit, $offset);
     }
 
     /**
@@ -89,7 +66,7 @@ class MessengerRepository extends BaseRepository
      */
     public function count(array $criteria): int
     {
-        return $this->repository->count($criteria);
+        return $this->count($criteria);
     }
 
     /**
@@ -107,8 +84,8 @@ class MessengerRepository extends BaseRepository
             return false;
         }
 
-        $this->entityManager->remove($model);
-        $this->entityManager->flush();
+        $this->getEntityManager()->remove($model);
+        $this->getEntityManager()->flush();
 
         return true;
     }
