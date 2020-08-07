@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 /**
  * Ares (https://ares.to)
@@ -6,9 +6,9 @@
  * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
  */
 
-namespace Ares\User\Repository;
+namespace Ares\Ban\Repository;
 
-use Ares\User\Entity\User;
+use Ares\Ban\Entity\Ban;
 use Ares\Framework\Repository\BaseRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
@@ -16,11 +16,11 @@ use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ObjectRepository;
 
 /**
- * Class UserRepository
+ * Class BanRepository
  *
- * @package Ares\User\Repository
+ * @package Ares\Ban\Repository
  */
-class UserRepository extends BaseRepository
+class BanRepository extends BaseRepository
 {
     /**
      * @var EntityRepository|ObjectRepository
@@ -33,7 +33,7 @@ class UserRepository extends BaseRepository
     private EntityManager $entityManager;
 
     /**
-     * UserRepository constructor.
+     * BanRepository constructor.
      *
      * @param EntityManager $entityManager
      */
@@ -41,52 +41,43 @@ class UserRepository extends BaseRepository
         EntityManager $entityManager
     ) {
         $this->entityManager = $entityManager;
-        $this->repository = $entityManager->getRepository(User::class);
-    }
-
-    /**
-     * @param $username
-     *
-     * @return User|object
-     */
-    public function getByUsername(string $username)
-    {
-        return $this->repository->findOneBy([
-            'username' => $username
-        ]);
-    }
-
-    /**
-     * @param $mail
-     *
-     * @return User|object
-     */
-    public function getByMail(string $mail)
-    {
-        return $this->repository->findOneBy([
-            'mail' => $mail
-        ]);
-    }
-
-    /**
-     * @param array $data
-     *
-     * @return object|null
-     */
-    public function getBy(array $data): ?object
-    {
-        return $this->repository->findOneBy($data);
+        $this->repository = $entityManager->getRepository(Ban::class);
     }
 
     /**
      * Get object by id.
      *
      * @param int $id
-     * @return User|null
+     * @return Ban|null
      */
     public function get(int $id): ?object
     {
         return $this->repository->find($id);
+    }
+
+    /**
+     * @param      $criteria
+     * @param null $orderBy
+     *
+     * @return Ban|null
+     */
+    public function getBy($criteria, $orderBy = null): ?object
+    {
+        return $this->repository->findOneBy($criteria, $orderBy);
+    }
+
+    /**
+     * @param object $model
+     *
+     * @return Ban
+     * @throws ORMException
+     */
+    public function save(object $model): object
+    {
+        $this->entityManager->persist($model);
+        $this->entityManager->flush();
+
+        return $model;
     }
 
     /**
@@ -110,20 +101,6 @@ class UserRepository extends BaseRepository
     public function count(array $criteria): int
     {
         return $this->repository->count($criteria);
-    }
-
-    /**
-     * @param object $model
-     *
-     * @return User
-     * @throws ORMException
-     */
-    public function save(object $model): object
-    {
-        $this->entityManager->persist($model);
-        $this->entityManager->flush();
-
-        return $model;
     }
 
     /**

@@ -109,7 +109,6 @@ class ErrorHandler implements ErrorHandlerInterface
             ->withHeader('Access-Control-Allow-Origin', $_ENV['WEB_FRONTEND_LINK'])
             ->withHeader('Access-Control-Allow-Credentials', 'true')
             ->withHeader("Content-Type", "application/problem+json");
-
     }
 
     /**

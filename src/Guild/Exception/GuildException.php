@@ -1,19 +1,21 @@
 <?php
+
 /**
  * Ares (https://ares.to)
  *
  * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
  */
 
-namespace Ares\User\Exception;
+namespace Ares\Guild\Exception;
 
 use Ares\Framework\Exception\BaseException;
 
 /**
- * Class RegisterException
+ * Class GuildException
  *
- * @package Ares\User\Exception
+ * @package Ares\Guild\Exception
  */
-class RegisterException extends BaseException
+class GuildException extends BaseException
 {
+
 }

@@ -17,6 +17,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Entity
  * @ORM\Table(name="users", uniqueConstraints={@ORM\UniqueConstraint(name="username", columns={"username"})}))
+ * @ORM\HasLifecycleCallbacks
  */
 class User
 {
@@ -88,6 +89,27 @@ class User
     private ?string $ip_current;
 
     /**
+     * @ORM\Column(type="integer", columnDefinition="ENUM('0',1','2')")
+     */
+    private int $online;
+
+    /**
+     * @ORM\Column(type="string", length=10)
+     */
+    private ?string $locale;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    protected \DateTime $created_at;
+
+    /**
+     * @ORM\Column(type="datetime", nullable = true)
+     */
+    protected \DateTime $updated_at;
+
+
+    /**
      * Get User id
      *
      * @return integer
@@ -105,6 +127,26 @@ class User
     public function getUsername(): ?string
     {
         return $this->username;
+    }
+
+    /**
+     * @return int
+     */
+    public function getOnline(): int
+    {
+        return $this->online;
+    }
+
+    /**
+     * @param int $online
+     *
+     * @return User
+     */
+    public function setOnline(int $online): self
+    {
+        $this->online = $online;
+
+        return $this;
     }
 
     /**
@@ -130,7 +172,7 @@ class User
     }
 
     /**
-     * @param   string  $mail
+     * @param string $mail
      *
      * @return User
      */
@@ -150,7 +192,7 @@ class User
     }
 
     /**
-     * @param   string  $look
+     * @param string $look
      *
      * @return User
      */
@@ -170,7 +212,7 @@ class User
     }
 
     /**
-     * @param   string  $motto
+     * @param string $motto
      *
      * @return User
      */
@@ -190,7 +232,7 @@ class User
     }
 
     /**
-     * @param   int  $credits
+     * @param int $credits
      *
      * @return User
      */
@@ -210,7 +252,7 @@ class User
     }
 
     /**
-     * @param   int  $points
+     * @param int $points
      *
      * @return User
      */
@@ -230,7 +272,7 @@ class User
     }
 
     /**
-     * @param   int  $pixels
+     * @param int $pixels
      *
      * @return User
      */
@@ -240,7 +282,6 @@ class User
 
         return $this;
     }
-
 
     /**
      * Gets Auth_ticket of User
@@ -295,7 +336,7 @@ class User
     }
 
     /**
-     * @param   int  $timestamp
+     * @param int $timestamp
      *
      * @return User
      */
@@ -315,7 +356,7 @@ class User
     }
 
     /**
-     * @param   string  $ip
+     * @param string $ip
      *
      * @return User
      */
@@ -335,7 +376,7 @@ class User
     }
 
     /**
-     * @param   string  $ip
+     * @param string $ip
      *
      * @return User
      */
@@ -347,6 +388,62 @@ class User
     }
 
     /**
+     * @return string|null
+     */
+    public function getLocale(): ?string
+    {
+        return $this->locale;
+    }
+
+    /**
+     * @param string|null $locale
+     *
+     * @return User
+     */
+    public function setLocale(string $locale): self
+    {
+        $this->locale = $locale;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getCreatedAt(): \DateTime
+    {
+        return $this->created_at;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getUpdatedAt(): \DateTime
+    {
+        return $this->updated_at;
+    }
+
+    /**
+     * Gets triggered only on insert
+     *
+     * @ORM\PrePersist
+     */
+    public function onPrePersist()
+    {
+        $this->created_at = new \DateTime("now");
+    }
+
+    /**
+     * Gets triggered every time on update
+     *
+     * @ORM\PreUpdate
+     */
+    public function onPreUpdate()
+    {
+        $this->updated_at = new \DateTime("now");
+    }
+
+    /**
      * Returns a copy of the current Entity safely
      *
      * @return array
@@ -354,16 +451,18 @@ class User
     public function getArrayCopy(): array
     {
         return [
-            'id'              => $this->id,
-            'username'        => $this->username,
-            'mail'            => $this->mail,
-            'look'            => $this->look,
-            'motto'           => $this->motto,
-            'credits'         => $this->credits,
-            'points'          => $this->points,
-            'pixels'          => $this->pixels,
-            'auth_ticket'     => $this->auth_ticket,
-            'account_created' => $this->account_created
+            'id' => $this->getId(),
+            'username' => $this->getUsername(),
+            'look' => $this->getLook(),
+            'motto' => $this->getMotto(),
+            'credits' => $this->getCredits(),
+            'points' => $this->getPoints(),
+            'pixels' => $this->getPixels(),
+            'account_created' => $this->getAccountCreated(),
+            'online' => $this->getOnline(),
+            'locale' => $this->getLocale(),
+            'created_at' => $this->getCreatedAt(),
+            'updated_at' => $this->getUpdatedAt()
         ];
     }
 }

@@ -6,21 +6,21 @@
  * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
  */
 
-namespace Ares\User\Repository;
+namespace Ares\Article\Repository;
 
-use Ares\User\Entity\User;
 use Ares\Framework\Repository\BaseRepository;
+use Ares\Article\Entity\Article;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ObjectRepository;
 
 /**
- * Class UserRepository
+ * Class ArticleRepository
  *
- * @package Ares\User\Repository
+ * @package Ares\Article\Repository
  */
-class UserRepository extends BaseRepository
+class ArticleRepository extends BaseRepository
 {
     /**
      * @var EntityRepository|ObjectRepository
@@ -33,7 +33,7 @@ class UserRepository extends BaseRepository
     private EntityManager $entityManager;
 
     /**
-     * UserRepository constructor.
+     * NewsRepository constructor.
      *
      * @param EntityManager $entityManager
      */
@@ -41,52 +41,33 @@ class UserRepository extends BaseRepository
         EntityManager $entityManager
     ) {
         $this->entityManager = $entityManager;
-        $this->repository = $entityManager->getRepository(User::class);
-    }
-
-    /**
-     * @param $username
-     *
-     * @return User|object
-     */
-    public function getByUsername(string $username)
-    {
-        return $this->repository->findOneBy([
-            'username' => $username
-        ]);
-    }
-
-    /**
-     * @param $mail
-     *
-     * @return User|object
-     */
-    public function getByMail(string $mail)
-    {
-        return $this->repository->findOneBy([
-            'mail' => $mail
-        ]);
-    }
-
-    /**
-     * @param array $data
-     *
-     * @return object|null
-     */
-    public function getBy(array $data): ?object
-    {
-        return $this->repository->findOneBy($data);
+        $this->repository = $entityManager->getRepository(Article::class);
     }
 
     /**
      * Get object by id.
      *
      * @param int $id
-     * @return User|null
+     *
+     * @return Article|null
      */
     public function get(int $id): ?object
     {
         return $this->repository->find($id);
+    }
+
+    /**
+     * @param object $model
+     *
+     * @return Article
+     * @throws ORMException
+     */
+    public function save(object $model): object
+    {
+        $this->entityManager->persist($model);
+        $this->entityManager->flush();
+
+        return $model;
     }
 
     /**
@@ -110,20 +91,6 @@ class UserRepository extends BaseRepository
     public function count(array $criteria): int
     {
         return $this->repository->count($criteria);
-    }
-
-    /**
-     * @param object $model
-     *
-     * @return User
-     * @throws ORMException
-     */
-    public function save(object $model): object
-    {
-        $this->entityManager->persist($model);
-        $this->entityManager->flush();
-
-        return $model;
     }
 
     /**

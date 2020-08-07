@@ -1,19 +1,20 @@
 <?php
+
 /**
  * Ares (https://ares.to)
  *
  * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
  */
 
-namespace Ares\User\Exception;
+namespace Ares\Ban\Exception;
 
 use Ares\Framework\Exception\BaseException;
 
 /**
- * Class RegisterException
+ * Class BanException
  *
- * @package Ares\User\Exception
+ * @package Ares\Ban\Exception
  */
-class RegisterException extends BaseException
+class BanException extends BaseException
 {
 }

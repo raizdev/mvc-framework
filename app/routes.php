@@ -15,18 +15,59 @@ return function (App $app) {
         return $response;
     });
 
+    // Status
     $app->get('/', \Ares\Framework\Controller\Status\StatusController::class . ':getStatus');
 
     $app->group('/api/{locale}', function (RouteCollectorProxy $group) {
-        $group->group('', function (RouteCollectorProxy $group) {
-            $group->get('/users', \Ares\User\Controller\UserController::class . ':all');
-            $group->get('/user', \Ares\User\Controller\UserController::class . ':user');
+
+        // Only Accessible if LoggedIn
+        $group->group('', function ($group) {
+            // User
+            $group->group('/user', function ($group) {
+                $group->get('', \Ares\User\Controller\UserController::class . ':user');
+                $group->post('/locale', \Ares\User\Controller\UserController::class . ':updateLocale');
+            });
+
+            // Articles
+            $group->group('/articles', function ($group) {
+                $group->get('/list/{total:[0-9]+}[/{offset}]', \Ares\Article\Controller\ArticleController::class . ':list');
+                $group->get('/pinned', \Ares\Article\Controller\ArticleController::class . ':pinned');
+                $group->get('/{id:[0-9]+}', \Ares\Article\Controller\ArticleController::class . ':article');
+            });
+
+            // Guilds
+            $group->group('/guilds', function ($group) {
+                $group->get('/list/{total:[0-9]+}[/{offset}]', \Ares\Guild\Controller\GuildController::class . ':list');
+                $group->get('', \Ares\Guild\Controller\GuildController::class . ':list');
+                $group->get('/{id:[0-9]+}', \Ares\Guild\Controller\GuildController::class . ':guild');
+            });
+
+            // Friends
+            $group->group('/friends', function ($group) {
+                $group->get('/{total:[0-9]+}[/{offset}]', \Ares\Messenger\Controller\MessengerController::class . ':friends');
+                // @TODO Make Friend-Requests
+                $group->get('/requests', \Ares\Messenger\Controller\MessengerController::class . ':friends');
+            });
+
+            // Rooms
+            $group->group('/rooms', function ($group) {
+                $group->get('/list/{total:[0-9]+}[/{offset}]', \Ares\Room\Controller\RoomController::class . ':list');
+                $group->get('/{id:[0-9]+}', \Ares\Room\Controller\RoomController::class . ':room');
+            });
+
+            // De-Authentication
             $group->post('/logout', \Ares\User\Controller\AuthController::class . ':logout');
         })->add(\Ares\Framework\Middleware\AuthMiddleware::class);
 
         // Authentication
         $group->post('/login', \Ares\User\Controller\AuthController::class . ':login');
-        $group->post('/register', \Ares\User\Controller\AuthController::class . ':register');
+        $group->group('/register', function (RouteCollectorProxy $group) {
+            $group->post('', \Ares\User\Controller\AuthController::class . ':register');
+            $group->post('/check', \Ares\User\Controller\AuthController::class . ':check');
+        });
+
+        // Global Routes
+        $group->get('/user/online', \Ares\User\Controller\UserController::class . ':onlineUser');
     })->add(\Ares\Framework\Middleware\LocaleMiddleware::class);
 
     // Catches every route that is not found
