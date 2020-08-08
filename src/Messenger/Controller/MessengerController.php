@@ -59,15 +59,14 @@ class MessengerController extends BaseController
      */
     public function friends(Request $request, Response $response, $args): Response
     {
-        $page = $args['total'] ?? 0;
-        $resultPerPage = $args['offset'] ?? 0;
+        $page = $args['page'] ?? 0;
+        $resultPerPage = $args['rpp'] ?? 0;
 
-        /** @var array $friends */
         $friends = $this->messengerRepository->findPageBy($page, $resultPerPage, [
             'user' => $this->getUser($this->userRepository, $request)
         ], ['id' => 'DESC']);
 
-        if(empty($friends)) {
+        if($friends->isEmpty()) {
             throw new MessengerException(__('You have no friends'), 404);
         }
 

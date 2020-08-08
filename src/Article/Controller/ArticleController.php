@@ -113,14 +113,14 @@ class ArticleController extends BaseController
      */
     public function list(Request $request, Response $response, $args): Response
     {
-        $total = $args['total'] ?? 0;
-        $offset = $args['offset'] ?? 0;
+        $page = $args['page'] ?? 0;
+        $resultPerPage = $args['rpp'] ?? 0;
 
-        $articles = $this->articleRepository->getList([
+        $articles = $this->articleRepository->findPageBy((int)$page, (int)$resultPerPage,[
             'hidden' => self::IS_VISIBLE
-        ], ['id' => 'DESC'], (int)$total, (int)$offset);
+        ], ['id' => 'DESC']);
 
-        if (empty($articles)) {
+        if ($articles->isEmpty()) {
             throw new ArticleException(__('No Articles were found'), 404);
         }
 

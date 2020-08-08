@@ -72,12 +72,12 @@ class RoomController extends BaseController
      */
     public function list(Request $request, Response $response, $args): Response
     {
-        $total = $args['total'] ?? 0;
-        $offset = $args['offset'] ?? 0;
+        $page = $args['page'] ?? 0;
+        $resultPerPage = $args['rpp'] ?? 0;
 
-        $rooms = $this->roomRepository->getList([], ['id' => 'DESC'], (int)$total, (int)$offset);
+        $rooms = $this->roomRepository->findPageBy((int)$page, (int)$resultPerPage, [], ['id' => 'DESC']);
 
-        if (empty($rooms)) {
+        if ($rooms->isEmpty()) {
             throw new RoomException(__('No Rooms were found'), 404);
         }
 

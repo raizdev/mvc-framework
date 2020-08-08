@@ -86,10 +86,10 @@ class GuildController extends BaseController
      */
     public function list(Request $request, Response $response, $args): Response
     {
-        $total = $args['total'] ?? 0;
-        $offset = $args['offset'] ?? 0;
+        $page = $args['page'] ?? 0;
+        $resultPerPage = $args['rpp'] ?? 0;
 
-        $guilds = $this->guildRepository->getList([], ['id' => 'DESC'], (int)$total, (int)$offset);
+        $guilds = $this->guildRepository->findPageBy((int)$page, (int)$resultPerPage, [], ['id' => 'DESC']);
 
         if (empty($guilds)) {
             throw new GuildException(__('No Guilds were found'), 404);
