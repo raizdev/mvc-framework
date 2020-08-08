@@ -66,7 +66,7 @@ class MessengerController extends BaseController
             'user' => $this->getUser($this->userRepository, $request)
         ], ['id' => 'DESC']);
 
-        if($friends->isEmpty()) {
+        if ($friends->isEmpty()) {
             throw new MessengerException(__('You have no friends'), 404);
         }
 
@@ -79,7 +79,14 @@ class MessengerController extends BaseController
 
         return $this->respond(
             $response,
-            response()->setData($list)
+            response()->setData([
+                'pagination' => [
+                    'totalPages' => $friends->getPages(),
+                    'prevPage' => $friends->getPrevPage(),
+                    'nextPage' => $friends->getNextPage()
+                ],
+                'friends' => $list
+            ])
         );
     }
 }
