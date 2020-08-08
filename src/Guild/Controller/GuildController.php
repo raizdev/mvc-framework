@@ -91,7 +91,7 @@ class GuildController extends BaseController
 
         $guilds = $this->guildRepository->findPageBy((int)$page, (int)$resultPerPage, [], ['id' => 'DESC']);
 
-        if (empty($guilds)) {
+        if ($guilds->isEmpty()) {
             throw new GuildException(__('No Guilds were found'), 404);
         }
 
