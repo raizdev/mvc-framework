@@ -18,8 +18,8 @@ use Doctrine\ORM\Mapping\OneToOne;
  *
  * @package Ares\Messenger\Entity
  *
- * @ORM\Entity
  * @ORM\Table(name="messenger_friendships")
+ * @ORM\Entity(repositoryClass="Ares\Messenger\Repository\MessengerRepository")
  */
 class MessengerFriendship
 {
