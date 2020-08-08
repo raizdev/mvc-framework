@@ -8,24 +8,19 @@
 
 namespace Ares\Messenger\Repository;
 
-use Ares\Framework\Interfaces\RepositoryInterface;
+use Ares\Framework\Repository\BaseRepository;
 use Ares\Messenger\Entity\MessengerFriendship;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping;
 use Doctrine\ORM\ORMException;
-use Jhg\DoctrinePagination\ORM\PaginatedRepository;
 
 /**
  * Class MessengerRepository
  *
  * @package Ares\Messenger\Repository
  */
-class MessengerRepository extends PaginatedRepository implements RepositoryInterface
+class MessengerRepository extends BaseRepository
 {
-    public function __construct(EntityManager $em)
-    {
-        parent::__construct($em, new Mapping\ClassMetadata(MessengerFriendship::class));
-    }
+    /** @var string */
+    protected string $entity = MessengerFriendship::class;
 
     /**
      * Get object by id.
