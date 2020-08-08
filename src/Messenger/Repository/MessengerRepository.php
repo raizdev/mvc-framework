@@ -56,7 +56,7 @@ class MessengerRepository extends BaseRepository
      *
      * @return array|object[]
      */
-    public function getList($criteria, $orderBy = null, $limit = null, $offset = null): array
+    public function getList($criteria, $orderBy = null, $limit = null, $offset = null)
     {
         return $this->findBy($criteria, $orderBy, $limit, $offset);
     }
