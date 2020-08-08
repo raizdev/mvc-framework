@@ -59,8 +59,8 @@ class MessengerController extends BaseController
      */
     public function friends(Request $request, Response $response, $args): Response
     {
-        $page = $args['page'] ?? 0;
-        $resultPerPage = $args['rpp'] ?? 0;
+        $page = $args['page'];
+        $resultPerPage = $args['rpp'];
 
         $friends = $this->messengerRepository->findPageBy($page, $resultPerPage, [
             'user' => $this->getUser($this->userRepository, $request)

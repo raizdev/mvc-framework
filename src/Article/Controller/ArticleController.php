@@ -113,8 +113,8 @@ class ArticleController extends BaseController
      */
     public function list(Request $request, Response $response, $args): Response
     {
-        $page = $args['page'] ?? 0;
-        $resultPerPage = $args['rpp'] ?? 0;
+        $page = $args['page'];
+        $resultPerPage = $args['rpp'];
 
         $articles = $this->articleRepository->findPageBy((int)$page, (int)$resultPerPage,[
             'hidden' => self::IS_VISIBLE
