@@ -12,6 +12,7 @@ use Ares\Framework\Controller\BaseController;
 use Ares\Room\Entity\Room;
 use Ares\Room\Exception\RoomException;
 use Ares\Room\Repository\RoomRepository;
+use Jhg\DoctrinePagination\Collection\PaginatedArrayCollection;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -75,6 +76,7 @@ class RoomController extends BaseController
         $page = $args['page'];
         $resultPerPage = $args['rpp'];
 
+        /** @var PaginatedArrayCollection */
         $rooms = $this->roomRepository->findPageBy((int)$page, (int)$resultPerPage, [], ['id' => 'DESC']);
 
         if ($rooms->isEmpty()) {

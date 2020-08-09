@@ -13,6 +13,7 @@ use Ares\Guild\Entity\Guild;
 use Ares\Guild\Exception\GuildException;
 use Ares\Guild\Repository\GuildRepository;
 use Ares\Room\Entity\Room;
+use Jhg\DoctrinePagination\Collection\PaginatedArrayCollection;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -89,6 +90,7 @@ class GuildController extends BaseController
         $page = $args['page'];
         $resultPerPage = $args['rpp'];
 
+        /** @var PaginatedArrayCollection */
         $guilds = $this->guildRepository->findPageBy((int)$page, (int)$resultPerPage, [], ['id' => 'DESC']);
 
         if ($guilds->isEmpty()) {

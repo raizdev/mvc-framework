@@ -13,6 +13,7 @@ use Ares\Messenger\Exception\MessengerException;
 use Ares\Messenger\Repository\MessengerRepository;
 use Ares\User\Exception\UserException;
 use Ares\User\Repository\UserRepository;
+use Jhg\DoctrinePagination\Collection\PaginatedArrayCollection;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -62,6 +63,7 @@ class MessengerController extends BaseController
         $page = $args['page'];
         $resultPerPage = $args['rpp'];
 
+        /** @var PaginatedArrayCollection */
         $friends = $this->messengerRepository->findPageBy($page, $resultPerPage, [
             'user' => $this->getUser($this->userRepository, $request)
         ], ['id' => 'DESC']);

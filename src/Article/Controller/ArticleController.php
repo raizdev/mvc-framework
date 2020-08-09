@@ -12,6 +12,7 @@ use Ares\Framework\Controller\BaseController;
 use Ares\Article\Entity\Article;
 use Ares\Article\Exception\ArticleException;
 use Ares\Article\Repository\ArticleRepository;
+use Jhg\DoctrinePagination\Collection\PaginatedArrayCollection;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -116,6 +117,7 @@ class ArticleController extends BaseController
         $page = $args['page'];
         $resultPerPage = $args['rpp'];
 
+        /** @var PaginatedArrayCollection */
         $articles = $this->articleRepository->findPageBy((int)$page, (int)$resultPerPage,[
             'hidden' => self::IS_VISIBLE
         ], ['id' => 'DESC']);
