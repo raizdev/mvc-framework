@@ -12,6 +12,7 @@
 /.phpunit.result.cache
 /tmp/Logs
 /tmp/Cache/doctrine
+/tmp/Cache/proxies
 /app/Keys/private.pem
 /app/Keys/public.pem
 /tmp/Logs/

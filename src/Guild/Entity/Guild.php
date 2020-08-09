@@ -21,6 +21,7 @@ use Doctrine\ORM\Mapping\OneToOne;
  *
  * @ORM\Entity
  * @ORM\Table(name="guilds")
+ * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
  * @ORM\HasLifecycleCallbacks
  */
 class Guild

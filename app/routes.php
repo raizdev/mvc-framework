@@ -45,6 +45,7 @@ return function (App $app) {
             // Friends
             $group->group('/friends', function ($group) {
                 $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Messenger\Controller\MessengerController::class . ':friends');
+                $group->post('/search/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Messenger\Controller\MessengerController::class . ':search');
                 // @TODO Make Friend-Requests
                 $group->get('/requests', \Ares\Messenger\Controller\MessengerController::class . ':friends');
             });
@@ -61,7 +62,7 @@ return function (App $app) {
 
         // Authentication
         $group->post('/login', \Ares\User\Controller\AuthController::class . ':login');
-        $group->group('/register', function (RouteCollectorProxy $group) {
+        $group->group('/register', function ($group) {
             $group->post('', \Ares\User\Controller\AuthController::class . ':register');
             $group->post('/check', \Ares\User\Controller\AuthController::class . ':check');
         });

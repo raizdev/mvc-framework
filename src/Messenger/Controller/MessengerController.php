@@ -91,4 +91,47 @@ class MessengerController extends BaseController
             ])
         );
     }
+
+    /**
+     * @param Request  $request
+     * @param Response $response
+     * @param          $args
+     *
+     * @return Response
+     * @throws MessengerException
+     * @throws UserException
+     */
+    public function search(Request $request, Response $response, $args): Response
+    {
+        $page = $args['page'];
+        $resultPerPage = $args['rpp'];
+
+        /** @var PaginatedArrayCollection */
+        $friends = $this->messengerRepository->findPageBy($page, $resultPerPage, [
+            'user' => $this->getUser($this->userRepository, $request)
+        ], ['id' => 'DESC']);
+
+        if ($friends->isEmpty()) {
+            throw new MessengerException(__('You have no friends'), 404);
+        }
+
+        $list = [];
+        foreach ($friends as $friend) {
+            $list[] = $friend
+                ->getFriend()
+                ->getArrayCopy();
+        }
+
+        return $this->respond(
+            $response,
+            response()->setData([
+                'pagination' => [
+                    'totalPages' => $friends->getPages(),
+                    'prevPage' => $friends->getPrevPage(),
+                    'nextPage' => $friends->getNextPage()
+                ],
+                'friends' => $list
+            ])
+        );
+    }
 }

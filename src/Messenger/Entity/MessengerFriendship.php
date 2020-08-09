@@ -20,6 +20,7 @@ use Doctrine\ORM\Mapping\OneToOne;
  *
  * @ORM\Table(name="messenger_friendships")
  * @ORM\Entity(repositoryClass="Ares\Messenger\Repository\MessengerRepository")
+ * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
  */
 class MessengerFriendship
 {

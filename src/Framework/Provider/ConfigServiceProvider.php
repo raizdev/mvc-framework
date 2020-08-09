@@ -39,6 +39,8 @@ class ConfigServiceProvider extends AbstractServiceProvider
 
                     'cache_dir' => base_dir() . 'tmp/Cache/doctrine',
 
+                    'proxy_dir' => base_dir() . 'tmp/Cache/proxies',
+
                     'metadata_dirs' => ['src'],
 
                     'connection' => [

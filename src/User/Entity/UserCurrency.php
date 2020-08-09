@@ -17,6 +17,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Entity
  * @ORM\Table(name="users_currency")
+ * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
  */
 class UserCurrency
 {
