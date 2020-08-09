@@ -34,7 +34,7 @@ class DatabaseServiceProvider extends AbstractServiceProvider
         $container->add(EntityManager::class, function () use ($container) {
 
             $settings = $container->get('settings');
-            $cacheDriver = new \Doctrine\Common\Cache\PhpFileCache(
+            $cacheDriver = new \Doctrine\Common\Cache\FilesystemCache(
                 base_dir() . 'tmp/Cache/doctrine'
             );
 
