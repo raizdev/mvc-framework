@@ -84,8 +84,8 @@ class RoomController extends BaseController
 
         /** @var PaginatedArrayCollection */
         $rooms = $this->roomRepository->findPageBy(
-            $page,
-            $resultPerPage,
+            (int)$page,
+            (int)$resultPerPage,
             [],
             ['id' => 'DESC']
         );

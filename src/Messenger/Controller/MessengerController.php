@@ -68,8 +68,8 @@ class MessengerController extends BaseController
 
         /** @var PaginatedArrayCollection */
         $friends = $this->messengerRepository->findPageBy(
-            $page,
-            $resultPerPage,
+            (int)$page,
+            (int)$resultPerPage,
             ['user' => $this->getUser($this->userRepository, $request)],
             ['id' => 'DESC']
         );

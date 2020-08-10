@@ -127,8 +127,8 @@ class ArticleController extends BaseController
 
         /** @var PaginatedArrayCollection */
         $articles = $this->articleRepository->findPageBy(
-            $page,
-            $resultPerPage,
+            (int)$page,
+            (int)$resultPerPage,
             ['hidden' => self::IS_VISIBLE],
             ['id' => 'DESC']
         );

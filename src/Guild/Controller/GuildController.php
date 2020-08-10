@@ -98,8 +98,8 @@ class GuildController extends BaseController
 
         /** @var PaginatedArrayCollection */
         $guilds = $this->guildRepository->findPageBy(
-            $page,
-            $resultPerPage,
+            (int)$page,
+            (int)$resultPerPage,
             [],
             ['id' => 'DESC']
         );
