@@ -68,8 +68,10 @@ class RegisterService
      */
     public function register(array $data): CustomResponseInterface
     {
-        /** @var User $user */
+        /** @var User $checkUser */
         $checkUser = $this->userRepository->getByUsername($data['username']);
+
+        /** @var User $checkMail */
         $checkMail = $this->userRepository->getByMail($data['mail']);
 
         if (!is_null($checkUser) || !is_null($checkMail)) {

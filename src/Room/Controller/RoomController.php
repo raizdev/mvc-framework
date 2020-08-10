@@ -49,8 +49,11 @@ class RoomController extends BaseController
      */
     public function room(Request $request, Response $response, $args): Response
     {
+        /** @var int $id */
+        $id = $args['id'];
+
         /** @var Room $room */
-        $room = $this->roomRepository->get((int)$args['id']);
+        $room = $this->roomRepository->get($id);
 
         if (is_null($room)) {
             throw new RoomException(__('No specific Room found'));
@@ -73,16 +76,25 @@ class RoomController extends BaseController
      */
     public function list(Request $request, Response $response, $args): Response
     {
+        /** @var int $page */
         $page = $args['page'];
+
+        /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
         /** @var PaginatedArrayCollection */
-        $rooms = $this->roomRepository->findPageBy((int)$page, (int)$resultPerPage, [], ['id' => 'DESC']);
+        $rooms = $this->roomRepository->findPageBy(
+            $page,
+            $resultPerPage,
+            [],
+            ['id' => 'DESC']
+        );
 
         if ($rooms->isEmpty()) {
             throw new RoomException(__('No Rooms were found'), 404);
         }
 
+        /** @var PaginatedArrayCollection $list */
         $list = [];
         foreach ($rooms as $room) {
             $list[] = $room->getArrayCopy();

@@ -67,14 +67,18 @@ class MessengerController extends BaseController
         $resultPerPage = $args['rpp'];
 
         /** @var PaginatedArrayCollection */
-        $friends = $this->messengerRepository->findPageBy($page, $resultPerPage, [
-            'user' => $this->getUser($this->userRepository, $request)
-        ], ['id' => 'DESC']);
+        $friends = $this->messengerRepository->findPageBy(
+            $page,
+            $resultPerPage,
+            ['user' => $this->getUser($this->userRepository, $request)],
+            ['id' => 'DESC']
+        );
 
         if ($friends->isEmpty()) {
             throw new MessengerException(__('You have no friends'), 404);
         }
 
+        /** @var PaginatedArrayCollection $list */
         $list = [];
         foreach ($friends as $friend) {
             $list[] = $friend
