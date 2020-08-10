@@ -83,15 +83,6 @@ class UserRepository extends BaseRepository
         return $this->findBy($criteria, $orderBy, $limit, $offset);
     }
 
-    /**
-     * @param array $criteria
-     *
-     * @return int
-     */
-    public function count(array $criteria): int
-    {
-        return $this->count($criteria);
-    }
 
     /**
      * @param object $model

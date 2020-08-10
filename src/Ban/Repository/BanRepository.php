@@ -75,16 +75,6 @@ class BanRepository extends BaseRepository
     }
 
     /**
-     * @param array $criteria
-     *
-     * @return int
-     */
-    public function count(array $criteria): int
-    {
-        return $this->count($criteria);
-    }
-
-    /**
      * Delete object by id.
      *
      * @param int $id
