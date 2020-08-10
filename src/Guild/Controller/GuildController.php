@@ -99,7 +99,6 @@ class GuildController extends BaseController
 
         $list = [];
         foreach ($guilds as $guild) {
-            /** @var Room $guildRoom */
             $guildRoom = [
                 'room' => [
                     'name' => $guild->getRoom()->getName(),
