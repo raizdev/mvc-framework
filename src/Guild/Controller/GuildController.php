@@ -50,8 +50,11 @@ class GuildController extends BaseController
      */
     public function guild(Request $request, Response $response, $args): Response
     {
+        /** @var int $id */
+        $id = $args['id'];
+
         /** @var Guild $guild */
-        $guild = $this->guildRepository->get((int)$args['id']);
+        $guild = $this->guildRepository->get($id);
 
         if (is_null($guild)) {
             throw new GuildException(__('No specific Guild found'));
@@ -87,16 +90,25 @@ class GuildController extends BaseController
      */
     public function list(Request $request, Response $response, $args): Response
     {
+        /** @var int $page */
         $page = $args['page'];
+
+        /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
         /** @var PaginatedArrayCollection */
-        $guilds = $this->guildRepository->findPageBy((int)$page, (int)$resultPerPage, [], ['id' => 'DESC']);
+        $guilds = $this->guildRepository->findPageBy(
+            $page,
+            $resultPerPage,
+            [],
+            ['id' => 'DESC']
+        );
 
         if ($guilds->isEmpty()) {
             throw new GuildException(__('No Guilds were found'), 404);
         }
 
+        /** @var PaginatedArrayCollection $list */
         $list = [];
         foreach ($guilds as $guild) {
             $guildRoom = [

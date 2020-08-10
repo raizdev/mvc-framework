@@ -60,7 +60,10 @@ class MessengerController extends BaseController
      */
     public function friends(Request $request, Response $response, $args): Response
     {
+        /** @var int $page */
         $page = $args['page'];
+
+        /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
         /** @var PaginatedArrayCollection */

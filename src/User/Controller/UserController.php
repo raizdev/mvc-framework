@@ -73,6 +73,7 @@ class UserController extends BaseController
      */
     public function onlineUser(Request $request, Response $response): Response
     {
+        /** @var User $onlineUser */
         $onlineUser = $this->userRepository->count([
             'online' => self::USER_EQUALS_ONLINE
         ]);
@@ -97,8 +98,10 @@ class UserController extends BaseController
      */
     public function updateLocale(Request $request, Response $response): Response
     {
+        /** @var array $body */
         $body = $request->getParsedBody();
 
+        /** @var User $user */
         $user = $this->getUser($this->userRepository, $request);
         $user->setLocale($body['locale']);
 

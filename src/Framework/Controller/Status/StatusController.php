@@ -30,6 +30,7 @@ class StatusController extends BaseController
      */
     public function getStatus(Request $request, Response $response): Response
     {
+        /** @var Response $customResponse */
         $customResponse = response()->setData([
             'api' => self::API_NAME,
             'version' => self::API_VERSION

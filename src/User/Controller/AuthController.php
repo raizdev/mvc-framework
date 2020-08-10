@@ -9,6 +9,7 @@
 namespace Ares\User\Controller;
 
 use Ares\Framework\Controller\BaseController;
+use Ares\User\Entity\User;
 use Ares\User\Exception\RegisterException;
 use Ares\User\Repository\UserRepository;
 use Ares\Framework\Service\ValidationService;
@@ -76,6 +77,7 @@ class AuthController extends BaseController
      */
     public function login(Request $request, Response $response): Response
     {
+        /** @var array $parsedData */
         $parsedData = $request->getParsedBody();
 
         $this->validationService->validate($parsedData, [
@@ -126,7 +128,10 @@ class AuthController extends BaseController
      */
     public function check(Request $request, Response $response): Response
     {
+        /** @var array $body */
         $body = $request->getParsedBody();
+
+        /** @var User $user */
         $user = $this->userRepository->getBy($body);
 
         if (is_null($user)) {
