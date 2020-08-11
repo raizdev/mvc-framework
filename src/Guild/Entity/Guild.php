@@ -37,7 +37,7 @@ class Guild
      * @OneToOne(targetEntity="\Ares\User\Entity\User")
      * @JoinColumn(name="user_id", referencedColumnName="id")
      */
-    private ?User $creator;
+    private User $creator;
 
     /**
      * @ORM\Column(type="string", length=50)
@@ -53,7 +53,7 @@ class Guild
      * @OneToOne(targetEntity="\Ares\Room\Entity\Room")
      * @JoinColumn(name="room_id", referencedColumnName="id")
      */
-    private ?Room $room;
+    private Room $room;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -94,11 +94,11 @@ class Guild
     }
 
     /**
-     * @param User|null $creator
+     * @param User $creator
      *
      * @return Guild
      */
-    public function setCreator(?User $creator): self
+    public function setCreator(User $creator): self
     {
         $this->creator = $creator;
 
@@ -154,11 +154,11 @@ class Guild
     }
 
     /**
-     * @param Room|null $room
+     * @param Room $room
      *
      * @return Guild
      */
-    public function setRoom(?Room $room): self
+    public function setRoom(Room $room): self
     {
         $this->room = $room;
 

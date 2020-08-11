@@ -38,16 +38,14 @@ return function (App $app) {
             // Guilds
             $group->group('/guilds', function ($group) {
                 $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Guild\Controller\GuildController::class . ':list');
-                $group->get('', \Ares\Guild\Controller\GuildController::class . ':list');
                 $group->get('/{id:[0-9]+}', \Ares\Guild\Controller\GuildController::class . ':guild');
+                $group->get('/members/{id:[0-9]+}/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Guild\Controller\GuildController::class . ':members');
             });
 
             // Friends
             $group->group('/friends', function ($group) {
                 $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Messenger\Controller\MessengerController::class . ':friends');
                 $group->post('/search/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Messenger\Controller\MessengerController::class . ':search');
-                // @TODO Make Friend-Requests
-                $group->get('/requests', \Ares\Messenger\Controller\MessengerController::class . ':friends');
             });
 
             // Rooms

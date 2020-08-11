@@ -10,7 +10,9 @@ namespace Ares\Guild\Controller;
 
 use Ares\Framework\Controller\BaseController;
 use Ares\Guild\Entity\Guild;
+use Ares\Guild\Entity\GuildMember;
 use Ares\Guild\Exception\GuildException;
+use Ares\Guild\Repository\GuildMemberRepository;
 use Ares\Guild\Repository\GuildRepository;
 use Ares\Room\Entity\Room;
 use Jhg\DoctrinePagination\Collection\PaginatedArrayCollection;
@@ -30,14 +32,22 @@ class GuildController extends BaseController
     private GuildRepository $guildRepository;
 
     /**
+     * @var GuildMemberRepository
+     */
+    private GuildMemberRepository $guildMemberRepository;
+
+    /**
      * RoomController constructor.
      *
-     * @param GuildRepository $guildRepository
+     * @param GuildRepository       $guildRepository
+     * @param GuildMemberRepository $guildMemberRepository
      */
     public function __construct(
-        GuildRepository $guildRepository
+        GuildRepository $guildRepository,
+        GuildMemberRepository $guildMemberRepository
     ) {
         $this->guildRepository = $guildRepository;
+        $this->guildMemberRepository = $guildMemberRepository;
     }
 
     /**
@@ -56,12 +66,18 @@ class GuildController extends BaseController
         /** @var Guild $guild */
         $guild = $this->guildRepository->get($id);
 
+        /** @var GuildMember $memberCount */
+        $memberCount = $this->guildMemberRepository->count([
+            'guild' => $id
+        ]);
+
         if (is_null($guild)) {
             throw new GuildException(__('No specific Guild found'));
         }
 
         /** @var Room $guildRoom */
         $guildRoom = [
+            'member_count' => $memberCount,
             'room' => [
                 'name' => $guild->getRoom()->getName(),
                 'description' => $guild->getRoom()->getDescription(),
@@ -123,6 +139,50 @@ class GuildController extends BaseController
                 ]
             ];
             $list[] = array_merge($guild->getArrayCopy(), $guildRoom);
+        }
+
+        return $this->respond(
+            $response,
+            response()->setData($list)
+        );
+    }
+
+    /**
+     * @param Request  $request
+     * @param Response $response
+     *
+     * @param          $args
+     *
+     * @return Response
+     * @throws GuildException
+     */
+    public function members(Request $request, Response $response, $args): Response
+    {
+        /** @var int $args */
+        $id = $args['id'];
+
+        /** @var int $page */
+        $page = $args['page'];
+
+        /** @var int $resultPerPage */
+        $resultPerPage = $args['rpp'];
+
+        /** @var PaginatedArrayCollection */
+        $members = $this->guildMemberRepository->findPageBy(
+            (int)$page,
+            (int)$resultPerPage,
+            ['guild' => $id],
+            ['id' => 'DESC']
+        );
+
+        if ($members->isEmpty()) {
+            throw new GuildException(__('No Members were found for this Guild'), 404);
+        }
+
+        /** @var PaginatedArrayCollection $list */
+        $list = [];
+        foreach ($members as $member) {
+            $list[] = $member->getArrayCopy();
         }
 
         return $this->respond(
