@@ -13,6 +13,7 @@ use Ares\Messenger\Exception\MessengerException;
 use Ares\Messenger\Repository\MessengerRepository;
 use Ares\User\Exception\UserException;
 use Ares\User\Repository\UserRepository;
+use Jhg\DoctrinePagination\Collection\PaginatedArrayCollection;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -51,24 +52,33 @@ class MessengerController extends BaseController
      * @param Request  $request
      * @param Response $response
      *
+     * @param          $args
+     *
      * @return Response
-     * @throws UserException
      * @throws MessengerException
+     * @throws UserException
      */
     public function friends(Request $request, Response $response, $args): Response
     {
-        $total = $args['total'] ?? 0;
-        $offset = $args['offset'] ?? 0;
+        /** @var int $page */
+        $page = $args['page'];
 
-        /** @var array $friends */
-        $friends = $this->messengerRepository->getList([
-            'user' => $this->getUser($this->userRepository, $request)
-        ], ['id' => 'DESC'], (int)$total, (int)$offset);
+        /** @var int $resultPerPage */
+        $resultPerPage = $args['rpp'];
 
-        if(empty($friends)) {
+        /** @var PaginatedArrayCollection */
+        $friends = $this->messengerRepository->findPageBy(
+            (int)$page,
+            (int)$resultPerPage,
+            ['user' => $this->getUser($this->userRepository, $request)],
+            ['id' => 'DESC']
+        );
+
+        if ($friends->isEmpty()) {
             throw new MessengerException(__('You have no friends'), 404);
         }
 
+        /** @var PaginatedArrayCollection $list */
         $list = [];
         foreach ($friends as $friend) {
             $list[] = $friend
@@ -78,7 +88,14 @@ class MessengerController extends BaseController
 
         return $this->respond(
             $response,
-            response()->setData($list)
+            response()->setData([
+                'pagination' => [
+                    'totalPages' => $friends->getPages(),
+                    'prevPage' => $friends->getPrevPage(),
+                    'nextPage' => $friends->getNextPage()
+                ],
+                'friends' => $list
+            ])
         );
     }
 }

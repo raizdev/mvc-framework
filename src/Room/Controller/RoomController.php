@@ -12,6 +12,7 @@ use Ares\Framework\Controller\BaseController;
 use Ares\Room\Entity\Room;
 use Ares\Room\Exception\RoomException;
 use Ares\Room\Repository\RoomRepository;
+use Jhg\DoctrinePagination\Collection\PaginatedArrayCollection;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -48,8 +49,11 @@ class RoomController extends BaseController
      */
     public function room(Request $request, Response $response, $args): Response
     {
+        /** @var int $id */
+        $id = $args['id'];
+
         /** @var Room $room */
-        $room = $this->roomRepository->get((int)$args['id']);
+        $room = $this->roomRepository->get($id);
 
         if (is_null($room)) {
             throw new RoomException(__('No specific Room found'));
@@ -72,15 +76,25 @@ class RoomController extends BaseController
      */
     public function list(Request $request, Response $response, $args): Response
     {
-        $total = $args['total'] ?? 0;
-        $offset = $args['offset'] ?? 0;
+        /** @var int $page */
+        $page = $args['page'];
 
-        $rooms = $this->roomRepository->getList([], ['id' => 'DESC'], (int)$total, (int)$offset);
+        /** @var int $resultPerPage */
+        $resultPerPage = $args['rpp'];
 
-        if (empty($rooms)) {
+        /** @var PaginatedArrayCollection */
+        $rooms = $this->roomRepository->findPageBy(
+            (int)$page,
+            (int)$resultPerPage,
+            [],
+            ['id' => 'DESC']
+        );
+
+        if ($rooms->isEmpty()) {
             throw new RoomException(__('No Rooms were found'), 404);
         }
 
+        /** @var PaginatedArrayCollection $list */
         $list = [];
         foreach ($rooms as $room) {
             $list[] = $room->getArrayCopy();

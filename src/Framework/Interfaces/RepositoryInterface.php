@@ -31,15 +31,8 @@ interface RepositoryInterface
      * @param null  $limit
      * @param null  $offset
      *
-     * @return array
      */
-    public function getList(array $criteria, $orderBy = null, $limit = null, $offset = null): array;
-
-    /**
-     * @param array $criteria
-     * @return int
-     */
-    public function count(array $criteria): int;
+    public function getList(array $criteria, $orderBy = null, $limit = null, $offset = null);
 
     /**
      * Save object.

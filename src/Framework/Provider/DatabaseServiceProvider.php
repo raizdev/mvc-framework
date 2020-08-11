@@ -8,11 +8,11 @@
 
 namespace Ares\Framework\Provider;
 
+use Doctrine\Common\Annotations\CachedReader;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Setup;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\Cache\FilesystemCache;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 
 /**
@@ -28,25 +28,42 @@ class DatabaseServiceProvider extends AbstractServiceProvider
 
     public function register()
     {
-        $container = $this->getContainer();
 
+        $container = $this->getContainer();
         $container->add(EntityManager::class, function () use ($container) {
+
             $settings = $container->get('settings');
+            $cacheDriver = new \Doctrine\Common\Cache\FilesystemCache(
+                base_dir() . 'tmp/Cache/doctrine'
+            );
+
+            // Annotation drivers
             $config = Setup::createAnnotationMetadataConfiguration(
                 $settings['doctrine']['metadata_dirs'],
                 $settings['doctrine']['dev_mode']
             );
             $config->setMetadataDriverImpl(
                 new AnnotationDriver(
-                    new AnnotationReader,
+                    new CachedReader(
+                        new AnnotationReader,
+                        $cacheDriver
+                    ),
                     $settings['doctrine']['metadata_dirs']
                 )
             );
-            $config->setMetadataCacheImpl(
-                new FilesystemCache(
-                    $settings['doctrine']['cache_dir']
-                )
-            );
+            // Sets our Proxy Directory
+            $config->setProxyDir($settings['doctrine']['proxy_dir']);
+            $config->setProxyNamespace('Ares\Framework\Proxies');
+
+            // Set our Cache
+            if ($_ENV['API_DEBUG'] == "production") {
+                $config->setResultCacheImpl($cacheDriver);
+                $config->setQueryCacheImpl($cacheDriver);
+                $config->setMetadataCacheImpl($cacheDriver);
+                $config->setAutoGenerateProxyClasses(false);
+            } else {
+                $config->setAutoGenerateProxyClasses(true);
+            }
 
             return EntityManager::create($settings['doctrine']['connection'], $config);
         });

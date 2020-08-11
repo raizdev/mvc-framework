@@ -22,27 +22,8 @@ use Doctrine\Persistence\ObjectRepository;
  */
 class UserRepository extends BaseRepository
 {
-    /**
-     * @var EntityRepository|ObjectRepository
-     */
-    private $repository;
-
-    /**
-     * @var EntityManager
-     */
-    private EntityManager $entityManager;
-
-    /**
-     * UserRepository constructor.
-     *
-     * @param EntityManager $entityManager
-     */
-    public function __construct(
-        EntityManager $entityManager
-    ) {
-        $this->entityManager = $entityManager;
-        $this->repository = $entityManager->getRepository(User::class);
-    }
+    /** @var string */
+    protected string $entity = User::class;
 
     /**
      * @param $username
@@ -51,7 +32,7 @@ class UserRepository extends BaseRepository
      */
     public function getByUsername(string $username)
     {
-        return $this->repository->findOneBy([
+        return $this->findOneBy([
             'username' => $username
         ]);
     }
@@ -63,7 +44,7 @@ class UserRepository extends BaseRepository
      */
     public function getByMail(string $mail)
     {
-        return $this->repository->findOneBy([
+        return $this->findOneBy([
             'mail' => $mail
         ]);
     }
@@ -75,7 +56,7 @@ class UserRepository extends BaseRepository
      */
     public function getBy(array $data): ?object
     {
-        return $this->repository->findOneBy($data);
+        return $this->findOneBy($data);
     }
 
     /**
@@ -86,7 +67,7 @@ class UserRepository extends BaseRepository
      */
     public function get(int $id): ?object
     {
-        return $this->repository->find($id);
+        return $this->find($id);
     }
 
     /**
@@ -97,20 +78,11 @@ class UserRepository extends BaseRepository
      *
      * @return array|object[]
      */
-    public function getList($criteria, $orderBy = null, $limit = null, $offset = null): array
+    public function getList($criteria, $orderBy = null, $limit = null, $offset = null)
     {
-        return $this->repository->findBy($criteria, $orderBy, $limit, $offset);
+        return $this->findBy($criteria, $orderBy, $limit, $offset);
     }
 
-    /**
-     * @param array $criteria
-     *
-     * @return int
-     */
-    public function count(array $criteria): int
-    {
-        return $this->repository->count($criteria);
-    }
 
     /**
      * @param object $model
@@ -120,8 +92,8 @@ class UserRepository extends BaseRepository
      */
     public function save(object $model): object
     {
-        $this->entityManager->persist($model);
-        $this->entityManager->flush();
+        $this->getEntityManager()->persist($model);
+        $this->getEntityManager()->flush();
 
         return $model;
     }
@@ -141,8 +113,8 @@ class UserRepository extends BaseRepository
             return false;
         }
 
-        $this->entityManager->remove($model);
-        $this->entityManager->flush();
+        $this->getEntityManager()->remove($model);
+        $this->getEntityManager()->flush();
 
         return true;
     }

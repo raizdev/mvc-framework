@@ -9,27 +9,24 @@
 namespace Ares\Guild\Repository;
 
 use Ares\Framework\Repository\BaseRepository;
-use Ares\Guild\Entity\Guild;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityRepository;
+use Ares\Guild\Entity\GuildMember;
 use Doctrine\ORM\ORMException;
-use Doctrine\Persistence\ObjectRepository;
 
 /**
- * Class GuildRepository
+ * Class GuildMemberRepository
  *
  * @package Ares\Guild\Repository
  */
-class GuildRepository extends BaseRepository
+class GuildMemberRepository extends BaseRepository
 {
     /** @var string */
-    protected string $entity = Guild::class;
+    protected string $entity = GuildMember::class;
 
     /**
      * Get object by id.
      *
      * @param int $id
-     * @return Guild|null
+     * @return GuildMember|null
      */
     public function get(int $id): ?object
     {
@@ -39,7 +36,7 @@ class GuildRepository extends BaseRepository
     /**
      * @param object $model
      *
-     * @return Guild
+     * @return GuildMember
      * @throws ORMException
      */
     public function save(object $model): object

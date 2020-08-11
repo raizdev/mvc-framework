@@ -20,6 +20,7 @@ use Doctrine\ORM\Mapping\OneToOne;
  *
  * @ORM\Entity
  * @ORM\Table(name="bans")
+ * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
  */
 class Ban
 {

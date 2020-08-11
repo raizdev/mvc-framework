@@ -30,28 +30,27 @@ return function (App $app) {
 
             // Articles
             $group->group('/articles', function ($group) {
-                $group->get('/list/{total:[0-9]+}[/{offset}]', \Ares\Article\Controller\ArticleController::class . ':list');
+                $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Article\Controller\ArticleController::class . ':list');
                 $group->get('/pinned', \Ares\Article\Controller\ArticleController::class . ':pinned');
                 $group->get('/{id:[0-9]+}', \Ares\Article\Controller\ArticleController::class . ':article');
             });
 
             // Guilds
             $group->group('/guilds', function ($group) {
-                $group->get('/list/{total:[0-9]+}[/{offset}]', \Ares\Guild\Controller\GuildController::class . ':list');
-                $group->get('', \Ares\Guild\Controller\GuildController::class . ':list');
+                $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Guild\Controller\GuildController::class . ':list');
                 $group->get('/{id:[0-9]+}', \Ares\Guild\Controller\GuildController::class . ':guild');
+                $group->get('/members/{id:[0-9]+}/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Guild\Controller\GuildController::class . ':members');
             });
 
             // Friends
             $group->group('/friends', function ($group) {
-                $group->get('/{total:[0-9]+}[/{offset}]', \Ares\Messenger\Controller\MessengerController::class . ':friends');
-                // @TODO Make Friend-Requests
-                $group->get('/requests', \Ares\Messenger\Controller\MessengerController::class . ':friends');
+                $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Messenger\Controller\MessengerController::class . ':friends');
+                $group->post('/search/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Messenger\Controller\MessengerController::class . ':search');
             });
 
             // Rooms
             $group->group('/rooms', function ($group) {
-                $group->get('/list/{total:[0-9]+}[/{offset}]', \Ares\Room\Controller\RoomController::class . ':list');
+                $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Room\Controller\RoomController::class . ':list');
                 $group->get('/{id:[0-9]+}', \Ares\Room\Controller\RoomController::class . ':room');
             });
 
@@ -61,7 +60,7 @@ return function (App $app) {
 
         // Authentication
         $group->post('/login', \Ares\User\Controller\AuthController::class . ':login');
-        $group->group('/register', function (RouteCollectorProxy $group) {
+        $group->group('/register', function ($group) {
             $group->post('', \Ares\User\Controller\AuthController::class . ':register');
             $group->post('/check', \Ares\User\Controller\AuthController::class . ':check');
         });

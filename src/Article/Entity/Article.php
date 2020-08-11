@@ -19,6 +19,7 @@ use Doctrine\ORM\Mapping\OneToOne;
  *
  * @ORM\Entity
  * @ORM\Table(name="ares_articles", uniqueConstraints={@ORM\UniqueConstraint(name="title", columns={"title"})}))
+ * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
  * @ORM\HasLifecycleCallbacks
  */
 class Article

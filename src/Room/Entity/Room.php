@@ -21,6 +21,7 @@ use Doctrine\ORM\Mapping\OneToOne;
  *
  * @ORM\Entity
  * @ORM\Table(name="rooms")
+ * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
  * @ORM\HasLifecycleCallbacks
  */
 class Room

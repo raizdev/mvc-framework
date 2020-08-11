@@ -12,6 +12,8 @@ use Ares\Framework\Controller\BaseController;
 use Ares\Article\Entity\Article;
 use Ares\Article\Exception\ArticleException;
 use Ares\Article\Repository\ArticleRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Jhg\DoctrinePagination\Collection\PaginatedArrayCollection;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -59,8 +61,11 @@ class ArticleController extends BaseController
      */
     public function article(Request $request, Response $response, $args): Response
     {
+        /** @var int $id */
+        $id = $args['id'];
+
         /** @var Article $article */
-        $article = $this->articleRepository->get((int)$args['id']);
+        $article = $this->articleRepository->get($id);
 
         if (is_null($article)) {
             throw new ArticleException(__('No specific Article found'), 404);
@@ -91,6 +96,7 @@ class ArticleController extends BaseController
             throw new ArticleException(__('No Pinned Articles found'));
         }
 
+        /** @var ArrayCollection $list */
         $list = [];
         foreach ($pinnedArticles as $pinnedArticle) {
             $list[] = $pinnedArticle->getArrayCopy();
@@ -113,17 +119,25 @@ class ArticleController extends BaseController
      */
     public function list(Request $request, Response $response, $args): Response
     {
-        $total = $args['total'] ?? 0;
-        $offset = $args['offset'] ?? 0;
+        /** @var int $page */
+        $page = $args['page'];
 
-        $articles = $this->articleRepository->getList([
-            'hidden' => self::IS_VISIBLE
-        ], ['id' => 'DESC'], (int)$total, (int)$offset);
+        /** @var int $resultPerPage */
+        $resultPerPage = $args['rpp'];
 
-        if (empty($articles)) {
+        /** @var PaginatedArrayCollection */
+        $articles = $this->articleRepository->findPageBy(
+            (int)$page,
+            (int)$resultPerPage,
+            ['hidden' => self::IS_VISIBLE],
+            ['id' => 'DESC']
+        );
+
+        if ($articles->isEmpty()) {
             throw new ArticleException(__('No Articles were found'), 404);
         }
 
+        /** @var PaginatedArrayCollection $list */
         $list = [];
         foreach ($articles as $article) {
             $list[] = $article->getArrayCopy();
