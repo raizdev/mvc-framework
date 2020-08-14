@@ -52,6 +52,7 @@ return function (App $app) {
             $group->group('/rooms', function ($group) {
                 $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Room\Controller\RoomController::class . ':list');
                 $group->get('/{id:[0-9]+}', \Ares\Room\Controller\RoomController::class . ':room');
+                $group->get('/cache/{id}', \Ares\Room\Controller\RoomController::class . ':testCache');
             });
 
             // De-Authentication

@@ -53,10 +53,10 @@ class RoomController extends BaseController
         $id = $args['id'];
 
         /** @var Room $room */
-        $room = $this->roomRepository->get($id);
+        $room = $this->roomRepository->get((int)$id);
 
         if (is_null($room)) {
-            throw new RoomException(__('No specific Room found'));
+            throw new RoomException(__('No specific Room found'), 404);
         }
 
         return $this->respond(
@@ -103,6 +103,18 @@ class RoomController extends BaseController
         return $this->respond(
             $response,
             response()->setData($list)
+        );
+    }
+
+    public function testCache(Request $request, Response $response, $args): Response
+    {
+        $id = $args['id'];
+
+        $room = $this->roomRepository->getWithCache((int)$id);
+
+        return $this->respond(
+            $response,
+            response()->setData($room)
         );
     }
 }

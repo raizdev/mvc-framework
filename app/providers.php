@@ -38,4 +38,7 @@ return [
     $container->addServiceProvider(
         new \Ares\Framework\Provider\ValidationServiceProvider()
     ),
+    $container->addServiceProvider(
+        new \Ares\Framework\Provider\CacheServiceProvider()
+    )
 ];

@@ -19,6 +19,9 @@ use Doctrine\ORM\ORMException;
  */
 class RoomRepository extends BaseRepository
 {
+
+    private const CACHE_PREFIX = 'ARES_ROOM_';
+
     /** @var string */
     protected string $entity = Room::class;
 
@@ -30,7 +33,28 @@ class RoomRepository extends BaseRepository
      */
     public function get(int $id): ?object
     {
-        return $this->find($id);
+        $entity = $this->cacheService->get(self::CACHE_PREFIX . $id);
+
+        if ($entity) {
+            return json_decode($entity);
+        }
+
+        $entity = $this->find($id);
+        $this->cacheService->set(self::CACHE_PREFIX . $id, $entity);
+
+        return $entity;
+    }
+
+    public function getWithCache(int $id): ?array
+    {
+        return $this->getEntityManager()->createQueryBuilder()
+            ->select('r')
+            ->from(Room::class, 'r')
+            ->where('r.id = :id')
+            ->setParameter('id', $id)
+            ->setCacheable(true)
+            ->getQuery()
+            ->getArrayResult();
     }
 
     /**

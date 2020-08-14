@@ -1,0 +1,131 @@
+<?php
+namespace Ares\Framework\Service;
+
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Phpfastcache\Helper\Psr16Adapter as FastCache;
+use Psr\Cache\InvalidArgumentException;
+
+class CacheService
+{
+    /**
+     * @var FastCache
+     */
+    private FastCache $fastCache;
+
+    /**
+     * CacheService constructor.
+     *
+     * @param   FastCache  $fastCache
+     */
+    public function __construct(FastCache $fastCache)
+    {
+        $this->fastCache = $fastCache;
+    }
+
+    /**
+     * @param   string  $key
+     *
+     * @return bool
+     * @throws PhpfastcacheSimpleCacheException
+     */
+    public function has(string $key): bool
+    {
+        return $this->fastCache->has($key);
+    }
+
+    /**
+     * @param   string  $key
+     *
+     * @return  mixed
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws InvalidArgumentException
+     */
+    public function get(string $key)
+    {
+        return $this->fastCache->get($key, '');
+    }
+
+    /**
+     * @param   array  $keys
+     *
+     * @return string
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws InvalidArgumentException
+     */
+    public function getMultiple(array $keys): string
+    {
+        return $this->fastCache->getMultiple($keys);
+    }
+
+    /**
+     * @param   string  $key
+     * @param           $value
+     * @param   int     $ttl
+     *
+     * @return bool
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws InvalidArgumentException
+     */
+    public function set(string $key, $value, int $ttl = 0): bool
+    {
+        return $this->fastCache->set($key, $value, $this->getTTL($ttl));
+    }
+
+    /**
+     * @param   array  $values
+     * @param   int    $ttl
+     *
+     * @return bool
+     * @throws PhpfastcacheSimpleCacheException
+     */
+    public function setMultiple(array $values, int $ttl = 0): bool
+    {
+        return $this->fastCache->setMultiple($values, $this->getTTL($ttl));
+    }
+
+    /**
+     * @param   string  $key
+     *
+     * @return bool
+     * @throws PhpfastcacheSimpleCacheException
+     */
+    public function delete(string $key): bool
+    {
+        return $this->fastCache->delete($key);
+    }
+
+    /**
+     * @param   array  $keys
+     *
+     * @return bool
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws InvalidArgumentException
+     */
+    public function deleteMultiple(array $keys): bool
+    {
+        return $this->fastCache->deleteMultiple($keys);
+    }
+
+    /**
+     * @return bool
+     * @throws PhpfastcacheSimpleCacheException
+     */
+    public function clear(): bool
+    {
+        return $this->fastCache->clear();
+    }
+
+    /**
+     * @param   int  $ttl
+     *
+     * @return int|mixed
+     */
+    private function getTTL(int $ttl)
+    {
+        if (!$ttl) {
+            $ttl = $_ENV['CACHE_TTL'];
+        }
+
+        return $ttl;
+    }
+}

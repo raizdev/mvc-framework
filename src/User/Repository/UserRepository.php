@@ -22,6 +22,9 @@ use Doctrine\Persistence\ObjectRepository;
  */
 class UserRepository extends BaseRepository
 {
+
+    private const CACHE_PREFIX = 'ARES_USER_';
+
     /** @var string */
     protected string $entity = User::class;
 
@@ -67,7 +70,16 @@ class UserRepository extends BaseRepository
      */
     public function get(int $id): ?object
     {
-        return $this->find($id);
+        $entity = $this->cacheService->get(self::CACHE_PREFIX . $id);
+
+        if ($entity) {
+            return $entity;
+        }
+
+        $entity = $this->find($id);
+        $this->cacheService->set(self::CACHE_PREFIX . $id, $entity);
+
+        return $entity;
     }
 
     /**

@@ -10,10 +10,7 @@ namespace Ares\Guild\Repository;
 
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Guild\Entity\Guild;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\ORMException;
-use Doctrine\Persistence\ObjectRepository;
 
 /**
  * Class GuildRepository

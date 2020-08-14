@@ -48,3 +48,14 @@ if (!function_exists('base_dir')) {
         return __DIR__ . '/../';
     }
 }
+
+if (!function_exists('cache_dir')) {
+    /**
+     * Returns directory path of cache.
+     *
+     * @return string
+     */
+    function cache_dir() {
+        return __DIR__ . '/../tmp/Cache';
+    }
+}
