@@ -10,7 +10,12 @@ namespace Ares\Room\Repository;
 
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Room\Entity\Room;
+use Doctrine\ORM\AbstractQuery;
+use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Jhg\DoctrinePagination\Collection\PaginatedArrayCollection;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\Cache\InvalidArgumentException;
 
 /**
  * Class RoomRepository
@@ -19,7 +24,6 @@ use Doctrine\ORM\ORMException;
  */
 class RoomRepository extends BaseRepository
 {
-
     private const CACHE_PREFIX = 'ARES_ROOM_';
 
     /** @var string */
@@ -29,32 +33,24 @@ class RoomRepository extends BaseRepository
      * Get object by id.
      *
      * @param int $id
-     * @return Room|null
+     *
+     * @return mixed|object|null
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws InvalidArgumentException
      */
-    public function get(int $id): ?object
+    public function get(int $id)
     {
         $entity = $this->cacheService->get(self::CACHE_PREFIX . $id);
 
         if ($entity) {
-            return json_decode($entity);
+            return unserialize($entity);
         }
 
         $entity = $this->find($id);
-        $this->cacheService->set(self::CACHE_PREFIX . $id, $entity);
+
+        $this->cacheService->set(self::CACHE_PREFIX . $id, serialize($entity));
 
         return $entity;
-    }
-
-    public function getWithCache(int $id): ?array
-    {
-        return $this->getEntityManager()->createQueryBuilder()
-            ->select('r')
-            ->from(Room::class, 'r')
-            ->where('r.id = :id')
-            ->setParameter('id', $id)
-            ->setCacheable(true)
-            ->getQuery()
-            ->getArrayResult();
     }
 
     /**
@@ -88,8 +84,12 @@ class RoomRepository extends BaseRepository
      * Delete object by id.
      *
      * @param int $id
+     *
      * @return bool
+     * @throws InvalidArgumentException
      * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws PhpfastcacheSimpleCacheException
      */
     public function delete(int $id): bool
     {
@@ -103,5 +103,19 @@ class RoomRepository extends BaseRepository
         $this->getEntityManager()->flush();
 
         return true;
+    }
+
+    /**
+     * @param int        $page
+     * @param int        $rpp
+     * @param array      $criteria
+     * @param array|null $orderBy
+     * @param int        $hydrateMode
+     *
+     * @return PaginatedArrayCollection
+     */
+    public function paginate(int $page, int $rpp, array $criteria = [], array $orderBy = null, $hydrateMode = AbstractQuery::HYDRATE_OBJECT): PaginatedArrayCollection
+    {
+        return $this->findPageBy($page, $rpp, $criteria, $orderBy, $hydrateMode);
     }
 }

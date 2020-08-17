@@ -10,7 +10,9 @@ namespace Ares\Guild\Repository;
 
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Guild\Entity\GuildMember;
+use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\ORMException;
+use Jhg\DoctrinePagination\Collection\PaginatedArrayCollection;
 
 /**
  * Class GuildMemberRepository
@@ -79,5 +81,19 @@ class GuildMemberRepository extends BaseRepository
         $this->getEntityManager()->flush();
 
         return true;
+    }
+
+    /**
+     * @param int        $page
+     * @param int        $rpp
+     * @param array      $criteria
+     * @param array|null $orderBy
+     * @param int        $hydrateMode
+     *
+     * @return PaginatedArrayCollection
+     */
+    public function paginate(int $page, int $rpp, array $criteria = [], array $orderBy = null, $hydrateMode = AbstractQuery::HYDRATE_OBJECT): PaginatedArrayCollection
+    {
+        return $this->findPageBy($page, $rpp, $criteria, $orderBy, $hydrateMode);
     }
 }

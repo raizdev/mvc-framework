@@ -15,7 +15,7 @@ class CacheService
     /**
      * CacheService constructor.
      *
-     * @param   FastCache  $fastCache
+     * @param FastCache $fastCache
      */
     public function __construct(FastCache $fastCache)
     {
@@ -42,7 +42,11 @@ class CacheService
      */
     public function get(string $key)
     {
-        return $this->fastCache->get($key, '');
+        if (!$this->has($key)) {
+            return null;
+        }
+
+        return $this->fastCache->get($key);
     }
 
     /**

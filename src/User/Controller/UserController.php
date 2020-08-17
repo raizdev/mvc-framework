@@ -55,11 +55,12 @@ class UserController extends BaseController
     public function user(Request $request, Response $response): Response
     {
         /** @var User $user */
-        $user = $this->getUser($this->userRepository, $request);
+        $user = $this->getUser($this->userRepository, $request)
+            ->getArrayCopy();
 
         return $this->respond(
             $response,
-            response()->setData($user->getArrayCopy())
+            response()->setData($user)
         );
     }
 

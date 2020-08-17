@@ -23,7 +23,7 @@ interface RepositoryInterface
      * @param int $id
      * @return object|null
      */
-    public function get(int $id): ?object;
+    public function get(int $id);
 
     /**
      * Get array of objects by id.
