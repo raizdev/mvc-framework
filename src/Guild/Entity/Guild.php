@@ -24,7 +24,7 @@ use Doctrine\ORM\Mapping\OneToOne;
  * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
  * @ORM\HasLifecycleCallbacks
  */
-class Guild
+class Guild implements \Serializable
 {
     /**
      * @ORM\Id
@@ -220,5 +220,19 @@ class Guild
             'badge' => $this->getBadge(),
             'date_created' => $this->getDateCreated()
         ];
+    }
+
+    public function serialize()
+    {
+        return serialize(get_object_vars($this));
+    }
+
+    public function unserialize($data)
+    {
+        $values = unserialize($data);
+
+        foreach ($values as $key => $value) {
+            $this->$key = $value;
+        }
     }
 }

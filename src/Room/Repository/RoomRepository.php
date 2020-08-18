@@ -24,7 +24,11 @@ use Psr\Cache\InvalidArgumentException;
  */
 class RoomRepository extends BaseRepository
 {
+    /** @var string */
     private const CACHE_PREFIX = 'ARES_ROOM_';
+
+    /** @var PaginatedArrayCollection */
+    private const CACHE_COLLECTION_PREFIX = 'ARES_ROOM_COLLECTION_';
 
     /** @var string */
     protected string $entity = Room::class;
@@ -113,9 +117,21 @@ class RoomRepository extends BaseRepository
      * @param int        $hydrateMode
      *
      * @return PaginatedArrayCollection
+     * @throws InvalidArgumentException
+     * @throws PhpfastcacheSimpleCacheException
      */
     public function paginate(int $page, int $rpp, array $criteria = [], array $orderBy = null, $hydrateMode = AbstractQuery::HYDRATE_OBJECT): PaginatedArrayCollection
     {
-        return $this->findPageBy($page, $rpp, $criteria, $orderBy, $hydrateMode);
+        $entity = $this->cacheService->get(self::CACHE_COLLECTION_PREFIX . $page);
+
+        if ($entity) {
+            return unserialize($entity);
+        }
+
+        $entity = $this->findPageBy($page, $rpp, $criteria, $orderBy, $hydrateMode);
+
+        $this->cacheService->set(self::CACHE_COLLECTION_PREFIX . $page, serialize($entity));
+
+        return $entity;
     }
 }

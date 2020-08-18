@@ -126,7 +126,7 @@ class ArticleController extends BaseController
         $resultPerPage = $args['rpp'];
 
         /** @var PaginatedArrayCollection */
-        $articles = $this->articleRepository->findPageBy(
+        $articles = $this->articleRepository->paginate(
             (int)$page,
             (int)$resultPerPage,
             ['hidden' => self::IS_VISIBLE],

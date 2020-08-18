@@ -83,7 +83,7 @@ class RoomController extends BaseController
         $resultPerPage = $args['rpp'];
 
         /** @var PaginatedArrayCollection */
-        $rooms = $this->roomRepository->findPageBy(
+        $rooms = $this->roomRepository->paginate(
             (int)$page,
             (int)$resultPerPage,
             [],
@@ -103,18 +103,6 @@ class RoomController extends BaseController
         return $this->respond(
             $response,
             response()->setData($list)
-        );
-    }
-
-    public function testCache(Request $request, Response $response, $args): Response
-    {
-        $id = $args['id'];
-
-        $room = $this->roomRepository->getWithCache((int)$id);
-
-        return $this->respond(
-            $response,
-            response()->setData($room)
         );
     }
 }

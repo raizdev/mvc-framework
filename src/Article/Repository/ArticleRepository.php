@@ -13,6 +13,8 @@ use Ares\Article\Entity\Article;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\ORMException;
 use Jhg\DoctrinePagination\Collection\PaginatedArrayCollection;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\Cache\InvalidArgumentException;
 
 /**
  * Class ArticleRepository
@@ -21,6 +23,8 @@ use Jhg\DoctrinePagination\Collection\PaginatedArrayCollection;
  */
 class ArticleRepository extends BaseRepository
 {
+    const CACHE_PREFIX = 'ARES_ARTICLE_';
+
     /** @var string */
     protected string $entity = Article::class;
 
@@ -92,9 +96,21 @@ class ArticleRepository extends BaseRepository
      * @param int        $hydrateMode
      *
      * @return PaginatedArrayCollection
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws InvalidArgumentException
      */
     public function paginate(int $page, int $rpp, array $criteria = [], array $orderBy = null, $hydrateMode = AbstractQuery::HYDRATE_OBJECT): PaginatedArrayCollection
     {
-        return $this->findPageBy($page, $rpp, $criteria, $orderBy, $hydrateMode);
+        $entity = $this->cacheService->get(self::CACHE_PREFIX . $page);
+
+        if ($entity) {
+            return unserialize($entity);
+        }
+
+        $entity = $this->findPageBy($page, $rpp, $criteria, $orderBy, $hydrateMode);
+
+        $this->cacheService->set(self::CACHE_PREFIX . $page, serialize($entity));
+
+        return $entity;
     }
 }
