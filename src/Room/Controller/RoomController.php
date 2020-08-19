@@ -9,10 +9,14 @@
 namespace Ares\Room\Controller;
 
 use Ares\Framework\Controller\BaseController;
+use Ares\Framework\Interfaces\SearchCriteriaInterface;
+use Ares\Framework\Model\Adapter\DoctrineSearchCriteria;
 use Ares\Room\Entity\Room;
 use Ares\Room\Exception\RoomException;
 use Ares\Room\Repository\RoomRepository;
 use Jhg\DoctrinePagination\Collection\PaginatedArrayCollection;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -29,14 +33,22 @@ class RoomController extends BaseController
     private RoomRepository $roomRepository;
 
     /**
+     * @var DoctrineSearchCriteria
+     */
+    private DoctrineSearchCriteria $searchCriteria;
+
+    /**
      * RoomController constructor.
      *
-     * @param RoomRepository $roomRepository
+     * @param RoomRepository          $roomRepository
+     * @param DoctrineSearchCriteria $searchCriteria
      */
     public function __construct(
-        RoomRepository $roomRepository
+        RoomRepository $roomRepository,
+        DoctrineSearchCriteria $searchCriteria
     ) {
         $this->roomRepository = $roomRepository;
+        $this->searchCriteria = $searchCriteria;
     }
 
     /**
@@ -46,6 +58,8 @@ class RoomController extends BaseController
      *
      * @return Response
      * @throws RoomException
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws InvalidArgumentException
      */
     public function room(Request $request, Response $response, $args): Response
     {
@@ -72,6 +86,8 @@ class RoomController extends BaseController
      * @param          $args
      *
      * @return Response
+     * @throws InvalidArgumentException
+     * @throws PhpfastcacheSimpleCacheException
      * @throws RoomException
      */
     public function list(Request $request, Response $response, $args): Response
@@ -82,13 +98,12 @@ class RoomController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        /** @var PaginatedArrayCollection */
-        $rooms = $this->roomRepository->paginate(
-            (int)$page,
-            (int)$resultPerPage,
-            [],
-            ['id' => 'DESC']
-        );
+        $this->searchCriteria->setPage((int)$page)
+            ->setLimit((int)$resultPerPage)
+            ->addFilter('name', 'test')
+            ->addOrder('id', 'DESC');
+
+        $rooms = $this->roomRepository->paginate($this->searchCriteria);
 
         if ($rooms->isEmpty()) {
             throw new RoomException(__('No Rooms were found'), 404);

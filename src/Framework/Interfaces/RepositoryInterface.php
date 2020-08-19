@@ -8,7 +8,7 @@
 
 namespace Ares\Framework\Interfaces;
 
-use Doctrine\ORM\AbstractQuery;
+use Ares\Framework\Model\SearchCriteria;
 
 /**
  * Interface RepositoryInterface
@@ -45,15 +45,11 @@ interface RepositoryInterface
     public function save(object $model): object;
 
     /**
-     * @param   int         $page
-     * @param   int         $rpp
-     * @param   array       $criteria
-     * @param   array|null  $orderBy
-     * @param   int         $hydrateMode
+     * @param SearchCriteria $searchCriteria
      *
      * @return mixed
      */
-    public function paginate(int $page, int $rpp, array $criteria = [], array $orderBy = null, $hydrateMode = AbstractQuery::HYDRATE_OBJECT);
+    public function paginate(SearchCriteria $searchCriteria);
 
     /**
      * Delete object by id.

@@ -9,6 +9,7 @@
 namespace Ares\Messenger\Controller;
 
 use Ares\Framework\Controller\BaseController;
+use Ares\Framework\Model\SearchCriteria;
 use Ares\Messenger\Exception\MessengerException;
 use Ares\Messenger\Repository\MessengerRepository;
 use Ares\User\Exception\UserException;

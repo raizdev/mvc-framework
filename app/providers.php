@@ -40,5 +40,8 @@ return [
     ),
     $container->addServiceProvider(
         new \Ares\Framework\Provider\CacheServiceProvider()
+    ),
+    $container->addServiceProvider(
+        new \Ares\Framework\Provider\SearchCriteriaServiceProvider()
     )
 ];

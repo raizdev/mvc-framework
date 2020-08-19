@@ -8,9 +8,14 @@
 
 namespace Ares\Room\Repository;
 
+use Ares\Framework\Interfaces\SearchCriteriaInterface;
+use Ares\Framework\Model\Adapter\DoctrineSearchCriteria;
+use Ares\Framework\Model\SearchCriteria;
 use Ares\Framework\Repository\BaseRepository;
+use Ares\Framework\Service\CacheService;
 use Ares\Room\Entity\Room;
 use Doctrine\ORM\AbstractQuery;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Jhg\DoctrinePagination\Collection\PaginatedArrayCollection;
@@ -24,10 +29,21 @@ use Psr\Cache\InvalidArgumentException;
  */
 class RoomRepository extends BaseRepository
 {
+    /**
+     * @var DoctrineSearchCriteria
+     */
+    private DoctrineSearchCriteria $searchCriteria;
+
+    public function __construct(EntityManager $em, CacheService $cacheService, DoctrineSearchCriteria $searchCriteria)
+    {
+        parent::__construct($em, $cacheService);
+        $this->searchCriteria = $searchCriteria;
+    }
+
     /** @var string */
     private const CACHE_PREFIX = 'ARES_ROOM_';
 
-    /** @var PaginatedArrayCollection */
+    /** @var string */
     private const CACHE_COLLECTION_PREFIX = 'ARES_ROOM_COLLECTION_';
 
     /** @var string */
@@ -110,27 +126,30 @@ class RoomRepository extends BaseRepository
     }
 
     /**
-     * @param int        $page
-     * @param int        $rpp
-     * @param array      $criteria
-     * @param array|null $orderBy
-     * @param int        $hydrateMode
+     * @param SearchCriteriaInterface $searchCriteria
      *
      * @return PaginatedArrayCollection
      * @throws InvalidArgumentException
      * @throws PhpfastcacheSimpleCacheException
      */
-    public function paginate(int $page, int $rpp, array $criteria = [], array $orderBy = null, $hydrateMode = AbstractQuery::HYDRATE_OBJECT): PaginatedArrayCollection
+    public function paginate(SearchCriteriaInterface $searchCriteria): PaginatedArrayCollection
     {
-        $entity = $this->cacheService->get(self::CACHE_COLLECTION_PREFIX . $page);
+        $cacheKey = $searchCriteria->encodeCriteria();
+
+        $entity = $this->cacheService->get(self::CACHE_COLLECTION_PREFIX . $cacheKey);
 
         if ($entity) {
             return unserialize($entity);
         }
 
-        $entity = $this->findPageBy($page, $rpp, $criteria, $orderBy, $hydrateMode);
+        $entity = $this->findPageBy(
+            $searchCriteria->getPage(),
+            $searchCriteria->getLimit(),
+            $searchCriteria->getFilters(),
+            $searchCriteria->getOrders()
+        );
 
-        $this->cacheService->set(self::CACHE_COLLECTION_PREFIX . $page, serialize($entity));
+        $this->cacheService->set(self::CACHE_COLLECTION_PREFIX . $cacheKey, serialize($entity));
 
         return $entity;
     }
