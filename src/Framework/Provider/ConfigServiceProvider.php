@@ -54,6 +54,14 @@ class ConfigServiceProvider extends AbstractServiceProvider
                     ]
                 ],
 
+                'cache' => [
+                    'enabled' => $_ENV['CACHE_ENABLED'],
+                    'type' => $_ENV['CACHE_TYPE'],
+                    'ttl' => $_ENV['CACHE_TTL'],
+                    'redis_host' => $_ENV['CACHE_REDIS_HOST'],
+                    'redis_port' => $_ENV['CACHE_REDIS_PORT']
+                ],
+
                 'logger' => [
                     'name' => $_ENV['WEB_NAME'] . '-event-log',
                     'enabled_log_levels' => [

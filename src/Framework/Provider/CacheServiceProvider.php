@@ -2,6 +2,7 @@
 namespace Ares\Framework\Provider;
 
 use Phpfastcache\Config\ConfigurationOption;
+use Phpfastcache\Drivers\Predis\Config as RedisConfig;
 use Phpfastcache\Helper\Psr16Adapter as FastCache;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 
@@ -13,14 +14,27 @@ class CacheServiceProvider extends AbstractServiceProvider
 
     public function register()
     {
-        $container = $this->getContainer();
+        if ($_ENV['CACHE_ENABLED']) {
+            $container = $this->getContainer();
 
-        $container->share(FastCache::class, function () {
-            $configurationOption = new ConfigurationOption([
-                'path' => cache_dir()
-            ]);
+            $container->share(FastCache::class, function () use ($container) {
+                $settings = $container->get('settings');
 
-            return new FastCache($_ENV['CACHE_TYPE'], $configurationOption);
-        });
+                if ($settings['cache']['type'] == 'Predis') {
+                    $configurationOption = new RedisConfig([
+                        'host' => $settings['cache']['redis_host'],
+                        'port' => (int)$settings['cache']['redis_port']
+                    ]);
+
+                    return new FastCache($_ENV['CACHE_TYPE'], $configurationOption);
+                }
+
+                $configurationOption = new ConfigurationOption([
+                    'path' => cache_dir().'/filecache'
+                ]);
+
+                return new FastCache($_ENV['CACHE_TYPE'], $configurationOption);
+            });
+        }
     }
 }

@@ -4,6 +4,7 @@
 namespace Ares\Framework\Helper;
 
 use Ares\Framework\Exception\SearchCriteriaException;
+use Ares\Framework\Interfaces\SearchCriteriaInterface;
 use Ares\Framework\Model\SearchCriteria;
 use ErrorException;
 
@@ -12,30 +13,30 @@ class SearchCriteriaHelper
     /**
      * Takes query and builds a SearchCriteria out of it.
      *
-     * @param SearchCriteria $searchCriteria
-     * @param array          $query
+     * @param SearchCriteriaInterface $searchCriteria
+     * @param array                   $request
      *
      * @return SearchCriteria
      * @throws SearchCriteriaException
      */
-    public function getSearchModelByQuery(SearchCriteria $searchCriteria, array $query): SearchCriteria
+    public function getSearchCriteriaByRequest(SearchCriteriaInterface $searchCriteria, array $request): SearchCriteriaInterface
     {
         try {
-            $term = $query['term'] ?: '';
-            $page = $query['page'] ?: 0;
-            $limit = $query['limit'] ?: 0;
-            $offset = $query['offset'] ?: 0;
+            $term = $request['term'] ?: '';
+            $page = $request['page'] ?: 0;
+            $limit = $request['limit'] ?: 0;
+            $offset = $request['offset'] ?: 0;
 
             $searchCriteria->setSearchTerm($term);
             $searchCriteria->setPage($page);
             $searchCriteria->setLimit($limit);
             $searchCriteria->setOffset($offset);
 
-            if (!is_array($filters = $query['filters'])) {
+            if (!is_array($filters = $request['filters'])) {
                 $filters = [];
             }
 
-            if (!is_array($orders = $query['orders'])) {
+            if (!is_array($orders = $request['orders'])) {
                 $orders = [];
             }
 
@@ -48,7 +49,7 @@ class SearchCriteriaHelper
             }
 
             foreach ($orders as $order) {
-                $searchCriteria->addOrders(
+                $searchCriteria->addOrder(
                     $order['field'],
                     $order['direction']
                 );

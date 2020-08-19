@@ -9,6 +9,7 @@
 namespace Ares\Room\Controller;
 
 use Ares\Framework\Controller\BaseController;
+use Ares\Framework\Helper\SearchCriteriaHelper;
 use Ares\Framework\Interfaces\SearchCriteriaInterface;
 use Ares\Framework\Model\Adapter\DoctrineSearchCriteria;
 use Ares\Room\Entity\Room;
@@ -40,12 +41,14 @@ class RoomController extends BaseController
     /**
      * RoomController constructor.
      *
-     * @param RoomRepository          $roomRepository
+     * @param RoomRepository         $roomRepository
      * @param DoctrineSearchCriteria $searchCriteria
+     * @param SearchCriteriaHelper   $searchCriteriaHelper
      */
     public function __construct(
         RoomRepository $roomRepository,
-        DoctrineSearchCriteria $searchCriteria
+        DoctrineSearchCriteria $searchCriteria,
+        SearchCriteriaHelper $searchCriteriaHelper
     ) {
         $this->roomRepository = $roomRepository;
         $this->searchCriteria = $searchCriteria;
