@@ -9,13 +9,8 @@
 namespace Ares\Room\Repository;
 
 use Ares\Framework\Interfaces\SearchCriteriaInterface;
-use Ares\Framework\Model\Adapter\DoctrineSearchCriteria;
-use Ares\Framework\Model\SearchCriteria;
 use Ares\Framework\Repository\BaseRepository;
-use Ares\Framework\Service\CacheService;
 use Ares\Room\Entity\Room;
-use Doctrine\ORM\AbstractQuery;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Jhg\DoctrinePagination\Collection\PaginatedArrayCollection;
@@ -29,17 +24,6 @@ use Psr\Cache\InvalidArgumentException;
  */
 class RoomRepository extends BaseRepository
 {
-    /**
-     * @var DoctrineSearchCriteria
-     */
-    private DoctrineSearchCriteria $searchCriteria;
-
-    public function __construct(EntityManager $em, CacheService $cacheService, DoctrineSearchCriteria $searchCriteria)
-    {
-        parent::__construct($em, $cacheService);
-        $this->searchCriteria = $searchCriteria;
-    }
-
     /** @var string */
     private const CACHE_PREFIX = 'ARES_ROOM_';
 

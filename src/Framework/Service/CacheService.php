@@ -17,8 +17,9 @@ class CacheService
      *
      * @param FastCache $fastCache
      */
-    public function __construct(FastCache $fastCache)
-    {
+    public function __construct(
+        FastCache $fastCache
+    ) {
         $this->fastCache = $fastCache;
     }
 

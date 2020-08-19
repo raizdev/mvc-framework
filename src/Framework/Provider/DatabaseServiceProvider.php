@@ -35,7 +35,7 @@ class DatabaseServiceProvider extends AbstractServiceProvider
 
             $settings = $container->get('settings');
             $cacheDriver = new \Doctrine\Common\Cache\FilesystemCache(
-                base_dir() . 'tmp/Cache/doctrine'
+                base_dir() . 'tmp/Cache/filecache/doctrine'
             );
 
             // Annotation drivers
@@ -45,7 +45,10 @@ class DatabaseServiceProvider extends AbstractServiceProvider
             );
             $config->setMetadataDriverImpl(
                 new AnnotationDriver(
-                    new AnnotationReader,
+                    new CachedReader(
+                        new AnnotationReader,
+                        $cacheDriver
+                    ),
                     $settings['doctrine']['metadata_dirs']
                 )
             );
@@ -53,7 +56,7 @@ class DatabaseServiceProvider extends AbstractServiceProvider
             $config->setProxyDir($settings['doctrine']['proxy_dir']);
             $config->setProxyNamespace('Ares\Framework\Proxies');
 
-            Autoloader::register($settings['doctrine']['proxy_dir'],'Ares\Framework\Proxies');
+            Autoloader::register($settings['doctrine']['proxy_dir'], 'Ares\Framework\Proxies');
 
             // Set our Cache
             if ($_ENV['API_DEBUG'] == "production") {

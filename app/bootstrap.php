@@ -30,6 +30,12 @@ require_once __DIR__ . '/helpers.php';
 // Parse our providers
 require_once __DIR__ . '/providers.php';
 
+if ($_ENV['CACHE_ENABLED']) {
+    $container->addServiceProvider(
+        new \Ares\Framework\Provider\CacheServiceProvider()
+    );
+}
+
 // Create App instance
 $app = $container->get(App::class);;
 

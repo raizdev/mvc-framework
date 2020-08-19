@@ -11,10 +11,8 @@
 /.scannerwork/
 /.phpunit.result.cache
 /tmp/Logs
-/tmp/Cache/doctrine
+/tmp/Cache/filecache
 /tmp/Cache/proxies
-/app/Keys/private.pem
-/app/Keys/public.pem
 /tmp/Logs/
 /tmp/Cache/routing/route.cache.php
 /.env
