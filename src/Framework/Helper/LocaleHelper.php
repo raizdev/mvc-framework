@@ -9,6 +9,8 @@ namespace Ares\Framework\Helper;
 
 /**
  * Class LocaleHelper
+ *
+ * @package Ares\Framework\Helper
  */
 class LocaleHelper
 {

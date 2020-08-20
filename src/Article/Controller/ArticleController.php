@@ -95,18 +95,17 @@ class ArticleController extends BaseController
      *
      * @return Response
      * @throws ArticleException
+     * @throws InvalidArgumentException
+     * @throws PhpfastcacheSimpleCacheException
      */
     public function pinned(Request $request, Response $response): Response
     {
-        $this->searchCriteria->setPage((int)$page)
-            ->setLimit((int)$resultPerPage)
-            ->addOrder('id', 'DESC');
+        $this->searchCriteria
+            ->addFilter('pinned', self::IS_PINNED)
+            ->addFilter('hidden', self::IS_VISIBLE);
 
         /** @var array $pinnedArticles */
-        $pinnedArticles = $this->articleRepository->getList([
-            'pinned' => self::IS_PINNED,
-            'hidden' => self::IS_VISIBLE
-        ]);
+        $pinnedArticles = $this->articleRepository->getList($this->searchCriteria);
 
         if (empty($pinnedArticles)) {
             throw new ArticleException(__('No Pinned Articles found'));
@@ -132,6 +131,8 @@ class ArticleController extends BaseController
      *
      * @return Response
      * @throws ArticleException
+     * @throws InvalidArgumentException
+     * @throws PhpfastcacheSimpleCacheException
      */
     public function list(Request $request, Response $response, $args): Response
     {
@@ -141,13 +142,11 @@ class ArticleController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        /** @var PaginatedArrayCollection */
-        $articles = $this->articleRepository->paginate(
-            (int)$page,
-            (int)$resultPerPage,
-            ['hidden' => self::IS_VISIBLE],
-            ['id' => 'DESC']
-        );
+        $this->searchCriteria->setPage((int)$page)
+            ->setLimit((int)$resultPerPage)
+            ->addOrder('id', 'DESC');
+
+        $articles = $this->articleRepository->paginate($this->searchCriteria);
 
         if ($articles->isEmpty()) {
             throw new ArticleException(__('No Articles were found'), 404);

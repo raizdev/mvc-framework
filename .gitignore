@@ -11,9 +11,6 @@
 /.scannerwork/
 /.phpunit.result.cache
 /tmp/Logs
-/tmp/Cache/filecache
-/tmp/Cache/proxies
-/tmp/Logs/
-/tmp/Cache/routing/route.cache.php
+/tmp/Cache
 /.env
 

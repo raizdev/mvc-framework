@@ -59,3 +59,14 @@ if (!function_exists('cache_dir')) {
         return __DIR__ . '/../tmp/Cache';
     }
 }
+
+if (!function_exists('route_cache_dir')) {
+    /**
+     * Returns directory path of routing cache.
+     *
+     * @return string
+     */
+    function route_cache_dir() {
+        return __DIR__ . '/../tmp/Cache/routing';
+    }
+}

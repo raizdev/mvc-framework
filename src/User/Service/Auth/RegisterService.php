@@ -13,8 +13,11 @@ use Ares\Framework\Service\TokenService;
 use Ares\User\Entity\User;
 use Ares\User\Exception\RegisterException;
 use Ares\User\Repository\UserRepository;
+use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use PHLAK\Config\Config;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\Cache\InvalidArgumentException;
 use ReallySimpleJWT\Exception\ValidateException;
 
 /**
@@ -65,6 +68,9 @@ class RegisterService
      * @throws ORMException
      * @throws RegisterException
      * @throws ValidateException
+     * @throws OptimisticLockException
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws InvalidArgumentException
      */
     public function register(array $data): CustomResponseInterface
     {

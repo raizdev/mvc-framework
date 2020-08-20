@@ -9,6 +9,7 @@
 namespace Ares\Guild\Controller;
 
 use Ares\Framework\Controller\BaseController;
+use Ares\Framework\Model\Adapter\DoctrineSearchCriteria;
 use Ares\Guild\Entity\Guild;
 use Ares\Guild\Entity\GuildMember;
 use Ares\Guild\Exception\GuildException;
@@ -16,6 +17,8 @@ use Ares\Guild\Repository\GuildMemberRepository;
 use Ares\Guild\Repository\GuildRepository;
 use Ares\Room\Entity\Room;
 use Jhg\DoctrinePagination\Collection\PaginatedArrayCollection;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -37,17 +40,25 @@ class GuildController extends BaseController
     private GuildMemberRepository $guildMemberRepository;
 
     /**
+     * @var DoctrineSearchCriteria
+     */
+    private DoctrineSearchCriteria $searchCriteria;
+
+    /**
      * RoomController constructor.
      *
-     * @param GuildRepository       $guildRepository
-     * @param GuildMemberRepository $guildMemberRepository
+     * @param GuildRepository        $guildRepository
+     * @param GuildMemberRepository  $guildMemberRepository
+     * @param DoctrineSearchCriteria $searchCriteria
      */
     public function __construct(
         GuildRepository $guildRepository,
-        GuildMemberRepository $guildMemberRepository
+        GuildMemberRepository $guildMemberRepository,
+        DoctrineSearchCriteria $searchCriteria
     ) {
         $this->guildRepository = $guildRepository;
         $this->guildMemberRepository = $guildMemberRepository;
+        $this->searchCriteria = $searchCriteria;
     }
 
     /**
@@ -57,6 +68,8 @@ class GuildController extends BaseController
      *
      * @return Response
      * @throws GuildException
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws InvalidArgumentException
      */
     public function guild(Request $request, Response $response, $args): Response
     {
@@ -103,6 +116,8 @@ class GuildController extends BaseController
      *
      * @return Response
      * @throws GuildException
+     * @throws InvalidArgumentException
+     * @throws PhpfastcacheSimpleCacheException
      */
     public function list(Request $request, Response $response, $args): Response
     {
@@ -112,13 +127,11 @@ class GuildController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        /** @var PaginatedArrayCollection */
-        $guilds = $this->guildRepository->findPageBy(
-            (int)$page,
-            (int)$resultPerPage,
-            [],
-            ['id' => 'DESC']
-        );
+        $this->searchCriteria->setPage((int)$page)
+            ->setLimit((int)$resultPerPage)
+            ->addOrder('id', 'DESC');
+
+        $guilds = $this->guildRepository->paginate($this->searchCriteria);
 
         if ($guilds->isEmpty()) {
             throw new GuildException(__('No Guilds were found'), 404);
@@ -155,6 +168,8 @@ class GuildController extends BaseController
      *
      * @return Response
      * @throws GuildException
+     * @throws InvalidArgumentException
+     * @throws PhpfastcacheSimpleCacheException
      */
     public function members(Request $request, Response $response, $args): Response
     {
@@ -167,13 +182,12 @@ class GuildController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        /** @var PaginatedArrayCollection */
-        $members = $this->guildMemberRepository->findPageBy(
-            (int)$page,
-            (int)$resultPerPage,
-            ['guild' => $id],
-            ['id' => 'DESC']
-        );
+        $this->searchCriteria->setPage((int)$page)
+            ->setLimit((int)$resultPerPage)
+            ->addFilter('guild', $id)
+            ->addOrder('id', 'DESC');
+
+        $members = $this->guildMemberRepository->paginate($this->searchCriteria);
 
         if ($members->isEmpty()) {
             throw new GuildException(__('No Members were found for this Guild'), 404);

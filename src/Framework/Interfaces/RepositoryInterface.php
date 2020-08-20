@@ -26,11 +26,11 @@ interface RepositoryInterface
     public function get(int $id);
 
     /**
-     * Get array of objects by id.
+     * @param SearchCriteria $searchCriteria
      *
-     * @param   SearchCriteriaInterface  $searchCriteria
+     * @return mixed
      */
-    public function getList(SearchCriteriaInterface $searchCriteria);
+    public function getList(SearchCriteria $searchCriteria);
 
     /**
      * Save object.

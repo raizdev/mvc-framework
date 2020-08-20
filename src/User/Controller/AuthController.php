@@ -8,16 +8,22 @@
 
 namespace Ares\User\Controller;
 
+use Ares\Ban\Exception\BanException;
 use Ares\Framework\Controller\BaseController;
+use Ares\Framework\Exception\ValidationException;
 use Ares\User\Entity\User;
+use Ares\User\Exception\LoginException;
 use Ares\User\Exception\RegisterException;
 use Ares\User\Repository\UserRepository;
 use Ares\Framework\Service\ValidationService;
 use Ares\User\Service\Auth\LoginService;
 use Ares\User\Service\Auth\RegisterService;
 use Exception;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use ReallySimpleJWT\Exception\ValidateException;
 
 /**
  * Class AuthController
@@ -73,7 +79,12 @@ class AuthController extends BaseController
      * @param Response $response
      *
      * @return Response Returns a Response with the given Data
-     * @throws Exception
+     * @throws BanException
+     * @throws ValidationException
+     * @throws LoginException
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws InvalidArgumentException
+     * @throws ValidateException
      */
     public function login(Request $request, Response $response): Response
     {
@@ -97,7 +108,7 @@ class AuthController extends BaseController
      * @param Response $response
      *
      * @return Response Returns a Response with the given Data
-     * @throws Exception
+     * @throws Exception|InvalidArgumentException
      */
     public function register(Request $request, Response $response): Response
     {
@@ -124,6 +135,8 @@ class AuthController extends BaseController
      * @param Response $response
      *
      * @return Response
+     * @throws InvalidArgumentException
+     * @throws PhpfastcacheSimpleCacheException
      * @throws RegisterException
      */
     public function check(Request $request, Response $response): Response

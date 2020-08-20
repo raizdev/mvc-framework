@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * Ares (https://ares.to)
+ *
+ * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ */
 
 namespace Ares\Framework\Helper;
 
@@ -8,6 +12,11 @@ use Ares\Framework\Interfaces\SearchCriteriaInterface;
 use Ares\Framework\Model\SearchCriteria;
 use ErrorException;
 
+/**
+ * Class SearchCriteriaHelper
+ *
+ * @package Ares\Framework\Helper
+ */
 class SearchCriteriaHelper
 {
     /**

@@ -55,7 +55,12 @@ $manager->addProxyInstance($alias, $proxy, $app);
 // Sets our Route-Cache
 if ($_ENV['API_DEBUG'] == "production") {
     $routeCollector = $app->getRouteCollector();
-    $routeCollector->setCacheFile('../tmp/Cache/routing/route.cache.php');
+
+    if(!file_exists(route_cache_dir())) {
+        mkdir(route_cache_dir(), 0777, true);
+    }
+
+    $routeCollector->setCacheFile(route_cache_dir() . '/route.cache.php');
 }
 
 return $app;
