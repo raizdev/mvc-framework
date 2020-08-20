@@ -8,6 +8,7 @@
 
 namespace Ares\Article\Repository;
 
+use Ares\Framework\Interfaces\SearchCriteriaInterface;
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Article\Entity\Article;
 use Doctrine\ORM\AbstractQuery;
@@ -23,7 +24,8 @@ use Psr\Cache\InvalidArgumentException;
  */
 class ArticleRepository extends BaseRepository
 {
-    const CACHE_PREFIX = 'ARES_ARTICLE_';
+    private const CACHE_PREFIX = 'ARES_ARTICLE_';
+    private const CACHE_COLLECTION_PREFIX = 'ARES_ARTICLE_COLLECTION_';
 
     /** @var string */
     protected string $entity = Article::class;
@@ -89,27 +91,30 @@ class ArticleRepository extends BaseRepository
     }
 
     /**
-     * @param int        $page
-     * @param int        $rpp
-     * @param array      $criteria
-     * @param array|null $orderBy
-     * @param int        $hydrateMode
+     * @param SearchCriteriaInterface $searchCriteria
      *
      * @return PaginatedArrayCollection
-     * @throws PhpfastcacheSimpleCacheException
      * @throws InvalidArgumentException
+     * @throws PhpfastcacheSimpleCacheException
      */
-    public function paginate(int $page, int $rpp, array $criteria = [], array $orderBy = null, $hydrateMode = AbstractQuery::HYDRATE_OBJECT): PaginatedArrayCollection
+    public function paginate(SearchCriteriaInterface $searchCriteria): PaginatedArrayCollection
     {
-        $entity = $this->cacheService->get(self::CACHE_PREFIX . $page);
+        $cacheKey = $searchCriteria->encodeCriteria();
+
+        $entity = $this->cacheService->get(self::CACHE_COLLECTION_PREFIX . $cacheKey);
 
         if ($entity) {
             return unserialize($entity);
         }
 
-        $entity = $this->findPageBy($page, $rpp, $criteria, $orderBy, $hydrateMode);
+        $entity = $this->findPageBy(
+            $searchCriteria->getPage(),
+            $searchCriteria->getLimit(),
+            $searchCriteria->getFilters(),
+            $searchCriteria->getOrders()
+        );
 
-        $this->cacheService->set(self::CACHE_PREFIX . $page, serialize($entity));
+        $this->cacheService->set(self::CACHE_COLLECTION_PREFIX . $cacheKey, serialize($entity));
 
         return $entity;
     }

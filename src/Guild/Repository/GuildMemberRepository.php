@@ -8,11 +8,13 @@
 
 namespace Ares\Guild\Repository;
 
+use Ares\Framework\Interfaces\SearchCriteriaInterface;
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Guild\Entity\GuildMember;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\ORMException;
 use Jhg\DoctrinePagination\Collection\PaginatedArrayCollection;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 
 /**
  * Class GuildMemberRepository
@@ -21,6 +23,8 @@ use Jhg\DoctrinePagination\Collection\PaginatedArrayCollection;
  */
 class GuildMemberRepository extends BaseRepository
 {
+    private const CACHE_COLLECTION_PREFIX = 'ARES_GUILD_MEMBER_COLLECTION';
+
     /** @var string */
     protected string $entity = GuildMember::class;
 
@@ -84,16 +88,31 @@ class GuildMemberRepository extends BaseRepository
     }
 
     /**
-     * @param int        $page
-     * @param int        $rpp
-     * @param array      $criteria
-     * @param array|null $orderBy
-     * @param int        $hydrateMode
+     * @param SearchCriteriaInterface $searchCriteria
      *
      * @return PaginatedArrayCollection
+     * @throws InvalidArgumentException
+     * @throws PhpfastcacheSimpleCacheException
      */
-    public function paginate(int $page, int $rpp, array $criteria = [], array $orderBy = null, $hydrateMode = AbstractQuery::HYDRATE_OBJECT): PaginatedArrayCollection
+    public function paginate(SearchCriteriaInterface $searchCriteria): PaginatedArrayCollection
     {
-        return $this->findPageBy($page, $rpp, $criteria, $orderBy, $hydrateMode);
+        $cacheKey = $searchCriteria->encodeCriteria();
+
+        $entity = $this->cacheService->get(self::CACHE_COLLECTION_PREFIX . $cacheKey);
+
+        if ($entity) {
+            return unserialize($entity);
+        }
+
+        $entity = $this->findPageBy(
+            $searchCriteria->getPage(),
+            $searchCriteria->getLimit(),
+            $searchCriteria->getFilters(),
+            $searchCriteria->getOrders()
+        );
+
+        $this->cacheService->set(self::CACHE_COLLECTION_PREFIX . $cacheKey, serialize($entity));
+
+        return $entity;
     }
 }
