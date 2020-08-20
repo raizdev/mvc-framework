@@ -147,5 +147,5 @@ interface SearchCriteriaInterface
     /**
      * @return string
      */
-    public function encodeCriteria(): string;
+    public function getCacheKey(): string;
 }

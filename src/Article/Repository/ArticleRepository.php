@@ -11,7 +11,6 @@ namespace Ares\Article\Repository;
 use Ares\Framework\Interfaces\SearchCriteriaInterface;
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Article\Entity\Article;
-use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\ORMException;
 use Jhg\DoctrinePagination\Collection\PaginatedArrayCollection;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -99,23 +98,23 @@ class ArticleRepository extends BaseRepository
      */
     public function paginate(SearchCriteriaInterface $searchCriteria): PaginatedArrayCollection
     {
-        $cacheKey = $searchCriteria->encodeCriteria();
+        $cacheKey = $searchCriteria->getCacheKey();
 
-        $entity = $this->cacheService->get(self::CACHE_COLLECTION_PREFIX . $cacheKey);
+        $collection = $this->cacheService->get(self::CACHE_COLLECTION_PREFIX . $cacheKey);
 
-        if ($entity) {
-            return unserialize($entity);
+        if ($collection) {
+            return unserialize($collection);
         }
 
-        $entity = $this->findPageBy(
+        $collection = $this->findPageBy(
             $searchCriteria->getPage(),
             $searchCriteria->getLimit(),
             $searchCriteria->getFilters(),
             $searchCriteria->getOrders()
         );
 
-        $this->cacheService->set(self::CACHE_COLLECTION_PREFIX . $cacheKey, serialize($entity));
+        $this->cacheService->set(self::CACHE_COLLECTION_PREFIX . $cacheKey, serialize($collection));
 
-        return $entity;
+        return $collection;
     }
 }

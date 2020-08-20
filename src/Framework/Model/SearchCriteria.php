@@ -230,7 +230,7 @@ class SearchCriteria implements SearchCriteriaInterface
     /**
      * @return string
      */
-    public function encodeCriteria(): string
+    public function getCacheKey(): string
     {
         $filters = $this->filters;
         $filterSlug = '';

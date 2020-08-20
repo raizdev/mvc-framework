@@ -88,31 +88,31 @@ class GuildMemberRepository extends BaseRepository
     }
 
     /**
-     * @param SearchCriteriaInterface $searchCriteria
+     * @param   SearchCriteriaInterface  $searchCriteria
      *
      * @return PaginatedArrayCollection
-     * @throws InvalidArgumentException
      * @throws PhpfastcacheSimpleCacheException
+     * @throws \Psr\Cache\InvalidArgumentException
      */
     public function paginate(SearchCriteriaInterface $searchCriteria): PaginatedArrayCollection
     {
-        $cacheKey = $searchCriteria->encodeCriteria();
+        $cacheKey = $searchCriteria->getCacheKey();
 
-        $entity = $this->cacheService->get(self::CACHE_COLLECTION_PREFIX . $cacheKey);
+        $collection = $this->cacheService->get(self::CACHE_COLLECTION_PREFIX . $cacheKey);
 
-        if ($entity) {
-            return unserialize($entity);
+        if ($collection) {
+            return unserialize($collection);
         }
 
-        $entity = $this->findPageBy(
+        $collection = $this->findPageBy(
             $searchCriteria->getPage(),
             $searchCriteria->getLimit(),
             $searchCriteria->getFilters(),
             $searchCriteria->getOrders()
         );
 
-        $this->cacheService->set(self::CACHE_COLLECTION_PREFIX . $cacheKey, serialize($entity));
+        $this->cacheService->set(self::CACHE_COLLECTION_PREFIX . $cacheKey, serialize($collection));
 
-        return $entity;
+        return $collection;
     }
 }
