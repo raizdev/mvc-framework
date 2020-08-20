@@ -34,7 +34,7 @@ class Guild implements \Serializable
     private int $id;
 
     /**
-     * @OneToOne(targetEntity="\Ares\User\Entity\User")
+     * @OneToOne(targetEntity="\Ares\User\Entity\User", fetch="EAGER")
      * @JoinColumn(name="user_id", referencedColumnName="id")
      */
     private User $creator;
@@ -50,7 +50,7 @@ class Guild implements \Serializable
     private string $description;
 
     /**
-     * @OneToOne(targetEntity="\Ares\Room\Entity\Room")
+     * @OneToOne(targetEntity="\Ares\Room\Entity\Room", fetch="EAGER")
      * @JoinColumn(name="room_id", referencedColumnName="id")
      */
     private Room $room;

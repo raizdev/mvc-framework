@@ -9,8 +9,6 @@
 namespace Ares\Room\Controller;
 
 use Ares\Framework\Controller\BaseController;
-use Ares\Framework\Helper\SearchCriteriaHelper;
-use Ares\Framework\Interfaces\SearchCriteriaInterface;
 use Ares\Framework\Model\Adapter\DoctrineSearchCriteria;
 use Ares\Room\Entity\Room;
 use Ares\Room\Exception\RoomException;
@@ -41,14 +39,12 @@ class RoomController extends BaseController
     /**
      * RoomController constructor.
      *
-     * @param RoomRepository         $roomRepository
-     * @param DoctrineSearchCriteria $searchCriteria
-     * @param SearchCriteriaHelper   $searchCriteriaHelper
+     * @param   RoomRepository          $roomRepository
+     * @param   DoctrineSearchCriteria  $searchCriteria
      */
     public function __construct(
         RoomRepository $roomRepository,
-        DoctrineSearchCriteria $searchCriteria,
-        SearchCriteriaHelper $searchCriteriaHelper
+        DoctrineSearchCriteria $searchCriteria
     ) {
         $this->roomRepository = $roomRepository;
         $this->searchCriteria = $searchCriteria;
@@ -103,7 +99,6 @@ class RoomController extends BaseController
 
         $this->searchCriteria->setPage((int)$page)
             ->setLimit((int)$resultPerPage)
-            ->addFilter('name', 'test')
             ->addOrder('id', 'DESC');
 
         $rooms = $this->roomRepository->paginate($this->searchCriteria);
