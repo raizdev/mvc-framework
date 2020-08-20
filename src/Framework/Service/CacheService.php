@@ -31,6 +31,8 @@ class CacheService
      */
     public function has(string $key): bool
     {
+        $this->isCacheEnabled();
+
         return $this->fastCache->has($key);
     }
 
@@ -43,7 +45,7 @@ class CacheService
      */
     public function get(string $key)
     {
-        if (!$this->has($key)) {
+        if (!$this->has($key) || !$this->isCacheEnabled()) {
             return null;
         }
 
@@ -59,6 +61,8 @@ class CacheService
      */
     public function getMultiple(array $keys): string
     {
+        $this->isCacheEnabled();
+
         return $this->fastCache->getMultiple($keys);
     }
 
@@ -73,6 +77,8 @@ class CacheService
      */
     public function set(string $key, $value, int $ttl = 0): bool
     {
+        $this->isCacheEnabled();
+
         return $this->fastCache->set($key, $value, $this->getTTL($ttl));
     }
 
@@ -85,6 +91,8 @@ class CacheService
      */
     public function setMultiple(array $values, int $ttl = 0): bool
     {
+        $this->isCacheEnabled();
+
         return $this->fastCache->setMultiple($values, $this->getTTL($ttl));
     }
 
@@ -96,6 +104,8 @@ class CacheService
      */
     public function delete(string $key): bool
     {
+        $this->isCacheEnabled();
+
         return $this->fastCache->delete($key);
     }
 
@@ -108,6 +118,8 @@ class CacheService
      */
     public function deleteMultiple(array $keys): bool
     {
+        $this->isCacheEnabled();
+
         return $this->fastCache->deleteMultiple($keys);
     }
 
@@ -117,6 +129,8 @@ class CacheService
      */
     public function clear(): bool
     {
+        $this->isCacheEnabled();
+
         return $this->fastCache->clear();
     }
 
@@ -132,5 +146,19 @@ class CacheService
         }
 
         return $ttl;
+    }
+
+    /**
+     * Check whether Caching is Enabled or not
+     *
+     * @return bool
+     */
+    private function isCacheEnabled(): bool
+    {
+        if (!$_ENV['CACHE_ENABLED']) {
+            return false;
+        }
+
+        return true;
     }
 }
