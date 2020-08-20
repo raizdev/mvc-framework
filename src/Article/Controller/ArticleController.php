@@ -12,8 +12,11 @@ use Ares\Framework\Controller\BaseController;
 use Ares\Article\Entity\Article;
 use Ares\Article\Exception\ArticleException;
 use Ares\Article\Repository\ArticleRepository;
+use Ares\Framework\Model\Adapter\DoctrineSearchCriteria;
 use Doctrine\Common\Collections\ArrayCollection;
 use Jhg\DoctrinePagination\Collection\PaginatedArrayCollection;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -38,26 +41,35 @@ class ArticleController extends BaseController
      * @var ArticleRepository
      */
     private ArticleRepository $articleRepository;
+    /**
+     * @var DoctrineSearchCriteria
+     */
+    private DoctrineSearchCriteria $searchCriteria;
 
     /**
      * NewsController constructor.
      *
-     * @param ArticleRepository $articleRepository
+     * @param   ArticleRepository       $articleRepository
+     * @param   DoctrineSearchCriteria  $searchCriteria
      */
     public function __construct(
-        ArticleRepository $articleRepository
+        ArticleRepository $articleRepository,
+        DoctrineSearchCriteria $searchCriteria
     ) {
         $this->articleRepository = $articleRepository;
+        $this->searchCriteria = $searchCriteria;
     }
 
     /**
-     * @param Request  $request
-     * @param Response $response
+     * @param   Request   $request
+     * @param   Response  $response
      *
-     * @param          $args
+     * @param             $args
      *
      * @return Response
      * @throws ArticleException
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws InvalidArgumentException
      */
     public function article(Request $request, Response $response, $args): Response
     {
@@ -86,6 +98,10 @@ class ArticleController extends BaseController
      */
     public function pinned(Request $request, Response $response): Response
     {
+        $this->searchCriteria->setPage((int)$page)
+            ->setLimit((int)$resultPerPage)
+            ->addOrder('id', 'DESC');
+
         /** @var array $pinnedArticles */
         $pinnedArticles = $this->articleRepository->getList([
             'pinned' => self::IS_PINNED,

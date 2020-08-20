@@ -23,7 +23,10 @@ use Psr\Cache\InvalidArgumentException;
  */
 class ArticleRepository extends BaseRepository
 {
+    /** @var string */
     private const CACHE_PREFIX = 'ARES_ARTICLE_';
+
+    /** @var string */
     private const CACHE_COLLECTION_PREFIX = 'ARES_ARTICLE_COLLECTION_';
 
     /** @var string */
@@ -32,13 +35,25 @@ class ArticleRepository extends BaseRepository
     /**
      * Get object by id.
      *
-     * @param int $id
+     * @param   int  $id
      *
      * @return Article|null
+     * @throws InvalidArgumentException
+     * @throws PhpfastcacheSimpleCacheException
      */
     public function get(int $id): ?object
     {
-        return $this->find($id);
+        $entity = $this->cacheService->get(self::CACHE_PREFIX . $id);
+
+        if ($entity) {
+            return unserialize($entity);
+        }
+
+        $entity = $this->find($id);
+
+        $this->cacheService->set(self::CACHE_PREFIX . $id, serialize($entity));
+
+        return $entity;
     }
 
     /**
@@ -56,24 +71,44 @@ class ArticleRepository extends BaseRepository
     }
 
     /**
-     * @param      $criteria
-     * @param null $orderBy
-     * @param null $limit
-     * @param null $offset
+     * @param   SearchCriteriaInterface  $searchCriteria
      *
      * @return array|object[]
+     * @throws InvalidArgumentException
+     * @throws PhpfastcacheSimpleCacheException
      */
-    public function getList($criteria, $orderBy = null, $limit = null, $offset = null)
+    public function getList(SearchCriteriaInterface $searchCriteria)
     {
-        return $this->findBy($criteria, $orderBy, $limit, $offset);
+        $cacheKey = $searchCriteria->getCacheKey();
+
+        $collection = $this->cacheService->get(self::CACHE_COLLECTION_PREFIX . $cacheKey);
+
+        if ($collection) {
+            return unserialize($collection);
+        }
+
+        $collection = $this->findBy(
+            $searchCriteria->getFilters(),
+            $searchCriteria->getOrders(),
+            $searchCriteria->getLimit(),
+            $searchCriteria->getOffset()
+        );
+
+        $this->cacheService->set(self::CACHE_COLLECTION_PREFIX . $cacheKey, serialize($collection));
+
+        return $collection;
     }
 
     /**
      * Delete object by id.
      *
-     * @param int $id
+     * @param   int  $id
+     *
      * @return bool
+     * @throws InvalidArgumentException
      * @throws ORMException
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function delete(int $id): bool
     {

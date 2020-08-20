@@ -58,30 +58,51 @@ class RoomRepository extends BaseRepository
     }
 
     /**
-     * @param object $model
+     * @param   object  $model
      *
      * @return Room
+     * @throws InvalidArgumentException
      * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws PhpfastcacheSimpleCacheException
      */
     public function save(object $model): object
     {
         $this->getEntityManager()->persist($model);
         $this->getEntityManager()->flush();
 
+        $this->cacheService->set(self::CACHE_PREFIX . $model->getId(), serialize($model));
+
         return $model;
     }
 
     /**
-     * @param      $criteria
-     * @param null $orderBy
-     * @param null $limit
-     * @param null $offset
+     * @param   SearchCriteriaInterface  $searchCriteria
      *
      * @return array|object[]
+     * @throws InvalidArgumentException
+     * @throws PhpfastcacheSimpleCacheException
      */
-    public function getList($criteria, $orderBy = null, $limit = null, $offset = null)
+    public function getList(SearchCriteriaInterface $searchCriteria)
     {
-        return $this->findBy($criteria, $orderBy, $limit, $offset);
+        $cacheKey = $searchCriteria->getCacheKey();
+
+        $collection = $this->cacheService->get(self::CACHE_COLLECTION_PREFIX . $cacheKey);
+
+        if ($collection) {
+            return unserialize($collection);
+        }
+
+        $collection = $this->findBy(
+            $searchCriteria->getFilters(),
+            $searchCriteria->getOrders(),
+            $searchCriteria->getLimit(),
+            $searchCriteria->getOffset()
+        );
+
+        $this->cacheService->set(self::CACHE_COLLECTION_PREFIX . $cacheKey, serialize($collection));
+
+        return $collection;
     }
 
     /**
@@ -105,6 +126,8 @@ class RoomRepository extends BaseRepository
 
         $this->getEntityManager()->remove($model);
         $this->getEntityManager()->flush();
+
+        $this->cacheService->delete(self::CACHE_PREFIX . $id);
 
         return true;
     }

@@ -28,13 +28,9 @@ interface RepositoryInterface
     /**
      * Get array of objects by id.
      *
-     * @param array $criteria
-     * @param null  $orderBy
-     * @param null  $limit
-     * @param null  $offset
-     *
+     * @param   SearchCriteriaInterface  $searchCriteria
      */
-    public function getList(array $criteria, $orderBy = null, $limit = null, $offset = null);
+    public function getList(SearchCriteriaInterface $searchCriteria);
 
     /**
      * Save object.

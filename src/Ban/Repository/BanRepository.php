@@ -11,9 +11,11 @@ namespace Ares\Ban\Repository;
 use Ares\Ban\Entity\Ban;
 use Ares\Framework\Interfaces\SearchCriteriaInterface;
 use Ares\Framework\Repository\BaseRepository;
+use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Jhg\DoctrinePagination\Collection\PaginatedArrayCollection;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\Cache\InvalidArgumentException;
 
 /**
  * Class BanRepository
@@ -22,7 +24,11 @@ use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
  */
 class BanRepository extends BaseRepository
 {
-    private const CACHE_COLLECTION_PREFIX = 'ARES_BAN_COLLECTION';
+    /** @var string */
+    private const CACHE_PREFIX = 'ARES_BAN_';
+
+    /** @var string */
+    private const CACHE_COLLECTION_PREFIX = 'ARES_BAN_COLLECTION_';
 
     /** @var string */
     protected string $entity = Ban::class;
@@ -30,12 +36,25 @@ class BanRepository extends BaseRepository
     /**
      * Get object by id.
      *
-     * @param int $id
+     * @param   int  $id
+     *
      * @return Ban|null
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws InvalidArgumentException
      */
     public function get(int $id): ?object
     {
-        return $this->find($id);
+        $entity = $this->cacheService->get(self::CACHE_PREFIX . $id);
+
+        if ($entity) {
+            return unserialize($entity);
+        }
+
+        $entity = $this->find($id);
+
+        $this->cacheService->set(self::CACHE_PREFIX . $id, serialize($entity));
+
+        return $entity;
     }
 
     /**
@@ -50,38 +69,63 @@ class BanRepository extends BaseRepository
     }
 
     /**
-     * @param object $model
+     * @param   object  $model
      *
      * @return Ban
+     * @throws InvalidArgumentException
      * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws PhpfastcacheSimpleCacheException
      */
     public function save(object $model): object
     {
         $this->getEntityManager()->persist($model);
         $this->getEntityManager()->flush();
 
+        $this->cacheService->set(self::CACHE_PREFIX . $model->getId(), serialize($model));
+
         return $model;
     }
 
     /**
-     * @param      $criteria
-     * @param null $orderBy
-     * @param null $limit
-     * @param null $offset
+     * @param   SearchCriteriaInterface  $searchCriteria
      *
      * @return array|object[]
+     * @throws InvalidArgumentException
+     * @throws PhpfastcacheSimpleCacheException
      */
-    public function getList($criteria, $orderBy = null, $limit = null, $offset = null)
+    public function getList(SearchCriteriaInterface $searchCriteria)
     {
-        return $this->findBy($criteria, $orderBy, $limit, $offset);
+        $cacheKey = $searchCriteria->getCacheKey();
+
+        $collection = $this->cacheService->get(self::CACHE_COLLECTION_PREFIX . $cacheKey);
+
+        if ($collection) {
+            return unserialize($collection);
+        }
+
+        $collection = $this->findBy(
+            $searchCriteria->getFilters(),
+            $searchCriteria->getOrders(),
+            $searchCriteria->getLimit(),
+            $searchCriteria->getOffset()
+        );
+
+        $this->cacheService->set(self::CACHE_COLLECTION_PREFIX . $cacheKey, serialize($collection));
+
+        return $collection;
     }
 
     /**
      * Delete object by id.
      *
-     * @param int $id
+     * @param   int  $id
+     *
      * @return bool
+     * @throws InvalidArgumentException
      * @throws ORMException
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws OptimisticLockException
      */
     public function delete(int $id): bool
     {
@@ -94,6 +138,8 @@ class BanRepository extends BaseRepository
         $this->getEntityManager()->remove($model);
         $this->getEntityManager()->flush();
 
+        $this->cacheService->delete(self::CACHE_PREFIX . $id);
+
         return true;
     }
 
@@ -102,7 +148,7 @@ class BanRepository extends BaseRepository
      *
      * @return PaginatedArrayCollection
      * @throws PhpfastcacheSimpleCacheException
-     * @throws \Psr\Cache\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function paginate(SearchCriteriaInterface $searchCriteria): PaginatedArrayCollection
     {
