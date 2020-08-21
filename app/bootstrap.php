@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Ares (https://ares.to)
  *
@@ -57,7 +56,7 @@ if ($_ENV['API_DEBUG'] == "production") {
     $routeCollector = $app->getRouteCollector();
 
     if(!file_exists(route_cache_dir())) {
-        mkdir(route_cache_dir(), 0777, true);
+        mkdir(route_cache_dir(), 0755, true);
     }
 
     $routeCollector->setCacheFile(route_cache_dir() . '/route.cache.php');

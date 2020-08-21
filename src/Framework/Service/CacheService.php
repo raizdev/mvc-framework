@@ -1,10 +1,21 @@
 <?php
+/**
+ * Ares (https://ares.to)
+ *
+ * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ */
+
 namespace Ares\Framework\Service;
 
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Phpfastcache\Helper\Psr16Adapter as FastCache;
 use Psr\Cache\InvalidArgumentException;
 
+/**
+ * Class CacheService
+ *
+ * @package Ares\Framework\Service
+ */
 class CacheService
 {
     /**

@@ -1,4 +1,9 @@
 <?php
+/**
+ * Ares (https://ares.to)
+ *
+ * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ */
 
 namespace Ares\Framework\Provider;
 
@@ -7,6 +12,11 @@ use Phpfastcache\Drivers\Predis\Config as PredisConfig;
 use Phpfastcache\Helper\Psr16Adapter as FastCache;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 
+/**
+ * Class CacheServiceProvider
+ * 
+ * @package Ares\Framework\Provider
+ */
 class CacheServiceProvider extends AbstractServiceProvider
 {
     protected $provides = [

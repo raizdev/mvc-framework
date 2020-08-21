@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Ares (https://ares.to)
  *
@@ -79,13 +78,12 @@ class MessengerController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        /** @var PaginatedArrayCollection */
-        $friends = $this->messengerRepository->findPageBy(
-            (int)$page,
-            (int)$resultPerPage,
-            ['user' => $this->getUser($this->userRepository, $request)],
-            ['id' => 'DESC']
-        );
+        $this->searchCriteria->setPage((int)$page)
+            ->setLimit((int)$resultPerPage)
+            ->addFilter('user', $this->getUser($this->userRepository, $request)->getId())
+            ->addOrder('id', 'DESC');
+
+        $friends = $this->messengerRepository->paginate($this->searchCriteria);
 
         if ($friends->isEmpty()) {
             throw new MessengerException(__('You have no friends'), 404);

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Ares (https://ares.to)
  *
@@ -109,7 +108,8 @@ class RegisterService
             ->setUsername($data['username'])
             ->setPassword(password_hash(
                 $data['password'],
-                PASSWORD_ARGON2ID))
+                PASSWORD_ARGON2ID)
+            )
             ->setMail($data['mail'])
             ->setLook($this->config->get('hotel_settings.start_look'))
             ->setCredits($this->config->get('hotel_settings.start_credits'))
