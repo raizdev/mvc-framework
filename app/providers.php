@@ -37,9 +37,11 @@ return [
     $container->addServiceProvider(
         new \Ares\Framework\Provider\ValidationServiceProvider()
     ),
+    // Adds our CacheServiceProvider
     $container->addServiceProvider(
         new \Ares\Framework\Provider\CacheServiceProvider()
     ),
+    // Adds our SearchCriteriaServiceProvider
     $container->addServiceProvider(
         new \Ares\Framework\Provider\SearchCriteriaServiceProvider()
     )
