@@ -41,7 +41,7 @@ class ErrorHandler implements ErrorHandlerInterface
     private LoggerInterface $logger;
 
     /**
-     * ResponseMiddleware constructor.
+     * ErrorHandler constructor.
      *
      * @param ResponseFactoryInterface $responseFactory
      * @param CustomResponse           $customResponse
