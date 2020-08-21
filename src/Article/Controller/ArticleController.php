@@ -40,6 +40,7 @@ class ArticleController extends BaseController
      * @var ArticleRepository
      */
     private ArticleRepository $articleRepository;
+
     /**
      * @var DoctrineSearchCriteria
      */
