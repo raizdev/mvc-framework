@@ -156,20 +156,38 @@ class UserRepository extends BaseRepository
     }
 
     /**
-     * @param  object  $model
+     * @param object $model
      *
-     * @return User
+     * @return object
      * @throws InvalidArgumentException
      * @throws ORMException
-     * @throws PhpfastcacheSimpleCacheException
      * @throws OptimisticLockException
+     * @throws PhpfastcacheSimpleCacheException
      */
     public function save(object $model): object
     {
         $this->getEntityManager()->persist($model);
         $this->getEntityManager()->flush();
 
-        $this->cacheService->set(self::CACHE_PREFIX . $model->getId(), serialize($model));
+        $this->cacheService->set(self::CACHE_COLLECTION_PREFIX . $model->getId(), serialize($model));
+
+        return $model;
+    }
+
+    /**
+     * @param  object  $model
+     *
+     * @return User
+     * @throws ORMException
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws OptimisticLockException|InvalidArgumentException
+     */
+    public function update(object $model): object
+    {
+        $this->getEntityManager()->flush();
+
+        $this->cacheService->delete(self::CACHE_PREFIX . $model->getId());
+        $this->cacheService->set(self::CACHE_COLLECTION_PREFIX . $model->getId(), serialize($model));
 
         return $model;
     }

@@ -13,10 +13,14 @@ use Ares\Framework\Exception\ValidationException;
 use Ares\User\Entity\User;
 use Ares\User\Exception\LoginException;
 use Ares\User\Exception\RegisterException;
+use Ares\User\Exception\UserException;
 use Ares\User\Repository\UserRepository;
 use Ares\Framework\Service\ValidationService;
 use Ares\User\Service\Auth\LoginService;
 use Ares\User\Service\Auth\RegisterService;
+use Ares\User\Service\Auth\TicketService;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Exception;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Cache\InvalidArgumentException;
@@ -52,23 +56,31 @@ class AuthController extends BaseController
     private UserRepository $userRepository;
 
     /**
+     * @var TicketService
+     */
+    private TicketService $ticketService;
+
+    /**
      * AuthController constructor.
      *
      * @param ValidationService $validationService
      * @param LoginService      $loginService
      * @param RegisterService   $registerService
      * @param UserRepository    $userRepository
+     * @param TicketService     $ticketService
      */
     public function __construct(
         ValidationService $validationService,
         LoginService $loginService,
         RegisterService $registerService,
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        TicketService $ticketService
     ) {
         $this->validationService = $validationService;
         $this->loginService = $loginService;
         $this->registerService = $registerService;
         $this->userRepository = $userRepository;
+        $this->ticketService = $ticketService;
     }
 
     /**
@@ -151,6 +163,32 @@ class AuthController extends BaseController
         }
 
         throw new RegisterException(__('general.entity.exists'), 422);
+    }
+
+    /**
+     * Gets a new Ticket for the current User
+     *
+     * @param Request  $request
+     * @param Response $response
+     *
+     * @return Response
+     * @throws InvalidArgumentException
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws UserException
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function ticket(Request $request, Response $response): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser($this->userRepository, $request);
+
+        /** @var TicketService $ticket */
+        $ticket = $this->ticketService->generate($user);
+
+        return $this->respond($response, response()->setData([
+            'ticket' => $ticket
+        ]));
     }
 
     /**

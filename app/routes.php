@@ -24,6 +24,7 @@ return function (App $app) {
             // User
             $group->group('/user', function ($group) {
                 $group->get('', \Ares\User\Controller\UserController::class . ':user');
+                $group->post('/ticket', \Ares\User\Controller\AuthController::class . ':ticket');
                 $group->post('/locale', \Ares\User\Controller\UserController::class . ':updateLocale');
             });
 

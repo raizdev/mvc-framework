@@ -10,6 +10,7 @@ namespace Ares\Article\Repository;
 use Ares\Framework\Interfaces\SearchCriteriaInterface;
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Article\Entity\Article;
+use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Jhg\DoctrinePagination\Collection\PaginatedArrayCollection;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -58,13 +59,36 @@ class ArticleRepository extends BaseRepository
     /**
      * @param object $model
      *
-     * @return Article
+     * @return object
+     * @throws InvalidArgumentException
      * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws PhpfastcacheSimpleCacheException
      */
     public function save(object $model): object
     {
         $this->getEntityManager()->persist($model);
         $this->getEntityManager()->flush();
+
+        $this->cacheService->set(self::CACHE_COLLECTION_PREFIX . $model->getId(), serialize($model));
+
+        return $model;
+    }
+
+    /**
+     * @param  object  $model
+     *
+     * @return Article
+     * @throws ORMException
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws OptimisticLockException|InvalidArgumentException
+     */
+    public function update(object $model): object
+    {
+        $this->getEntityManager()->flush();
+
+        $this->cacheService->delete(self::CACHE_PREFIX . $model->getId());
+        $this->cacheService->set(self::CACHE_COLLECTION_PREFIX . $model->getId(), serialize($model));
 
         return $model;
     }
@@ -107,7 +131,7 @@ class ArticleRepository extends BaseRepository
      * @throws InvalidArgumentException
      * @throws ORMException
      * @throws PhpfastcacheSimpleCacheException
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws OptimisticLockException
      */
     public function delete(int $id): bool
     {

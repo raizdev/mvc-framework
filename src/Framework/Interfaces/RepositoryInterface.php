@@ -40,6 +40,14 @@ interface RepositoryInterface
     public function save(object $model): object;
 
     /**
+     * Updates the Object
+     *
+     * @param object $model
+     * @return object
+     */
+    public function update(object $model): object;
+
+    /**
      * @param SearchCriteria $searchCriteria
      *
      * @return mixed

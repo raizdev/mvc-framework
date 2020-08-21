@@ -114,7 +114,7 @@ class UserController extends BaseController
         $user = $this->getUser($this->userRepository, $request);
         $user->setLocale($body['locale']);
 
-        $this->userRepository->save($user);
+        $this->userRepository->update($user);
 
         return $this->respond(
             $response,

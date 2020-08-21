@@ -57,9 +57,9 @@ class RoomRepository extends BaseRepository
     }
 
     /**
-     * @param   object  $model
+     * @param object $model
      *
-     * @return Room
+     * @return object
      * @throws InvalidArgumentException
      * @throws ORMException
      * @throws OptimisticLockException
@@ -70,7 +70,25 @@ class RoomRepository extends BaseRepository
         $this->getEntityManager()->persist($model);
         $this->getEntityManager()->flush();
 
-        $this->cacheService->set(self::CACHE_PREFIX . $model->getId(), serialize($model));
+        $this->cacheService->set(self::CACHE_COLLECTION_PREFIX . $model->getId(), serialize($model));
+
+        return $model;
+    }
+
+    /**
+     * @param  object  $model
+     *
+     * @return Room
+     * @throws ORMException
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws OptimisticLockException|InvalidArgumentException
+     */
+    public function update(object $model): object
+    {
+        $this->getEntityManager()->flush();
+
+        $this->cacheService->delete(self::CACHE_PREFIX . $model->getId());
+        $this->cacheService->set(self::CACHE_COLLECTION_PREFIX . $model->getId(), serialize($model));
 
         return $model;
     }

@@ -42,19 +42,27 @@ class RegisterService
     private Config $config;
 
     /**
+     * @var TicketService
+     */
+    private TicketService $ticketService;
+
+    /**
      * LoginService constructor.
      *
      * @param UserRepository $userRepository
      * @param TokenService   $tokenService
+     * @param TicketService  $ticketService
      * @param Config         $config
      */
     public function __construct(
         UserRepository $userRepository,
         TokenService $tokenService,
+        TicketService $ticketService,
         Config $config
     ) {
         $this->userRepository = $userRepository;
         $this->tokenService = $tokenService;
+        $this->ticketService = $ticketService;
         $this->config = $config;
     }
 
@@ -119,6 +127,6 @@ class RegisterService
             ->setIPRegister($data['ip_register'])
             ->setCurrentIP($data['ip_current'])
             ->setAccountCreated(time())
-            ->setTicket('lol');
+            ->setTicket($this->ticketService->hash($user));
     }
 }
