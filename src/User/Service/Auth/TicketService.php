@@ -52,7 +52,7 @@ class TicketService
         $ticket = $this->hash($user);
         $user->setTicket($ticket);
 
-        $this->userRepository->save($user);
+        $this->userRepository->update($user);
 
         return $ticket;
     }
