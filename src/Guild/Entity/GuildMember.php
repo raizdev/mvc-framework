@@ -7,6 +7,7 @@
 
 namespace Ares\Guild\Entity;
 
+use Ares\Framework\Entity\Entity;
 use Ares\User\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinColumn;
@@ -21,7 +22,7 @@ use Doctrine\ORM\Mapping\OneToOne;
  * @ORM\Table(name="guilds_members")
  * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
  */
-class GuildMember
+class GuildMember extends Entity
 {
     /**
      * @ORM\Id
@@ -165,5 +166,25 @@ class GuildMember
             'level_id' => $this->getLevelId(),
             'member_since' => $this->getMemberSince()
         ];
+    }
+
+    /**
+     * @return string
+     */
+    public function serialize()
+    {
+        return serialize(get_object_vars($this));
+    }
+
+    /**
+     * @param   string  $data
+     */
+    public function unserialize($data)
+    {
+        $values = unserialize($data);
+
+        foreach ($values as $key => $value) {
+            $this->$key = $value;
+        }
     }
 }

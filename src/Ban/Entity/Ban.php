@@ -7,6 +7,7 @@
 
 namespace Ares\Ban\Entity;
 
+use Ares\Framework\Entity\Entity;
 use Ares\User\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinColumn;
@@ -21,7 +22,7 @@ use Doctrine\ORM\Mapping\OneToOne;
  * @ORM\Table(name="bans")
  * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
  */
-class Ban
+class Ban extends Entity
 {
     /**
      * @ORM\Id
@@ -192,5 +193,25 @@ class Ban
             'ban_expire' => $this->getBanExpire(),
             'ban_reason' => $this->getBanReason()
         ];
+    }
+
+    /**
+     * @return string
+     */
+    public function serialize()
+    {
+        return serialize(get_object_vars($this));
+    }
+
+    /**
+     * @param $data
+     */
+    public function unserialize($data)
+    {
+        $values = unserialize($data);
+
+        foreach ($values as $key => $value) {
+            $this->$key = $value;
+        }
     }
 }

@@ -7,6 +7,7 @@
 
 namespace Ares\User\Entity;
 
+use Ares\Framework\Entity\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -19,7 +20,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
  * @ORM\HasLifecycleCallbacks
  */
-class User implements \Serializable
+class User extends Entity
 {
     /**
      * @ORM\Id
@@ -466,11 +467,17 @@ class User implements \Serializable
         ];
     }
 
+    /**
+     * @return string
+     */
     public function serialize()
     {
         return serialize(get_object_vars($this));
     }
 
+    /**
+     * @param   string  $data
+     */
     public function unserialize($data)
     {
         $values = unserialize($data);

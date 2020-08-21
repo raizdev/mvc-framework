@@ -7,6 +7,7 @@
 
 namespace Ares\Article\Entity;
 
+use Ares\Framework\Entity\Entity;
 use Ares\User\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\OneToOne;
@@ -21,7 +22,7 @@ use Doctrine\ORM\Mapping\OneToOne;
  * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
  * @ORM\HasLifecycleCallbacks
  */
-class Article
+class Article extends Entity
 {
     /**
      * @ORM\Id
@@ -310,5 +311,25 @@ class Article
             'created_at' => $this->getCreatedAt(),
             'updated_at' => $this->getUpdatedAt()
         ];
+    }
+
+    /**
+     * @return string
+     */
+    public function serialize()
+    {
+        return serialize(get_object_vars($this));
+    }
+
+    /**
+     * @param   string  $data
+     */
+    public function unserialize($data)
+    {
+        $values = unserialize($data);
+
+        foreach ($values as $key => $value) {
+            $this->$key = $value;
+        }
     }
 }

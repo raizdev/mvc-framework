@@ -7,6 +7,7 @@
 
 namespace Ares\User\Entity;
 
+use Ares\Framework\Entity\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -18,7 +19,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="users_currency")
  * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
  */
-class UserCurrency
+class UserCurrency extends Entity
 {
     /**
      * @ORM\Id
@@ -135,5 +136,25 @@ class UserCurrency
             'type' => $this->getType(),
             'amount' => $this->getAmount()
         ];
+    }
+
+    /**
+     * @return string
+     */
+    public function serialize()
+    {
+        return serialize(get_object_vars($this));
+    }
+
+    /**
+     * @param   string  $data
+     */
+    public function unserialize($data)
+    {
+        $values = unserialize($data);
+
+        foreach ($values as $key => $value) {
+            $this->$key = $value;
+        }
     }
 }
