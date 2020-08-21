@@ -1,5 +1,4 @@
 <?php declare(strict_types=1);
-
 /**
  * Ares (https://ares.to)
  *
@@ -12,8 +11,11 @@ use Ares\Framework\Controller\BaseController;
 use Ares\Article\Entity\Article;
 use Ares\Article\Exception\ArticleException;
 use Ares\Article\Repository\ArticleRepository;
+use Ares\Framework\Model\Adapter\DoctrineSearchCriteria;
 use Doctrine\Common\Collections\ArrayCollection;
 use Jhg\DoctrinePagination\Collection\PaginatedArrayCollection;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -40,24 +42,34 @@ class ArticleController extends BaseController
     private ArticleRepository $articleRepository;
 
     /**
+     * @var DoctrineSearchCriteria
+     */
+    private DoctrineSearchCriteria $searchCriteria;
+
+    /**
      * NewsController constructor.
      *
-     * @param ArticleRepository $articleRepository
+     * @param   ArticleRepository       $articleRepository
+     * @param   DoctrineSearchCriteria  $searchCriteria
      */
     public function __construct(
-        ArticleRepository $articleRepository
+        ArticleRepository $articleRepository,
+        DoctrineSearchCriteria $searchCriteria
     ) {
         $this->articleRepository = $articleRepository;
+        $this->searchCriteria = $searchCriteria;
     }
 
     /**
-     * @param Request  $request
-     * @param Response $response
+     * @param   Request   $request
+     * @param   Response  $response
      *
-     * @param          $args
+     * @param             $args
      *
      * @return Response
      * @throws ArticleException
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws InvalidArgumentException
      */
     public function article(Request $request, Response $response, $args): Response
     {
@@ -83,14 +95,17 @@ class ArticleController extends BaseController
      *
      * @return Response
      * @throws ArticleException
+     * @throws InvalidArgumentException
+     * @throws PhpfastcacheSimpleCacheException
      */
     public function pinned(Request $request, Response $response): Response
     {
+        $this->searchCriteria
+            ->addFilter('pinned', self::IS_PINNED)
+            ->addFilter('hidden', self::IS_VISIBLE);
+
         /** @var array $pinnedArticles */
-        $pinnedArticles = $this->articleRepository->getList([
-            'pinned' => self::IS_PINNED,
-            'hidden' => self::IS_VISIBLE
-        ]);
+        $pinnedArticles = $this->articleRepository->getList($this->searchCriteria);
 
         if (empty($pinnedArticles)) {
             throw new ArticleException(__('No Pinned Articles found'));
@@ -116,6 +131,8 @@ class ArticleController extends BaseController
      *
      * @return Response
      * @throws ArticleException
+     * @throws InvalidArgumentException
+     * @throws PhpfastcacheSimpleCacheException
      */
     public function list(Request $request, Response $response, $args): Response
     {
@@ -125,13 +142,11 @@ class ArticleController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        /** @var PaginatedArrayCollection */
-        $articles = $this->articleRepository->findPageBy(
-            (int)$page,
-            (int)$resultPerPage,
-            ['hidden' => self::IS_VISIBLE],
-            ['id' => 'DESC']
-        );
+        $this->searchCriteria->setPage((int)$page)
+            ->setLimit((int)$resultPerPage)
+            ->addOrder('id', 'DESC');
+
+        $articles = $this->articleRepository->paginate($this->searchCriteria);
 
         if ($articles->isEmpty()) {
             throw new ArticleException(__('No Articles were found'), 404);

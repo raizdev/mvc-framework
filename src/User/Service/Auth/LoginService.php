@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Ares (https://ares.to)
  *
@@ -16,6 +15,8 @@ use Ares\Framework\Service\TokenService;
 use Ares\User\Entity\User;
 use Ares\User\Exception\LoginException;
 use Ares\User\Repository\UserRepository;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\Cache\InvalidArgumentException;
 use ReallySimpleJWT\Exception\ValidateException;
 
 /**
@@ -64,8 +65,11 @@ class LoginService
      * @param string $password
      *
      * @return CustomResponseInterface
-     * @throws LoginException|ValidateException
      * @throws BanException
+     * @throws LoginException
+     * @throws ValidateException
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws InvalidArgumentException
      */
     public function login(string $username, string $password): CustomResponseInterface
     {

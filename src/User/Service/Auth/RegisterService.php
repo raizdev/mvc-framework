@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Ares (https://ares.to)
  *
@@ -13,8 +12,11 @@ use Ares\Framework\Service\TokenService;
 use Ares\User\Entity\User;
 use Ares\User\Exception\RegisterException;
 use Ares\User\Repository\UserRepository;
+use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use PHLAK\Config\Config;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\Cache\InvalidArgumentException;
 use ReallySimpleJWT\Exception\ValidateException;
 
 /**
@@ -65,6 +67,9 @@ class RegisterService
      * @throws ORMException
      * @throws RegisterException
      * @throws ValidateException
+     * @throws OptimisticLockException
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws InvalidArgumentException
      */
     public function register(array $data): CustomResponseInterface
     {
@@ -103,7 +108,8 @@ class RegisterService
             ->setUsername($data['username'])
             ->setPassword(password_hash(
                 $data['password'],
-                PASSWORD_ARGON2ID))
+                PASSWORD_ARGON2ID)
+            )
             ->setMail($data['mail'])
             ->setLook($this->config->get('hotel_settings.start_look'))
             ->setCredits($this->config->get('hotel_settings.start_credits'))

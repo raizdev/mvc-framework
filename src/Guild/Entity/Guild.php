@@ -1,5 +1,4 @@
 <?php declare(strict_types=1);
-
 /**
  * Ares (https://ares.to)
  *
@@ -24,7 +23,7 @@ use Doctrine\ORM\Mapping\OneToOne;
  * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
  * @ORM\HasLifecycleCallbacks
  */
-class Guild
+class Guild implements \Serializable
 {
     /**
      * @ORM\Id
@@ -34,7 +33,7 @@ class Guild
     private int $id;
 
     /**
-     * @OneToOne(targetEntity="\Ares\User\Entity\User")
+     * @OneToOne(targetEntity="\Ares\User\Entity\User", fetch="EAGER")
      * @JoinColumn(name="user_id", referencedColumnName="id")
      */
     private User $creator;
@@ -50,7 +49,7 @@ class Guild
     private string $description;
 
     /**
-     * @OneToOne(targetEntity="\Ares\Room\Entity\Room")
+     * @OneToOne(targetEntity="\Ares\Room\Entity\Room", fetch="EAGER")
      * @JoinColumn(name="room_id", referencedColumnName="id")
      */
     private Room $room;
@@ -220,5 +219,19 @@ class Guild
             'badge' => $this->getBadge(),
             'date_created' => $this->getDateCreated()
         ];
+    }
+
+    public function serialize()
+    {
+        return serialize(get_object_vars($this));
+    }
+
+    public function unserialize($data)
+    {
+        $values = unserialize($data);
+
+        foreach ($values as $key => $value) {
+            $this->$key = $value;
+        }
     }
 }

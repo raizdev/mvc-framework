@@ -1,5 +1,4 @@
 <?php declare(strict_types=1);
-
 /**
  * Ares (https://ares.to)
  *
@@ -8,6 +7,7 @@
 
 namespace Ares\Room\Entity;
 
+use Ares\Framework\Entity\Entity;
 use Ares\Guild\Entity\Guild;
 use Ares\User\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
@@ -24,7 +24,7 @@ use Doctrine\ORM\Mapping\OneToOne;
  * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
  * @ORM\HasLifecycleCallbacks
  */
-class Room
+class Room extends Entity
 {
     /**
      * @ORM\Id
@@ -34,7 +34,7 @@ class Room
     private int $id;
 
     /**
-     * @OneToOne(targetEntity="\Ares\User\Entity\User")
+     * @OneToOne(targetEntity="\Ares\User\Entity\User", fetch="EAGER")
      * @JoinColumn(name="owner_id", referencedColumnName="id")
      */
     private ?User $owner;
@@ -65,7 +65,7 @@ class Room
     private int $users_max;
 
     /**
-     * @OneToOne(targetEntity="\Ares\Guild\Entity\Guild")
+     * @OneToOne(targetEntity="\Ares\Guild\Entity\Guild", fetch="EAGER")
      * @JoinColumn(name="guild_id", referencedColumnName="id", nullable=true)
      */
     private ?Guild $guild;
@@ -260,7 +260,7 @@ class Room
      */
     public function loadNullGuild()
     {
-        if ($this->guild->getId() == 0) {
+        if ($this->guild && $this->guild->getId() == 0) {
             $this->guild = null;
         }
     }
@@ -283,5 +283,25 @@ class Room
             'guild' => (is_null($this->getGuild()) ? $this->getGuild() : $this->getGuild()->getArrayCopy()),
             'score' => $this->getScore()
         ];
+    }
+
+    /**
+     * @return string
+     */
+    public function serialize()
+    {
+        return serialize(get_object_vars($this));
+    }
+
+    /**
+     * @param string $data
+     */
+    public function unserialize($data)
+    {
+        $values = unserialize($data);
+
+        foreach ($values as $key => $value) {
+            $this->$key = $value;
+        }
     }
 }

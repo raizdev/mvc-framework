@@ -1,5 +1,4 @@
 <?php declare(strict_types=1);
-
 /**
  * Ares (https://ares.to)
  *
@@ -50,6 +49,10 @@ class ValidationService
      */
     public function validate($data, array $rules): void
     {
+        if (is_null($data) || empty($rules)) {
+           throw new ValidationException(__('Please provide a right data set'));
+        }
+
         $validator = $this->validator->make($data, $rules);
         $validator->validate();
 

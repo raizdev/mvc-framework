@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Ares (https://ares.to)
  *
@@ -9,11 +8,14 @@
 namespace Ares\Messenger\Controller;
 
 use Ares\Framework\Controller\BaseController;
+use Ares\Framework\Model\Adapter\DoctrineSearchCriteria;
 use Ares\Messenger\Exception\MessengerException;
 use Ares\Messenger\Repository\MessengerRepository;
 use Ares\User\Exception\UserException;
 use Ares\User\Repository\UserRepository;
 use Jhg\DoctrinePagination\Collection\PaginatedArrayCollection;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -35,28 +37,38 @@ class MessengerController extends BaseController
     private UserRepository $userRepository;
 
     /**
+     * @var DoctrineSearchCriteria
+     */
+    private DoctrineSearchCriteria $searchCriteria;
+
+    /**
      * MessengerController constructor.
      *
-     * @param MessengerRepository $messengerRepository
-     * @param UserRepository      $userRepository
+     * @param   MessengerRepository     $messengerRepository
+     * @param   UserRepository          $userRepository
+     * @param   DoctrineSearchCriteria  $searchCriteria
      */
     public function __construct(
         MessengerRepository $messengerRepository,
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        DoctrineSearchCriteria $searchCriteria
     ) {
         $this->messengerRepository = $messengerRepository;
         $this->userRepository = $userRepository;
+        $this->searchCriteria = $searchCriteria;
     }
 
     /**
-     * @param Request  $request
-     * @param Response $response
+     * @param   Request   $request
+     * @param   Response  $response
      *
-     * @param          $args
+     * @param             $args
      *
      * @return Response
      * @throws MessengerException
      * @throws UserException
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws InvalidArgumentException
      */
     public function friends(Request $request, Response $response, $args): Response
     {
@@ -66,13 +78,12 @@ class MessengerController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        /** @var PaginatedArrayCollection */
-        $friends = $this->messengerRepository->findPageBy(
-            (int)$page,
-            (int)$resultPerPage,
-            ['user' => $this->getUser($this->userRepository, $request)],
-            ['id' => 'DESC']
-        );
+        $this->searchCriteria->setPage((int)$page)
+            ->setLimit((int)$resultPerPage)
+            ->addFilter('user', $this->getUser($this->userRepository, $request)->getId())
+            ->addOrder('id', 'DESC');
+
+        $friends = $this->messengerRepository->paginate($this->searchCriteria);
 
         if ($friends->isEmpty()) {
             throw new MessengerException(__('You have no friends'), 404);

@@ -1,5 +1,4 @@
 <?php declare(strict_types=1);
-
 /**
  * Ares (https://ares.to)
  *
@@ -8,6 +7,7 @@
 
 namespace Ares\Messenger\Entity;
 
+use Ares\Framework\Entity\Entity;
 use Ares\User\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinColumn;
@@ -22,7 +22,7 @@ use Doctrine\ORM\Mapping\OneToOne;
  * @ORM\Entity(repositoryClass="Ares\Messenger\Repository\MessengerRepository")
  * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
  */
-class MessengerFriendship
+class MessengerFriendship extends Entity
 {
     /**
      * @ORM\Id
@@ -32,13 +32,13 @@ class MessengerFriendship
     private int $id;
 
     /**
-     * @OneToOne(targetEntity="\Ares\User\Entity\User")
+     * @OneToOne(targetEntity="\Ares\User\Entity\User", fetch="EAGER")
      * @JoinColumn(name="user_one_id", referencedColumnName="id")
      */
     private ?User $user;
 
     /**
-     * @OneToOne(targetEntity="\Ares\User\Entity\User")
+     * @OneToOne(targetEntity="\Ares\User\Entity\User", fetch="EAGER")
      * @JoinColumn(name="user_two_id", referencedColumnName="id")
      */
     private ?User $friend;
@@ -151,5 +151,25 @@ class MessengerFriendship
         $this->friends_since = $friends_since;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function serialize()
+    {
+        return serialize(get_object_vars($this));
+    }
+
+    /**
+     * @param string $data
+     */
+    public function unserialize($data)
+    {
+        $values = unserialize($data);
+
+        foreach ($values as $key => $value) {
+            $this->$key = $value;
+        }
     }
 }

@@ -1,5 +1,4 @@
 <?php declare(strict_types=1);
-
 /**
  * Ares (https://ares.to)
  *
@@ -12,7 +11,10 @@ use Ares\Framework\Controller\BaseController;
 use Ares\User\Entity\User;
 use Ares\User\Exception\UserException;
 use Ares\User\Repository\UserRepository;
+use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -47,19 +49,23 @@ class UserController extends BaseController
     /**
      * Retrieves the logged in User via JWT - Token
      *
-     * @param Request $request The current incoming Request
+     * @param Request  $request  The current incoming Request
      * @param Response $response The current Response
+     *
      * @return Response Returns a Response with the given Data
      * @throws UserException
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws InvalidArgumentException
      */
     public function user(Request $request, Response $response): Response
     {
         /** @var User $user */
-        $user = $this->getUser($this->userRepository, $request);
+        $user = $this->getUser($this->userRepository, $request)
+            ->getArrayCopy();
 
         return $this->respond(
             $response,
-            response()->setData($user->getArrayCopy())
+            response()->setData($user)
         );
     }
 
@@ -93,8 +99,11 @@ class UserController extends BaseController
      * @param Response $response
      *
      * @return Response
+     * @throws InvalidArgumentException
      * @throws ORMException
+     * @throws PhpfastcacheSimpleCacheException
      * @throws UserException
+     * @throws OptimisticLockException
      */
     public function updateLocale(Request $request, Response $response): Response
     {

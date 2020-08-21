@@ -1,5 +1,4 @@
 <?php declare(strict_types=1);
-
 /**
  * Ares (https://ares.to)
  *
@@ -32,13 +31,13 @@ class GuildMember
     private int $id;
 
     /**
-     * @OneToOne(targetEntity="\Ares\User\Entity\User")
+     * @OneToOne(targetEntity="\Ares\User\Entity\User", fetch="EAGER")
      * @JoinColumn(name="user_id", referencedColumnName="id")
      */
     private ?User $member;
 
     /**
-     * @OneToOne(targetEntity="\Ares\Guild\Entity\Guild")
+     * @OneToOne(targetEntity="\Ares\Guild\Entity\Guild", fetch="EAGER")
      * @JoinColumn(name="guild_id", referencedColumnName="id")
      */
     private ?Guild $guild;

@@ -17,8 +17,11 @@ use Psr\Log\LoggerInterface;
 use Slim\Interfaces\ErrorHandlerInterface;
 use Throwable;
 
+
 /**
  * Class ErrorHandler
+ *
+ * @package Ares\Framework\Handler
  */
 class ErrorHandler implements ErrorHandlerInterface
 {
@@ -38,7 +41,7 @@ class ErrorHandler implements ErrorHandlerInterface
     private LoggerInterface $logger;
 
     /**
-     * ResponseMiddleware constructor.
+     * ErrorHandler constructor.
      *
      * @param ResponseFactoryInterface $responseFactory
      * @param CustomResponse           $customResponse

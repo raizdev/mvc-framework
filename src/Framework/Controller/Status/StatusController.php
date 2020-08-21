@@ -1,5 +1,4 @@
 <?php declare(strict_types=1);
-
 /**
  * Ares (https://ares.to)
  *
@@ -14,6 +13,8 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 /**
  * Class StatusController
+ *
+ * @package Ares\Framework\Controller\Status
  */
 class StatusController extends BaseController
 {

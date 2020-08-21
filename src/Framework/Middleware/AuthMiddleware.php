@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Ares (https://ares.to)
  *
@@ -8,6 +7,7 @@
 
 namespace Ares\Framework\Middleware;
 
+use Ares\Framework\Exception\AuthenticationException;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -45,6 +45,7 @@ class AuthMiddleware implements MiddlewareInterface
      * @param   RequestHandlerInterface  $handler  The handler
      *
      * @return ResponseInterface The response
+     * @throws AuthenticationException
      */
     public function process(
         ServerRequestInterface $request,
@@ -53,9 +54,10 @@ class AuthMiddleware implements MiddlewareInterface
         $token = explode(' ', (string)$request->getHeaderLine('Authorization'))[1] ?? '';
 
         if (!$token || !Token::validate($token, $_ENV['TOKEN_SECRET'])) {
-            return $this->responseFactory->createResponse()
-                ->withHeader('Content-Type', 'application/json')
-                ->withStatus(401, 'Unauthorized');
+            $this->responseFactory->createResponse()
+                ->withHeader('Content-Type', 'application/problem+json');
+
+            throw new AuthenticationException(__('You arent allowed to visit this site'), 401);
         }
 
         return $handler->handle($request);

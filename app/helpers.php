@@ -1,4 +1,9 @@
 <?php
+/**
+ * Ares (https://ares.to)
+ *
+ * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ */
 
 if (!function_exists('__')) {
     /**
@@ -46,5 +51,27 @@ if (!function_exists('base_dir')) {
      */
     function base_dir() {
         return __DIR__ . '/../';
+    }
+}
+
+if (!function_exists('cache_dir')) {
+    /**
+     * Returns directory path of cache.
+     *
+     * @return string
+     */
+    function cache_dir() {
+        return __DIR__ . '/../tmp/Cache';
+    }
+}
+
+if (!function_exists('route_cache_dir')) {
+    /**
+     * Returns directory path of routing cache.
+     *
+     * @return string
+     */
+    function route_cache_dir() {
+        return __DIR__ . '/../tmp/Cache/routing';
     }
 }

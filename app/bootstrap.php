@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Ares (https://ares.to)
  *
@@ -30,6 +29,12 @@ require_once __DIR__ . '/helpers.php';
 // Parse our providers
 require_once __DIR__ . '/providers.php';
 
+if ($_ENV['CACHE_ENABLED']) {
+    $container->addServiceProvider(
+        new \Ares\Framework\Provider\CacheServiceProvider()
+    );
+}
+
 // Create App instance
 $app = $container->get(App::class);;
 
@@ -49,7 +54,12 @@ $manager->addProxyInstance($alias, $proxy, $app);
 // Sets our Route-Cache
 if ($_ENV['API_DEBUG'] == "production") {
     $routeCollector = $app->getRouteCollector();
-    $routeCollector->setCacheFile('../tmp/Cache/routing/route.cache.php');
+
+    if(!file_exists(route_cache_dir())) {
+        mkdir(route_cache_dir(), 0755, true);
+    }
+
+    $routeCollector->setCacheFile(route_cache_dir() . '/route.cache.php');
 }
 
 return $app;

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Ares (https://ares.to)
  *
@@ -52,6 +51,14 @@ class ConfigServiceProvider extends AbstractServiceProvider
                         'password' => $_ENV['DB_PASSWORD'],
                         'charset' => 'utf8mb4'
                     ]
+                ],
+
+                'cache' => [
+                    'enabled' => $_ENV['CACHE_ENABLED'],
+                    'type' => $_ENV['CACHE_TYPE'],
+                    'ttl' => $_ENV['CACHE_TTL'],
+                    'redis_host' => $_ENV['CACHE_REDIS_HOST'],
+                    'redis_port' => $_ENV['CACHE_REDIS_PORT']
                 ],
 
                 'logger' => [

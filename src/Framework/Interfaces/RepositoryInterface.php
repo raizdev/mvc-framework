@@ -1,5 +1,4 @@
 <?php declare(strict_types=1);
-
 /**
  * Ares (https://ares.to)
  *
@@ -7,6 +6,8 @@
  */
 
 namespace Ares\Framework\Interfaces;
+
+use Ares\Framework\Model\SearchCriteria;
 
 /**
  * Interface RepositoryInterface
@@ -21,18 +22,14 @@ interface RepositoryInterface
      * @param int $id
      * @return object|null
      */
-    public function get(int $id): ?object;
+    public function get(int $id);
 
     /**
-     * Get array of objects by id.
+     * @param SearchCriteria $searchCriteria
      *
-     * @param array $criteria
-     * @param null  $orderBy
-     * @param null  $limit
-     * @param null  $offset
-     *
+     * @return mixed
      */
-    public function getList(array $criteria, $orderBy = null, $limit = null, $offset = null);
+    public function getList(SearchCriteria $searchCriteria);
 
     /**
      * Save object.
@@ -41,6 +38,13 @@ interface RepositoryInterface
      * @return object
      */
     public function save(object $model): object;
+
+    /**
+     * @param SearchCriteria $searchCriteria
+     *
+     * @return mixed
+     */
+    public function paginate(SearchCriteria $searchCriteria);
 
     /**
      * Delete object by id.
