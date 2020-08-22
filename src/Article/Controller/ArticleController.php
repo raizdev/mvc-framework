@@ -74,7 +74,7 @@ class ArticleController extends BaseController
     public function article(Request $request, Response $response, $args): Response
     {
         /** @var int $id */
-        $id = $args['id'];
+        $id = (int) $args['id'];
 
         /** @var Article $article */
         $article = $this->articleRepository->get($id);
