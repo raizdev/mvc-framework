@@ -29,7 +29,7 @@ abstract class BaseController
      * @param Request $request
      * @return int|null
      */
-    private function authUser(Request $request): ?int
+    protected function authUser(Request $request): ?int
     {
         /** @var array $user */
         $user = $request->getAttribute('ares_uid');
@@ -44,18 +44,20 @@ abstract class BaseController
      * @param UserRepository $userRepository
      * @param Request        $request
      *
+     * @param bool           $cachedEntity
+     *
      * @return object
-     * @throws UserException
-     * @throws PhpfastcacheSimpleCacheException
      * @throws InvalidArgumentException
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws UserException
      */
-    protected function getUser(UserRepository $userRepository, Request $request): object
+    protected function getUser(UserRepository $userRepository, Request $request, bool $cachedEntity = true): object
     {
         /** @var array $authUser */
         $authUser = $this->authUser($request);
 
         /** @var User $user */
-        $user = $userRepository->get((int)$authUser);
+        $user = $userRepository->get((int)$authUser, $cachedEntity);
 
         if (!$user) {
             throw new UserException(__('User doesnt exists.'), 404);

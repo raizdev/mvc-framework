@@ -33,17 +33,19 @@ class UserRepository extends BaseRepository
     protected string $entity = User::class;
 
     /**
-     * @param   string  $username
+     * @param string $username
+     *
+     * @param bool   $cachedEntity
      *
      * @return User|object
      * @throws InvalidArgumentException
      * @throws PhpfastcacheSimpleCacheException
      */
-    public function getByUsername(string $username)
+    public function getByUsername(string $username, bool $cachedEntity = true)
     {
         $entity = $this->cacheService->get(self::CACHE_PREFIX . $username);
 
-        if ($entity) {
+        if ($entity && $cachedEntity) {
             return unserialize($entity);
         }
 
@@ -57,17 +59,19 @@ class UserRepository extends BaseRepository
     }
 
     /**
-     * @param   string  $mail
+     * @param string $mail
+     *
+     * @param bool   $cachedEntity
      *
      * @return User|object
      * @throws InvalidArgumentException
      * @throws PhpfastcacheSimpleCacheException
      */
-    public function getByMail(string $mail)
+    public function getByMail(string $mail, bool $cachedEntity = true)
     {
         $entity = $this->cacheService->get(self::CACHE_PREFIX . $mail);
 
-        if ($entity) {
+        if ($entity && $cachedEntity) {
             return unserialize($entity);
         }
 
@@ -81,17 +85,19 @@ class UserRepository extends BaseRepository
     }
 
     /**
-     * @param   array  $data
+     * @param array $data
+     *
+     * @param bool  $cachedEntity
      *
      * @return object|null
      * @throws InvalidArgumentException
      * @throws PhpfastcacheSimpleCacheException
      */
-    public function getBy(array $data): ?object
+    public function getBy(array $data, bool $cachedEntity = true): ?object
     {
         $entity = $this->cacheService->get(self::CACHE_PREFIX . $data);
 
-        if ($entity) {
+        if ($entity && $cachedEntity) {
             return unserialize($entity);
         }
 
@@ -105,17 +111,19 @@ class UserRepository extends BaseRepository
     /**
      * Get object by id.
      *
-     * @param int $id
+     * @param int  $id
+     *
+     * @param bool $cachedEntity
      *
      * @return User|null
-     * @throws PhpfastcacheSimpleCacheException
      * @throws InvalidArgumentException
+     * @throws PhpfastcacheSimpleCacheException
      */
-    public function get(int $id): ?object
+    public function get(int $id, bool $cachedEntity = true): ?object
     {
         $entity = $this->cacheService->get(self::CACHE_PREFIX . $id);
 
-        if ($entity) {
+        if ($entity && $cachedEntity) {
             return unserialize($entity);
         }
 
@@ -127,19 +135,21 @@ class UserRepository extends BaseRepository
     }
 
     /**
-     * @param   SearchCriteriaInterface  $searchCriteria
+     * @param SearchCriteriaInterface $searchCriteria
+     *
+     * @param bool                    $cachedEntity
      *
      * @return array|object[]
      * @throws InvalidArgumentException
      * @throws PhpfastcacheSimpleCacheException
      */
-    public function getList(SearchCriteriaInterface $searchCriteria)
+    public function getList(SearchCriteriaInterface $searchCriteria, bool $cachedEntity = true)
     {
         $cacheKey = $searchCriteria->getCacheKey();
 
         $collection = $this->cacheService->get(self::CACHE_COLLECTION_PREFIX . $cacheKey);
 
-        if ($collection) {
+        if ($collection && $cachedEntity) {
             return unserialize($collection);
         }
 
@@ -169,25 +179,25 @@ class UserRepository extends BaseRepository
         $this->getEntityManager()->persist($model);
         $this->getEntityManager()->flush();
 
-        $this->cacheService->set(self::CACHE_COLLECTION_PREFIX . $model->getId(), serialize($model));
+        $this->cacheService->set(self::CACHE_PREFIX . $model->getId(), serialize($model));
 
         return $model;
     }
 
     /**
-     * @param  object  $model
+     * @param object $model
      *
      * @return User
+     * @throws InvalidArgumentException
      * @throws ORMException
+     * @throws OptimisticLockException
      * @throws PhpfastcacheSimpleCacheException
-     * @throws OptimisticLockException|InvalidArgumentException
      */
     public function update(object $model): object
     {
         $this->getEntityManager()->flush();
 
-        $this->cacheService->delete(self::CACHE_PREFIX . $model->getId());
-        $this->cacheService->set(self::CACHE_COLLECTION_PREFIX . $model->getId(), serialize($model));
+        $this->cacheService->set(self::CACHE_PREFIX . $model->getId(), serialize($model));
 
         return $model;
     }
@@ -222,17 +232,19 @@ class UserRepository extends BaseRepository
     /**
      * @param SearchCriteriaInterface $searchCriteria
      *
+     * @param bool                    $cachedEntity
+     *
      * @return PaginatedArrayCollection
      * @throws InvalidArgumentException
      * @throws PhpfastcacheSimpleCacheException
      */
-    public function paginate(SearchCriteriaInterface $searchCriteria): PaginatedArrayCollection
+    public function paginate(SearchCriteriaInterface $searchCriteria, bool $cachedEntity = true): PaginatedArrayCollection
     {
         $cacheKey = $searchCriteria->getCacheKey();
 
         $collection = $this->cacheService->get(self::CACHE_COLLECTION_PREFIX . $cacheKey);
 
-        if ($collection) {
+        if ($collection && $cachedEntity) {
             return unserialize($collection);
         }
 

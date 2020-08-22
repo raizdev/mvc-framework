@@ -35,17 +35,19 @@ class RoomRepository extends BaseRepository
     /**
      * Get object by id.
      *
-     * @param int $id
+     * @param int  $id
+     *
+     * @param bool $cachedEntity
      *
      * @return mixed|object|null
-     * @throws PhpfastcacheSimpleCacheException
      * @throws InvalidArgumentException
+     * @throws PhpfastcacheSimpleCacheException
      */
-    public function get(int $id)
+    public function get(int $id, bool $cachedEntity = true)
     {
         $entity = $this->cacheService->get(self::CACHE_PREFIX . $id);
 
-        if ($entity) {
+        if ($entity && $cachedEntity) {
             return unserialize($entity);
         }
 
@@ -70,7 +72,7 @@ class RoomRepository extends BaseRepository
         $this->getEntityManager()->persist($model);
         $this->getEntityManager()->flush();
 
-        $this->cacheService->set(self::CACHE_COLLECTION_PREFIX . $model->getId(), serialize($model));
+        $this->cacheService->set(self::CACHE_PREFIX . $model->getId(), serialize($model));
 
         return $model;
     }
@@ -87,26 +89,27 @@ class RoomRepository extends BaseRepository
     {
         $this->getEntityManager()->flush();
 
-        $this->cacheService->delete(self::CACHE_PREFIX . $model->getId());
-        $this->cacheService->set(self::CACHE_COLLECTION_PREFIX . $model->getId(), serialize($model));
+        $this->cacheService->set(self::CACHE_PREFIX . $model->getId(), serialize($model));
 
         return $model;
     }
 
     /**
-     * @param   SearchCriteriaInterface  $searchCriteria
+     * @param SearchCriteriaInterface $searchCriteria
+     *
+     * @param bool                    $cachedEntity
      *
      * @return array|object[]
      * @throws InvalidArgumentException
      * @throws PhpfastcacheSimpleCacheException
      */
-    public function getList(SearchCriteriaInterface $searchCriteria)
+    public function getList(SearchCriteriaInterface $searchCriteria, bool $cachedEntity = true)
     {
         $cacheKey = $searchCriteria->getCacheKey();
 
         $collection = $this->cacheService->get(self::CACHE_COLLECTION_PREFIX . $cacheKey);
 
-        if ($collection) {
+        if ($collection && $cachedEntity) {
             return unserialize($collection);
         }
 
@@ -152,17 +155,19 @@ class RoomRepository extends BaseRepository
     /**
      * @param SearchCriteriaInterface $searchCriteria
      *
+     * @param bool                    $cachedEntity
+     *
      * @return PaginatedArrayCollection
      * @throws InvalidArgumentException
      * @throws PhpfastcacheSimpleCacheException
      */
-    public function paginate(SearchCriteriaInterface $searchCriteria): PaginatedArrayCollection
+    public function paginate(SearchCriteriaInterface $searchCriteria, bool $cachedEntity = true): PaginatedArrayCollection
     {
         $cacheKey = $searchCriteria->getCacheKey();
 
         $collection = $this->cacheService->get(self::CACHE_COLLECTION_PREFIX . $cacheKey);
 
-        if ($collection) {
+        if ($collection && $cachedEntity) {
             return unserialize($collection);
         }
 
