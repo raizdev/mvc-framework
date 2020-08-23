@@ -175,13 +175,13 @@ class AuthController extends BaseController
         }
 
         $boyList = [];
-        foreach ($boyLooks as $key => $look) {
-            $boyList[$key] = $look;
+        foreach ($boyLooks as $look) {
+            $boyList[] = $look;
         }
 
         $girlList = [];
-        foreach ($girlLooks as $key => $look) {
-            $girlList[$key] = $look;
+        foreach ($girlLooks as $look) {
+            $girlList[] = $look;
         }
 
         return $this->respond($response, response()->setData([
