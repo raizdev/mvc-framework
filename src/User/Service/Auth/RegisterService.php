@@ -91,6 +91,20 @@ class RegisterService
             throw new RegisterException(__('register.already.exists'), 422);
         }
 
+        /** @var array $boyLooks */
+        $boyLooks = $this->config->get('hotel_settings.register.looks.boy');
+
+        /** @var array $girlLooks */
+        $girlLooks = $this->config->get('hotel_settings.register.looks.girl');
+
+        if (array_key_exists($data['look'], $boyLooks)) {
+            $data['look'] = $this->config->get('hotel_settings.register.looks.boy.' . $data['look']);
+        } else if (array_key_exists($data['look'], $girlLooks)) {
+            $data['look'] = $this->config->get('hotel_settings.register.looks.girl.' . $data['look']);
+        } else {
+            $data['look'] = $this->config->get('hotel_settings.register.looks.fallback_look');
+        }
+
         /** @var User $user */
         $user = $this->userRepository->save($this->getNewUser($data));
 
@@ -119,7 +133,7 @@ class RegisterService
                 PASSWORD_ARGON2ID)
             )
             ->setMail($data['mail'])
-            ->setLook($this->config->get('hotel_settings.start_look'))
+            ->setLook($data['look'])
             ->setCredits($this->config->get('hotel_settings.start_credits'))
             ->setPoints($this->config->get('hotel_settings.start_points'))
             ->setPixels($this->config->get('hotel_settings.start_pixels'))

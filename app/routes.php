@@ -62,7 +62,7 @@ return function (App $app) {
         $group->post('/login', \Ares\User\Controller\AuthController::class . ':login');
         $group->group('/register', function ($group) {
             $group->post('', \Ares\User\Controller\AuthController::class . ':register');
-            $group->post('/check', \Ares\User\Controller\AuthController::class . ':check');
+            $group->get('/looks', \Ares\User\Controller\AuthController::class . ':viableLooks');
         });
 
         // Global Routes
