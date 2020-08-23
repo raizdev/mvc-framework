@@ -35,53 +35,25 @@ class UserRepository extends BaseRepository
     /**
      * @param string $username
      *
-     * @param bool   $cachedEntity
-     *
      * @return User|object
-     * @throws InvalidArgumentException
-     * @throws PhpfastcacheSimpleCacheException
      */
-    public function getByUsername(string $username, bool $cachedEntity = true)
+    public function getByUsername(string $username)
     {
-        $entity = $this->cacheService->get(self::CACHE_PREFIX . $username);
-
-        if ($entity && $cachedEntity) {
-            return unserialize($entity);
-        }
-
-        $entity = $this->findOneBy([
+        return $this->findOneBy([
             'username' => $username
         ]);
-
-        $this->cacheService->set(self::CACHE_PREFIX . $username, serialize($entity));
-
-        return $entity;
     }
 
     /**
      * @param string $mail
      *
-     * @param bool   $cachedEntity
-     *
      * @return User|object
-     * @throws InvalidArgumentException
-     * @throws PhpfastcacheSimpleCacheException
      */
-    public function getByMail(string $mail, bool $cachedEntity = true)
+    public function getByMail(string $mail)
     {
-        $entity = $this->cacheService->get(self::CACHE_PREFIX . $mail);
-
-        if ($entity && $cachedEntity) {
-            return unserialize($entity);
-        }
-
-        $entity = $this->findOneBy([
+        return $this->findOneBy([
             'mail' => $mail
         ]);
-
-        $this->cacheService->set(self::CACHE_PREFIX . $mail, serialize($entity));
-
-        return $entity;
     }
 
     /**

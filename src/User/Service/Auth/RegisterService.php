@@ -127,6 +127,7 @@ class RegisterService
             ->setIPRegister($data['ip_register'])
             ->setCurrentIP($data['ip_current'])
             ->setAccountCreated(time())
+            ->setOnline(1)
             ->setTicket($this->ticketService->hash($user));
     }
 }
