@@ -432,6 +432,7 @@ class User extends Entity
     public function onPrePersist()
     {
         $this->created_at = new \DateTime("now");
+        $this->updated_at = new \DateTime("now");
     }
 
     /**
