@@ -100,6 +100,11 @@ class User extends Entity
     private ?string $locale;
 
     /**
+     * @ORM\Column(type="integer", length=11)
+     */
+    private int $last_login;
+
+    /**
      * @ORM\Column(type="datetime")
      */
     protected \DateTime $created_at;
@@ -409,6 +414,26 @@ class User extends Entity
     }
 
     /**
+     * @return int
+     */
+    public function getLastLogin(): int
+    {
+        return $this->last_login;
+    }
+
+    /**
+     * @param int $last_login
+     *
+     * @return User
+     */
+    public function setLastLogin(int $last_login): self
+    {
+        $this->last_login = $last_login;
+
+        return $this;
+    }
+
+    /**
      * @return \DateTime
      */
     public function getCreatedAt(): \DateTime
@@ -463,6 +488,7 @@ class User extends Entity
             'account_created' => $this->getAccountCreated(),
             'online' => $this->getOnline(),
             'locale' => $this->getLocale(),
+            'last_login' => $this->getLastLogin(),
             'created_at' => $this->getCreatedAt(),
             'updated_at' => $this->getUpdatedAt()
         ];

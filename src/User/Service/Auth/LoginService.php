@@ -15,6 +15,8 @@ use Ares\Framework\Service\TokenService;
 use Ares\User\Entity\User;
 use Ares\User\Exception\LoginException;
 use Ares\User\Repository\UserRepository;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Cache\InvalidArgumentException;
 use ReallySimpleJWT\Exception\ValidateException;
@@ -66,10 +68,12 @@ class LoginService
      *
      * @return CustomResponseInterface
      * @throws BanException
-     * @throws LoginException
-     * @throws ValidateException
-     * @throws PhpfastcacheSimpleCacheException
      * @throws InvalidArgumentException
+     * @throws LoginException
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws ValidateException
+     * @throws ORMException
+     * @throws OptimisticLockException
      */
     public function login(string $username, string $password): CustomResponseInterface
     {
@@ -88,6 +92,11 @@ class LoginService
         if (!is_null($isBanned) && $isBanned->getBanExpire() > time()) {
             throw new BanException(__('general.banned', [$isBanned->getBanReason()]), 401);
         }
+
+        $user->setLastLogin(time());
+
+        /** @var $user $this */
+        $this->userRepository->update($user);
 
         /** @var TokenService $token */
         $token = $this->tokenService->execute($user->getId());
