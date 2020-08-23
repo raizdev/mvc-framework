@@ -210,11 +210,11 @@ class Guild extends Entity
      *
      * @return array
      */
-    public function getArrayCopy(): array
+    public function toArray(): array
     {
         return [
             'id' => $this->getId(),
-            'creator' => $this->getCreator()->getArrayCopy(),
+            'creator' => $this->getCreator()->toArray(),
             'name' => $this->getName(),
             'description' => $this->getDescription(),
             'badge' => $this->getBadge(),

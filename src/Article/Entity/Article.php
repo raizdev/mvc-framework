@@ -296,7 +296,7 @@ class Article extends Entity
      *
      * @return array
      */
-    public function getArrayCopy(): array
+    public function toArray(): array
     {
         return [
             'id' => $this->getId(),
@@ -305,7 +305,7 @@ class Article extends Entity
             'description' => $this->getDescription(),
             'content' => $this->getContent(),
             'image' => $this->getImage(),
-            'author' => $this->getAuthor()->getArrayCopy(),
+            'author' => $this->getAuthor()->toArray(),
             'hidden' => $this->getHidden(),
             'pinned' => $this->getPinned(),
             'created_at' => $this->getCreatedAt(),

@@ -61,7 +61,7 @@ class UserController extends BaseController
     {
         /** @var User $user */
         $user = $this->getUser($this->userRepository, $request, false)
-            ->getArrayCopy();
+            ->toArray();
 
         return $this->respond(
             $response,
@@ -118,7 +118,7 @@ class UserController extends BaseController
 
         return $this->respond(
             $response,
-            response()->setData($user->getArrayCopy())
+            response()->setData($user->toArray())
         );
     }
 }

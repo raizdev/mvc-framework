@@ -158,11 +158,11 @@ class GuildMember extends Entity
      *
      * @return array
      */
-    public function getArrayCopy(): array
+    public function toArray(): array
     {
         return [
             'id' => $this->getId(),
-            'member' => $this->getMember()->getArrayCopy(),
+            'member' => $this->getMember()->toArray(),
             'level_id' => $this->getLevelId(),
             'member_since' => $this->getMemberSince()
         ];

@@ -141,6 +141,7 @@ class AuthController extends BaseController
             'username' => 'required|min:3',
             'mail' => 'required|email|min:9',
             'look' => 'required',
+            'gender' => 'default:M|required|regex:/[M.F]/',
             'password' => 'required|min:6',
             'password_confirmation' => 'required|same:password'
         ]);

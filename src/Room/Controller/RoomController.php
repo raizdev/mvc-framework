@@ -73,7 +73,7 @@ class RoomController extends BaseController
 
         return $this->respond(
             $response,
-            response()->setData($room->getArrayCopy())
+            response()->setData($room->toArray())
         );
     }
 
@@ -109,7 +109,7 @@ class RoomController extends BaseController
         /** @var PaginatedArrayCollection $list */
         $list = [];
         foreach ($rooms as $room) {
-            $list[] = $room->getArrayCopy();
+            $list[] = $room->toArray();
         }
 
         return $this->respond(

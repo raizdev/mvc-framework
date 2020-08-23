@@ -128,7 +128,7 @@ class UserCurrency extends Entity
      *
      * @return array
      */
-    public function getArrayCopy(): array
+    public function toArray(): array
     {
         return [
             'id' => $this->getId(),

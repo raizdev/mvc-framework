@@ -50,6 +50,11 @@ class User extends Entity
     private string $look;
 
     /**
+     * @ORM\Column(type="string", length=10)
+     */
+    private string $gender;
+
+    /**
      * @ORM\Column(type="string", length=35)
      */
     private ?string $motto;
@@ -205,6 +210,26 @@ class User extends Entity
     public function setLook(string $look): self
     {
         $this->look = $look;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGender(): string
+    {
+        return $this->gender;
+    }
+
+    /**
+     * @param string $gender
+     *
+     * @return User
+     */
+    public function setGender(string $gender): self
+    {
+        $this->gender = $gender;
 
         return $this;
     }
@@ -475,7 +500,7 @@ class User extends Entity
      *
      * @return array
      */
-    public function getArrayCopy(): array
+    public function toArray(): array
     {
         return [
             'id' => $this->getId(),

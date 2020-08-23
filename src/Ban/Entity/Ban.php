@@ -183,11 +183,11 @@ class Ban extends Entity
      *
      * @return array
      */
-    public function getArrayCopy(): array
+    public function toArray(): array
     {
         return [
             'id' => $this->getId(),
-            'user' => $this->getUser()->getArrayCopy(),
+            'user' => $this->getUser()->toArray(),
             'staff' => $this->getStaff()->getUsername(),
             'timestamp' => $this->getTimestamp(),
             'ban_expire' => $this->getBanExpire(),

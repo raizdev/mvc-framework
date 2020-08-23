@@ -91,6 +91,10 @@ class RegisterService
             throw new RegisterException(__('register.already.exists'), 422);
         }
 
+        if ($data['gender'] !== "M" && $data['gender'] !== "F") {
+            throw new RegisterException(__('The gender must be valid'), 422);
+        }
+
         /** @var array $boyLooks */
         $boyLooks = $this->config->get('hotel_settings.register.looks.boy');
 
@@ -134,6 +138,7 @@ class RegisterService
             )
             ->setMail($data['mail'])
             ->setLook($data['look'])
+            ->setGender($data['gender'])
             ->setCredits($this->config->get('hotel_settings.start_credits'))
             ->setPoints($this->config->get('hotel_settings.start_points'))
             ->setPixels($this->config->get('hotel_settings.start_pixels'))

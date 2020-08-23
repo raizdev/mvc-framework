@@ -97,13 +97,13 @@ class GuildController extends BaseController
                 'users' => $guild->getRoom()->getUsers(),
                 'users_max' => $guild->getRoom()->getUsersMax(),
                 'score' => $guild->getRoom()->getScore(),
-                'creator' => $guild->getRoom()->getOwner()->getArrayCopy()
+                'creator' => $guild->getRoom()->getOwner()->toArray()
             ]
         ];
 
         return $this->respond(
             $response,
-            response()->setData(array_merge($guild->getArrayCopy(), $guildRoom))
+            response()->setData(array_merge($guild->toArray(), $guildRoom))
         );
     }
 
@@ -147,10 +147,10 @@ class GuildController extends BaseController
                     'users' => $guild->getRoom()->getUsers(),
                     'users_max' => $guild->getRoom()->getUsersMax(),
                     'score' => $guild->getRoom()->getScore(),
-                    'creator' => $guild->getRoom()->getOwner()->getArrayCopy()
+                    'creator' => $guild->getRoom()->getOwner()->toArray()
                 ]
             ];
-            $list[] = array_merge($guild->getArrayCopy(), $guildRoom);
+            $list[] = array_merge($guild->toArray(), $guildRoom);
         }
 
         return $this->respond(
@@ -195,7 +195,7 @@ class GuildController extends BaseController
         /** @var PaginatedArrayCollection $list */
         $list = [];
         foreach ($members as $member) {
-            $list[] = $member->getArrayCopy();
+            $list[] = $member->toArray();
         }
 
         return $this->respond(

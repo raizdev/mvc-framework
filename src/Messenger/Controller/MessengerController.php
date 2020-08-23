@@ -94,7 +94,7 @@ class MessengerController extends BaseController
         foreach ($friends as $friend) {
             $list[] = $friend
                 ->getFriend()
-                ->getArrayCopy();
+                ->toArray();
         }
 
         return $this->respond(

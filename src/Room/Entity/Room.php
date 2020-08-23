@@ -270,17 +270,17 @@ class Room extends Entity
      *
      * @return array
      */
-    public function getArrayCopy(): array
+    public function toArray(): array
     {
         return [
             'id' => $this->getId(),
-            'owner' => $this->getOwner()->getArrayCopy(),
+            'owner' => $this->getOwner()->toArray(),
             'name' => $this->getName(),
             'description' => $this->getDescription(),
             'state' => $this->getState(),
             'users' => $this->getUsers(),
             'users_max' => $this->getUsersMax(),
-            'guild' => (is_null($this->getGuild()) ? $this->getGuild() : $this->getGuild()->getArrayCopy()),
+            'guild' => (is_null($this->getGuild()) ? $this->getGuild() : $this->getGuild()->toArray()),
             'score' => $this->getScore()
         ];
     }

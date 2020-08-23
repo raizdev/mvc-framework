@@ -85,7 +85,7 @@ class ArticleController extends BaseController
 
         return $this->respond(
             $response,
-            response()->setData($article->getArrayCopy())
+            response()->setData($article->toArray())
         );
     }
 
@@ -114,7 +114,7 @@ class ArticleController extends BaseController
         /** @var ArrayCollection $list */
         $list = [];
         foreach ($pinnedArticles as $pinnedArticle) {
-            $list[] = $pinnedArticle->getArrayCopy();
+            $list[] = $pinnedArticle->toArray();
         }
 
         return $this->respond(
@@ -155,7 +155,7 @@ class ArticleController extends BaseController
         /** @var PaginatedArrayCollection $list */
         $list = [];
         foreach ($articles as $article) {
-            $list[] = $article->getArrayCopy();
+            $list[] = $article->toArray();
         }
 
         return $this->respond(
