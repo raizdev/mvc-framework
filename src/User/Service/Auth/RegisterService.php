@@ -91,23 +91,7 @@ class RegisterService
             throw new RegisterException(__('register.already.exists'), 422);
         }
 
-        if ($data['gender'] !== "M" && $data['gender'] !== "F") {
-            throw new RegisterException(__('The gender must be valid'), 422);
-        }
-
-        /** @var array $boyLooks */
-        $boyLooks = $this->config->get('hotel_settings.register.looks.boy');
-
-        /** @var array $girlLooks */
-        $girlLooks = $this->config->get('hotel_settings.register.looks.girl');
-
-        if (array_key_exists($data['look'], $boyLooks)) {
-            $data['look'] = $this->config->get('hotel_settings.register.looks.boy.' . $data['look']);
-        } else if (array_key_exists($data['look'], $girlLooks)) {
-            $data['look'] = $this->config->get('hotel_settings.register.looks.girl.' . $data['look']);
-        } else {
-            $data['look'] = $this->config->get('hotel_settings.register.looks.fallback_look');
-        }
+        $data = $this->determineLook($data);
 
         /** @var User $user */
         $user = $this->userRepository->save($this->getNewUser($data));
@@ -149,5 +133,34 @@ class RegisterService
             ->setLastLogin(time())
             ->setOnline(1)
             ->setTicket($this->ticketService->hash($user));
+    }
+
+    /**
+     * @param $data
+     *
+     * @return array
+     * @throws RegisterException
+     */
+    private function determineLook($data): array
+    {
+        /** @var array $boyLooks */
+        $boyLooks = $this->config->get('hotel_settings.register.looks.boy');
+
+        /** @var array $girlLooks */
+        $girlLooks = $this->config->get('hotel_settings.register.looks.girl');
+
+        if ($data['gender'] !== "M" && $data['gender'] !== "F") {
+            throw new RegisterException(__('The gender must be valid'), 422);
+        }
+
+        if (array_key_exists($data['look'], $boyLooks)) {
+            $data['look'] = $this->config->get('hotel_settings.register.looks.boy.' . $data['look']);
+        } else if (array_key_exists($data['look'], $girlLooks)) {
+            $data['look'] = $this->config->get('hotel_settings.register.looks.girl.' . $data['look']);
+        } else {
+            $data['look'] = $this->config->get('hotel_settings.register.looks.fallback_look');
+        }
+
+        return $data;
     }
 }
