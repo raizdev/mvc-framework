@@ -145,14 +145,19 @@ class RegisterService
     private function determineLook($data): array
     {
         /** @var array $boyLooks */
-        $looks = $this->config->get('hotel_settings.register.looks');
+        $boyLooks = $this->config->get('hotel_settings.register.looks.boy');
+
+        /** @var array $girlLooks */
+        $girlLooks = $this->config->get('hotel_settings.register.looks.girl');
+
+        /** @var array $looks */
+        $looks = array_merge($boyLooks, $girlLooks);
 
         if ($data['gender'] !== "M" && $data['gender'] !== "F") {
             throw new RegisterException(__('The gender must be valid'), 422);
         }
 
         if (!in_array($data['look'], $looks)) {
-            /** @var array $data */
             $data['look'] = $this->config->get('hotel_settings.register.looks.fallback_look');
         }
 
