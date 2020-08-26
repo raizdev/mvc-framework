@@ -91,6 +91,7 @@ class RegisterService
             throw new RegisterException(__('register.already.exists'), 422);
         }
 
+        /** @var array $data */
         $data = $this->determineLook($data);
 
         /** @var User $user */
