@@ -138,7 +138,7 @@ class AuthController extends BaseController
         $parsedData = $request->getParsedBody();
 
         $this->validationService->validate($parsedData, [
-            'username' => 'required|min:3',
+            'username' => 'required|min:3|max:12',
             'mail' => 'required|email|min:9',
             'look' => 'required',
             'gender' => 'default:M|required|regex:/[M.F]/',
