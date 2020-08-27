@@ -91,6 +91,8 @@ class RegisterService
             throw new RegisterException(__('register.already.exists'), 422);
         }
 
+        $this->isEligible($data);
+
         /** @var array $data */
         $data = $this->determineLook($data);
 
@@ -134,6 +136,26 @@ class RegisterService
             ->setLastLogin(time())
             ->setOnline(1)
             ->setTicket($this->ticketService->hash($user));
+    }
+
+    /**
+     * @param $data
+     *
+     * @return bool
+     * @throws RegisterException
+     */
+    private function isEligible($data): bool
+    {
+        $maxAccountsPerIp = $this->config->get('hotel_settings.register.max_accounts_per_ip');
+        $accountExistence = $this->userRepository->count([
+            'ip_register' => $data['ip_register']
+        ]);
+
+        if ($accountExistence >= $maxAccountsPerIp) {
+           throw new RegisterException(__('You can only have %s Accounts', [$maxAccountsPerIp]));
+        }
+
+        return true;
     }
 
     /**
