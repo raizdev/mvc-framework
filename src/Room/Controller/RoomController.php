@@ -117,4 +117,28 @@ class RoomController extends BaseController
             response()->setData($list)
         );
     }
+
+    /**
+     * @param Request  $request
+     * @param Response $response
+     *
+     * @return Response
+     * @throws RoomException
+     */
+    public function mostVisited(Request $request, Response $response)
+    {
+        /** @var Room $room */
+        $room = $this->roomRepository->findOneBy([], [
+            'users' => 'DESC'
+        ]);
+
+        if (is_null($room)) {
+            throw new RoomException(__('No Room found'), 404);
+        }
+
+        return $this->respond(
+            $response,
+            response()->setData($room->toArray())
+        );
+    }
 }

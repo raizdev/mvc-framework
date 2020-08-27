@@ -203,4 +203,28 @@ class GuildController extends BaseController
             response()->setData($list)
         );
     }
+
+    /**
+     * @TODO count most members and return the Group
+     *
+     * @param Request  $request
+     * @param Response $response
+     *
+     * @return Response
+     * @throws GuildException
+     */
+    public function mostMembers(Request $request, Response $response): Response
+    {
+        /** @var Guild $guild */
+        $guild = $this->guildMemberRepository->countBy();
+
+        if (is_null($guild)) {
+            throw new GuildException(__('No Group found'), 404);
+        }
+
+        return $this->respond(
+            $response,
+            response()->setData($guild)
+        );
+    }
 }

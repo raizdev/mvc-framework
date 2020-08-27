@@ -40,6 +40,7 @@ return function (App $app) {
                 $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Guild\Controller\GuildController::class . ':list');
                 $group->get('/{id:[0-9]+}', \Ares\Guild\Controller\GuildController::class . ':guild');
                 $group->get('/members/{id:[0-9]+}/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Guild\Controller\GuildController::class . ':members');
+                $group->get('/most/members', \Ares\Guild\Controller\GuildController::class . ':mostMembers');
             });
 
             // Friends
@@ -52,6 +53,7 @@ return function (App $app) {
             $group->group('/rooms', function ($group) {
                 $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Room\Controller\RoomController::class . ':list');
                 $group->get('/{id:[0-9]+}', \Ares\Room\Controller\RoomController::class . ':room');
+                $group->get('/most/visited', \Ares\Room\Controller\RoomController::class . ':mostVisited');
             });
 
             // De-Authentication
