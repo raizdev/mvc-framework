@@ -67,7 +67,7 @@ class RegisterService
     }
 
     /**
-     * Register a user.
+     * Registers a new User.
      *
      * @param array $data
      *
@@ -146,6 +146,7 @@ class RegisterService
      */
     private function isEligible($data): bool
     {
+        /** @var int $maxAccountsPerIp */
         $maxAccountsPerIp = $this->config->get('hotel_settings.register.max_accounts_per_ip');
         $accountExistence = $this->userRepository->count([
             'ip_register' => $data['ip_register']

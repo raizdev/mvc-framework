@@ -87,7 +87,7 @@ class LoginService
         /** @var Ban $isBanned */
         $isBanned = $this->banRepository->getBy([
             'user' => $user->getId()
-        ], ['id' => 'DESC']);
+        ]);
 
         if (!is_null($isBanned) && $isBanned->getBanExpire() > time()) {
             throw new BanException(__('general.banned', [$isBanned->getBanReason()]), 401);
