@@ -17,7 +17,7 @@ return function (App $app) {
     // Status
     $app->get('/', \Ares\Framework\Controller\Status\StatusController::class . ':getStatus');
 
-    $app->group('/api/{locale}', function (RouteCollectorProxy $group) {
+    $app->group('/{locale}', function (RouteCollectorProxy $group) {
 
         // Only Accessible if LoggedIn
         $group->group('', function ($group) {
@@ -63,6 +63,13 @@ return function (App $app) {
         $group->group('/register', function ($group) {
             $group->post('', \Ares\User\Controller\AuthController::class . ':register');
             $group->get('/looks', \Ares\User\Controller\AuthController::class . ':viableLooks');
+        });
+
+        // Global Settings
+        $group->group('/settings', function ($group) {
+            $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Settings\Controller\SettingsController::class . ':list');
+            $group->post('/get', \Ares\Settings\Controller\SettingsController::class . ':get');
+            $group->post('/set', \Ares\Settings\Controller\SettingsController::class . ':set');
         });
 
         // Global Routes
