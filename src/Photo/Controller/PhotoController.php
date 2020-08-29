@@ -45,6 +45,7 @@ class PhotoController extends BaseController
      * @var ValidationService
      */
     private ValidationService $validationService;
+
     /**
      * @var UserRepository
      */
