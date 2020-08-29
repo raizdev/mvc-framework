@@ -14,8 +14,6 @@ use Ares\Guild\Entity\GuildMember;
 use Ares\Guild\Exception\GuildException;
 use Ares\Guild\Repository\GuildMemberRepository;
 use Ares\Guild\Repository\GuildRepository;
-use Ares\Room\Entity\Room;
-use Jhg\DoctrinePagination\Collection\PaginatedArrayCollection;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface as Response;

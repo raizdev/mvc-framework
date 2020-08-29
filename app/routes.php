@@ -55,6 +55,14 @@ return function (App $app) {
                 $group->get('/most/visited', \Ares\Room\Controller\RoomController::class . ':mostVisited');
             });
 
+            // Photos
+            $group->group('/photos', function ($group) {
+                $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Photo\Controller\PhotoController::class . ':list');
+                $group->get('/{id:[0-9]+}', \Ares\Photo\Controller\PhotoController::class . ':photo');
+                $group->post('/search', \Ares\Photo\Controller\PhotoController::class . ':search');
+                $group->delete('/{id:[0-9]+}', \Ares\Photo\Controller\PhotoController::class . ':delete');
+            });
+
             // De-Authentication
             $group->post('/logout', \Ares\User\Controller\AuthController::class . ':logout');
         })->add(\Ares\Framework\Middleware\AuthMiddleware::class);
