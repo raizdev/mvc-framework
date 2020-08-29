@@ -9,7 +9,6 @@ namespace Ares\Guild\Repository;
 
 use Ares\Framework\Interfaces\SearchCriteriaInterface;
 use Ares\Framework\Repository\BaseRepository;
-use Ares\Guild\Entity\Guild;
 use Ares\Guild\Entity\GuildMember;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -76,6 +75,27 @@ class GuildMemberRepository extends BaseRepository
         $this->cacheService->set(self::CACHE_COLLECTION_PREFIX . $model->getId(), serialize($model));
 
         return $model;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMemberCountByGuild(): array
+    {
+        return $this->getEntityManager()->createQueryBuilder()
+            ->select('g.id, count(m.guild) as member')
+            ->from('Ares\Guild\Entity\Guild', 'g')
+            ->leftJoin(
+                'Ares\Guild\Entity\GuildMember',
+                'm',
+                \Doctrine\ORM\Query\Expr\Join::WITH,
+                'g.id = m.guild'
+            )
+            ->groupBy('g.id')
+            ->orderBy('member', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getResult();
     }
 
     /**
