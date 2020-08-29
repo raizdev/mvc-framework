@@ -9,9 +9,9 @@ namespace Ares\Article\Entity;
 
 use Ares\Framework\Entity\Entity;
 use Ares\User\Entity\User;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\OneToOne;
 
@@ -65,7 +65,7 @@ class Article extends Entity
     private ?User $author;
 
     /**
-     * @OneToMany(targetEntity="\Ares\Article\Entity\Comment", mappedBy="article")
+     * @OneToMany(targetEntity="\Ares\Article\Entity\Comment", mappedBy="article", fetch="EAGER")
      */
     private ?Collection $comments;
 
@@ -88,6 +88,11 @@ class Article extends Entity
      * @ORM\Column(type="datetime", nullable = true)
      */
     protected \DateTime $updated_at;
+
+    public function __construct()
+    {
+        $this->comments = new ArrayCollection();
+    }
 
     /**
      * Get Article id
@@ -334,7 +339,7 @@ class Article extends Entity
             'content' => $this->getContent(),
             'image' => $this->getImage(),
             'author' => $this->getAuthor()->getArrayCopy(),
-            'comments' => $this->getComments()->getValues(),
+            'comments' => $this->getComments(),
             'hidden' => $this->getHidden(),
             'pinned' => $this->getPinned(),
             'created_at' => $this->getCreatedAt(),

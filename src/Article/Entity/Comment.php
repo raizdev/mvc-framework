@@ -9,8 +9,8 @@ namespace Ares\Article\Entity;
 
 use Ares\User\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
-use Doctrine\ORM\Mapping\OneToMany;
 
 /**
  * Class Article
@@ -48,7 +48,7 @@ class Comment
 
     /**
      * @ManyToOne(targetEntity="\Ares\Article\Entity\Article", inversedBy="comments", fetch="EAGER")
-     * @ORM\JoinColumn(name="article_id", referencedColumnName="id")
+     * @JoinColumn(name="article_id", referencedColumnName="id")
      */
     private ?Article $article;
 
@@ -143,19 +143,19 @@ class Comment
     }
 
     /**
-     * @return \Ares\Article\Entity\Article|null
+     * @return Article|null
      */
-    public function getArticle(): ?\Ares\Article\Entity\Article
+    public function getArticle(): ?Article
     {
         return $this->article;
     }
 
     /**
-     * @param \Ares\Article\Entity\Article|null $article
+     * @param Article|null $article
      *
      * @return Comment
      */
-    public function setArticle(?\Ares\Article\Entity\Article $article): self
+    public function setArticle(?Article $article): self
     {
         $this->article = $article;
 
