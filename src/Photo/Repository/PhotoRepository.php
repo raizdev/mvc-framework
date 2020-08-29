@@ -1,4 +1,9 @@
 <?php
+/**
+ * Ares (https://ares.to)
+ *
+ * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ */
 
 namespace Ares\Photo\Repository;
 
@@ -9,8 +14,12 @@ use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Jhg\DoctrinePagination\Collection\PaginatedArrayCollection;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\SimpleCache\InvalidArgumentException;
 
+/**
+ * Class PhotoRepository
+ *
+ * @package Ares\Photo\Repository
+ */
 class PhotoRepository extends BaseRepository
 {
     /** @var string */

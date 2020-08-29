@@ -8,7 +8,6 @@
 namespace Ares\Photo\Entity;
 
 use Ares\Framework\Entity\Entity;
-use Ares\Room\Entity\Room;
 use Ares\User\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinColumn;
