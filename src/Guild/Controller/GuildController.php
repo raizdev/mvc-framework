@@ -92,7 +92,10 @@ class GuildController extends BaseController
 
         return $this->respond(
             $response,
-            response()->setData($guild)
+            response()->setData([
+                'guild' => $guild,
+                'member_count' => $memberCount
+            ])
         );
     }
 

@@ -107,7 +107,7 @@ class ArticleController extends BaseController
         /** @var ArrayCollection $pinnedArticles */
         $pinnedArticles = $this->articleRepository->getList($this->searchCriteria);
 
-        if (empty($pinnedArticles)) {
+        if ($pinnedArticles->isEmpty()) {
             throw new ArticleException(__('No Pinned Articles found'));
         }
 

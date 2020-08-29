@@ -126,7 +126,7 @@ class SettingsController extends BaseController
 
         $settings = $this->settingsRepository->paginate($this->searchCriteria, false);
 
-        if (empty($settings)) {
+        if ($settings->isEmpty()) {
             throw new SettingsException(__('No Config Data found'));
         }
 
