@@ -65,7 +65,7 @@ class Article extends Entity
     private ?User $author;
 
     /**
-     * @OneToMany(targetEntity="\Ares\Article\Entity\Comment", mappedBy="article", fetch="EAGER")
+     * @OneToMany(targetEntity="\Ares\Article\Entity\Comment", mappedBy="article", fetch="EAGER", cascade={"persist"})
      */
     private ?Collection $comments;
 
@@ -89,6 +89,9 @@ class Article extends Entity
      */
     protected \DateTime $updated_at;
 
+    /**
+     * Article constructor.
+     */
     public function __construct()
     {
         $this->comments = new ArrayCollection();
@@ -339,7 +342,7 @@ class Article extends Entity
             'content' => $this->getContent(),
             'image' => $this->getImage(),
             'author' => $this->getAuthor(),
-            'comments' => $this->getComments(),
+            'comments' => $this->getComments()->toArray(),
             'hidden' => $this->getHidden(),
             'pinned' => $this->getPinned(),
             'created_at' => $this->getCreatedAt(),

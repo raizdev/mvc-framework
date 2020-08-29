@@ -7,6 +7,7 @@
 
 namespace Ares\Article\Entity;
 
+use Ares\Framework\Entity\Entity;
 use Ares\User\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinColumn;
@@ -22,7 +23,7 @@ use Doctrine\ORM\Mapping\ManyToOne;
  * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
  * @ORM\HasLifecycleCallbacks
  */
-class Comment
+class Comment extends Entity
 {
     /**
      * @ORM\Id
@@ -42,12 +43,22 @@ class Comment
     private int $is_edited;
 
     /**
-     * @ManyToOne(targetEntity="\Ares\User\Entity\User", fetch="EAGER")
+     * @ORM\Column(type="integer")
+     */
+    private int $likes;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private int $dislikes;
+
+    /**
+     * @ManyToOne(targetEntity="\Ares\User\Entity\User", fetch="EAGER", cascade={"persist"})
      */
     private ?User $user;
 
     /**
-     * @ManyToOne(targetEntity="\Ares\Article\Entity\Article", inversedBy="comments", fetch="EAGER")
+     * @ManyToOne(targetEntity="\Ares\Article\Entity\Article", inversedBy="comments", fetch="EAGER", cascade={"persist"})
      * @JoinColumn(name="article_id", referencedColumnName="id")
      */
     private ?Article $article;
@@ -118,6 +129,46 @@ class Comment
     public function setIsEdited(int $is_edited): self
     {
         $this->is_edited = $is_edited;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLikes(): int
+    {
+        return $this->likes;
+    }
+
+    /**
+     * @param int $likes
+     *
+     * @return Comment
+     */
+    public function setLikes(int $likes): self
+    {
+        $this->likes = $likes;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDislikes(): int
+    {
+        return $this->dislikes;
+    }
+
+    /**
+     * @param int $dislikes
+     *
+     * @return Comment
+     */
+    public function setDislikes(int $dislikes): self
+    {
+        $this->dislikes = $dislikes;
 
         return $this;
     }
@@ -227,16 +278,35 @@ class Comment
      *
      * @return array
      */
-    public function getArrayCopy(): array
+    public function jsonSerialize(): array
     {
         return [
             'id' => $this->getId(),
             'content' => $this->getContent(),
             'is_edited' => $this->getIsEdited(),
-            'author' => $this->getUser()->getArrayCopy(),
-            'article' => $this->getArticle()->getArrayCopy(),
+            'author' => $this->getUser(),
             'created_at' => $this->getCreatedAt(),
             'updated_at' => $this->getUpdatedAt()
         ];
+    }
+
+    /**
+     * @return string
+     */
+    public function serialize(): string
+    {
+        return serialize(get_object_vars($this));
+    }
+
+    /**
+     * @param   string  $data
+     */
+    public function unserialize($data): void
+    {
+        $values = unserialize($data);
+
+        foreach ($values as $key => $value) {
+            $this->$key = $value;
+        }
     }
 }

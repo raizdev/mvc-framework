@@ -46,7 +46,7 @@ abstract class BaseController
      *
      * @param bool           $cachedEntity
      *
-     * @return object
+     * @return object|User
      * @throws InvalidArgumentException
      * @throws PhpfastcacheSimpleCacheException
      * @throws UserException
