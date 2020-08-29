@@ -305,7 +305,7 @@ class Article extends Entity
             'description' => $this->getDescription(),
             'content' => $this->getContent(),
             'image' => $this->getImage(),
-            'author' => $this->getAuthor()->toArray(),
+            'author' => $this->getAuthor(),
             'hidden' => $this->getHidden(),
             'pinned' => $this->getPinned(),
             'created_at' => $this->getCreatedAt(),
@@ -316,7 +316,7 @@ class Article extends Entity
     /**
      * @return string
      */
-    public function serialize()
+    public function serialize(): string
     {
         return serialize(get_object_vars($this));
     }
@@ -324,7 +324,7 @@ class Article extends Entity
     /**
      * @param   string  $data
      */
-    public function unserialize($data)
+    public function unserialize($data): void
     {
         $values = unserialize($data);
 

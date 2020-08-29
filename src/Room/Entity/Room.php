@@ -108,7 +108,7 @@ class Room extends Entity
      *
      * @return Room
      */
-    public function setOwner(User $owner): self
+    public function setOwner(?User $owner): self
     {
         $this->owner = $owner;
 
@@ -228,7 +228,7 @@ class Room extends Entity
      *
      * @return Room
      */
-    public function setGuild(Guild $guild): self
+    public function setGuild(?Guild $guild): self
     {
         $this->guild = $guild;
 
@@ -274,13 +274,13 @@ class Room extends Entity
     {
         return [
             'id' => $this->getId(),
-            'owner' => $this->getOwner()->toArray(),
+            'owner' => $this->getOwner(),
             'name' => $this->getName(),
             'description' => $this->getDescription(),
             'state' => $this->getState(),
             'users' => $this->getUsers(),
             'users_max' => $this->getUsersMax(),
-            'guild' => (is_null($this->getGuild()) ? $this->getGuild() : $this->getGuild()->toArray()),
+            'guild' => $this->getGuild(),
             'score' => $this->getScore()
         ];
     }
@@ -288,7 +288,7 @@ class Room extends Entity
     /**
      * @return string
      */
-    public function serialize()
+    public function serialize(): string
     {
         return serialize(get_object_vars($this));
     }
@@ -296,7 +296,7 @@ class Room extends Entity
     /**
      * @param string $data
      */
-    public function unserialize($data)
+    public function unserialize($data): void
     {
         $values = unserialize($data);
 

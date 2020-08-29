@@ -60,8 +60,7 @@ class UserController extends BaseController
     public function user(Request $request, Response $response): Response
     {
         /** @var User $user */
-        $user = $this->getUser($this->userRepository, $request, false)
-            ->toArray();
+        $user = $this->getUser($this->userRepository, $request, false);
 
         return $this->respond(
             $response,
@@ -118,7 +117,7 @@ class UserController extends BaseController
 
         return $this->respond(
             $response,
-            response()->setData($user->toArray())
+            response()->setData($user)
         );
     }
 }

@@ -99,12 +99,14 @@ class SettingsController extends BaseController
             throw new SettingsException(__('Key not found in Config'));
         }
 
-        return $this->respond($response, response()->setData($configData->toArray()));
+        return $this->respond($response, response()->setData($configData));
     }
 
     /**
-     * @param Request  $request
-     * @param Response $response
+     * @param   Request   $request
+     * @param   Response  $response
+     *
+     * @param             $args
      *
      * @return Response
      * @throws InvalidArgumentException
@@ -128,13 +130,7 @@ class SettingsController extends BaseController
             throw new SettingsException(__('No Config Data found'));
         }
 
-        /** @var PaginatedArrayCollection $list */
-        $list = [];
-        foreach ($settings as $setting) {
-            $list[] = $setting->toArray();
-        }
-
-        return $this->respond($response, response()->setData($list));
+        return $this->respond($response, response()->setData($settings->toArray()));
     }
 
     /**

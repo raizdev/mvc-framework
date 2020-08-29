@@ -77,7 +77,7 @@ class ArticleController extends BaseController
         $id = $args['id'];
 
         /** @var Article $article */
-        $article = $this->articleRepository->get($id);
+        $article = $this->articleRepository->get((int)$id);
 
         if (is_null($article)) {
             throw new ArticleException(__('No specific Article found'), 404);
@@ -85,7 +85,7 @@ class ArticleController extends BaseController
 
         return $this->respond(
             $response,
-            response()->setData($article->toArray())
+            response()->setData($article)
         );
     }
 
@@ -104,22 +104,16 @@ class ArticleController extends BaseController
             ->addFilter('pinned', self::IS_PINNED)
             ->addFilter('hidden', self::IS_VISIBLE);
 
-        /** @var array $pinnedArticles */
+        /** @var ArrayCollection $pinnedArticles */
         $pinnedArticles = $this->articleRepository->getList($this->searchCriteria);
 
         if (empty($pinnedArticles)) {
             throw new ArticleException(__('No Pinned Articles found'));
         }
 
-        /** @var ArrayCollection $list */
-        $list = [];
-        foreach ($pinnedArticles as $pinnedArticle) {
-            $list[] = $pinnedArticle->toArray();
-        }
-
         return $this->respond(
             $response,
-            response()->setData($list)
+            response()->setData($pinnedArticles->toArray())
         );
     }
 
@@ -146,21 +140,16 @@ class ArticleController extends BaseController
             ->setLimit((int)$resultPerPage)
             ->addOrder('id', 'DESC');
 
+        /** @var ArrayCollection $pinnedArticles */
         $articles = $this->articleRepository->paginate($this->searchCriteria);
 
         if ($articles->isEmpty()) {
             throw new ArticleException(__('No Articles were found'), 404);
         }
 
-        /** @var PaginatedArrayCollection $list */
-        $list = [];
-        foreach ($articles as $article) {
-            $list[] = $article->toArray();
-        }
-
         return $this->respond(
             $response,
-            response()->setData($list)
+            response()->setData($articles->toArray())
         );
     }
 }

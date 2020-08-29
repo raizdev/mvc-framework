@@ -170,7 +170,7 @@ class MessengerFriendship extends Entity
     /**
      * @return string
      */
-    public function serialize()
+    public function serialize(): string
     {
         return serialize(get_object_vars($this));
     }
@@ -178,7 +178,7 @@ class MessengerFriendship extends Entity
     /**
      * @param string $data
      */
-    public function unserialize($data)
+    public function unserialize($data): void
     {
         $values = unserialize($data);
 

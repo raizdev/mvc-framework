@@ -114,7 +114,7 @@ class Setting extends Entity
     /**
      * @return string
      */
-    public function serialize()
+    public function serialize(): string
     {
         return serialize(get_object_vars($this));
     }
@@ -122,7 +122,7 @@ class Setting extends Entity
     /**
      * @param $data
      */
-    public function unserialize($data)
+    public function unserialize($data): void
     {
         $values = unserialize($data);
 

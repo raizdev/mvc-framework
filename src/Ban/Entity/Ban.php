@@ -187,7 +187,7 @@ class Ban extends Entity
     {
         return [
             'id' => $this->getId(),
-            'user' => $this->getUser()->toArray(),
+            'user' => $this->getUser(),
             'staff' => $this->getStaff()->getUsername(),
             'timestamp' => $this->getTimestamp(),
             'ban_expire' => $this->getBanExpire(),
@@ -198,7 +198,7 @@ class Ban extends Entity
     /**
      * @return string
      */
-    public function serialize()
+    public function serialize(): string
     {
         return serialize(get_object_vars($this));
     }
@@ -206,7 +206,7 @@ class Ban extends Entity
     /**
      * @param $data
      */
-    public function unserialize($data)
+    public function unserialize($data): void
     {
         $values = unserialize($data);
 

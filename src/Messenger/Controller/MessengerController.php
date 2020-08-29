@@ -89,14 +89,6 @@ class MessengerController extends BaseController
             throw new MessengerException(__('You have no friends'), 404);
         }
 
-        /** @var PaginatedArrayCollection $list */
-        $list = [];
-        foreach ($friends as $friend) {
-            $list[] = $friend
-                ->getFriend()
-                ->toArray();
-        }
-
         return $this->respond(
             $response,
             response()->setData([
@@ -105,7 +97,7 @@ class MessengerController extends BaseController
                     'prevPage' => $friends->getPrevPage(),
                     'nextPage' => $friends->getNextPage()
                 ],
-                'friends' => $list
+                'friends' => $friends->toArray()
             ])
         );
     }

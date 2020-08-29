@@ -53,7 +53,7 @@ class Guild extends Entity
      * @OneToOne(targetEntity="\Ares\Room\Entity\Room", fetch="EAGER")
      * @JoinColumn(name="room_id", referencedColumnName="id")
      */
-    private Room $room;
+    private ?Room $room;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -158,7 +158,7 @@ class Guild extends Entity
      *
      * @return Guild
      */
-    public function setRoom(Room $room): self
+    public function setRoom(?Room $room): self
     {
         $this->room = $room;
 
@@ -216,6 +216,7 @@ class Guild extends Entity
             'name' => $this->getName(),
             'description' => $this->getDescription(),
             'badge' => $this->getBadge(),
+            'room' => $this->getRoom(),
             'date_created' => $this->getDateCreated()
         ];
     }

@@ -46,7 +46,6 @@ return function (App $app) {
             // Friends
             $group->group('/friends', function ($group) {
                 $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Messenger\Controller\MessengerController::class . ':friends');
-                $group->post('/search/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Messenger\Controller\MessengerController::class . ':search');
             });
 
             // Rooms

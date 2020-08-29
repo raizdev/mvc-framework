@@ -73,7 +73,7 @@ class RoomController extends BaseController
 
         return $this->respond(
             $response,
-            response()->setData($room->toArray())
+            response()->setData($room)
         );
     }
 
@@ -106,15 +106,9 @@ class RoomController extends BaseController
             throw new RoomException(__('No Rooms were found'), 404);
         }
 
-        /** @var PaginatedArrayCollection $list */
-        $list = [];
-        foreach ($rooms as $room) {
-            $list[] = $room->toArray();
-        }
-
         return $this->respond(
             $response,
-            response()->setData($list)
+            response()->setData($rooms->toArray())
         );
     }
 
@@ -136,9 +130,11 @@ class RoomController extends BaseController
             throw new RoomException(__('No Room found'), 404);
         }
 
+        $room->getGuild()->setRoom(null);
+
         return $this->respond(
             $response,
-            response()->setData($room->toArray())
+            response()->setData($room)
         );
     }
 }
