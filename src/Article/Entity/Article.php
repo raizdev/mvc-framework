@@ -296,7 +296,7 @@ class Article extends Entity
      *
      * @return array
      */
-    public function toArray(): array
+    public function jsonSerialize(): array
     {
         return [
             'id' => $this->getId(),

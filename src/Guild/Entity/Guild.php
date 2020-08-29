@@ -206,15 +206,13 @@ class Guild extends Entity
     }
 
     /**
-     * Returns a copy of the current Entity safely
-     *
-     * @return array
+     * @return array|mixed
      */
-    public function toArray(): array
+    public function jsonSerialize(): array
     {
         return [
             'id' => $this->getId(),
-            'creator' => $this->getCreator()->toArray(),
+            'creator' => $this->getCreator(),
             'name' => $this->getName(),
             'description' => $this->getDescription(),
             'badge' => $this->getBadge(),
@@ -225,7 +223,7 @@ class Guild extends Entity
     /**
      * @return string
      */
-    public function serialize()
+    public function serialize(): string
     {
         return serialize(get_object_vars($this));
     }
@@ -233,7 +231,7 @@ class Guild extends Entity
     /**
      * @param   string  $data
      */
-    public function unserialize($data)
+    public function unserialize($data): void
     {
         $values = unserialize($data);
 

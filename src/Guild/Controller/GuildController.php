@@ -136,26 +136,9 @@ class GuildController extends BaseController
             throw new GuildException(__('No Guilds were found'), 404);
         }
 
-        /** @var PaginatedArrayCollection $list */
-        $list = [];
-        foreach ($guilds as $guild) {
-            $guildRoom = [
-                'room' => [
-                    'name' => $guild->getRoom()->getName(),
-                    'description' => $guild->getRoom()->getDescription(),
-                    'state' => $guild->getRoom()->getState(),
-                    'users' => $guild->getRoom()->getUsers(),
-                    'users_max' => $guild->getRoom()->getUsersMax(),
-                    'score' => $guild->getRoom()->getScore(),
-                    'creator' => $guild->getRoom()->getOwner()->toArray()
-                ]
-            ];
-            $list[] = array_merge($guild->toArray(), $guildRoom);
-        }
-
         return $this->respond(
             $response,
-            response()->setData($list)
+            response()->setData($guilds->toArray())
         );
     }
 

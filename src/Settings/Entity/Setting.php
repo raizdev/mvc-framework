@@ -103,7 +103,7 @@ class Setting extends Entity
      *
      * @return array
      */
-    public function toArray(): array
+    public function jsonSerialize(): array
     {
         return [
             'key' => $this->getKey(),
