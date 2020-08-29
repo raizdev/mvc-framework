@@ -17,7 +17,7 @@ return function (App $app) {
     // Status
     $app->get('/', \Ares\Framework\Controller\Status\StatusController::class . ':getStatus');
 
-    $app->group('/api/{locale}', function (RouteCollectorProxy $group) {
+    $app->group('/{locale}', function (RouteCollectorProxy $group) {
 
         // Only Accessible if LoggedIn
         $group->group('', function ($group) {
@@ -40,18 +40,19 @@ return function (App $app) {
                 $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Guild\Controller\GuildController::class . ':list');
                 $group->get('/{id:[0-9]+}', \Ares\Guild\Controller\GuildController::class . ':guild');
                 $group->get('/members/{id:[0-9]+}/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Guild\Controller\GuildController::class . ':members');
+                $group->get('/most/members', \Ares\Guild\Controller\GuildController::class . ':mostMembers');
             });
 
             // Friends
             $group->group('/friends', function ($group) {
                 $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Messenger\Controller\MessengerController::class . ':friends');
-                $group->post('/search/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Messenger\Controller\MessengerController::class . ':search');
             });
 
             // Rooms
             $group->group('/rooms', function ($group) {
                 $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Room\Controller\RoomController::class . ':list');
                 $group->get('/{id:[0-9]+}', \Ares\Room\Controller\RoomController::class . ':room');
+                $group->get('/most/visited', \Ares\Room\Controller\RoomController::class . ':mostVisited');
             });
 
             // De-Authentication
@@ -62,7 +63,14 @@ return function (App $app) {
         $group->post('/login', \Ares\User\Controller\AuthController::class . ':login');
         $group->group('/register', function ($group) {
             $group->post('', \Ares\User\Controller\AuthController::class . ':register');
-            $group->post('/check', \Ares\User\Controller\AuthController::class . ':check');
+            $group->get('/looks', \Ares\User\Controller\AuthController::class . ':viableLooks');
+        });
+
+        // Global Settings
+        $group->group('/settings', function ($group) {
+            $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Settings\Controller\SettingsController::class . ':list');
+            $group->post('/get', \Ares\Settings\Controller\SettingsController::class . ':get');
+            $group->post('/set', \Ares\Settings\Controller\SettingsController::class . ':set');
         });
 
         // Global Routes

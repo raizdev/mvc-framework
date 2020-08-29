@@ -53,7 +53,7 @@ class Guild extends Entity
      * @OneToOne(targetEntity="\Ares\Room\Entity\Room", fetch="EAGER")
      * @JoinColumn(name="room_id", referencedColumnName="id")
      */
-    private Room $room;
+    private ?Room $room;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -158,7 +158,7 @@ class Guild extends Entity
      *
      * @return Guild
      */
-    public function setRoom(Room $room): self
+    public function setRoom(?Room $room): self
     {
         $this->room = $room;
 
@@ -206,18 +206,17 @@ class Guild extends Entity
     }
 
     /**
-     * Returns a copy of the current Entity safely
-     *
-     * @return array
+     * @return array|mixed
      */
-    public function getArrayCopy(): array
+    public function jsonSerialize(): array
     {
         return [
             'id' => $this->getId(),
-            'creator' => $this->getCreator()->getArrayCopy(),
+            'creator' => $this->getCreator(),
             'name' => $this->getName(),
             'description' => $this->getDescription(),
             'badge' => $this->getBadge(),
+            'room' => $this->getRoom(),
             'date_created' => $this->getDateCreated()
         ];
     }
@@ -225,7 +224,7 @@ class Guild extends Entity
     /**
      * @return string
      */
-    public function serialize()
+    public function serialize(): string
     {
         return serialize(get_object_vars($this));
     }
@@ -233,7 +232,7 @@ class Guild extends Entity
     /**
      * @param   string  $data
      */
-    public function unserialize($data)
+    public function unserialize($data): void
     {
         $values = unserialize($data);
 

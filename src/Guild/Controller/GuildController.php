@@ -87,23 +87,15 @@ class GuildController extends BaseController
             throw new GuildException(__('No specific Guild found'));
         }
 
-        /** @var Room $guildRoom */
-        $guildRoom = [
-            'member_count' => $memberCount,
-            'room' => [
-                'name' => $guild->getRoom()->getName(),
-                'description' => $guild->getRoom()->getDescription(),
-                'state' => $guild->getRoom()->getState(),
-                'users' => $guild->getRoom()->getUsers(),
-                'users_max' => $guild->getRoom()->getUsersMax(),
-                'score' => $guild->getRoom()->getScore(),
-                'creator' => $guild->getRoom()->getOwner()->getArrayCopy()
-            ]
-        ];
+        $guild->getRoom()->setGuild(null);
+        $guild->getRoom()->setOwner(null);
 
         return $this->respond(
             $response,
-            response()->setData(array_merge($guild->getArrayCopy(), $guildRoom))
+            response()->setData([
+                'guild' => $guild,
+                'member_count' => $memberCount
+            ])
         );
     }
 
@@ -136,26 +128,9 @@ class GuildController extends BaseController
             throw new GuildException(__('No Guilds were found'), 404);
         }
 
-        /** @var PaginatedArrayCollection $list */
-        $list = [];
-        foreach ($guilds as $guild) {
-            $guildRoom = [
-                'room' => [
-                    'name' => $guild->getRoom()->getName(),
-                    'description' => $guild->getRoom()->getDescription(),
-                    'state' => $guild->getRoom()->getState(),
-                    'users' => $guild->getRoom()->getUsers(),
-                    'users_max' => $guild->getRoom()->getUsersMax(),
-                    'score' => $guild->getRoom()->getScore(),
-                    'creator' => $guild->getRoom()->getOwner()->getArrayCopy()
-                ]
-            ];
-            $list[] = array_merge($guild->getArrayCopy(), $guildRoom);
-        }
-
         return $this->respond(
             $response,
-            response()->setData($list)
+            response()->setData($guilds->toArray())
         );
     }
 
@@ -192,15 +167,33 @@ class GuildController extends BaseController
             throw new GuildException(__('No Members were found for this Guild'), 404);
         }
 
-        /** @var PaginatedArrayCollection $list */
-        $list = [];
-        foreach ($members as $member) {
-            $list[] = $member->getArrayCopy();
+        return $this->respond(
+            $response,
+            response()->setData($members->toArray())
+        );
+    }
+
+    /**
+     * @TODO count most members and return the Group
+     *
+     * @param Request  $request
+     * @param Response $response
+     *
+     * @return Response
+     * @throws GuildException
+     */
+    public function mostMembers(Request $request, Response $response): Response
+    {
+        /** @var Guild $guild */
+        $guild = $this->guildMemberRepository->countBy();
+
+        if (is_null($guild)) {
+            throw new GuildException(__('No Group found'), 404);
         }
 
         return $this->respond(
             $response,
-            response()->setData($list)
+            response()->setData($guild)
         );
     }
 }

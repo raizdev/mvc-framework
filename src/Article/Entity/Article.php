@@ -329,7 +329,7 @@ class Article extends Entity
      *
      * @return array
      */
-    public function getArrayCopy(): array
+    public function jsonSerialize(): array
     {
         return [
             'id' => $this->getId(),
@@ -338,7 +338,7 @@ class Article extends Entity
             'description' => $this->getDescription(),
             'content' => $this->getContent(),
             'image' => $this->getImage(),
-            'author' => $this->getAuthor()->getArrayCopy(),
+            'author' => $this->getAuthor(),
             'comments' => $this->getComments(),
             'hidden' => $this->getHidden(),
             'pinned' => $this->getPinned(),
@@ -350,7 +350,7 @@ class Article extends Entity
     /**
      * @return string
      */
-    public function serialize()
+    public function serialize(): string
     {
         return serialize(get_object_vars($this));
     }
@@ -358,7 +358,7 @@ class Article extends Entity
     /**
      * @param   string  $data
      */
-    public function unserialize($data)
+    public function unserialize($data): void
     {
         $values = unserialize($data);
 

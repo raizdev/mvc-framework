@@ -158,11 +158,11 @@ class GuildMember extends Entity
      *
      * @return array
      */
-    public function getArrayCopy(): array
+    public function jsonSerialize(): array
     {
         return [
             'id' => $this->getId(),
-            'member' => $this->getMember()->getArrayCopy(),
+            'member' => $this->getMember(),
             'level_id' => $this->getLevelId(),
             'member_since' => $this->getMemberSince()
         ];
@@ -171,7 +171,7 @@ class GuildMember extends Entity
     /**
      * @return string
      */
-    public function serialize()
+    public function serialize(): string
     {
         return serialize(get_object_vars($this));
     }
@@ -179,7 +179,7 @@ class GuildMember extends Entity
     /**
      * @param   string  $data
      */
-    public function unserialize($data)
+    public function unserialize($data): void
     {
         $values = unserialize($data);
 

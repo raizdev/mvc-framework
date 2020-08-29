@@ -60,8 +60,7 @@ class UserController extends BaseController
     public function user(Request $request, Response $response): Response
     {
         /** @var User $user */
-        $user = $this->getUser($this->userRepository, $request)
-            ->getArrayCopy();
+        $user = $this->getUser($this->userRepository, $request, false);
 
         return $this->respond(
             $response,
@@ -111,14 +110,14 @@ class UserController extends BaseController
         $body = $request->getParsedBody();
 
         /** @var User $user */
-        $user = $this->getUser($this->userRepository, $request);
+        $user = $this->getUser($this->userRepository, $request, false);
         $user->setLocale($body['locale']);
 
         $this->userRepository->update($user);
 
         return $this->respond(
             $response,
-            response()->setData($user->getArrayCopy())
+            response()->setData($user)
         );
     }
 }

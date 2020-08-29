@@ -67,7 +67,7 @@ class RegisterService
     }
 
     /**
-     * Register a user.
+     * Registers a new User.
      *
      * @param array $data
      *
@@ -90,6 +90,11 @@ class RegisterService
         if (!is_null($checkUser) || !is_null($checkMail)) {
             throw new RegisterException(__('register.already.exists'), 422);
         }
+
+        $this->isEligible($data);
+
+        /** @var array $data */
+        $data = $this->determineLook($data);
 
         /** @var User $user */
         $user = $this->userRepository->save($this->getNewUser($data));
@@ -119,7 +124,8 @@ class RegisterService
                 PASSWORD_ARGON2ID)
             )
             ->setMail($data['mail'])
-            ->setLook($this->config->get('hotel_settings.start_look'))
+            ->setLook($data['look'])
+            ->setGender($data['gender'])
             ->setCredits($this->config->get('hotel_settings.start_credits'))
             ->setPoints($this->config->get('hotel_settings.start_points'))
             ->setPixels($this->config->get('hotel_settings.start_pixels'))
@@ -127,6 +133,57 @@ class RegisterService
             ->setIPRegister($data['ip_register'])
             ->setCurrentIP($data['ip_current'])
             ->setAccountCreated(time())
+            ->setLastLogin(time())
+            ->setOnline(1)
             ->setTicket($this->ticketService->hash($user));
+    }
+
+    /**
+     * @param $data
+     *
+     * @return bool
+     * @throws RegisterException
+     */
+    private function isEligible($data): bool
+    {
+        /** @var int $maxAccountsPerIp */
+        $maxAccountsPerIp = $this->config->get('hotel_settings.register.max_accounts_per_ip');
+        $accountExistence = $this->userRepository->count([
+            'ip_register' => $data['ip_register']
+        ]);
+
+        if ($accountExistence >= $maxAccountsPerIp) {
+           throw new RegisterException(__('You can only have %s Accounts', [$maxAccountsPerIp]));
+        }
+
+        return true;
+    }
+
+    /**
+     * @param $data
+     *
+     * @return array
+     * @throws RegisterException
+     */
+    private function determineLook($data): array
+    {
+        /** @var array $boyLooks */
+        $boyLooks = $this->config->get('hotel_settings.register.looks.boy');
+
+        /** @var array $girlLooks */
+        $girlLooks = $this->config->get('hotel_settings.register.looks.girl');
+
+        /** @var array $looks */
+        $looks = array_merge($boyLooks, $girlLooks);
+
+        if ($data['gender'] !== "M" && $data['gender'] !== "F") {
+            throw new RegisterException(__('The gender must be valid'), 422);
+        }
+
+        if (!in_array($data['look'], $looks)) {
+            $data['look'] = $this->config->get('hotel_settings.register.looks.fallback_look');
+        }
+
+        return $data;
     }
 }

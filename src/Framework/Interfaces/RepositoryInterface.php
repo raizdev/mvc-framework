@@ -19,17 +19,21 @@ interface RepositoryInterface
     /**
      * Get object by id.
      *
-     * @param int $id
+     * @param int  $id
+     * @param bool $cachedEntity
+     *
      * @return object|null
      */
-    public function get(int $id);
+    public function get(int $id, bool $cachedEntity = true);
 
     /**
      * @param SearchCriteria $searchCriteria
      *
+     * @param bool           $cachedEntity
+     *
      * @return mixed
      */
-    public function getList(SearchCriteria $searchCriteria);
+    public function getList(SearchCriteria $searchCriteria, bool $cachedEntity = true);
 
     /**
      * Save object.
@@ -50,9 +54,11 @@ interface RepositoryInterface
     /**
      * @param SearchCriteria $searchCriteria
      *
+     * @param bool           $cachedEntity
+     *
      * @return mixed
      */
-    public function paginate(SearchCriteria $searchCriteria);
+    public function paginate(SearchCriteria $searchCriteria, bool $cachedEntity = true);
 
     /**
      * Delete object by id.

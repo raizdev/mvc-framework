@@ -7,11 +7,13 @@
 
 namespace Ares\Framework\Entity;
 
+use JsonSerializable;
+
 /**
  * Class Entity
  *
  * @package Ares\Framework\Entity
  */
-abstract class Entity implements \Serializable
+abstract class Entity implements \Serializable, JsonSerializable
 {
 }

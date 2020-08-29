@@ -5,11 +5,11 @@
  * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
  */
 
-namespace Ares\Room\Repository;
+namespace Ares\Settings\Repository;
 
 use Ares\Framework\Interfaces\SearchCriteriaInterface;
 use Ares\Framework\Repository\BaseRepository;
-use Ares\Room\Entity\Room;
+use Ares\Settings\Entity\Setting;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Jhg\DoctrinePagination\Collection\PaginatedArrayCollection;
@@ -17,20 +17,20 @@ use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Cache\InvalidArgumentException;
 
 /**
- * Class RoomRepository
+ * Class SettingsRepository
  *
- * @package Ares\Room\Repository
+ * @package Ares\Settings\Repository
  */
-class RoomRepository extends BaseRepository
+class SettingsRepository extends BaseRepository
 {
     /** @var string */
-    private const CACHE_PREFIX = 'ARES_ROOM_';
+    private const CACHE_PREFIX = 'ARES_SETTINGS_';
 
     /** @var string */
-    private const CACHE_COLLECTION_PREFIX = 'ARES_ROOM_COLLECTION_';
+    private const CACHE_COLLECTION_PREFIX = 'ARES_SETTINGS_COLLECTION_';
 
     /** @var string */
-    protected string $entity = Room::class;
+    protected string $entity = Setting::class;
 
     /**
      * Get object by id.
@@ -39,11 +39,11 @@ class RoomRepository extends BaseRepository
      *
      * @param bool $cachedEntity
      *
-     * @return mixed|object|null
+     * @return Setting|null
      * @throws InvalidArgumentException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws PhpfastcacheSimpleCacheException|InvalidArgumentException
      */
-    public function get(int $id, bool $cachedEntity = true)
+    public function get(int $id, bool $cachedEntity = true): ?object
     {
         $entity = $this->cacheService->get(self::CACHE_PREFIX . $id);
 
@@ -56,6 +56,17 @@ class RoomRepository extends BaseRepository
         $this->cacheService->set(self::CACHE_PREFIX . $id, serialize($entity));
 
         return $entity;
+    }
+
+    /**
+     * @param      $criteria
+     * @param null $orderBy
+     *
+     * @return Setting|null
+     */
+    public function getBy($criteria, $orderBy = null): ?object
+    {
+        return $this->findOneBy($criteria, $orderBy);
     }
 
     /**
@@ -72,7 +83,7 @@ class RoomRepository extends BaseRepository
         $this->getEntityManager()->persist($model);
         $this->getEntityManager()->flush();
 
-        $this->cacheService->set(self::CACHE_PREFIX . $model->getId(), serialize($model));
+        $this->cacheService->set(self::CACHE_COLLECTION_PREFIX . $model->getId(), serialize($model));
 
         return $model;
     }
@@ -80,7 +91,7 @@ class RoomRepository extends BaseRepository
     /**
      * @param  object  $model
      *
-     * @return Room
+     * @return Setting
      * @throws ORMException
      * @throws PhpfastcacheSimpleCacheException
      * @throws OptimisticLockException|InvalidArgumentException
@@ -128,13 +139,13 @@ class RoomRepository extends BaseRepository
     /**
      * Delete object by id.
      *
-     * @param int $id
+     * @param   int  $id
      *
      * @return bool
      * @throws InvalidArgumentException
      * @throws ORMException
-     * @throws OptimisticLockException
      * @throws PhpfastcacheSimpleCacheException
+     * @throws OptimisticLockException
      */
     public function delete(int $id): bool
     {

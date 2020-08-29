@@ -154,9 +154,23 @@ class MessengerFriendship extends Entity
     }
 
     /**
+     * @return array
+     */
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'friend' => $this->getFriend(),
+            'friends_since' => $this->getFriendsSince(),
+            'relation' => $this->getRelation(),
+            'user' => $this->getUser()
+        ];
+    }
+
+    /**
      * @return string
      */
-    public function serialize()
+    public function serialize(): string
     {
         return serialize(get_object_vars($this));
     }
@@ -164,7 +178,7 @@ class MessengerFriendship extends Entity
     /**
      * @param string $data
      */
-    public function unserialize($data)
+    public function unserialize($data): void
     {
         $values = unserialize($data);
 

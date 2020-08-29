@@ -50,6 +50,11 @@ class User extends Entity
     private string $look;
 
     /**
+     * @ORM\Column(type="string", length=10)
+     */
+    private string $gender;
+
+    /**
      * @ORM\Column(type="string", length=35)
      */
     private ?string $motto;
@@ -98,6 +103,11 @@ class User extends Entity
      * @ORM\Column(type="string", length=10)
      */
     private ?string $locale;
+
+    /**
+     * @ORM\Column(type="integer", length=11)
+     */
+    private int $last_login;
 
     /**
      * @ORM\Column(type="datetime")
@@ -200,6 +210,26 @@ class User extends Entity
     public function setLook(string $look): self
     {
         $this->look = $look;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGender(): string
+    {
+        return $this->gender;
+    }
+
+    /**
+     * @param string $gender
+     *
+     * @return User
+     */
+    public function setGender(string $gender): self
+    {
+        $this->gender = $gender;
 
         return $this;
     }
@@ -409,6 +439,26 @@ class User extends Entity
     }
 
     /**
+     * @return int
+     */
+    public function getLastLogin(): int
+    {
+        return $this->last_login;
+    }
+
+    /**
+     * @param int $last_login
+     *
+     * @return User
+     */
+    public function setLastLogin(int $last_login): self
+    {
+        $this->last_login = $last_login;
+
+        return $this;
+    }
+
+    /**
      * @return \DateTime
      */
     public function getCreatedAt(): \DateTime
@@ -432,6 +482,7 @@ class User extends Entity
     public function onPrePersist()
     {
         $this->created_at = new \DateTime("now");
+        $this->updated_at = new \DateTime("now");
     }
 
     /**
@@ -449,7 +500,7 @@ class User extends Entity
      *
      * @return array
      */
-    public function getArrayCopy(): array
+    public function jsonSerialize(): array
     {
         return [
             'id' => $this->getId(),
@@ -462,6 +513,7 @@ class User extends Entity
             'account_created' => $this->getAccountCreated(),
             'online' => $this->getOnline(),
             'locale' => $this->getLocale(),
+            'last_login' => $this->getLastLogin(),
             'created_at' => $this->getCreatedAt(),
             'updated_at' => $this->getUpdatedAt()
         ];
@@ -470,7 +522,7 @@ class User extends Entity
     /**
      * @return string
      */
-    public function serialize()
+    public function serialize(): string
     {
         return serialize(get_object_vars($this));
     }
@@ -478,7 +530,7 @@ class User extends Entity
     /**
      * @param   string  $data
      */
-    public function unserialize($data)
+    public function unserialize($data): void
     {
         $values = unserialize($data);
 

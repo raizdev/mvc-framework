@@ -1,25 +1,25 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Ares (https://ares.to)
  *
  * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
  */
 
-namespace Ares\User\Entity;
+namespace Ares\Settings\Entity;
 
 use Ares\Framework\Entity\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Class UserCurrency
+ * Class Settings
  *
- * @package Ares\User\Entity
+ * @package Ares\Settings\Entity
  *
  * @ORM\Entity
- * @ORM\Table(name="users_currency")
+ * @ORM\Table(name="ares_settings")
  * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
  */
-class UserCurrency extends Entity
+class Setting extends Entity
 {
     /**
      * @ORM\Id
@@ -29,19 +29,14 @@ class UserCurrency extends Entity
     private int $id;
 
     /**
-     * @ORM\Column(type="integer", length=11)
+     * @ORM\Column(type="string", length=200)
      */
-    private int $user_id;
+    private string $key;
 
     /**
-     * @ORM\Column(type="integer", length=11)
+     * @ORM\Column(type="string", length=200)
      */
-    private int $type;
-
-    /**
-     * @ORM\Column(type="integer", length=11)
-     */
-    private int $amount;
+    private string $value;
 
     /**
      * @return int
@@ -54,7 +49,7 @@ class UserCurrency extends Entity
     /**
      * @param int $id
      *
-     * @return UserCurrency
+     * @return Setting
      */
     public function setId(int $id): self
     {
@@ -64,61 +59,41 @@ class UserCurrency extends Entity
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getUserId(): int
+    public function getKey(): string
     {
-        return $this->user_id;
+        return $this->key;
     }
 
     /**
-     * @param int $user_id
+     * @param string $key
      *
-     * @return UserCurrency
+     * @return Setting
      */
-    public function setUserId(int $user_id): self
+    public function setKey(string $key): self
     {
-        $this->user_id = $user_id;
+        $this->key = $key;
 
         return $this;
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getType(): int
+    public function getValue(): string
     {
-        return $this->type;
+        return $this->value;
     }
 
     /**
-     * @param int $type
+     * @param string $value
      *
-     * @return UserCurrency
+     * @return Setting
      */
-    public function setType(int $type): self
+    public function setValue(string $value): self
     {
-        $this->type = $type;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getAmount(): int
-    {
-        return $this->amount;
-    }
-
-    /**
-     * @param int $amount
-     *
-     * @return UserCurrency
-     */
-    public function setAmount(int $amount): self
-    {
-        $this->amount = $amount;
+        $this->value = $value;
 
         return $this;
     }
@@ -131,10 +106,8 @@ class UserCurrency extends Entity
     public function jsonSerialize(): array
     {
         return [
-            'id' => $this->getId(),
-            'user_id' => $this->getUserId(),
-            'type' => $this->getType(),
-            'amount' => $this->getAmount()
+            'key' => $this->getKey(),
+            'value' => $this->getValue()
         ];
     }
 
@@ -147,7 +120,7 @@ class UserCurrency extends Entity
     }
 
     /**
-     * @param   string  $data
+     * @param $data
      */
     public function unserialize($data): void
     {
