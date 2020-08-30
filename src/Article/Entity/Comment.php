@@ -53,12 +53,12 @@ class Comment extends Entity
     private int $dislikes;
 
     /**
-     * @ManyToOne(targetEntity="\Ares\User\Entity\User", fetch="EAGER", cascade={"persist"})
+     * @ManyToOne(targetEntity="\Ares\User\Entity\User", fetch="EAGER")
      */
     private ?User $user;
 
     /**
-     * @ManyToOne(targetEntity="\Ares\Article\Entity\Article", inversedBy="comments", fetch="EAGER", cascade={"persist"})
+     * @ManyToOne(targetEntity="\Ares\Article\Entity\Article", inversedBy="comments", fetch="EAGER")
      * @JoinColumn(name="article_id", referencedColumnName="id")
      */
     private ?Article $article;
@@ -261,6 +261,7 @@ class Comment extends Entity
     public function onPrePersist()
     {
         $this->created_at = new \DateTime("now");
+        $this->updated_at = new \DateTime("now");
     }
 
     /**

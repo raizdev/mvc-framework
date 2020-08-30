@@ -138,10 +138,10 @@ class AuthController extends BaseController
         $parsedData = $request->getParsedBody();
 
         $this->validationService->validate($parsedData, [
-            'username' => 'required|min:3|max:12|regex:/^[A-Za-z][A-Za-z0-9]$/',
+            'username' => 'required|min:3|max:12',
             'mail' => 'required|email|min:9',
             'look' => 'required',
-            'gender' => 'default:M|required|regex:/[M.F]/',
+            'gender' => 'required|default:M|regex:/[M.F]/',
             'password' => 'required|min:6',
             'password_confirmation' => 'required|same:password'
         ]);

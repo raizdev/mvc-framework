@@ -95,7 +95,7 @@ class CreateCommentService
             ->setIsEdited(0)
             ->setLikes(0)
             ->setDislikes(0)
-            ->setUser($user->setOnline(1))
+            ->setUser($user)
             ->setArticle($article);
     }
 }

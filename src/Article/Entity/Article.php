@@ -65,7 +65,7 @@ class Article extends Entity
     private ?User $author;
 
     /**
-     * @OneToMany(targetEntity="\Ares\Article\Entity\Comment", mappedBy="article", fetch="EAGER", cascade={"persist"})
+     * @OneToMany(targetEntity="\Ares\Article\Entity\Comment", mappedBy="article", fetch="EAGER")
      */
     private ?Collection $comments;
 
