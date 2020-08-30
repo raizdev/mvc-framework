@@ -69,7 +69,7 @@ class UserSetting extends Entity
     /**
      * @ORM\Column(type="integer", length=11)
      */
-    private int $onlinetime;
+    private int $online_time;
 
     /**
      * @ORM\Column(type="integer", length=11)
@@ -251,17 +251,17 @@ class UserSetting extends Entity
      */
     public function getOnlinetime(): int
     {
-        return $this->onlinetime;
+        return $this->online_time;
     }
 
     /**
-     * @param   int  $onlinetime
+     * @param   int  $online_time
      *
      * @return UserSetting
      */
-    public function setOnlinetime(int $onlinetime): self
+    public function setOnlinetime(int $online_time): self
     {
-        $this->onlinetime = $onlinetime;
+        $this->online_time = $online_time;
 
         return $this;
     }
@@ -325,7 +325,6 @@ class UserSetting extends Entity
 
         return $this;
     }
-
 
     /**
      * Returns a copy of the current Entity safely
