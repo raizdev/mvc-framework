@@ -93,8 +93,6 @@ class CreateCommentService
         return $comment
             ->setContent($data['content'])
             ->setIsEdited(0)
-            ->setLikes(0)
-            ->setDislikes(0)
             ->setUser($user)
             ->setArticle($article);
     }

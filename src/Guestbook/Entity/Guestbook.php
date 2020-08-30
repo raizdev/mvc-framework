@@ -5,25 +5,25 @@
  * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
  */
 
-namespace Ares\Article\Entity;
+namespace Ares\Guestbook\Entity;
 
 use Ares\Framework\Entity\Entity;
+use Ares\Guild\Entity\Guild;
 use Ares\User\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinColumn;
-use Doctrine\ORM\Mapping\ManyToOne;
 
 /**
- * Class Article
+ * Class Guestbook
  *
- * @package Ares\Article\Entity
+ * @package Ares\Guestbook\Entity
  *
  * @ORM\Entity
- * @ORM\Table(name="ares_articles_comments", uniqueConstraints={@ORM\UniqueConstraint(name="title", columns={"title"})}))
+ * @ORM\Table(name="ares_guestbook")
  * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
  * @ORM\HasLifecycleCallbacks
  */
-class Comment extends Entity
+class Guestbook extends Entity
 {
     /**
      * @ORM\Id
@@ -38,20 +38,22 @@ class Comment extends Entity
     private string $content;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    private int $is_edited;
-
-    /**
-     * @ManyToOne(targetEntity="\Ares\User\Entity\User", fetch="EAGER")
+     * @ORM\OneToOne(targetEntity="\Ares\User\Entity\User", fetch="EAGER")
+     * @JoinColumn(name="user_id", referencedColumnName="id")
      */
     private ?User $user;
 
     /**
-     * @ManyToOne(targetEntity="\Ares\Article\Entity\Article", inversedBy="comments", fetch="EAGER")
-     * @JoinColumn(name="article_id", referencedColumnName="id")
+     * @ORM\OneToOne(targetEntity="\Ares\User\Entity\User", fetch="EAGER")
+     * @JoinColumn(name="profile_id", referencedColumnName="id")
      */
-    private ?Article $article;
+    private ?User $profile;
+
+    /**
+     * @ORM\OneToOne(targetEntity="\Ares\Guild\Entity\Guild", fetch="EAGER")
+     * @JoinColumn(name="guild_id", referencedColumnName="id")
+     */
+    private ?Guild $guild;
 
     /**
      * @ORM\Column(type="datetime")
@@ -72,9 +74,9 @@ class Comment extends Entity
     }
 
     /**
-     * @param int $id
+     * @param   int  $id
      *
-     * @return Comment
+     * @return Guestbook
      */
     public function setId(int $id): self
     {
@@ -82,6 +84,47 @@ class Comment extends Entity
 
         return $this;
     }
+
+    /**
+     * @return User|null
+     */
+    public function getProfile(): ?User
+    {
+        return $this->profile;
+    }
+
+    /**
+     * @param   User|null  $profile
+     *
+     * @return Guestbook
+     */
+    public function setProfile(?User $profile): self
+    {
+        $this->profile = $profile;
+
+        return $this;
+    }
+
+    /**
+     * @return Guild|null
+     */
+    public function getGuild(): ?Guild
+    {
+        return $this->guild;
+    }
+
+    /**
+     * @param   Guild|null  $guild
+     *
+     * @return Guestbook
+     */
+    public function setGuild(?Guild $guild): self
+    {
+        $this->guild = $guild;
+
+        return $this;
+    }
+
 
     /**
      * @return string
@@ -92,33 +135,13 @@ class Comment extends Entity
     }
 
     /**
-     * @param string $content
+     * @param   string  $content
      *
-     * @return Comment
+     * @return Guestbook
      */
     public function setContent(string $content): self
     {
         $this->content = $content;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getIsEdited(): int
-    {
-        return $this->is_edited;
-    }
-
-    /**
-     * @param int $is_edited
-     *
-     * @return Comment
-     */
-    public function setIsEdited(int $is_edited): self
-    {
-        $this->is_edited = $is_edited;
 
         return $this;
     }
@@ -132,33 +155,13 @@ class Comment extends Entity
     }
 
     /**
-     * @param User|null $user
+     * @param   User|null  $user
      *
-     * @return Comment
+     * @return Guestbook
      */
     public function setUser(?User $user): self
     {
         $this->user = $user;
-
-        return $this;
-    }
-
-    /**
-     * @return Article|null
-     */
-    public function getArticle(): ?Article
-    {
-        return $this->article;
-    }
-
-    /**
-     * @param Article|null $article
-     *
-     * @return Comment
-     */
-    public function setArticle(?Article $article): self
-    {
-        $this->article = $article;
 
         return $this;
     }
@@ -172,9 +175,9 @@ class Comment extends Entity
     }
 
     /**
-     * @param \DateTime $created_at
+     * @param   \DateTime  $created_at
      *
-     * @return Comment
+     * @return Guestbook
      */
     public function setCreatedAt(\DateTime $created_at): self
     {
@@ -192,9 +195,9 @@ class Comment extends Entity
     }
 
     /**
-     * @param \DateTime $updated_at
+     * @param   \DateTime  $updated_at
      *
-     * @return Comment
+     * @return Guestbook
      */
     public function setUpdatedAt(\DateTime $updated_at): self
     {
@@ -233,11 +236,9 @@ class Comment extends Entity
     {
         return [
             'id' => $this->getId(),
+            'user' => $this->getUser(),
             'content' => $this->getContent(),
-            'is_edited' => $this->getIsEdited(),
-            'author' => $this->getUser(),
-            'created_at' => $this->getCreatedAt(),
-            'updated_at' => $this->getUpdatedAt()
+            'created_at' => $this->getCreatedAt()
         ];
     }
 
@@ -250,7 +251,7 @@ class Comment extends Entity
     }
 
     /**
-     * @param   string  $data
+     * @param $data
      */
     public function unserialize($data): void
     {
