@@ -42,7 +42,9 @@ class CacheService
      */
     public function has(string $key): bool
     {
-        $this->isCacheEnabled();
+        if (!$this->isCacheEnabled()) {
+            return false;
+        }
 
         return $this->fastCache->has($key);
     }
@@ -72,8 +74,6 @@ class CacheService
      */
     public function getMultiple(array $keys): string
     {
-        $this->isCacheEnabled();
-
         return $this->fastCache->getMultiple($keys);
     }
 
@@ -88,7 +88,9 @@ class CacheService
      */
     public function set(string $key, $value, int $ttl = 0): bool
     {
-        $this->isCacheEnabled();
+        if (!$this->isCacheEnabled()) {
+            return false;
+        }
 
         return $this->fastCache->set($key, $value, $this->getTTL($ttl));
     }
@@ -102,7 +104,9 @@ class CacheService
      */
     public function setMultiple(array $values, int $ttl = 0): bool
     {
-        $this->isCacheEnabled();
+        if (!$this->isCacheEnabled()) {
+            return false;
+        }
 
         return $this->fastCache->setMultiple($values, $this->getTTL($ttl));
     }
@@ -115,7 +119,9 @@ class CacheService
      */
     public function delete(string $key): bool
     {
-        $this->isCacheEnabled();
+        if (!$this->isCacheEnabled()) {
+            return false;
+        }
 
         return $this->fastCache->delete($key);
     }
@@ -129,7 +135,9 @@ class CacheService
      */
     public function deleteMultiple(array $keys): bool
     {
-        $this->isCacheEnabled();
+        if (!$this->isCacheEnabled()) {
+            return false;
+        }
 
         return $this->fastCache->deleteMultiple($keys);
     }
@@ -140,7 +148,9 @@ class CacheService
      */
     public function clear(): bool
     {
-        $this->isCacheEnabled();
+        if (!$this->isCacheEnabled()) {
+            return false;
+        }
 
         return $this->fastCache->clear();
     }

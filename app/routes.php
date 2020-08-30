@@ -60,6 +60,14 @@ return function (App $app) {
                 $group->get('/most/members', \Ares\Guild\Controller\GuildController::class . ':mostMembers');
             });
 
+            // Guestbook Entries
+            $group->group('/guestbook', function ($group) {
+                $group->post('/create', \Ares\Guestbook\Controller\GuestbookController::class . ':create');
+                $group->get('/profile/{profile_id:[0-9]+}/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Guestbook\Controller\GuestbookController::class . ':profileList');
+                $group->get('/guild/{guild_id:[0-9]+}/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Guestbook\Controller\GuestbookController::class . ':guildList');
+                $group->delete('/{id:[0-9]+}', \Ares\Guestbook\Controller\GuestbookController::class . ':delete');
+            });
+
             // Friends
             $group->group('/friends', function ($group) {
                 $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Messenger\Controller\MessengerController::class . ':friends');
