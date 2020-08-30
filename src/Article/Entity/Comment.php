@@ -54,6 +54,16 @@ class Comment extends Entity
     private ?Article $article;
 
     /**
+     * @ORM\Column(type="integer")
+     */
+    private int $likes;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private int $dislikes;
+
+    /**
      * @ORM\Column(type="datetime")
      */
     protected \DateTime $created_at;
@@ -164,6 +174,44 @@ class Comment extends Entity
     }
 
     /**
+     * @return int
+     */
+    public function getLikes(): int
+    {
+        return $this->likes;
+    }
+
+    /**
+     * @param int $likes
+     * @return Article
+     */
+    public function setLikes(int $likes): self
+    {
+        $this->likes = $likes;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDislikes(): int
+    {
+        return $this->dislikes;
+    }
+
+    /**
+     * @param int $dislikes
+     * @return Article
+     */
+    public function setDislikes(int $dislikes): self
+    {
+        $this->dislikes = $dislikes;
+
+        return $this;
+    }
+
+    /**
      * @return \DateTime
      */
     public function getCreatedAt(): \DateTime
@@ -236,6 +284,8 @@ class Comment extends Entity
             'content' => $this->getContent(),
             'is_edited' => $this->getIsEdited(),
             'author' => $this->getUser(),
+            'likes' => $this->getLikes(),
+            'dislikes' => $this->getDislikes(),
             'created_at' => $this->getCreatedAt(),
             'updated_at' => $this->getUpdatedAt()
         ];

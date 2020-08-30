@@ -52,7 +52,7 @@ class VoteController extends BaseController
     /**
      * @var CreateVoteService
      */
-    private CreateVoteService $createLikeService;
+    private CreateVoteService $createVoteService;
 
     /**
      * @var DeleteVoteService
@@ -80,7 +80,7 @@ class VoteController extends BaseController
      * @param VoteRepository $voteRepository
      * @param UserRepository $userRepository
      * @param ValidationService $validationService
-     * @param CreateVoteService $createLikeService
+     * @param CreateVoteService $createVoteService
      * @param DeleteVoteService $deleteVoteService
      * @param DoctrineSearchCriteria $doctrineSearchCriteria
      * @param IncrementVoteService $incrementVoteService
@@ -90,7 +90,7 @@ class VoteController extends BaseController
         VoteRepository $voteRepository,
         UserRepository $userRepository,
         ValidationService $validationService,
-        CreateVoteService $createLikeService,
+        CreateVoteService $createVoteService,
         DeleteVoteService $deleteVoteService,
         DoctrineSearchCriteria $doctrineSearchCriteria,
         IncrementVoteService $incrementVoteService,
@@ -99,7 +99,7 @@ class VoteController extends BaseController
         $this->voteRepository = $voteRepository;
         $this->userRepository = $userRepository;
         $this->validationService = $validationService;
-        $this->createLikeService = $createLikeService;
+        $this->createVoteService = $createVoteService;
         $this->deleteVoteService = $deleteVoteService;
         $this->doctrineSearchCriteria = $doctrineSearchCriteria;
         $this->incrementVoteService = $incrementVoteService;
@@ -131,14 +131,19 @@ class VoteController extends BaseController
 
         $user = $this->getUser($this->userRepository, $request, false);
 
-        $customResponse = $this->createLikeService->execute($user, $parsedData);
+        $customResponse = $this->createVoteService->execute($user, $parsedData);
 
-        $this->incrementVoteService
+        $result = $this->incrementVoteService
             ->execute(
                 $parsedData['entity_id'],
                 $parsedData['vote_entity'],
                 $parsedData['vote_type'],
             );
+
+        if (!$result) {
+            $this->deleteVoteService->execute($user, $parsedData);
+            throw new VoteException(__('The entity could not be incremented.'), 500);
+        }
 
         return $this->respond(
             $response,
@@ -210,12 +215,17 @@ class VoteController extends BaseController
             throw new VoteException(__('Vote could not be deleted.'), 409);
         }
 
-        $this->decrementVoteService
+        $result = $this->decrementVoteService
             ->execute(
                 $parsedData['entity_id'],
                 $parsedData['vote_entity'],
                 $parsedData['vote_type'],
             );
+
+        if (!$result) {
+            $this->createVoteService->execute($user, $parsedData);
+            throw new VoteException(__('The entity could not be incremented.'), 500);
+        }
 
         return $this->respond(
             $response,

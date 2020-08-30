@@ -40,10 +40,10 @@ class IncrementVoteService
      * @param int $entityId
      * @param int $voteEntity
      * @param int $voteType
-     * @return void
+     * @return bool
      * @throws VoteException
      */
-    public function execute(int $entityId, int $voteEntity, int $voteType): void
+    public function execute(int $entityId, int $voteEntity, int $voteType): bool
     {
         $entityRepository = $this->getVoteEntityService->execute($entityId, $voteEntity);
         $entity = $entityRepository->get($entityId);
@@ -56,7 +56,12 @@ class IncrementVoteService
             $entity->setDislikes(++$dislikes);
         }
 
-        $entityRepository->update($entity);
+        try {
+            $entityRepository->update($entity);
+            return true;
+        } catch (\Exception $exception) {
+            return false;
+        }
     }
 
 }
