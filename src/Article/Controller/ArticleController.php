@@ -7,13 +7,19 @@
 
 namespace Ares\Article\Controller;
 
+use Ares\Article\Service\CreateArticleService;
 use Ares\Framework\Controller\BaseController;
 use Ares\Article\Entity\Article;
 use Ares\Article\Exception\ArticleException;
 use Ares\Article\Repository\ArticleRepository;
+use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Model\Adapter\DoctrineSearchCriteria;
+use Ares\Framework\Service\ValidationService;
+use Ares\User\Exception\UserException;
+use Ares\User\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
-use Jhg\DoctrinePagination\Collection\PaginatedArrayCollection;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -26,14 +32,14 @@ use Psr\Http\Message\ServerRequestInterface as Request;
  */
 class ArticleController extends BaseController
 {
-    /*
+    /**
      * Represents the Value of pinned Articles
      */
     private const IS_PINNED = 1;
 
-    /*
+    /**
      * Represents the Value of Visible Articles
-    */
+     */
     private const IS_VISIBLE = 1;
 
     /**
@@ -47,17 +53,79 @@ class ArticleController extends BaseController
     private DoctrineSearchCriteria $searchCriteria;
 
     /**
+     * @var CreateArticleService
+     */
+    private CreateArticleService $createArticleService;
+
+    /**
+     * @var ValidationService
+     */
+    private ValidationService $validationService;
+
+    /**
+     * @var UserRepository
+     */
+    private UserRepository $userRepository;
+
+    /**
      * NewsController constructor.
      *
-     * @param   ArticleRepository       $articleRepository
-     * @param   DoctrineSearchCriteria  $searchCriteria
+     * @param ArticleRepository $articleRepository
+     * @param DoctrineSearchCriteria $searchCriteria
+     * @param CreateArticleService $createArticleService
+     * @param ValidationService $validationService
+     * @param UserRepository $userRepository
      */
     public function __construct(
         ArticleRepository $articleRepository,
-        DoctrineSearchCriteria $searchCriteria
+        DoctrineSearchCriteria $searchCriteria,
+        CreateArticleService $createArticleService,
+        ValidationService $validationService,
+        UserRepository $userRepository
     ) {
         $this->articleRepository = $articleRepository;
         $this->searchCriteria = $searchCriteria;
+        $this->createArticleService = $createArticleService;
+        $this->validationService = $validationService;
+        $this->userRepository = $userRepository;
+    }
+
+    /**
+     * Creates new article.
+     *
+     * @param Request $request
+     * @param Response $response
+     * @return Response
+     * @throws InvalidArgumentException
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws ValidationException
+     * @throws UserException
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function create(Request $request, Response $response)
+    {
+        /** @var array $parsedData */
+        $parsedData = $request->getParsedBody();
+
+        $this->validationService->validate($parsedData, [
+            'title' => 'required',
+            'slug' => 'required',
+            'description' => 'required',
+            'content' => 'required',
+            'image' => 'required',
+            'hidden' => 'required|numeric',
+            'pinned' => 'required|numeric'
+        ]);
+
+        $user = $this->getUser($this->userRepository, $request);
+
+        $customResponse = $this->createArticleService->execute($user, $parsedData);
+
+        return $this->respond(
+            $response,
+            $customResponse
+        );
     }
 
     /**
@@ -150,6 +218,37 @@ class ArticleController extends BaseController
         return $this->respond(
             $response,
             response()->setData($articles->toArray())
+        );
+    }
+
+    /**
+     * Deletes specific article.
+     *
+     * @param Request $request
+     * @param Response $response
+     * @param $args
+     * @return Response
+     * @throws CommentException
+     * @throws InvalidArgumentException
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws ValidationException
+     */
+    public function delete(Request $request, Response $response, $args): Response
+    {
+        /** @var int $page */
+        $id = (int) $args['id'];
+
+        $deleted = $this->articleRepository->delete($id);
+
+        if (!$deleted) {
+            throw new ArticleException(__('Article could not be deleted.'), 409);
+        }
+
+        return $this->respond(
+            $response,
+            response()->setData(true)
         );
     }
 }

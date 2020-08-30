@@ -186,7 +186,7 @@ class CommentController extends BaseController
     public function delete(Request $request, Response $response, $args): Response
     {
         /** @var int $page */
-        $id = $args['id'];
+        $id = (int) $args['id'];
         
         $deleted = $this->commentRepository->delete($id);
 

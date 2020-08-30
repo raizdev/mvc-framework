@@ -30,9 +30,11 @@ return function (App $app) {
 
             // Articles
             $group->group('/articles', function ($group) {
+                $group->post('/create', \Ares\Article\Controller\ArticleController::class . ':create');
                 $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Article\Controller\ArticleController::class . ':list');
                 $group->get('/pinned', \Ares\Article\Controller\ArticleController::class . ':pinned');
                 $group->get('/{id:[0-9]+}', \Ares\Article\Controller\ArticleController::class . ':article');
+                $group->delete('/{id:[0-9]+}', \Ares\Article\Controller\ArticleController::class . ':delete');
             });
 
             // Comments
