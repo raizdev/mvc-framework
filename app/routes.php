@@ -45,6 +45,12 @@ return function (App $app) {
                 $group->delete('/{id:[0-9]+}', \Ares\Article\Controller\CommentController::class . ':delete');
             });
 
+            // Votes
+            $group->group('/votes', function ($group) {
+                $group->post('/create', \Ares\Vote\Controller\VoteController::class . ':create');
+                $group->delete('/{id:[0-9]+}', \Ares\Vote\Controller\VoteController::class . ':delete');
+            });
+
             // Guilds
             $group->group('/guilds', function ($group) {
                 $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Guild\Controller\GuildController::class . ':list');

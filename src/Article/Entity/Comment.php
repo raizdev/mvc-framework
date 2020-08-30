@@ -43,16 +43,6 @@ class Comment extends Entity
     private int $is_edited;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    private int $likes;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private int $dislikes;
-
-    /**
      * @ManyToOne(targetEntity="\Ares\User\Entity\User", fetch="EAGER")
      */
     private ?User $user;
@@ -129,46 +119,6 @@ class Comment extends Entity
     public function setIsEdited(int $is_edited): self
     {
         $this->is_edited = $is_edited;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getLikes(): int
-    {
-        return $this->likes;
-    }
-
-    /**
-     * @param int $likes
-     *
-     * @return Comment
-     */
-    public function setLikes(int $likes): self
-    {
-        $this->likes = $likes;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getDislikes(): int
-    {
-        return $this->dislikes;
-    }
-
-    /**
-     * @param int $dislikes
-     *
-     * @return Comment
-     */
-    public function setDislikes(int $dislikes): self
-    {
-        $this->dislikes = $dislikes;
 
         return $this;
     }
