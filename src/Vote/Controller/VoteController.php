@@ -9,14 +9,17 @@ namespace Ares\Vote\Controller;
 
 use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\ValidationException;
+use Ares\Framework\Model\Adapter\DoctrineSearchCriteria;
 use Ares\Framework\Service\ValidationService;
 use Ares\User\Exception\UserException;
 use Ares\User\Repository\UserRepository;
 use Ares\Vote\Exception\VoteException;
-use Ares\Vote\Interfaces\VoteTypeInterface;
 use Ares\Vote\Repository\VoteRepository;
 use Ares\Vote\Service\CreateVoteService;
 use Ares\Vote\Service\DeleteVoteService;
+use Ares\Vote\Service\Votes\DecrementVoteService;
+use Ares\Vote\Service\Votes\IncrementVoteService;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -57,6 +60,21 @@ class VoteController extends BaseController
     private DeleteVoteService $deleteVoteService;
 
     /**
+     * @var DoctrineSearchCriteria
+     */
+    private DoctrineSearchCriteria $doctrineSearchCriteria;
+
+    /**
+     * @var IncrementVoteService
+     */
+    private IncrementVoteService $incrementVoteService;
+
+    /**
+     * @var DecrementVoteService
+     */
+    private DecrementVoteService $decrementVoteService;
+
+    /**
      * VoteController constructor.
      *
      * @param VoteRepository $voteRepository
@@ -64,19 +82,28 @@ class VoteController extends BaseController
      * @param ValidationService $validationService
      * @param CreateVoteService $createLikeService
      * @param DeleteVoteService $deleteVoteService
+     * @param DoctrineSearchCriteria $doctrineSearchCriteria
+     * @param IncrementVoteService $incrementVoteService
+     * @param DecrementVoteService $decrementVoteService
      */
     public function __construct(
         VoteRepository $voteRepository,
         UserRepository $userRepository,
         ValidationService $validationService,
         CreateVoteService $createLikeService,
-        DeleteVoteService $deleteVoteService
+        DeleteVoteService $deleteVoteService,
+        DoctrineSearchCriteria $doctrineSearchCriteria,
+        IncrementVoteService $incrementVoteService,
+        DecrementVoteService $decrementVoteService
     ) {
         $this->voteRepository = $voteRepository;
         $this->userRepository = $userRepository;
         $this->validationService = $validationService;
         $this->createLikeService = $createLikeService;
         $this->deleteVoteService = $deleteVoteService;
+        $this->doctrineSearchCriteria = $doctrineSearchCriteria;
+        $this->incrementVoteService = $incrementVoteService;
+        $this->decrementVoteService = $decrementVoteService;
     }
 
     /**
@@ -106,6 +133,13 @@ class VoteController extends BaseController
 
         $customResponse = $this->createLikeService->execute($user, $parsedData);
 
+        $this->incrementVoteService
+            ->execute(
+                $parsedData['entity_id'],
+                $parsedData['vote_entity'],
+                $parsedData['vote_type'],
+            );
+
         return $this->respond(
             $response,
             $customResponse
@@ -113,50 +147,33 @@ class VoteController extends BaseController
     }
 
     /**
-     * Returns total count of likes for given entity.
+     * Returns total count of likes/dislikes for given entity.
      *
      * @param Request $request
      * @param Response $response
-     * @param $args
      * @return Response
+     * @throws InvalidArgumentException
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws UserException
      */
-    public function getTotalLikes(Request $request, Response $response, $args)
+    public function getTotalVotes(Request $request, Response $response)
     {
-        $votes = $this->voteRepository->countBy([
-            'entity_id' => (int) $args['entity_id'],
-            'vote_entity' => (int) $args['vote_entity'],
-            'vote_type' => VoteTypeInterface::VOTE_LIKE
-        ]);
+        $this->doctrineSearchCriteria
+            ->addFilter(
+                'user',
+                $this->getUser(
+                    $this->userRepository,
+                    $request,
+                    false
+                )->getId()
+            );
+
+        /** @var ArrayCollection $votes */
+        $votes = $this->voteRepository->getList($this->doctrineSearchCriteria, false)->toArray();
 
         return $this->respond(
             $response,
-            response()->setData([
-                'likes' => $votes
-            ])
-        );
-    }
-
-    /**
-     * Returns total count of dislikes for given entity.
-     *
-     * @param Request $request
-     * @param Response $response
-     * @param $args
-     * @return Response
-     */
-    public function getTotalDislikes(Request $request, Response $response, $args)
-    {
-        $votes = $this->voteRepository->countBy([
-            'entity_id' => (int) $args['entity_id'],
-            'vote_entity' => (int) $args['vote_entity'],
-            'vote_type' => VoteTypeInterface::VOTE_DISLIKE
-        ]);
-
-        return $this->respond(
-            $response,
-            response()->setData([
-                'dislikes' => $votes
-            ])
+            response()->setData($votes)
         );
     }
 
@@ -192,6 +209,13 @@ class VoteController extends BaseController
         if (!$customResponse->getData()) {
             throw new VoteException(__('Vote could not be deleted.'), 409);
         }
+
+        $this->decrementVoteService
+            ->execute(
+                $parsedData['entity_id'],
+                $parsedData['vote_entity'],
+                $parsedData['vote_type'],
+            );
 
         return $this->respond(
             $response,

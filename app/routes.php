@@ -48,8 +48,7 @@ return function (App $app) {
             // Votes
             $group->group('/votes', function ($group) {
                 $group->post('/create', \Ares\Vote\Controller\VoteController::class . ':create');
-                $group->get('/likes/{vote_entity:[0-9]+}/{entity_id:[0-9]+}', \Ares\Vote\Controller\VoteController::class . ':getTotalLikes');
-                $group->get('/dislikes/{vote_entity:[0-9]+}/{entity_id:[0-9]+}', \Ares\Vote\Controller\VoteController::class . ':getTotalDislikes');
+                $group->get('/total', \Ares\Vote\Controller\VoteController::class . ':getTotalVotes');
                 $group->post('/delete', \Ares\Vote\Controller\VoteController::class . ':delete');
             });
 

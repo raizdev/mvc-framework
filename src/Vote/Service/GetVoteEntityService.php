@@ -10,6 +10,7 @@ namespace Ares\Vote\Service;
 use Ares\Article\Repository\ArticleRepository;
 use Ares\Article\Repository\CommentRepository;
 use Ares\Framework\Entity\Entity;
+use Ares\Framework\Repository\BaseRepository;
 use Ares\Vote\Exception\VoteException;
 use Ares\Vote\Interfaces\VoteEntityInterface;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -51,18 +52,16 @@ class GetVoteEntityService
      *
      * @param int $id
      * @param int $entity
-     * @return Entity|null
+     * @return BaseRepository|null
      * @throws VoteException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws InvalidArgumentException
      */
-    public function execute(int $id, int $entity): ?Entity
+    public function execute(int $id, int $entity): BaseRepository
     {
         switch (true) {
             case $entity === VoteEntityInterface::ARTICLE_VOTE_ENTITY:
-                return $this->articleRepository->get($id);
+                return $this->articleRepository;
             case $entity === VoteEntityInterface::ARTICLE_COMMENT_VOTE_ENTITY:
-                return $this->commentRepository->get($id);
+                return $this->commentRepository;
 //            case $entity === VoteEntityInterface::FORUM_VOTE_ENTITY:
 //                return ;
 //            case $entity === VoteEntityInterface::FORUM_COMMENT_VOTE_ENTITY:
