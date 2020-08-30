@@ -14,8 +14,6 @@ use Ares\Guild\Entity\GuildMember;
 use Ares\Guild\Exception\GuildException;
 use Ares\Guild\Repository\GuildMemberRepository;
 use Ares\Guild\Repository\GuildRepository;
-use Ares\Room\Entity\Room;
-use Jhg\DoctrinePagination\Collection\PaginatedArrayCollection;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -174,26 +172,36 @@ class GuildController extends BaseController
     }
 
     /**
-     * @TODO count most members and return the Group
      *
-     * @param Request  $request
-     * @param Response $response
+     * @param   Request   $request
+     * @param   Response  $response
      *
      * @return Response
      * @throws GuildException
+     * @throws InvalidArgumentException
+     * @throws PhpfastcacheSimpleCacheException
      */
     public function mostMembers(Request $request, Response $response): Response
     {
-        /** @var Guild $guild */
-        $guild = $this->guildMemberRepository->countBy();
+        $results = $this->guildMemberRepository->getMemberCountByGuild();
 
-        if (is_null($guild)) {
-            throw new GuildException(__('No Group found'), 404);
+        if (!$results) {
+            throw new GuildException(__('No Guild were found'), 404);
         }
+
+        $getMaxMemberGuild = array_shift($results);
+
+        /** @var Guild $guild */
+        $guild = $this->guildRepository->get($getMaxMemberGuild['id']);
+
+        $guild->getRoom()->setGuild(null);
 
         return $this->respond(
             $response,
-            response()->setData($guild)
+            response()->setData([
+                'guild' => $guild,
+                'member_count' => $getMaxMemberGuild['member']
+            ])
         );
     }
 }

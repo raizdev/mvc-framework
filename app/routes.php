@@ -65,6 +65,23 @@ return function (App $app) {
                 $group->get('/most/visited', \Ares\Room\Controller\RoomController::class . ':mostVisited');
             });
 
+            // Hall-Of-Fame
+            $group->group('/hall-of-fame', function ($group) {
+                $group->get('/top-credits', \Ares\User\Controller\UserHallOfFameController::class . ':topCredits');
+                $group->get('/top-diamonds', \Ares\User\Controller\UserHallOfFameController::class . ':topDiamonds');
+                $group->get('/top-pixels', \Ares\User\Controller\UserHallOfFameController::class . ':topPixels');
+                $group->get('/top-online-time', \Ares\User\Controller\UserHallOfFameController::class . ':topOnlineTime');
+                $group->get('/top-achievement', \Ares\User\Controller\UserHallOfFameController::class . ':topAchievement');
+            });
+
+            // Photos
+            $group->group('/photos', function ($group) {
+                $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Photo\Controller\PhotoController::class . ':list');
+                $group->get('/{id:[0-9]+}', \Ares\Photo\Controller\PhotoController::class . ':photo');
+                $group->post('/search', \Ares\Photo\Controller\PhotoController::class . ':search');
+                $group->delete('/{id:[0-9]+}', \Ares\Photo\Controller\PhotoController::class . ':delete');
+            });
+
             // De-Authentication
             $group->post('/logout', \Ares\User\Controller\AuthController::class . ':logout');
         })->add(\Ares\Framework\Middleware\AuthMiddleware::class);

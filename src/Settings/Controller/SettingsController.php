@@ -17,7 +17,6 @@ use Ares\Settings\Repository\SettingsRepository;
 use Ares\Settings\Service\UpdateSettingsService;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
-use Jhg\DoctrinePagination\Collection\PaginatedArrayCollection;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface as Response;

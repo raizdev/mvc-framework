@@ -5,32 +5,31 @@
  * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
  */
 
-namespace Ares\Guild\Repository;
+namespace Ares\Photo\Repository;
 
 use Ares\Framework\Interfaces\SearchCriteriaInterface;
 use Ares\Framework\Repository\BaseRepository;
-use Ares\Guild\Entity\Guild;
+use Ares\Photo\Entity\Photo;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Jhg\DoctrinePagination\Collection\PaginatedArrayCollection;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 
 /**
- * Class GuildRepository
+ * Class PhotoRepository
  *
- * @package Ares\Guild\Repository
+ * @package Ares\Photo\Repository
  */
-class GuildRepository extends BaseRepository
+class PhotoRepository extends BaseRepository
 {
     /** @var string */
-    private const CACHE_PREFIX = 'ARES_GUILD_';
+    private const CACHE_PREFIX = 'ARES_PHOTO_';
 
     /** @var string */
-    private const CACHE_COLLECTION_PREFIX = 'ARES_GUILD_COLLECTION_';
+    private const CACHE_COLLECTION_PREFIX = 'ARES_PHOTO_COLLECTION_';
 
     /** @var string */
-    protected string $entity = Guild::class;
+    protected string $entity = Photo::class;
 
     /**
      * Get object by id.
@@ -39,11 +38,10 @@ class GuildRepository extends BaseRepository
      *
      * @param bool $cachedEntity
      *
-     * @return Guild|null
-     * @throws InvalidArgumentException
-     * @throws PhpfastcacheSimpleCacheException
+     * @return mixed|object|null
+     * @throws PhpfastcacheSimpleCacheException|\Psr\Cache\InvalidArgumentException
      */
-    public function get(int $id, bool $cachedEntity = true): ?object
+    public function get(int $id, bool $cachedEntity = true)
     {
         $entity = $this->cacheService->get(self::CACHE_PREFIX . $id);
 
@@ -62,17 +60,16 @@ class GuildRepository extends BaseRepository
      * @param object $model
      *
      * @return object
-     * @throws InvalidArgumentException
      * @throws ORMException
      * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws PhpfastcacheSimpleCacheException|\Psr\Cache\InvalidArgumentException
      */
     public function save(object $model): object
     {
         $this->getEntityManager()->persist($model);
         $this->getEntityManager()->flush();
 
-        $this->cacheService->set(self::CACHE_COLLECTION_PREFIX . $model->getId(), serialize($model));
+        $this->cacheService->set(self::CACHE_PREFIX . $model->getId(), serialize($model));
 
         return $model;
     }
@@ -80,10 +77,10 @@ class GuildRepository extends BaseRepository
     /**
      * @param  object  $model
      *
-     * @return Guild
+     * @return Photo
      * @throws ORMException
      * @throws PhpfastcacheSimpleCacheException
-     * @throws OptimisticLockException|InvalidArgumentException
+     * @throws OptimisticLockException|\Psr\Cache\InvalidArgumentException
      */
     public function update(object $model): object
     {
@@ -100,8 +97,7 @@ class GuildRepository extends BaseRepository
      * @param bool                    $cachedEntity
      *
      * @return array|object[]
-     * @throws InvalidArgumentException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws PhpfastcacheSimpleCacheException|\Psr\Cache\InvalidArgumentException
      */
     public function getList(SearchCriteriaInterface $searchCriteria, bool $cachedEntity = true)
     {
@@ -128,13 +124,12 @@ class GuildRepository extends BaseRepository
     /**
      * Delete object by id.
      *
-     * @param   int  $id
+     * @param int $id
      *
      * @return bool
-     * @throws InvalidArgumentException
      * @throws ORMException
-     * @throws PhpfastcacheSimpleCacheException
      * @throws OptimisticLockException
+     * @throws PhpfastcacheSimpleCacheException|\Psr\Cache\InvalidArgumentException
      */
     public function delete(int $id): bool
     {
@@ -158,8 +153,7 @@ class GuildRepository extends BaseRepository
      * @param bool                    $cachedEntity
      *
      * @return PaginatedArrayCollection
-     * @throws InvalidArgumentException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws PhpfastcacheSimpleCacheException|\Psr\Cache\InvalidArgumentException
      */
     public function paginate(SearchCriteriaInterface $searchCriteria, bool $cachedEntity = true): PaginatedArrayCollection
     {
