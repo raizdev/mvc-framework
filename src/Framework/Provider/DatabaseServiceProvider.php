@@ -28,9 +28,8 @@ class DatabaseServiceProvider extends AbstractServiceProvider
 
     public function register()
     {
-
         $container = $this->getContainer();
-        $container->add(EntityManager::class, function () use ($container) {
+        $container->share(EntityManager::class, function () use ($container) {
 
             $settings = $container->get('settings');
             $cacheDriver = new \Doctrine\Common\Cache\FilesystemCache(
