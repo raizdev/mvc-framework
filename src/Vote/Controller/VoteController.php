@@ -13,6 +13,7 @@ use Ares\Framework\Service\ValidationService;
 use Ares\User\Exception\UserException;
 use Ares\User\Repository\UserRepository;
 use Ares\Vote\Exception\VoteException;
+use Ares\Vote\Interfaces\VoteTypeInterface;
 use Ares\Vote\Repository\VoteRepository;
 use Ares\Vote\Service\CreateVoteService;
 use Ares\Vote\Service\DeleteVoteService;
@@ -112,11 +113,58 @@ class VoteController extends BaseController
     }
 
     /**
-     * Delete vote.
+     * Returns total count of likes for given entity.
      *
      * @param Request $request
      * @param Response $response
      * @param $args
+     * @return Response
+     */
+    public function getTotalLikes(Request $request, Response $response, $args)
+    {
+        $votes = $this->voteRepository->countBy([
+            'entity_id' => (int) $args['entity_id'],
+            'vote_entity' => (int) $args['vote_entity'],
+            'vote_type' => VoteTypeInterface::VOTE_LIKE
+        ]);
+
+        return $this->respond(
+            $response,
+            response()->setData([
+                'likes' => $votes
+            ])
+        );
+    }
+
+    /**
+     * Returns total count of dislikes for given entity.
+     *
+     * @param Request $request
+     * @param Response $response
+     * @param $args
+     * @return Response
+     */
+    public function getTotalDislikes(Request $request, Response $response, $args)
+    {
+        $votes = $this->voteRepository->countBy([
+            'entity_id' => (int) $args['entity_id'],
+            'vote_entity' => (int) $args['vote_entity'],
+            'vote_type' => VoteTypeInterface::VOTE_DISLIKE
+        ]);
+
+        return $this->respond(
+            $response,
+            response()->setData([
+                'dislikes' => $votes
+            ])
+        );
+    }
+
+    /**
+     * Delete vote.
+     *
+     * @param Request $request
+     * @param Response $response
      * @return Response
      * @throws InvalidArgumentException
      * @throws ORMException
@@ -126,7 +174,7 @@ class VoteController extends BaseController
      * @throws ValidationException
      * @throws VoteException
      */
-    public function delete(Request $request, Response $response, $args): Response
+    public function delete(Request $request, Response $response): Response
     {
         /** @var array $parsedData */
         $parsedData = $request->getParsedBody();
