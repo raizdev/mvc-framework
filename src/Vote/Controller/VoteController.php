@@ -7,7 +7,6 @@
 
 namespace Ares\Vote\Controller;
 
-use Ares\Article\Exception\CommentException;
 use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
@@ -16,6 +15,7 @@ use Ares\User\Repository\UserRepository;
 use Ares\Vote\Exception\VoteException;
 use Ares\Vote\Repository\VoteRepository;
 use Ares\Vote\Service\CreateVoteService;
+use Ares\Vote\Service\DeleteVoteService;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -51,23 +51,31 @@ class VoteController extends BaseController
     private CreateVoteService $createLikeService;
 
     /**
+     * @var DeleteVoteService
+     */
+    private DeleteVoteService $deleteVoteService;
+
+    /**
      * VoteController constructor.
      *
      * @param VoteRepository $voteRepository
      * @param UserRepository $userRepository
      * @param ValidationService $validationService
      * @param CreateVoteService $createLikeService
+     * @param DeleteVoteService $deleteVoteService
      */
     public function __construct(
         VoteRepository $voteRepository,
         UserRepository $userRepository,
         ValidationService $validationService,
-        CreateVoteService $createLikeService
+        CreateVoteService $createLikeService,
+        DeleteVoteService $deleteVoteService
     ) {
         $this->voteRepository = $voteRepository;
         $this->userRepository = $userRepository;
         $this->validationService = $validationService;
         $this->createLikeService = $createLikeService;
+        $this->deleteVoteService = $deleteVoteService;
     }
 
     /**
@@ -110,24 +118,36 @@ class VoteController extends BaseController
      * @param Response $response
      * @param $args
      * @return Response
-     * @throws CommentException
+     * @throws InvalidArgumentException
      * @throws ORMException
      * @throws OptimisticLockException
      * @throws PhpfastcacheSimpleCacheException
+     * @throws UserException
+     * @throws ValidationException
+     * @throws VoteException
      */
     public function delete(Request $request, Response $response, $args): Response
     {
-        $id = (int) $args['id'];
+        /** @var array $parsedData */
+        $parsedData = $request->getParsedBody();
 
-        $deleted = $this->voteRepository->delete($id);
+        $this->validationService->validate($parsedData, [
+            'entity_id' => 'required|numeric',
+            'vote_entity' => 'required|numeric',
+            'vote_type' => 'required|numeric'
+        ]);
 
-        if (!$deleted) {
-            throw new CommentException(__('Vote could not be deleted.'), 409);
+        $user = $this->getUser($this->userRepository, $request, false);
+
+        $customResponse = $this->deleteVoteService->execute($user, $parsedData);
+
+        if (!$customResponse->getData()) {
+            throw new VoteException(__('Vote could not be deleted.'), 409);
         }
 
         return $this->respond(
             $response,
-            response()->setData(true)
+            $customResponse
         );
     }
 }

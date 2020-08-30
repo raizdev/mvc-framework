@@ -48,7 +48,7 @@ return function (App $app) {
             // Votes
             $group->group('/votes', function ($group) {
                 $group->post('/create', \Ares\Vote\Controller\VoteController::class . ':create');
-                $group->delete('/{id:[0-9]+}', \Ares\Vote\Controller\VoteController::class . ':delete');
+                $group->post('/delete', \Ares\Vote\Controller\VoteController::class . ':delete');
             });
 
             // Guilds
