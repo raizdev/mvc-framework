@@ -41,7 +41,7 @@ return function (App $app) {
             $group->group('/comments', function ($group) {
                 $group->post('/create', \Ares\Article\Controller\CommentController::class . ':create');
                 $group->post('/edit', \Ares\Article\Controller\CommentController::class . ':edit');
-                $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Article\Controller\CommentController::class . ':list');
+                $group->get('/list/{article_id:[0-9]+}/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Article\Controller\CommentController::class . ':list');
                 $group->delete('/{id:[0-9]+}', \Ares\Article\Controller\CommentController::class . ':delete');
             });
 
