@@ -170,7 +170,14 @@ class CommentController extends BaseController
 
         return $this->respond(
             $response,
-            response()->setData($comments->toArray())
+            response()->setData([
+                'pagination' => [
+                    'totalPages' => $comments->getPages(),
+                    'prevPage' => $comments->getPrevPage(),
+                    'nextPage' => $comments->getNextPage()
+                ],
+                'comments' => $comments->toArray()
+            ])
         );
     }
 
