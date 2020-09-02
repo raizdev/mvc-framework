@@ -9,11 +9,9 @@ namespace Ares\Messenger\Controller;
 
 use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Model\Adapter\DoctrineSearchCriteria;
-use Ares\Messenger\Exception\MessengerException;
 use Ares\Messenger\Repository\MessengerRepository;
 use Ares\User\Exception\UserException;
 use Ares\User\Repository\UserRepository;
-use Jhg\DoctrinePagination\Collection\PaginatedArrayCollection;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -65,7 +63,6 @@ class MessengerController extends BaseController
      * @param             $args
      *
      * @return Response
-     * @throws MessengerException
      * @throws UserException
      * @throws PhpfastcacheSimpleCacheException
      * @throws InvalidArgumentException
@@ -84,10 +81,6 @@ class MessengerController extends BaseController
             ->addOrder('id', 'DESC');
 
         $friends = $this->messengerRepository->paginate($this->searchCriteria);
-
-        if ($friends->isEmpty()) {
-            throw new MessengerException(__('You have no friends'), 404);
-        }
 
         return $this->respond(
             $response,
