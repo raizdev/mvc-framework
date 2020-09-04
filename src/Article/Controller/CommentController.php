@@ -14,6 +14,7 @@ use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Model\Adapter\DoctrineSearchCriteria;
 use Ares\Framework\Service\ValidationService;
+use Ares\User\Exception\UserException;
 use Ares\User\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\OptimisticLockException;
@@ -79,15 +80,18 @@ class CommentController extends BaseController
     }
 
     /**
-     * @param Request $request
+     * @param Request  $request
      * @param Response $response
-     * @param $args
+     * @param          $args
+     *
      * @return Response
      * @throws InvalidArgumentException
      * @throws ORMException
      * @throws OptimisticLockException
      * @throws PhpfastcacheSimpleCacheException
      * @throws ValidationException
+     * @throws UserException
+     * @throws CommentException
      */
     public function create(Request $request, Response $response, $args): Response
     {
@@ -142,12 +146,14 @@ class CommentController extends BaseController
      * @param Response $response
      * @param $args
      * @return Response
-     * @throws CommentException
      * @throws InvalidArgumentException
      * @throws PhpfastcacheSimpleCacheException
      */
     public function list(Request $request, Response $response, $args): Response
     {
+        /** @var int $articleId */
+        $articleId = $args['article_id'];
+
         /** @var int $page */
         $page = $args['page'];
 
@@ -156,18 +162,22 @@ class CommentController extends BaseController
 
         $this->searchCriteria->setPage((int)$page)
             ->setLimit((int)$resultPerPage)
+            ->addFilter('article', $articleId)
             ->addOrder('id', 'DESC');
 
         /** @var ArrayCollection $pinnedArticles */
         $comments = $this->commentRepository->paginate($this->searchCriteria);
 
-        if ($comments->isEmpty()) {
-            throw new CommentException(__('No Comments were found'), 404);
-        }
-
         return $this->respond(
             $response,
-            response()->setData($comments->toArray())
+            response()->setData([
+                'pagination' => [
+                    'totalPages' => $comments->getPages(),
+                    'prevPage' => $comments->getPrevPage(),
+                    'nextPage' => $comments->getNextPage()
+                ],
+                'comments' => $comments->toArray()
+            ])
         );
     }
 
@@ -187,7 +197,7 @@ class CommentController extends BaseController
     {
         /** @var int $page */
         $id = (int) $args['id'];
-        
+
         $deleted = $this->commentRepository->delete($id);
 
         if (!$deleted) {

@@ -31,8 +31,7 @@ return function (App $app) {
             // Articles
             $group->group('/articles', function ($group) {
                 $group->post('/create', \Ares\Article\Controller\ArticleController::class . ':create');
-                $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}',
-                    \Ares\Article\Controller\ArticleController::class . ':list');
+                $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Article\Controller\ArticleController::class . ':list');
                 $group->get('/pinned', \Ares\Article\Controller\ArticleController::class . ':pinned');
                 $group->get('/{id:[0-9]+}', \Ares\Article\Controller\ArticleController::class . ':article');
                 $group->delete('/{id:[0-9]+}', \Ares\Article\Controller\ArticleController::class . ':delete');
@@ -42,35 +41,36 @@ return function (App $app) {
             $group->group('/comments', function ($group) {
                 $group->post('/create', \Ares\Article\Controller\CommentController::class . ':create');
                 $group->post('/edit', \Ares\Article\Controller\CommentController::class . ':edit');
-                $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}',
-                    \Ares\Article\Controller\CommentController::class . ':list');
+                $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Article\Controller\CommentController::class . ':list');
                 $group->delete('/{id:[0-9]+}', \Ares\Article\Controller\CommentController::class . ':delete');
+            });
+
+            // Votes
+            $group->group('/votes', function ($group) {
+                $group->post('/create', \Ares\Vote\Controller\VoteController::class . ':create');
+                $group->get('/total', \Ares\Vote\Controller\VoteController::class . ':getTotalVotes');
+                $group->post('/delete', \Ares\Vote\Controller\VoteController::class . ':delete');
             });
 
             // Guilds
             $group->group('/guilds', function ($group) {
-                $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}',
-                    \Ares\Guild\Controller\GuildController::class . ':list');
+                $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Guild\Controller\GuildController::class . ':list');
                 $group->get('/{id:[0-9]+}', \Ares\Guild\Controller\GuildController::class . ':guild');
-                $group->get('/members/{id:[0-9]+}/list/{page:[0-9]+}/{rpp:[0-9]+}',
-                    \Ares\Guild\Controller\GuildController::class . ':members');
+                $group->get('/members/{id:[0-9]+}/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Guild\Controller\GuildController::class . ':members');
                 $group->get('/most/members', \Ares\Guild\Controller\GuildController::class . ':mostMembers');
             });
 
             // Guestbook Entries
             $group->group('/guestbook', function ($group) {
                 $group->post('/create', \Ares\Guestbook\Controller\GuestbookController::class . ':create');
-                $group->get('/profile/{profile_id:[0-9]+}/list/{page:[0-9]+}/{rpp:[0-9]+}',
-                    \Ares\Guestbook\Controller\GuestbookController::class . ':profileList');
-                $group->get('/guild/{guild_id:[0-9]+}/list/{page:[0-9]+}/{rpp:[0-9]+}',
-                    \Ares\Guestbook\Controller\GuestbookController::class . ':guildList');
+                $group->get('/profile/{profile_id:[0-9]+}/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Guestbook\Controller\GuestbookController::class . ':profileList');
+                $group->get('/guild/{guild_id:[0-9]+}/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Guestbook\Controller\GuestbookController::class . ':guildList');
                 $group->delete('/{id:[0-9]+}', \Ares\Guestbook\Controller\GuestbookController::class . ':delete');
             });
 
             // Friends
             $group->group('/friends', function ($group) {
-                $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}',
-                    \Ares\Messenger\Controller\MessengerController::class . ':friends');
+                $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Messenger\Controller\MessengerController::class . ':friends');
             });
 
             // Rooms
@@ -85,16 +85,13 @@ return function (App $app) {
                 $group->get('/top-credits', \Ares\User\Controller\UserHallOfFameController::class . ':topCredits');
                 $group->get('/top-diamonds', \Ares\User\Controller\UserHallOfFameController::class . ':topDiamonds');
                 $group->get('/top-pixels', \Ares\User\Controller\UserHallOfFameController::class . ':topPixels');
-                $group->get('/top-online-time',
-                    \Ares\User\Controller\UserHallOfFameController::class . ':topOnlineTime');
-                $group->get('/top-achievement',
-                    \Ares\User\Controller\UserHallOfFameController::class . ':topAchievement');
+                $group->get('/top-online-time', \Ares\User\Controller\UserHallOfFameController::class . ':topOnlineTime');
+                $group->get('/top-achievement', \Ares\User\Controller\UserHallOfFameController::class . ':topAchievement');
             });
 
             // Photos
             $group->group('/photos', function ($group) {
-                $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}',
-                    \Ares\Photo\Controller\PhotoController::class . ':list');
+                $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Photo\Controller\PhotoController::class . ':list');
                 $group->get('/{id:[0-9]+}', \Ares\Photo\Controller\PhotoController::class . ':photo');
                 $group->post('/search', \Ares\Photo\Controller\PhotoController::class . ':search');
                 $group->delete('/{id:[0-9]+}', \Ares\Photo\Controller\PhotoController::class . ':delete');
@@ -129,8 +126,7 @@ return function (App $app) {
 
         // Global Settings
         $group->group('/settings', function ($group) {
-            $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}',
-                \Ares\Settings\Controller\SettingsController::class . ':list');
+            $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Settings\Controller\SettingsController::class . ':list');
             $group->post('/get', \Ares\Settings\Controller\SettingsController::class . ':get');
             $group->post('/set', \Ares\Settings\Controller\SettingsController::class . ':set');
         });

@@ -175,10 +175,6 @@ class ArticleController extends BaseController
         /** @var ArrayCollection $pinnedArticles */
         $pinnedArticles = $this->articleRepository->getList($this->searchCriteria);
 
-        if ($pinnedArticles->isEmpty()) {
-            throw new ArticleException(__('No Pinned Articles found'));
-        }
-
         return $this->respond(
             $response,
             response()->setData($pinnedArticles->toArray())
@@ -210,10 +206,6 @@ class ArticleController extends BaseController
 
         /** @var ArrayCollection $pinnedArticles */
         $articles = $this->articleRepository->paginate($this->searchCriteria);
-
-        if ($articles->isEmpty()) {
-            throw new ArticleException(__('No Articles were found'), 404);
-        }
 
         return $this->respond(
             $response,

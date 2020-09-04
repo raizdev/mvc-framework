@@ -94,6 +94,8 @@ class CreateCommentService
             ->setContent($data['content'])
             ->setIsEdited(0)
             ->setUser($user)
+            ->setLikes(0)
+            ->setDislikes(0)
             ->setArticle($article);
     }
 }
