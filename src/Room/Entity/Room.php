@@ -34,7 +34,7 @@ class Room extends Entity
     private int $id;
 
     /**
-     * @OneToOne(targetEntity="\Ares\User\Entity\User", fetch="EAGER")
+     * @OneToOne(targetEntity="\Ares\User\Entity\User")
      * @JoinColumn(name="owner_id", referencedColumnName="id")
      */
     private ?User $owner;
@@ -65,7 +65,7 @@ class Room extends Entity
     private int $users_max;
 
     /**
-     * @OneToOne(targetEntity="\Ares\Guild\Entity\Guild", fetch="EAGER")
+     * @OneToOne(targetEntity="\Ares\Guild\Entity\Guild")
      * @JoinColumn(name="guild_id", referencedColumnName="id", nullable=true)
      */
     private ?Guild $guild;

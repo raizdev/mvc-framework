@@ -5,43 +5,42 @@
  * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
  */
 
-namespace Ares\Guild\Repository;
+namespace Ares\User\Repository;
 
 use Ares\Framework\Interfaces\SearchCriteriaInterface;
 use Ares\Framework\Repository\BaseRepository;
-use Ares\Guild\Entity\Guild;
+use Ares\User\Entity\UserBadge;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Jhg\DoctrinePagination\Collection\PaginatedArrayCollection;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 
 /**
- * Class GuildRepository
+ * Class UserBadgeRepository
  *
- * @package Ares\Guild\Repository
+ * @package Ares\User\Repository
  */
-class GuildRepository extends BaseRepository
+class UserBadgeRepository extends BaseRepository
 {
     /** @var string */
-    private const CACHE_PREFIX = 'ARES_GUILD_';
+    private const CACHE_PREFIX = 'ARES_USER_BADGE_';
 
     /** @var string */
-    private const CACHE_COLLECTION_PREFIX = 'ARES_GUILD_COLLECTION_';
+    private const CACHE_COLLECTION_PREFIX = 'ARES_USER_BADGE_COLLECTION_';
 
     /** @var string */
-    protected string $entity = Guild::class;
+    protected string $entity = UserBadge::class;
 
     /**
      * Get object by id.
      *
-     * @param int  $id
+     * @param   int   $id
      *
-     * @param bool $cachedEntity
+     * @param   bool  $cachedEntity
      *
-     * @return Guild|null
-     * @throws InvalidArgumentException
+     * @return UserBadge|null
      * @throws PhpfastcacheSimpleCacheException
+     * @throws \Psr\Cache\InvalidArgumentException
      */
     public function get(int $id, bool $cachedEntity = true): ?object
     {
@@ -59,13 +58,42 @@ class GuildRepository extends BaseRepository
     }
 
     /**
+     * @param $user
+     *
+     * @return int|mixed|string
+     */
+    public function getSlotBadges($user): array
+    {
+        return $this->getEntityManager()->createQueryBuilder()
+            ->select('b')
+            ->from('Ares\User\Entity\UserBadge', 'b')
+            ->andWhere('b.user = ?1')
+            ->andWhere('b.slot_id > 1')
+            ->orderBy('b.slot_id', 'ASC')
+            ->setParameter(1, $user)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param      $criteria
+     * @param null $orderBy
+     *
+     * @return UserBadge|null
+     */
+    public function getBy($criteria, $orderBy = null): ?object
+    {
+        return $this->findOneBy($criteria, $orderBy);
+    }
+
+    /**
      * @param object $model
      *
      * @return object
      * @throws InvalidArgumentException
      * @throws ORMException
      * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws PhpfastcacheSimpleCacheException|\Psr\Cache\InvalidArgumentException
      */
     public function save(object $model): object
     {
@@ -80,10 +108,10 @@ class GuildRepository extends BaseRepository
     /**
      * @param  object  $model
      *
-     * @return Guild
+     * @return UserBadge
      * @throws ORMException
      * @throws PhpfastcacheSimpleCacheException
-     * @throws OptimisticLockException|InvalidArgumentException
+     * @throws OptimisticLockException|\Psr\Cache\InvalidArgumentException
      */
     public function update(object $model): object
     {
@@ -94,30 +122,13 @@ class GuildRepository extends BaseRepository
         return $model;
     }
 
-    public function profileGuilds(SearchCriteriaInterface $searchCriteria)
-    {
-        return $this->createPaginatedQueryBuilder()
-            ->addPagination($searchCriteria->getPage(), $searchCriteria->getLimit())
-            ->select('g.id, g.name, g.description, g.badge')
-            ->from('Ares\Guild\Entity\Guild', 'g')
-            ->join(
-                'Ares\Guild\Entity\GuildMember',
-                'm',
-                \Doctrine\ORM\Query\Expr\Join::WITH,
-                'g.id = m.guild'
-            )
-            ->getQuery()
-            ->getResult();
-    }
-
     /**
      * @param SearchCriteriaInterface $searchCriteria
      *
      * @param bool                    $cachedEntity
      *
      * @return array|object[]
-     * @throws InvalidArgumentException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws PhpfastcacheSimpleCacheException|\Psr\Cache\InvalidArgumentException
      */
     public function getList(SearchCriteriaInterface $searchCriteria, bool $cachedEntity = true)
     {
@@ -147,10 +158,9 @@ class GuildRepository extends BaseRepository
      * @param   int  $id
      *
      * @return bool
-     * @throws InvalidArgumentException
      * @throws ORMException
      * @throws PhpfastcacheSimpleCacheException
-     * @throws OptimisticLockException
+     * @throws OptimisticLockException|\Psr\Cache\InvalidArgumentException
      */
     public function delete(int $id): bool
     {
@@ -174,8 +184,7 @@ class GuildRepository extends BaseRepository
      * @param bool                    $cachedEntity
      *
      * @return PaginatedArrayCollection
-     * @throws InvalidArgumentException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws PhpfastcacheSimpleCacheException|\Psr\Cache\InvalidArgumentException
      */
     public function paginate(SearchCriteriaInterface $searchCriteria, bool $cachedEntity = true): PaginatedArrayCollection
     {
