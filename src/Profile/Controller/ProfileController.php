@@ -164,10 +164,6 @@ class ProfileController extends BaseController
         /** @var ArrayCollection $pinnedArticles */
         $badges = $this->userBadgeRepository->paginate($this->searchCriteria);
 
-        if ($badges->isEmpty()) {
-            throw new ProfileException(__('No Badges were found'), 404);
-        }
-
         return $this->respond(
             $response,
             response()->setData($badges->toArray())
@@ -209,10 +205,6 @@ class ProfileController extends BaseController
 
         /** @var ArrayCollection $pinnedArticles */
         $friends = $this->messengerRepository->paginate($this->searchCriteria);
-
-        if ($friends->isEmpty()) {
-            throw new ProfileException(__('No Friends were found'), 404);
-        }
 
         return $this->respond(
             $response,
@@ -256,10 +248,6 @@ class ProfileController extends BaseController
         /** @var ArrayCollection $pinnedArticles */
         $rooms = $this->roomRepository->paginate($this->searchCriteria);
 
-        if ($rooms->isEmpty()) {
-            throw new ProfileException(__('No Friends were found'), 404);
-        }
-
         return $this->respond(
             $response,
             response()->setData($rooms->toArray())
@@ -302,10 +290,6 @@ class ProfileController extends BaseController
         /** @var ArrayCollection $pinnedArticles */
         $guilds = $this->guildRepository->profileGuilds($this->searchCriteria);
 
-        if ($guilds->isEmpty()) {
-            throw new ProfileException(__('No Friends were found'), 404);
-        }
-
         return $this->respond(
             $response,
             response()->setData($guilds->toArray())
@@ -347,10 +331,6 @@ class ProfileController extends BaseController
 
         /** @var ArrayCollection $pinnedArticles */
         $photos = $this->photoRepository->paginate($this->searchCriteria);
-
-        if ($photos->isEmpty()) {
-            throw new ProfileException(__('No Photos were found'), 404);
-        }
 
         return $this->respond(
             $response,
