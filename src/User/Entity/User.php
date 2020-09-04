@@ -8,7 +8,10 @@
 namespace Ares\User\Entity;
 
 use Ares\Framework\Entity\Entity;
+use Ares\Permission\Entity\Permission;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\ManyToOne;
 
 /**
  * Class User
@@ -73,6 +76,17 @@ class User extends Entity
      * @ORM\Column(type="integer", length=20)
      */
     private int $pixels;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private int $rank;
+
+    /**
+     * @ManyToOne(targetEntity="\Ares\Permission\Entity\Permission", inversedBy="user_with_rank", fetch="EAGER")
+     * @JoinColumn(name="rank", referencedColumnName="id")
+     */
+    private ?Permission $rank_data;
 
     /**
      * @ORM\Column(type="string", length=150)
@@ -315,6 +329,27 @@ class User extends Entity
     }
 
     /**
+     * @return int
+     */
+    public function getRank(): ?int
+    {
+        return $this->rank;
+    }
+
+    /**
+     * @param int $rank
+     *
+     * @return User
+     */
+    public function setRank(int $rank): self
+    {
+        $this->rank = $rank;
+
+        return $this;
+    }
+
+
+    /**
      * Gets Auth_ticket of User
      *
      * @return string
@@ -510,6 +545,7 @@ class User extends Entity
             'credits' => $this->getCredits(),
             'points' => $this->getPoints(),
             'pixels' => $this->getPixels(),
+            'rank' => $this->getRank(),
             'account_created' => $this->getAccountCreated(),
             'online' => $this->getOnline(),
             'locale' => $this->getLocale(),
