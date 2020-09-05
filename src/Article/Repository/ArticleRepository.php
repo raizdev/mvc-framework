@@ -180,4 +180,29 @@ class ArticleRepository extends BaseRepository
 
         return $collection;
     }
+
+    /**
+     * Searchs articles by search term.
+     *
+     * @param string $term
+     * @return int|mixed|string
+     */
+    public function searchArticles(string $term): array
+    {
+        return $this->getEntityManager()->createQueryBuilder()
+            ->select('a.id, a.title, a.description, count(c.article) as comments')
+            ->from('Ares\Article\Entity\Article', 'a')
+            ->leftJoin(
+                'Ares\Article\Entity\Comment',
+                'c',
+                \Doctrine\ORM\Query\Expr\Join::WITH,
+                'a.id = c.article'
+            )
+            ->where('a.title LIKE :term')
+            ->orderBy('comments', 'DESC')
+            ->groupBy('a.id')
+            ->setParameter('term', '%'.$term.'%')
+            ->getQuery()
+            ->getResult();
+    }
 }

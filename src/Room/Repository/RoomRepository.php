@@ -182,4 +182,22 @@ class RoomRepository extends BaseRepository
 
         return $collection;
     }
+
+    /**
+     * Searchs rooms by search term.
+     *
+     * @param string $term
+     * @return int|mixed|string
+     */
+    public function searchRooms(string $term): array
+    {
+        return $this->getEntityManager()->createQueryBuilder()
+            ->select('r.id, r.name, r.description, r.users as members')
+            ->from('Ares\Room\Entity\Room', 'r')
+            ->where('r.name LIKE :term')
+            ->orderBy('members', 'DESC')
+            ->setParameter('term', '%'.$term.'%')
+            ->getQuery()
+            ->getResult();
+    }
 }
