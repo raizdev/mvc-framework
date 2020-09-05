@@ -118,7 +118,7 @@ class ArticleController extends BaseController
             'pinned' => 'required|numeric'
         ]);
 
-        $user = $this->getUser($this->userRepository, $request);
+        $user = $this->getUser($this->userRepository, $request, false);
 
         $customResponse = $this->createArticleService->execute($user, $parsedData);
 
@@ -204,7 +204,6 @@ class ArticleController extends BaseController
             ->setLimit((int)$resultPerPage)
             ->addOrder('id', 'DESC');
 
-        /** @var ArrayCollection $pinnedArticles */
         $articles = $this->articleRepository->paginate($this->searchCriteria);
 
         return $this->respond(
@@ -220,7 +219,6 @@ class ArticleController extends BaseController
      * @param Response $response
      * @param $args
      * @return Response
-     * @throws CommentException
      * @throws InvalidArgumentException
      * @throws ORMException
      * @throws OptimisticLockException
@@ -229,10 +227,10 @@ class ArticleController extends BaseController
      */
     public function delete(Request $request, Response $response, $args): Response
     {
-        /** @var int $page */
-        $id = (int) $args['id'];
+        /** @var int $id */
+        $id = $args['id'];
 
-        $deleted = $this->articleRepository->delete($id);
+        $deleted = $this->articleRepository->delete((int) $id);
 
         if (!$deleted) {
             throw new ArticleException(__('Article could not be deleted.'), 409);

@@ -128,6 +128,14 @@ return function (App $app) {
                 $group->get('/rank/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Permission\Controller\PermissionController::class . ':listUserWithRank');
             });
 
+            // Payments
+            $group->group('/payments', function ($group) {
+                $group->post('/create', \Ares\Payment\Controller\PaymentController::class . ':create');
+                $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Payment\Controller\PaymentController::class . ':list');
+                $group->get('/{id:[0-9]+}', \Ares\Payment\Controller\PaymentController::class . ':payment');
+                $group->delete('/{id:[0-9]+}', \Ares\Payment\Controller\PaymentController::class . ':delete');
+            });
+
             // De-Authentication
             $group->post('/logout', \Ares\User\Controller\AuthController::class . ':logout');
         })->add(\Ares\Framework\Middleware\AuthMiddleware::class);
