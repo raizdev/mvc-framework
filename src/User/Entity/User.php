@@ -9,6 +9,7 @@ namespace Ares\User\Entity;
 
 use Ares\Framework\Entity\Entity;
 use Ares\Permission\Entity\Permission;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
@@ -68,22 +69,13 @@ class User extends Entity
     private int $credits;
 
     /**
-     * @ORM\Column(type="integer", length=20)
-     */
-    private int $points;
-
-    /**
-     * @ORM\Column(type="integer", length=20)
-     */
-    private int $pixels;
-
-    /**
      * @ORM\Column(type="integer", length=11)
      */
     private int $rank;
 
     /**
      * @ManyToOne(targetEntity="\Ares\Permission\Entity\Permission", inversedBy="user_with_rank")
+     * @JoinColumn(name="rank")
      */
     private Permission $rank_data;
 
@@ -121,6 +113,11 @@ class User extends Entity
      * @ORM\Column(type="integer", length=11)
      */
     private int $last_login;
+
+    /**
+     * @ORM\OneToMany(targetEntity="\Ares\User\Entity\UserCurrency", mappedBy="user", fetch="EAGER")
+     */
+    private Collection $currencies;
 
     /**
      * @ORM\Column(type="datetime")
@@ -289,46 +286,6 @@ class User extends Entity
     /**
      * @return int
      */
-    public function getPoints(): ?int
-    {
-        return $this->points;
-    }
-
-    /**
-     * @param int $points
-     *
-     * @return User
-     */
-    public function setPoints(int $points): self
-    {
-        $this->points = $points;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getPixels(): ?int
-    {
-        return $this->pixels;
-    }
-
-    /**
-     * @param int $pixels
-     *
-     * @return User
-     */
-    public function setPixels(int $pixels): self
-    {
-        $this->pixels = $pixels;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
     public function getRank(): ?int
     {
         return $this->rank;
@@ -355,7 +312,8 @@ class User extends Entity
     }
 
     /**
-     * @param   Permission  $rank_data
+     * @param Permission $rank_data
+     * @return User
      */
     public function setRankData(Permission $rank_data): self
     {
@@ -509,6 +467,26 @@ class User extends Entity
     }
 
     /**
+     * @return Collection
+     */
+    public function getCurrencies(): Collection
+    {
+        return $this->currencies;
+    }
+
+    /**
+     * @param Collection $currencies
+     *
+     * @return User
+     */
+    public function setCurrencies(Collection $currencies): self
+    {
+        $this->currencies = $currencies;
+
+        return $this;
+    }
+
+    /**
      * @return \DateTime
      */
     public function getCreatedAt(): \DateTime
@@ -558,13 +536,12 @@ class User extends Entity
             'look' => $this->getLook(),
             'motto' => $this->getMotto(),
             'credits' => $this->getCredits(),
-            'points' => $this->getPoints(),
-            'pixels' => $this->getPixels(),
             'rank' => $this->getRank(),
             'account_created' => $this->getAccountCreated(),
             'online' => $this->getOnline(),
             'locale' => $this->getLocale(),
             'last_login' => $this->getLastLogin(),
+            'currencies' => $this->getCurrencies()->toArray(),
             'created_at' => $this->getCreatedAt(),
             'updated_at' => $this->getUpdatedAt()
         ];

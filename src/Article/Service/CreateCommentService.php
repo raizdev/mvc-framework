@@ -84,7 +84,7 @@ class CreateCommentService
     {
         $comment = new Comment();
 
-        $article = $this->articleRepository->get($data['article_id']);
+        $article = $this->articleRepository->get($data['article_id'], false);
 
         if (!$article) {
             throw new CommentException(__('Related article was not found.'), 404);
