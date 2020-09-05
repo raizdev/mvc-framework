@@ -75,6 +75,7 @@ class User extends Entity
 
     /**
      * @ManyToOne(targetEntity="\Ares\Permission\Entity\Permission", inversedBy="user_with_rank")
+     * @JoinColumn(name="rank")
      */
     private Permission $rank_data;
 
