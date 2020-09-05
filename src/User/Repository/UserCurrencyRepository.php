@@ -1,47 +1,47 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Ares (https://ares.to)
  *
  * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
  */
 
-namespace Ares\Article\Repository;
+namespace Ares\User\Repository;
 
 use Ares\Framework\Interfaces\SearchCriteriaInterface;
+use Ares\Framework\Model\SearchCriteria;
 use Ares\Framework\Repository\BaseRepository;
-use Ares\Article\Entity\Article;
+use Ares\User\Entity\UserCurrency;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Jhg\DoctrinePagination\Collection\PaginatedArrayCollection;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 
 /**
- * Class ArticleRepository
+ * Class UserCurrencyRepository
  *
- * @package Ares\Article\Repository
+ * @package Ares\User\Repository
  */
-class ArticleRepository extends BaseRepository
+class UserCurrencyRepository extends BaseRepository
 {
     /** @var string */
-    private const CACHE_PREFIX = 'ARES_ARTICLE_';
+    private const CACHE_PREFIX = 'ARES_USER_CURRENCY';
 
     /** @var string */
-    private const CACHE_COLLECTION_PREFIX = 'ARES_ARTICLE_COLLECTION_';
+    private const CACHE_COLLECTION_PREFIX = 'ARES_USER_CURRENCY_COLLECTION_';
 
     /** @var string */
-    protected string $entity = Article::class;
+    protected string $entity = UserCurrency::class;
 
     /**
      * Get object by id.
      *
-     * @param int  $id
+     * @param int $id
      *
      * @param bool $cachedEntity
      *
-     * @return Article|null
-     * @throws InvalidArgumentException
+     * @return UserCurrency|null
      * @throws PhpfastcacheSimpleCacheException
+     * @throws \Psr\Cache\InvalidArgumentException
      */
     public function get(int $id, bool $cachedEntity = true): ?object
     {
@@ -56,42 +56,6 @@ class ArticleRepository extends BaseRepository
         $this->cacheService->set(self::CACHE_PREFIX . $id, serialize($entity));
 
         return $entity;
-    }
-
-    /**
-     * @param object $model
-     *
-     * @return object
-     * @throws InvalidArgumentException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
-     */
-    public function save(object $model): object
-    {
-        $this->getEntityManager()->persist($model);
-        $this->getEntityManager()->flush();
-
-        $this->cacheService->set(self::CACHE_COLLECTION_PREFIX . $model->getId(), serialize($model));
-
-        return $model;
-    }
-
-    /**
-     * @param  object  $model
-     *
-     * @return Article
-     * @throws ORMException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws OptimisticLockException|InvalidArgumentException
-     */
-    public function update(object $model): object
-    {
-        $this->getEntityManager()->flush();
-
-        $this->cacheService->set(self::CACHE_PREFIX . $model->getId(), serialize($model));
-
-        return $model;
     }
 
     /**
@@ -126,6 +90,43 @@ class ArticleRepository extends BaseRepository
     }
 
     /**
+     * @param object $model
+     *
+     * @return object
+     * @throws InvalidArgumentException
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws PhpfastcacheSimpleCacheException
+     */
+    public function save(object $model): object
+    {
+        $this->getEntityManager()->persist($model);
+        $this->getEntityManager()->flush();
+
+        $this->cacheService->set(self::CACHE_PREFIX . $model->getId(), serialize($model));
+
+        return $model;
+    }
+
+    /**
+     * @param object $model
+     *
+     * @return UserCurrency
+     * @throws InvalidArgumentException
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws PhpfastcacheSimpleCacheException
+     */
+    public function update(object $model): object
+    {
+        $this->getEntityManager()->flush();
+
+        $this->cacheService->set(self::CACHE_PREFIX . $model->getId(), serialize($model));
+
+        return $model;
+    }
+
+    /**
      * Delete object by id.
      *
      * @param   int  $id
@@ -146,6 +147,8 @@ class ArticleRepository extends BaseRepository
 
         $this->getEntityManager()->remove($model);
         $this->getEntityManager()->flush();
+
+        $this->cacheService->delete(self::CACHE_PREFIX . $id);
 
         return true;
     }
@@ -179,30 +182,5 @@ class ArticleRepository extends BaseRepository
         $this->cacheService->set(self::CACHE_COLLECTION_PREFIX . $cacheKey, serialize($collection));
 
         return $collection;
-    }
-
-    /**
-     * Searchs articles by search term.
-     *
-     * @param string $term
-     * @return int|mixed|string
-     */
-    public function searchArticles(string $term): array
-    {
-        return $this->getEntityManager()->createQueryBuilder()
-            ->select('a.id, a.title, a.description, count(c.article) as comments')
-            ->from('Ares\Article\Entity\Article', 'a')
-            ->leftJoin(
-                'Ares\Article\Entity\Comment',
-                'c',
-                \Doctrine\ORM\Query\Expr\Join::WITH,
-                'a.id = c.article'
-            )
-            ->where('a.title LIKE :term')
-            ->orderBy('comments', 'DESC')
-            ->groupBy('a.id')
-            ->setParameter('term', '%'.$term.'%')
-            ->getQuery()
-            ->getResult();
     }
 }

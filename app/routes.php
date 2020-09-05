@@ -26,6 +26,7 @@ return function (App $app) {
                 $group->get('', \Ares\User\Controller\UserController::class . ':user');
                 $group->post('/ticket', \Ares\User\Controller\AuthController::class . ':ticket');
                 $group->post('/locale', \Ares\User\Controller\UserController::class . ':updateLocale');
+                $group->post('/currency', \Ares\User\Controller\UserCurrencyController::class . ':update');
             });
 
             // Articles
@@ -52,6 +53,11 @@ return function (App $app) {
                 $group->post('/create', \Ares\Vote\Controller\VoteController::class . ':create');
                 $group->get('/total', \Ares\Vote\Controller\VoteController::class . ':getTotalVotes');
                 $group->post('/delete', \Ares\Vote\Controller\VoteController::class . ':delete');
+            });
+
+            // Community
+            $group->group('/community', function ($group) {
+                $group->get('/search/{term}', \Ares\Community\Controller\CommunityController::class . ':search');
             });
 
             // Guilds

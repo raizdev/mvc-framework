@@ -9,6 +9,7 @@ namespace Ares\User\Entity;
 
 use Ares\Framework\Entity\Entity;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\ManyToOne;
 
 /**
  * Class UserCurrency
@@ -23,15 +24,15 @@ class UserCurrency extends Entity
 {
     /**
      * @ORM\Id
-     * @ORM\Column(name="id", type="integer")
+     * @ORM\Column(name="user_id", type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private int $id;
 
     /**
-     * @ORM\Column(type="integer", length=11)
+     * @ManyToOne(targetEntity="\Ares\User\Entity\User", inversedBy="currencies")
      */
-    private int $user_id;
+    private User $user;
 
     /**
      * @ORM\Column(type="integer", length=11)
@@ -64,21 +65,20 @@ class UserCurrency extends Entity
     }
 
     /**
-     * @return int
+     * @return User
      */
-    public function getUserId(): int
+    public function getUser(): User
     {
-        return $this->user_id;
+        return $this->user;
     }
 
     /**
-     * @param int $user_id
-     *
+     * @param User $user
      * @return UserCurrency
      */
-    public function setUserId(int $user_id): self
+    public function setUser(User $user): self
     {
-        $this->user_id = $user_id;
+        $this->user = $user;
 
         return $this;
     }
@@ -132,7 +132,7 @@ class UserCurrency extends Entity
     {
         return [
             'id' => $this->getId(),
-            'user_id' => $this->getUserId(),
+            'user_id' => $this->getUser()->getId(),
             'type' => $this->getType(),
             'amount' => $this->getAmount()
         ];

@@ -94,6 +94,10 @@ class GuildRepository extends BaseRepository
         return $model;
     }
 
+    /**
+     * @param SearchCriteriaInterface $searchCriteria
+     * @return int|mixed|string
+     */
     public function profileGuilds(SearchCriteriaInterface $searchCriteria)
     {
         return $this->createPaginatedQueryBuilder()
@@ -197,5 +201,30 @@ class GuildRepository extends BaseRepository
         $this->cacheService->set(self::CACHE_COLLECTION_PREFIX . $cacheKey, serialize($collection));
 
         return $collection;
+    }
+
+    /**
+     * Searchs guilds by search term.
+     *
+     * @param string $term
+     * @return int|mixed|string
+     */
+    public function searchGuilds(string $term): array
+    {
+        return $this->getEntityManager()->createQueryBuilder()
+            ->select('g.id, g.name, g.description, g.badge, count(gm.guild) as online')
+            ->from('Ares\Guild\Entity\Guild', 'g')
+            ->leftJoin(
+                'Ares\Guild\Entity\GuildMember',
+                'gm',
+                \Doctrine\ORM\Query\Expr\Join::WITH,
+                'g.id = gm.guild'
+            )
+            ->where('g.name LIKE :term')
+            ->orderBy('online', 'DESC')
+            ->groupBy('g.id')
+            ->setParameter('term', '%'.$term.'%')
+            ->getQuery()
+            ->getResult();
     }
 }

@@ -12,7 +12,9 @@ use Ares\Framework\Service\TokenService;
 use Ares\Permission\Entity\Permission;
 use Ares\User\Entity\User;
 use Ares\User\Exception\RegisterException;
+use Ares\User\Interfaces\UserCurrencyTypeInterface;
 use Ares\User\Repository\UserRepository;
+use Ares\User\Service\Currency\CreateCurrencyService;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use PHLAK\Config\Config;
@@ -48,23 +50,31 @@ class RegisterService
     private TicketService $ticketService;
 
     /**
+     * @var CreateCurrencyService
+     */
+    private CreateCurrencyService $createCurrencyService;
+
+    /**
      * LoginService constructor.
      *
      * @param UserRepository $userRepository
-     * @param TokenService   $tokenService
-     * @param TicketService  $ticketService
-     * @param Config         $config
+     * @param TokenService $tokenService
+     * @param TicketService $ticketService
+     * @param Config $config
+     * @param CreateCurrencyService $createCurrencyService
      */
     public function __construct(
         UserRepository $userRepository,
         TokenService $tokenService,
         TicketService $ticketService,
-        Config $config
+        Config $config,
+        CreateCurrencyService $createCurrencyService
     ) {
         $this->userRepository = $userRepository;
         $this->tokenService = $tokenService;
         $this->ticketService = $ticketService;
         $this->config = $config;
+        $this->createCurrencyService = $createCurrencyService;
     }
 
     /**
@@ -103,6 +113,22 @@ class RegisterService
         /** @var TokenService $token */
         $token = $this->tokenService->execute($user->getId());
 
+        try {
+            $this->createCurrencyService->execute(
+                $user,
+                UserCurrencyTypeInterface::CURRENCY_TYPE_POINTS,
+                (int)$this->config->get('hotel_settings.start_points')
+            );
+
+            $this->createCurrencyService->execute(
+                $user,
+                UserCurrencyTypeInterface::CURRENCY_TYPE_PIXELS,
+                (int)$this->config->get('hotel_settings.start_pixels')
+            );
+        } catch (\Exception $exception) {
+            throw new RegisterException($exception->getMessage(), $exception->getCode());
+        }
+
         return response()->setData([
             'token' => $token
         ]);
@@ -129,8 +155,6 @@ class RegisterService
             ->setLook($data['look'])
             ->setGender($data['gender'])
             ->setCredits($this->config->get('hotel_settings.start_credits'))
-            ->setPoints($this->config->get('hotel_settings.start_points'))
-            ->setPixels($this->config->get('hotel_settings.start_pixels'))
             ->setMotto($this->config->get('hotel_settings.start_motto'))
             ->setIPRegister($data['ip_register'])
             ->setCurrentIP($data['ip_current'])
