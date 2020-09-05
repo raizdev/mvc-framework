@@ -136,6 +136,29 @@ return function (App $app) {
                 $group->delete('/{id:[0-9]+}', \Ares\Payment\Controller\PaymentController::class . ':delete');
             });
 
+            // Forum
+
+            $group->group('/forum', function ($group) {
+               $group->group('/comments', function ($group) {
+                   $group->post('/{thread:[0-9]+}/create', \Ares\Forum\Controller\CommentController::class . ':create');
+                   $group->get('{thread:[0-9]+}/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Forum\Controller\CommentController::class . ':list');
+                   $group->post('/{thread:[0-9]+}/{id:[0-9]+}', \Ares\Forum\Controller\CommentController::class . ':edit');
+                   $group->delete('/{thread:[0-9]+}/{id:[0-9]+}', \Ares\Forum\Controller\CommentController::class . ':delete');
+               });
+                $group->group('/topics', function ($group) {
+                    $group->post('/create', \Ares\Forum\Controller\TopicController::class . ':create');
+                    $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Forum\Controller\TopicController::class. ':list');
+                    $group->post('{id:[0-9]+}', \Ares\Forum\Controller\TopicController::class . ':edit');
+                    $group->delete('{id:[0-9]+}', \Ares\Forum\Controller\TopicController::class . ':delete');
+                });
+                $group->group('/threads', function ($group) {
+                    $group->post('/{topic:[0-9]+}/create', \Ares\Forum\Controller\ThreadController::class . ':create');
+                    $group->get('{topic:[0-9]+}/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Forum\Controller\ThreadController::class . ':list');
+                    $group->post('/{topic:[0-9]+}/{id:[0-9]+}', \Ares\Forum\Controller\ThreadController::class . ':edit');
+                    $group->delete('/{topic:[0-9]+}/{id:[0-9]+}', \Ares\Forum\Controller\ThreadController::class . ':delete');
+                });
+            });
+
             // De-Authentication
             $group->post('/logout', \Ares\User\Controller\AuthController::class . ':logout');
         })->add(\Ares\Framework\Middleware\AuthMiddleware::class);
