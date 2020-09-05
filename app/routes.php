@@ -137,7 +137,6 @@ return function (App $app) {
             });
 
             // Forum
-
             $group->group('/forum', function ($group) {
                $group->group('/comments', function ($group) {
                    $group->post('/{thread:[0-9]+}/create', \Ares\Forum\Controller\CommentController::class . ':create');
