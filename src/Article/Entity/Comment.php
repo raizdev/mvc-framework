@@ -48,7 +48,7 @@ class Comment extends Entity
     private ?User $user;
 
     /**
-     * @ManyToOne(targetEntity="\Ares\Article\Entity\Article", inversedBy="comments", fetch="EAGER")
+     * @ORM\OneToOne(targetEntity="\Ares\Article\Entity\Article", fetch="EAGER")
      * @JoinColumn(name="article_id", referencedColumnName="id")
      */
     private ?Article $article;
@@ -183,7 +183,8 @@ class Comment extends Entity
 
     /**
      * @param int $likes
-     * @return Article
+     *
+     * @return Comment
      */
     public function setLikes(int $likes): self
     {
@@ -202,7 +203,8 @@ class Comment extends Entity
 
     /**
      * @param int $dislikes
-     * @return Article
+     *
+     * @return Comment
      */
     public function setDislikes(int $dislikes): self
     {
