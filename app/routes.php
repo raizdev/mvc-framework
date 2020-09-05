@@ -55,6 +55,11 @@ return function (App $app) {
                 $group->post('/delete', \Ares\Vote\Controller\VoteController::class . ':delete');
             });
 
+            // Community
+            $group->group('/community', function ($group) {
+                $group->get('/search/{term}', \Ares\Community\Controller\CommunityController::class . ':search');
+            });
+
             // Guilds
             $group->group('/guilds', function ($group) {
                 $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}',
