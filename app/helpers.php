@@ -5,6 +5,8 @@
  * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
  */
 
+use League\Container\Container;
+
 if (!function_exists('__')) {
     /**
      * Takes message and placeholder to translate them to global locale.
@@ -73,5 +75,16 @@ if (!function_exists('route_cache_dir')) {
      */
     function route_cache_dir() {
         return __DIR__ . '/../tmp/Cache/routing';
+    }
+}
+
+if (!function_exists('container')) {
+    /**
+     * Returns di container instance.
+     *
+     * @return Container
+     */
+    function container() {
+        return \Ares\Framework\Proxy\App::getContainer();
     }
 }

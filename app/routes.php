@@ -26,6 +26,7 @@ return function (App $app) {
                 $group->get('', \Ares\User\Controller\UserController::class . ':user');
                 $group->post('/ticket', \Ares\User\Controller\AuthController::class . ':ticket');
                 $group->post('/locale', \Ares\User\Controller\UserController::class . ':updateLocale');
+                $group->post('/currency', \Ares\User\Controller\UserCurrencyController::class . ':update');
             });
 
             // Articles
