@@ -10,6 +10,7 @@ namespace Ares\Permission\Controller;
 use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Model\Adapter\DoctrineSearchCriteria;
 use Ares\Permission\Repository\PermissionRepository;
+use Doctrine\Common\Collections\Criteria;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -69,11 +70,16 @@ class PermissionController extends BaseController
             ->addOrder('id', 'DESC');
 
         $users = $this->permissionRepository->paginate($this->searchCriteria);
+        $criteria = Criteria::create()
+            ->andWhere(
+                Criteria::expr()
+                ->gt('id', '1')
+            );
 
         return $this->respond(
             $response,
             response()->setData([
-                'users' => $users->toArray()
+                'users' => $users->matching($criteria)->toArray()
             ])
         );
     }

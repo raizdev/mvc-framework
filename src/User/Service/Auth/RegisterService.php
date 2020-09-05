@@ -9,6 +9,7 @@ namespace Ares\User\Service\Auth;
 
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\Framework\Service\TokenService;
+use Ares\Permission\Entity\Permission;
 use Ares\User\Entity\User;
 use Ares\User\Exception\RegisterException;
 use Ares\User\Repository\UserRepository;
@@ -123,6 +124,7 @@ class RegisterService
                 $data['password'],
                 PASSWORD_ARGON2ID)
             )
+            ->setRank(1)
             ->setMail($data['mail'])
             ->setLook($data['look'])
             ->setGender($data['gender'])

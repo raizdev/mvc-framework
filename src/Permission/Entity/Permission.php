@@ -8,6 +8,7 @@
 namespace Ares\Permission\Entity;
 
 use Ares\Framework\Entity\Entity;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\OneToMany;
@@ -41,7 +42,7 @@ class Permission extends Entity
     private string $badge;
 
     /**
-     * @OneToMany(targetEntity="\Ares\User\Entity\User", mappedBy="rank_data", fetch="EAGER")
+     * @OneToMany(targetEntity="\Ares\User\Entity\User", mappedBy="rank_data")
      */
     private ?Collection $user_with_rank;
 

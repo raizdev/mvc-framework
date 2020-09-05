@@ -78,15 +78,14 @@ class User extends Entity
     private int $pixels;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", length=11)
      */
     private int $rank;
 
     /**
-     * @ManyToOne(targetEntity="\Ares\Permission\Entity\Permission", inversedBy="user_with_rank", fetch="EAGER")
-     * @JoinColumn(name="rank", referencedColumnName="id")
+     * @ManyToOne(targetEntity="\Ares\Permission\Entity\Permission", inversedBy="user_with_rank")
      */
-    private ?Permission $rank_data;
+    private Permission $rank_data;
 
     /**
      * @ORM\Column(type="string", length=150)
@@ -132,7 +131,6 @@ class User extends Entity
      * @ORM\Column(type="datetime", nullable = true)
      */
     protected \DateTime $updated_at;
-
 
     /**
      * Get User id
@@ -348,6 +346,23 @@ class User extends Entity
         return $this;
     }
 
+    /**
+     * @return Permission
+     */
+    public function getRankData(): Permission
+    {
+        return $this->rank_data;
+    }
+
+    /**
+     * @param   Permission  $rank_data
+     */
+    public function setRankData(Permission $rank_data): self
+    {
+        $this->rank_data = $rank_data;
+
+        return $this;
+    }
 
     /**
      * Gets Auth_ticket of User
