@@ -123,6 +123,11 @@ return function (App $app) {
                     \Ares\Profile\Controller\ProfileController::class . ':photoList');
             });
 
+            // Permissions
+            $group->group('/permissions', function ($group) {
+                $group->get('/rank/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Permission\Controller\PermissionController::class . ':listUserWithRank');
+            });
+
             // De-Authentication
             $group->post('/logout', \Ares\User\Controller\AuthController::class . ':logout');
         })->add(\Ares\Framework\Middleware\AuthMiddleware::class);

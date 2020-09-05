@@ -8,7 +8,10 @@
 namespace Ares\User\Entity;
 
 use Ares\Framework\Entity\Entity;
+use Ares\Permission\Entity\Permission;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\ManyToOne;
 
 /**
  * Class User
@@ -75,6 +78,16 @@ class User extends Entity
     private int $pixels;
 
     /**
+     * @ORM\Column(type="integer", length=11)
+     */
+    private int $rank;
+
+    /**
+     * @ManyToOne(targetEntity="\Ares\Permission\Entity\Permission", inversedBy="user_with_rank")
+     */
+    private Permission $rank_data;
+
+    /**
      * @ORM\Column(type="string", length=150)
      */
     private ?string $auth_ticket;
@@ -118,7 +131,6 @@ class User extends Entity
      * @ORM\Column(type="datetime", nullable = true)
      */
     protected \DateTime $updated_at;
-
 
     /**
      * Get User id
@@ -310,6 +322,44 @@ class User extends Entity
     public function setPixels(int $pixels): self
     {
         $this->pixels = $pixels;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getRank(): ?int
+    {
+        return $this->rank;
+    }
+
+    /**
+     * @param int $rank
+     *
+     * @return User
+     */
+    public function setRank(int $rank): self
+    {
+        $this->rank = $rank;
+
+        return $this;
+    }
+
+    /**
+     * @return Permission
+     */
+    public function getRankData(): Permission
+    {
+        return $this->rank_data;
+    }
+
+    /**
+     * @param   Permission  $rank_data
+     */
+    public function setRankData(Permission $rank_data): self
+    {
+        $this->rank_data = $rank_data;
 
         return $this;
     }
@@ -510,6 +560,7 @@ class User extends Entity
             'credits' => $this->getCredits(),
             'points' => $this->getPoints(),
             'pixels' => $this->getPixels(),
+            'rank' => $this->getRank(),
             'account_created' => $this->getAccountCreated(),
             'online' => $this->getOnline(),
             'locale' => $this->getLocale(),
