@@ -205,7 +205,7 @@ class Topic extends Entity
         return [
             'id' => $this->getId(),
             'title' => $this->getTitle(),
-            'slug' => $this->getSlug(),
+            'slug' => $this->getId() . '-' . $this->getSlug(),
             'description' => $this->getDescription(),
             'created_at' => $this->getCreatedAt(),
             'updated_at' => $this->getUpdatedAt()

@@ -350,7 +350,7 @@ class Article extends Entity
         return [
             'id' => $this->getId(),
             'title' => $this->getTitle(),
-            'slug' => $this->getSlug(),
+            'slug' => $this->getId() . '-' . $this->getSlug(),
             'description' => $this->getDescription(),
             'content' => $this->getContent(),
             'image' => $this->getImage(),

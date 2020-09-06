@@ -333,7 +333,7 @@ class Thread extends Entity
             'id' => $this->getId(),
             'title' => $this->getTitle(),
             'user' => $this->getUser(),
-            'slug' => $this->getSlug(),
+            'slug' => $this->getId() . '-' . $this->getSlug(),
             'description' => $this->getDescription(),
             'likes' => $this->getLikes(),
             'dislikes' => $this->getDislikes(),
