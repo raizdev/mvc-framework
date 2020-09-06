@@ -57,12 +57,12 @@ class UpdateCurrencyService
      */
     public function execute(int $userId, int $type, int $amount): void
     {
-        $seachCriteria = $this->searchCriteria
+        $searchCriteria = $this->searchCriteria
             ->addFilter('user', $userId)
             ->addFilter('type', $type);
 
         /** @var UserCurrency[] $currencies */
-        $currencies = $this->userCurrencyRepository->getList($seachCriteria)->toArray();
+        $currencies = $this->userCurrencyRepository->getList($searchCriteria)->toArray();
 
         if (!$currencies) {
             throw new UserCurrencyException(__('Currencies was not found.'), 404);
