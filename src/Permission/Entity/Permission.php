@@ -41,6 +41,16 @@ class Permission extends Entity
     private string $badge;
 
     /**
+     * @ORM\Column(type="string")
+     */
+    private string $prefix;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    private string $prefix_color;
+
+    /**
      * @OneToMany(targetEntity="\Ares\User\Entity\User", mappedBy="rank_data")
      */
     private ?Collection $user_with_rank;
@@ -106,6 +116,47 @@ class Permission extends Entity
     }
 
     /**
+     * @return string
+     */
+    public function getPrefix(): string
+    {
+        return $this->prefix;
+    }
+
+    /**
+     * @param string $prefix
+     *
+     * @return Permission
+     */
+    public function setPrefix(string $prefix): self
+    {
+        $this->prefix = $prefix;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPrefixColor(): string
+    {
+        return $this->prefix_color;
+    }
+
+    /**
+     * @param string $prefix_color
+     *
+     * @return Permission
+     */
+    public function setPrefixColor(string $prefix_color): self
+    {
+        $this->prefix_color = $prefix_color;
+
+        return $this;
+    }
+
+
+    /**
      * @return Collection|null
      */
     public function getUserWithRank(): ?Collection
@@ -134,6 +185,8 @@ class Permission extends Entity
             'id' => $this->getId(),
             'rank_name' => $this->getRankName(),
             'badge' => $this->getBadge(),
+            'prefix' => $this->getPrefix(),
+            'prefix_color' => $this->getPrefixColor(),
             'user' => $this->getUserWithRank()->toArray()
         ];
     }

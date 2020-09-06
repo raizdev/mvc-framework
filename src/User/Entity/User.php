@@ -17,7 +17,7 @@ use Doctrine\ORM\Mapping\ManyToOne;
 /**
  * Class User
  *
- * @package Ares\Framework\Entity
+ * @package Ares\User\Entity
  *
  * @ORM\Entity
  * @ORM\Table(name="users", uniqueConstraints={@ORM\UniqueConstraint(name="username", columns={"username"})}))
@@ -71,13 +71,13 @@ class User extends Entity
     /**
      * @ORM\Column(type="integer", length=11)
      */
-    private int $rank;
+    private ?int $rank;
 
     /**
      * @ManyToOne(targetEntity="\Ares\Permission\Entity\Permission", inversedBy="user_with_rank")
      * @JoinColumn(name="rank")
      */
-    private Permission $rank_data;
+    private ?Permission $rank_data;
 
     /**
      * @ORM\Column(type="string", length=150)
@@ -296,28 +296,9 @@ class User extends Entity
      *
      * @return User
      */
-    public function setRank(int $rank): self
+    public function setRank(?int $rank): self
     {
         $this->rank = $rank;
-
-        return $this;
-    }
-
-    /**
-     * @return Permission
-     */
-    public function getRankData(): Permission
-    {
-        return $this->rank_data;
-    }
-
-    /**
-     * @param Permission $rank_data
-     * @return User
-     */
-    public function setRankData(Permission $rank_data): self
-    {
-        $this->rank_data = $rank_data;
 
         return $this;
     }

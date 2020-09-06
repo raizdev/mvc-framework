@@ -12,6 +12,7 @@ use Ares\Framework\Repository\BaseRepository;
 use Ares\Permission\Entity\Permission;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Doctrine\ORM\QueryBuilder;
 use Jhg\DoctrinePagination\Collection\PaginatedArrayCollection;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 

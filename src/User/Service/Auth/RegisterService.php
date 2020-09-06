@@ -109,6 +109,7 @@ class RegisterService
 
         /** @var User $user */
         $user = $this->userRepository->save($this->getNewUser($data));
+        $user = $this->userRepository->update($user->setRank(1));
 
         /** @var TokenService $token */
         $token = $this->tokenService->execute($user->getId());
@@ -150,7 +151,6 @@ class RegisterService
                 $data['password'],
                 PASSWORD_ARGON2ID)
             )
-            ->setRank(1)
             ->setMail($data['mail'])
             ->setLook($data['look'])
             ->setGender($data['gender'])
