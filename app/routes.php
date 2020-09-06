@@ -41,7 +41,7 @@ return function (App $app) {
                 $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}',
                     \Ares\Article\Controller\ArticleController::class . ':list');
                 $group->get('/pinned', \Ares\Article\Controller\ArticleController::class . ':pinned');
-                $group->get('/{id:[0-9]+}', \Ares\Article\Controller\ArticleController::class . ':article');
+                $group->get('/{slug}', \Ares\Article\Controller\ArticleController::class . ':article');
                 $group->delete('/{id:[0-9]+}', \Ares\Article\Controller\ArticleController::class . ':delete');
             });
 
@@ -150,22 +150,23 @@ return function (App $app) {
 
             // Forum
             $group->group('/forum', function ($group) {
-               $group->group('/comments', function ($group) {
-                   $group->post('/{thread:[0-9]+}/create', \Ares\Forum\Controller\CommentController::class . ':create');
-                   $group->get('{thread:[0-9]+}/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Forum\Controller\CommentController::class . ':list');
-                   $group->post('/{thread:[0-9]+}/{id:[0-9]+}', \Ares\Forum\Controller\CommentController::class . ':edit');
-                   $group->delete('/{thread:[0-9]+}/{id:[0-9]+}', \Ares\Forum\Controller\CommentController::class . ':delete');
-               });
+                $group->group('/comments', function ($group) {
+                    $group->post('/{thread:[0-9]+}/create', \Ares\Forum\Controller\CommentController::class . ':create');
+                    $group->get('{thread:[0-9]+}/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Forum\Controller\CommentController::class . ':list');
+                    $group->post('/{thread:[0-9]+}/{id:[0-9]+}', \Ares\Forum\Controller\CommentController::class . ':edit');
+                    $group->delete('/{thread:[0-9]+}/{id:[0-9]+}', \Ares\Forum\Controller\CommentController::class . ':delete');
+                });
                 $group->group('/topics', function ($group) {
                     $group->post('/create', \Ares\Forum\Controller\TopicController::class . ':create');
-                    $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Forum\Controller\TopicController::class. ':list');
+                    $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Forum\Controller\TopicController::class . ':list');
                     $group->post('{id:[0-9]+}', \Ares\Forum\Controller\TopicController::class . ':edit');
                     $group->delete('{id:[0-9]+}', \Ares\Forum\Controller\TopicController::class . ':delete');
                 });
                 $group->group('/threads', function ($group) {
-                    $group->post('/{topic:[0-9]+}/create', \Ares\Forum\Controller\ThreadController::class . ':create');
-                    $group->get('{topic:[0-9]+}/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Forum\Controller\ThreadController::class . ':list');
-                    $group->post('/{topic:[0-9]+}/{id:[0-9]+}', \Ares\Forum\Controller\ThreadController::class . ':edit');
+                    $group->post('/create', \Ares\Forum\Controller\ThreadController::class . ':create');
+                    $group->get('/{topic_id:[0-9]+}/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Forum\Controller\ThreadController::class . ':list');
+                    $group->get('/{topic_id:[0-9]+}/{slug}', \Ares\Forum\Controller\ThreadController::class . ':thread');
+                    $group->post('/{id:[0-9]+}', \Ares\Forum\Controller\ThreadController::class . ':edit');
                     $group->delete('/{topic:[0-9]+}/{id:[0-9]+}', \Ares\Forum\Controller\ThreadController::class . ':delete');
                 });
             });

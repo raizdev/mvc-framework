@@ -14,7 +14,6 @@ use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Jhg\DoctrinePagination\Collection\PaginatedArrayCollection;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\SimpleCache\InvalidArgumentException;
 
 /**
  * Class ThreadRepository
@@ -59,13 +58,40 @@ class ThreadRepository extends BaseRepository
     }
 
     /**
+     * @param int    $topic
+     * @param string $slug
+     * @param bool   $cachedEntity
+     *
+     * @return mixed|object|null
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws \Psr\Cache\InvalidArgumentException
+     */
+    public function findByCriteria(int $topic, string $slug, bool $cachedEntity = true)
+    {
+        $entity = $this->cacheService->get(self::CACHE_PREFIX . $slug);
+
+        if ($entity && $cachedEntity) {
+            return unserialize($entity);
+        }
+
+        $entity = $this->findOneBy([
+            'topic' => $topic,
+            'slug' => $slug
+        ]);
+
+        $this->cacheService->set(self::CACHE_PREFIX . $slug, serialize($entity));
+
+        return $entity;
+    }
+
+    /**
      * @param object $model
      *
      * @return object
-     * @throws InvalidArgumentException
      * @throws ORMException
      * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException|\Psr\Cache\InvalidArgumentException
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws \Psr\Cache\InvalidArgumentException
      */
     public function save(object $model): object
     {

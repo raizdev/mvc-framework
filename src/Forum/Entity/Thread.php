@@ -14,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Class Thread
  *
- * @package Ares\Forum\Entity
+ * @package Ares\Forum\Entity\Thread
  *
  * @ORM\Entity
  * @ORM\Table(name="ares_forum_threads")
@@ -39,6 +39,11 @@ class Thread extends Entity
      * @ORM\OneToOne(targetEntity="\Ares\User\Entity\User")
      */
     private ?User $user;
+
+    /**
+     * @ORM\Column(type="string", length=100)
+     */
+    private string $slug;
 
     /**
      * @ORM\Column(type="string", length=100)
@@ -131,6 +136,26 @@ class Thread extends Entity
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSlug(): string
+    {
+        return $this->slug;
+    }
+
+    /**
+     * @param string $slug
+     *
+     * @return Thread
+     */
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
 
         return $this;
     }
@@ -308,6 +333,7 @@ class Thread extends Entity
             'id' => $this->getId(),
             'title' => $this->getTitle(),
             'user' => $this->getUser(),
+            'slug' => $this->getSlug(),
             'description' => $this->getDescription(),
             'likes' => $this->getLikes(),
             'dislikes' => $this->getDislikes(),

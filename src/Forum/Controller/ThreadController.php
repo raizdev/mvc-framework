@@ -50,6 +50,7 @@ class ThreadController extends BaseController
      * @var EditThreadService
      */
     private EditThreadService $editThreadService;
+
     /**
      * @var DoctrineSearchCriteria
      */
@@ -58,12 +59,12 @@ class ThreadController extends BaseController
     /**
      * CommentController constructor.
      *
-     * @param   ThreadRepository        $threadRepository
-     * @param   UserRepository          $userRepository
-     * @param   CreateThreadService     $createThreadService
-     * @param   EditThreadService       $editThreadService
-     * @param   ValidationService       $validationService
-     * @param   DoctrineSearchCriteria  $searchCriteria
+     * @param ThreadRepository       $threadRepository
+     * @param UserRepository         $userRepository
+     * @param CreateThreadService    $createThreadService
+     * @param EditThreadService      $editThreadService
+     * @param ValidationService      $validationService
+     * @param DoctrineSearchCriteria $searchCriteria
      */
     public function __construct(
         ThreadRepository $threadRepository,
@@ -73,17 +74,17 @@ class ThreadController extends BaseController
         ValidationService $validationService,
         DoctrineSearchCriteria $searchCriteria
     ) {
-        $this->threadRepository    = $threadRepository;
-        $this->userRepository      = $userRepository;
+        $this->threadRepository = $threadRepository;
+        $this->userRepository = $userRepository;
         $this->createThreadService = $createThreadService;
-        $this->editThreadService   = $editThreadService;
-        $this->validationService   = $validationService;
+        $this->editThreadService = $editThreadService;
+        $this->validationService = $validationService;
         $this->searchCriteria = $searchCriteria;
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request  $request
+     * @param Response $response
      *
      * @return Response
      * @throws InvalidArgumentException
@@ -101,7 +102,9 @@ class ThreadController extends BaseController
         $parsedData = $request->getParsedBody();
 
         $this->validationService->validate($parsedData, [
-            'content'  => 'required',
+            'title' => 'required',
+            'description' => 'required',
+            'content' => 'required',
             'topic_id' => 'required|numeric'
         ]);
 
@@ -113,8 +116,39 @@ class ThreadController extends BaseController
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request  $request
+     * @param Response $response
+     * @param          $args
+     *
+     * @return Response
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws ThreadException
+     * @throws \Psr\Cache\InvalidArgumentException
+     */
+    public function thread(Request $request, Response $response, $args)
+    {
+        /** @var string $slug */
+        $slug = $args['slug'];
+
+        /** @var int $topic */
+        $topic = $args['topic_id'];
+
+        /** @var Thread $thread */
+        $thread = $this->threadRepository->findByCriteria($topic, $slug);
+
+        if (!$thread) {
+            throw new ThreadException(__('No specific Thread found'), 404);
+        }
+
+        return $this->respond(
+            $response,
+            response()->setData($thread)
+        );
+    }
+
+    /**
+     * @param Request     $request
+     * @param Response    $response
      * @param             $args
      *
      * @return Response
@@ -146,8 +180,8 @@ class ThreadController extends BaseController
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request     $request
+     * @param Response    $response
      * @param             $args
      *
      * @return Response

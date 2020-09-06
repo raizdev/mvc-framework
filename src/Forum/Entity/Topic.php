@@ -35,6 +35,11 @@ class Topic extends Entity
     private string $title;
 
     /**
+     * @ORM\Column(type="string", length=100)
+     */
+    private string $slug;
+
+    /**
      * @ORM\Column(type="string", length=150)
      */
     private string $description;
@@ -85,6 +90,26 @@ class Topic extends Entity
     public function setTitle(string $title): self
     {
         $this->title = $title;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSlug(): string
+    {
+        return $this->slug;
+    }
+
+    /**
+     * @param string $slug
+     *
+     * @return Topic
+     */
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
 
         return $this;
     }
@@ -180,6 +205,7 @@ class Topic extends Entity
         return [
             'id' => $this->getId(),
             'title' => $this->getTitle(),
+            'slug' => $this->getSlug(),
             'description' => $this->getDescription(),
             'created_at' => $this->getCreatedAt(),
             'updated_at' => $this->getUpdatedAt()

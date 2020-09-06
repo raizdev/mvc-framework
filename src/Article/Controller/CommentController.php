@@ -111,10 +111,15 @@ class CommentController extends BaseController
     }
 
     /**
-     * @param Request $request
+     * @param Request  $request
      * @param Response $response
-     * @param $args
+     * @param          $args
+     *
      * @return Response
+     * @throws InvalidArgumentException
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws PhpfastcacheSimpleCacheException
      * @throws ValidationException
      */
     public function edit(Request $request, Response $response, $args): Response
@@ -182,16 +187,16 @@ class CommentController extends BaseController
     }
 
     /**
-     * @param Request $request
+     * @param Request  $request
      * @param Response $response
-     * @param $args
+     * @param          $args
+     *
      * @return Response
      * @throws CommentException
      * @throws InvalidArgumentException
      * @throws ORMException
      * @throws OptimisticLockException
      * @throws PhpfastcacheSimpleCacheException
-     * @throws ValidationException
      */
     public function delete(Request $request, Response $response, $args): Response
     {

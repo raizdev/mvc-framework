@@ -59,6 +59,31 @@ class ArticleRepository extends BaseRepository
     }
 
     /**
+     * @param string $slug
+     * @param bool   $cachedEntity
+     *
+     * @return mixed|object|null
+     * @throws InvalidArgumentException
+     * @throws PhpfastcacheSimpleCacheException
+     */
+    public function findBySlug(string $slug, bool $cachedEntity = true)
+    {
+        $entity = $this->cacheService->get(self::CACHE_PREFIX . $slug);
+
+        if ($entity && $cachedEntity) {
+            return unserialize($entity);
+        }
+
+        $entity = $this->findOneBy([
+            'slug' => $slug
+        ]);
+
+        $this->cacheService->set(self::CACHE_PREFIX . $slug, serialize($entity));
+
+        return $entity;
+    }
+
+    /**
      * @param object $model
      *
      * @return object

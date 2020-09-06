@@ -110,7 +110,6 @@ class ArticleController extends BaseController
 
         $this->validationService->validate($parsedData, [
             'title' => 'required',
-            'slug' => 'required',
             'description' => 'required',
             'content' => 'required',
             'image' => 'required',
@@ -141,11 +140,11 @@ class ArticleController extends BaseController
      */
     public function article(Request $request, Response $response, $args): Response
     {
-        /** @var int $id */
-        $id = (int) $args['id'];
+        /** @var string $slug */
+        $slug = $args['slug'];
 
         /** @var Article $article */
-        $article = $this->articleRepository->get((int)$id);
+        $article = $this->articleRepository->findBySlug($slug);
 
         if (is_null($article)) {
             throw new ArticleException(__('No specific Article found'), 404);
@@ -162,7 +161,6 @@ class ArticleController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws ArticleException
      * @throws InvalidArgumentException
      * @throws PhpfastcacheSimpleCacheException
      */
@@ -188,7 +186,6 @@ class ArticleController extends BaseController
      * @param          $args
      *
      * @return Response
-     * @throws ArticleException
      * @throws InvalidArgumentException
      * @throws PhpfastcacheSimpleCacheException
      */
@@ -215,15 +212,16 @@ class ArticleController extends BaseController
     /**
      * Deletes specific article.
      *
-     * @param Request $request
+     * @param Request  $request
      * @param Response $response
-     * @param $args
+     * @param          $args
+     *
      * @return Response
+     * @throws ArticleException
      * @throws InvalidArgumentException
      * @throws ORMException
      * @throws OptimisticLockException
      * @throws PhpfastcacheSimpleCacheException
-     * @throws ValidationException
      */
     public function delete(Request $request, Response $response, $args): Response
     {

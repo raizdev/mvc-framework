@@ -11,6 +11,7 @@ use Ares\Forum\Entity\Topic;
 use Ares\Forum\Exception\TopicException;
 use Ares\Forum\Repository\TopicRepository;
 use Ares\Framework\Interfaces\CustomResponseInterface;
+use Cocur\Slugify\Slugify;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -29,14 +30,22 @@ class CreateTopicService
     private TopicRepository $topicRepository;
 
     /**
+     * @var Slugify
+     */
+    private Slugify $slug;
+
+    /**
      * CreateTopicService constructor.
      *
-     * @param   TopicRepository  $topicRepository
+     * @param TopicRepository $topicRepository
+     * @param Slugify         $slug
      */
     public function __construct(
-        TopicRepository $topicRepository
+        TopicRepository $topicRepository,
+        Slugify $slug
     ) {
         $this->topicRepository = $topicRepository;
+        $this->slug = $slug;
     }
 
     /**
@@ -78,6 +87,7 @@ class CreateTopicService
 
         return $topic
             ->setTitle($data['title'])
+            ->setSlug($this->slug->slugify($data['title']))
             ->setDescription($data['description']);
     }
 }

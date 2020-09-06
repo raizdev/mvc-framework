@@ -8,12 +8,12 @@
 namespace Ares\Forum\Service\Thread;
 
 use Ares\Forum\Entity\Thread;
-use Ares\Forum\Entity\Topic;
 use Ares\Forum\Exception\ThreadException;
 use Ares\Forum\Repository\ThreadRepository;
 use Ares\Forum\Repository\TopicRepository;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\User\Entity\User;
+use Cocur\Slugify\Slugify;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -37,17 +37,25 @@ class CreateThreadService
     private TopicRepository $topicRepository;
 
     /**
+     * @var Slugify
+     */
+    private Slugify $slug;
+
+    /**
      * CreateThreadService constructor.
      *
-     * @param   ThreadRepository  $threadRepository
-     * @param   TopicRepository   $topicRepository
+     * @param ThreadRepository $threadRepository
+     * @param TopicRepository  $topicRepository
+     * @param Slugify          $slug
      */
     public function __construct(
         ThreadRepository $threadRepository,
-        TopicRepository $topicRepository
+        TopicRepository $topicRepository,
+        Slugify $slug
     ) {
         $this->threadRepository = $threadRepository;
         $this->topicRepository = $topicRepository;
+        $this->slug = $slug;
     }
 
     /**
@@ -84,15 +92,23 @@ class CreateThreadService
     {
         $thread = new Thread();
 
-        $topic = $this->topicRepository->get($data['topic_id']);
+        $topic = $this->topicRepository->get($data['topic_id'], false);
+        $existingThread = $this->threadRepository->findOneBy([
+            'title' => $data['title']
+        ]);
 
         if (!$topic) {
             throw new ThreadException(__('Related Topic was not found'));
         }
 
+        if ($existingThread) {
+            throw new ThreadException(__('There is already an existing Thread with this Title'));
+        }
+
         return $thread
             ->setUser($user)
             ->setTopic($topic)
+            ->setSlug($this->slug->slugify($data['title']))
             ->setTitle($data['title'])
             ->setDescription($data['description'])
             ->setContent($data['content'])

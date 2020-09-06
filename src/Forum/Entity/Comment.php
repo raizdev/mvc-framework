@@ -16,7 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @package Ares\Forum\Entity
  *
- * @ORM\Entity(repositoryClass="Ares\Forum\Repository\CommentRepository")
+ * @ORM\Entity()
  * @ORM\Table(name="ares_forum_comments")
  * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
  * @ORM\HasLifecycleCallbacks
