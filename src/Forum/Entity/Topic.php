@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Class Topic
  *
- * @package Ares\Topic\Entity
+ * @package Ares\Forum\Entity
  *
  * @ORM\Entity
  * @ORM\Table(name="ares_forum_topics", uniqueConstraints={@ORM\UniqueConstraint(name="title", columns={"title"})}))

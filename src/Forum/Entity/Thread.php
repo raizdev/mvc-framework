@@ -5,6 +5,12 @@
  * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
  */
 
+/**
+ * Ares (https://ares.to)
+ *
+ * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ */
+
 namespace Ares\Forum\Entity;
 
 use Ares\Framework\Entity\Entity;
@@ -14,10 +20,10 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Class Thread
  *
- * @package Ares\Forum\Entity\Thread
+ * @package Ares\Forum\Entity
  *
  * @ORM\Entity
- * @ORM\Table(name="ares_forum_threads")
+ * @ORM\Table(name="ares_forum_threads", uniqueConstraints={@ORM\UniqueConstraint(name="title", columns={"title"})}))
  * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
  * @ORM\HasLifecycleCallbacks
  */
@@ -334,6 +340,7 @@ class Thread extends Entity
             'title' => $this->getTitle(),
             'user' => $this->getUser(),
             'slug' => $this->getId() . '-' . $this->getSlug(),
+            'content' => $this->getContent(),
             'description' => $this->getDescription(),
             'likes' => $this->getLikes(),
             'dislikes' => $this->getDislikes(),

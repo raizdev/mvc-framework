@@ -24,4 +24,6 @@ interface VoteEntityInterface
     public const FORUM_COMMENT_VOTE_ENTITY = 4;
     /** @var int */
     public const GUESTBOOK_VOTE_ENTITY = 5;
+    /** @var int */
+    public const PHOTO_VOTE_ENTITY = 6;
 }

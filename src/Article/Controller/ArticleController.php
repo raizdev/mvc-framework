@@ -8,6 +8,7 @@
 namespace Ares\Article\Controller;
 
 use Ares\Article\Service\CreateArticleService;
+use Ares\Forum\Repository\CommentRepository;
 use Ares\Framework\Controller\BaseController;
 use Ares\Article\Entity\Article;
 use Ares\Article\Exception\ArticleException;
@@ -68,26 +69,34 @@ class ArticleController extends BaseController
     private UserRepository $userRepository;
 
     /**
+     * @var CommentRepository
+     */
+    private CommentRepository $commentRepository;
+
+    /**
      * NewsController constructor.
      *
-     * @param ArticleRepository $articleRepository
+     * @param ArticleRepository      $articleRepository
+     * @param UserRepository         $userRepository
+     * @param CommentRepository      $commentRepository
      * @param DoctrineSearchCriteria $searchCriteria
-     * @param CreateArticleService $createArticleService
-     * @param ValidationService $validationService
-     * @param UserRepository $userRepository
+     * @param CreateArticleService   $createArticleService
+     * @param ValidationService      $validationService
      */
     public function __construct(
         ArticleRepository $articleRepository,
+        UserRepository $userRepository,
+        CommentRepository $commentRepository,
         DoctrineSearchCriteria $searchCriteria,
         CreateArticleService $createArticleService,
-        ValidationService $validationService,
-        UserRepository $userRepository
+        ValidationService $validationService
     ) {
         $this->articleRepository = $articleRepository;
+        $this->userRepository = $userRepository;
+        $this->commentRepository = $commentRepository;
         $this->searchCriteria = $searchCriteria;
         $this->createArticleService = $createArticleService;
         $this->validationService = $validationService;
-        $this->userRepository = $userRepository;
     }
 
     /**
