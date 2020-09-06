@@ -27,6 +27,12 @@ return function (App $app) {
                 $group->post('/ticket', \Ares\User\Controller\AuthController::class . ':ticket');
                 $group->post('/locale', \Ares\User\Controller\UserController::class . ':updateLocale');
                 $group->post('/currency', \Ares\User\Controller\UserCurrencyController::class . ':update');
+                $group->group('/settings', function ($group) {
+                    $group->post('/change_general_settings', \Ares\User\Controller\Settings\UserSettingsController::class . ':changeGeneralSettings');
+                    $group->post('/change_password', \Ares\User\Controller\Settings\UserSettingsController::class . ':changePassword');
+                    $group->post('/change_email', \Ares\User\Controller\Settings\UserSettingsController::class . ':changeEmail');
+                    $group->post('/change_username', \Ares\User\Controller\Settings\UserSettingsController::class . ':changeUsername');
+                });
             });
 
             // Articles
