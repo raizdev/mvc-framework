@@ -80,6 +80,8 @@ class CreateArticleService
             ->setImage($data['image'])
             ->setAuthor($user)
             ->setHidden($data['hidden'])
-            ->setPinned($data['pinned']);
+            ->setPinned($data['pinned'])
+            ->setLikes(0)
+            ->setDislikes(0);
     }
 }

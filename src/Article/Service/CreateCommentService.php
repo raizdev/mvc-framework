@@ -96,6 +96,8 @@ class CreateCommentService
             ->setUser($user)
             ->setLikes(0)
             ->setDislikes(0)
-            ->setArticle($article);
+            ->setArticle($article)
+            ->setLikes(0)
+            ->setDislikes(0);
     }
 }

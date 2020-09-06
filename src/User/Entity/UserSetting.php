@@ -37,54 +37,54 @@ class UserSetting extends Entity
     private ?User $user;
 
     /**
-     * @ORM\Column(type="integer", length=11)
+     * @ORM\Column(type="string", columnDefinition="ENUM('0',1')")
      */
-    private int $achievement_score;
+    private string $achievement_score;
 
     /**
-     * @ORM\Column(type="integer", length=11)
+     * @ORM\Column(type="string", columnDefinition="ENUM('0',1')")
      */
-    private int $can_change_name;
+    private string $can_change_name;
 
     /**
-     * @ORM\Column(type="integer", length=11)
+     * @ORM\Column(type="string", columnDefinition="ENUM('0',1')")
      */
-    private int $block_following;
+    private string $block_following;
 
     /**
-     * @ORM\Column(type="integer", length=11)
+     * @ORM\Column(type="string", columnDefinition="ENUM('0',1')")
      */
-    private int $block_friendrequests;
+    private string $block_friendrequests;
 
     /**
-     * @ORM\Column(type="integer", length=11)
+     * @ORM\Column(type="string", columnDefinition="ENUM('0',1')")
      */
-    private int $block_roominvites;
+    private string $block_roominvites;
 
     /**
-     * @ORM\Column(type="integer", length=11)
+     * @ORM\Column(type="string", columnDefinition="ENUM('0',1')")
      */
-    private int $block_camera_follow;
+    private string $block_camera_follow;
 
     /**
-     * @ORM\Column(type="integer", length=11)
+     * @ORM\Column(type="string", columnDefinition="ENUM('0',1')")
      */
-    private int $online_time;
+    private string $online_time;
 
     /**
-     * @ORM\Column(type="integer", length=11)
+     * @ORM\Column(type="string", columnDefinition="ENUM('0',1')")
      */
-    private int $block_alerts;
+    private string $block_alerts;
 
     /**
-     * @ORM\Column(type="integer", length=11)
+     * @ORM\Column(type="string", columnDefinition="ENUM('0',1')")
      */
-    private int $ignore_bots;
+    private string $ignore_bots;
 
     /**
-     * @ORM\Column(type="integer", length=11)
+     * @ORM\Column(type="string", columnDefinition="ENUM('0',1')")
      */
-    private int $ignore_pets;
+    private string $ignore_pets;
 
     /**
      * @return int
@@ -127,19 +127,19 @@ class UserSetting extends Entity
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getAchievementScore(): int
+    public function getAchievementScore(): string
     {
         return $this->achievement_score;
     }
 
     /**
-     * @param   int  $achievement_score
+     * @param string $achievement_score
      *
      * @return UserSetting
      */
-    public function setAchievementScore(int $achievement_score): self
+    public function setAchievementScore(string $achievement_score): self
     {
         $this->achievement_score = $achievement_score;
 
@@ -147,19 +147,19 @@ class UserSetting extends Entity
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getCanChangeName(): int
+    public function getCanChangeName(): string
     {
         return $this->can_change_name;
     }
 
     /**
-     * @param   int  $can_change_name
+     * @param string $can_change_name
      *
      * @return UserSetting
      */
-    public function setCanChangeName(int $can_change_name): self
+    public function setCanChangeName(string $can_change_name): self
     {
         $this->can_change_name = $can_change_name;
 
@@ -167,19 +167,19 @@ class UserSetting extends Entity
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getBlockFollowing(): int
+    public function getBlockFollowing(): string
     {
         return $this->block_following;
     }
 
     /**
-     * @param   int  $block_following
+     * @param string $block_following
      *
      * @return UserSetting
      */
-    public function setBlockFollowing(int $block_following): self
+    public function setBlockFollowing(string $block_following): self
     {
         $this->block_following = $block_following;
 
@@ -187,19 +187,19 @@ class UserSetting extends Entity
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getBlockFriendrequests(): int
+    public function getBlockFriendrequests(): string
     {
         return $this->block_friendrequests;
     }
 
     /**
-     * @param   int  $block_friendrequests
+     * @param string $block_friendrequests
      *
      * @return UserSetting
      */
-    public function setBlockFriendrequests(int $block_friendrequests): self
+    public function setBlockFriendrequests(string $block_friendrequests): self
     {
         $this->block_friendrequests = $block_friendrequests;
 
@@ -207,19 +207,19 @@ class UserSetting extends Entity
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getBlockRoominvites(): int
+    public function getBlockRoominvites(): string
     {
         return $this->block_roominvites;
     }
 
     /**
-     * @param   int  $block_roominvites
+     * @param string $block_roominvites
      *
      * @return UserSetting
      */
-    public function setBlockRoominvites(int $block_roominvites): self
+    public function setBlockRoominvites(string $block_roominvites): self
     {
         $this->block_roominvites = $block_roominvites;
 
@@ -227,19 +227,19 @@ class UserSetting extends Entity
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getBlockCameraFollow(): int
+    public function getBlockCameraFollow(): string
     {
         return $this->block_camera_follow;
     }
 
     /**
-     * @param   int  $block_camera_follow
+     * @param string $block_camera_follow
      *
      * @return UserSetting
      */
-    public function setBlockCameraFollow(int $block_camera_follow): self
+    public function setBlockCameraFollow(string $block_camera_follow): self
     {
         $this->block_camera_follow = $block_camera_follow;
 
@@ -247,19 +247,19 @@ class UserSetting extends Entity
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getOnlinetime(): int
+    public function getOnlinetime(): string
     {
         return $this->online_time;
     }
 
     /**
-     * @param   int  $online_time
+     * @param string $online_time
      *
      * @return UserSetting
      */
-    public function setOnlinetime(int $online_time): self
+    public function setOnlinetime(string $online_time): self
     {
         $this->online_time = $online_time;
 
@@ -267,19 +267,19 @@ class UserSetting extends Entity
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getBlockAlerts(): int
+    public function getBlockAlerts(): string
     {
         return $this->block_alerts;
     }
 
     /**
-     * @param   int  $block_alerts
+     * @param string $block_alerts
      *
      * @return UserSetting
      */
-    public function setBlockAlerts(int $block_alerts): self
+    public function setBlockAlerts(string $block_alerts): self
     {
         $this->block_alerts = $block_alerts;
 
@@ -287,19 +287,19 @@ class UserSetting extends Entity
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getIgnoreBots(): int
+    public function getIgnoreBots(): string
     {
         return $this->ignore_bots;
     }
 
     /**
-     * @param   int  $ignore_bots
+     * @param string $ignore_bots
      *
      * @return UserSetting
      */
-    public function setIgnoreBots(int $ignore_bots): self
+    public function setIgnoreBots(string $ignore_bots): self
     {
         $this->ignore_bots = $ignore_bots;
 
@@ -307,19 +307,19 @@ class UserSetting extends Entity
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getIgnorePets(): int
+    public function getIgnorePets(): string
     {
         return $this->ignore_pets;
     }
 
     /**
-     * @param   int  $ignore_pets
+     * @param string $ignore_pets
      *
      * @return UserSetting
      */
-    public function setIgnorePets(int $ignore_pets): self
+    public function setIgnorePets(string $ignore_pets): self
     {
         $this->ignore_pets = $ignore_pets;
 
