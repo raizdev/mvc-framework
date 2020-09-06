@@ -75,12 +75,12 @@ class ChangeGeneralSettingsService
     private function getUpdatedUserSettings(UserSetting $userSetting, array $data): UserSetting
     {
         return $userSetting
-            ->setBlockFollowing($data['block_following'])
-            ->setBlockFriendrequests($data['block_friendrequests'])
-            ->setBlockRoominvites($data['block_roominvites'])
-            ->setBlockCameraFollow($data['block_camera_follow'])
-            ->setBlockAlerts($data['block_alerts'])
-            ->setIgnoreBots($data['ignore_bots'])
-            ->setIgnorePets($data['ignore_pets']);
+            ->setBlockFollowing((string)$data['block_following'])
+            ->setBlockFriendrequests((string)$data['block_friendrequests'])
+            ->setBlockRoominvites((string)$data['block_roominvites'])
+            ->setBlockCameraFollow((string)$data['block_camera_follow'])
+            ->setBlockAlerts((string)$data['block_alerts'])
+            ->setIgnoreBots((string)$data['ignore_bots'])
+            ->setIgnorePets((string)$data['ignore_pets']);
     }
 }
