@@ -167,7 +167,15 @@ class GuildController extends BaseController
 
         return $this->respond(
             $response,
-            response()->setData($members->toArray())
+            response()
+                ->setData([
+                'pagination' => [
+                    'totalPages' => $members->getPages(),
+                    'prevPage' => $members->getPrevPage(),
+                    'nextPage' => $members->getNextPage()
+                ],
+                'members' => $members->toArray()
+            ])
         );
     }
 
