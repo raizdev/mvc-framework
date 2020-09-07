@@ -159,7 +159,7 @@ class GuildController extends BaseController
         $this->searchCriteria->setPage((int)$page)
             ->setLimit((int)$resultPerPage)
             ->addFilter('guild', $id)
-            ->addOrder('id', 'DESC');
+            ->addOrder('level_id', 'ASC');
 
         $members = $this->guildMemberRepository->paginate($this->searchCriteria);
 
