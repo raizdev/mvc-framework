@@ -104,7 +104,6 @@ class GuildController extends BaseController
      * @param          $args
      *
      * @return Response
-     * @throws GuildException
      * @throws InvalidArgumentException
      * @throws PhpfastcacheSimpleCacheException
      */
@@ -122,13 +121,17 @@ class GuildController extends BaseController
 
         $guilds = $this->guildRepository->paginate($this->searchCriteria);
 
-        if ($guilds->isEmpty()) {
-            throw new GuildException(__('No Guilds were found'), 404);
-        }
-
         return $this->respond(
             $response,
-            response()->setData($guilds->toArray())
+            response()
+                ->setData([
+                    'pagination' => [
+                        'totalPages' => $guilds->getPages(),
+                        'prevPage' => $guilds->getPrevPage(),
+                        'nextPage' => $guilds->getNextPage()
+                    ],
+                    'guilds' => $guilds->toArray()
+                ])
         );
     }
 
@@ -139,7 +142,6 @@ class GuildController extends BaseController
      * @param          $args
      *
      * @return Response
-     * @throws GuildException
      * @throws InvalidArgumentException
      * @throws PhpfastcacheSimpleCacheException
      */

@@ -12,7 +12,6 @@ use Ares\Framework\Model\Adapter\DoctrineSearchCriteria;
 use Ares\Room\Entity\Room;
 use Ares\Room\Exception\RoomException;
 use Ares\Room\Repository\RoomRepository;
-use Jhg\DoctrinePagination\Collection\PaginatedArrayCollection;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -86,7 +85,6 @@ class RoomController extends BaseController
      * @return Response
      * @throws InvalidArgumentException
      * @throws PhpfastcacheSimpleCacheException
-     * @throws RoomException
      */
     public function list(Request $request, Response $response, $args): Response
     {
@@ -102,13 +100,17 @@ class RoomController extends BaseController
 
         $rooms = $this->roomRepository->paginate($this->searchCriteria);
 
-        if ($rooms->isEmpty()) {
-            throw new RoomException(__('No Rooms were found'), 404);
-        }
-
         return $this->respond(
             $response,
-            response()->setData($rooms->toArray())
+            response()
+                ->setData([
+                    'pagination' => [
+                        'totalPages' => $rooms->getPages(),
+                        'prevPage' => $rooms->getPrevPage(),
+                        'nextPage' => $rooms->getNextPage()
+                    ],
+                    'rooms' => $rooms->toArray()
+                ])
         );
     }
 
@@ -126,7 +128,7 @@ class RoomController extends BaseController
             'users' => 'DESC'
         ]);
 
-        if (is_null($room)) {
+        if (!$room) {
             throw new RoomException(__('No Room found'), 404);
         }
 
