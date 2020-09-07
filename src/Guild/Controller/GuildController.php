@@ -161,10 +161,6 @@ class GuildController extends BaseController
 
         $members = $this->guildMemberRepository->paginate($this->searchCriteria);
 
-        if ($members->isEmpty()) {
-            throw new GuildException(__('No Members were found for this Guild'), 404);
-        }
-
         return $this->respond(
             $response,
             response()
