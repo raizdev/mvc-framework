@@ -58,7 +58,6 @@ class CreateVoteService
         $existingVote = $this->voteRepository->findOneBy([
             'entity_id' => $vote->getEntityId(),
             'vote_entity' => $vote->getVoteEntity(),
-            'vote_type' => $vote->getVoteType(),
             'user' => $user
         ]);
 
