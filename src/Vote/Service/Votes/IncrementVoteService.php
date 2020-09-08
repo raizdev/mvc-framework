@@ -46,7 +46,7 @@ class IncrementVoteService
     public function execute(int $entityId, int $voteEntity, int $voteType): bool
     {
         $entityRepository = $this->getVoteEntityService->execute($entityId, $voteEntity);
-        $entity = $entityRepository->get($entityId);
+        $entity = $entityRepository->get($entityId, false);
 
         if ($voteType === VoteTypeInterface::VOTE_LIKE) {
             $likes = $entity->getLikes();

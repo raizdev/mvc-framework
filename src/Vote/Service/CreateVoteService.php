@@ -67,7 +67,7 @@ class CreateVoteService
         }
 
         $entityRepository = $this->getVoteEntityService->execute($vote->getEntityId(), $vote->getVoteEntity());
-        $entity = $entityRepository->get($vote->getEntityId());
+        $entity = $entityRepository->get($vote->getEntityId(), false);
 
         if (!$entity) {
             throw new VoteException(__('The related vote entity has no existing data.'), 404);
