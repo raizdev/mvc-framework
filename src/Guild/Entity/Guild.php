@@ -216,7 +216,6 @@ class Guild extends Entity
             'name' => $this->getName(),
             'description' => $this->getDescription(),
             'badge' => $this->getBadge(),
-            'room' => $this->getRoom(),
             'date_created' => $this->getDateCreated()
         ];
     }

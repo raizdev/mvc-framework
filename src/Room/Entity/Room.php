@@ -280,7 +280,6 @@ class Room extends Entity
             'state' => $this->getState(),
             'users' => $this->getUsers(),
             'users_max' => $this->getUsersMax(),
-            'guild' => $this->getGuild(),
             'score' => $this->getScore()
         ];
     }
