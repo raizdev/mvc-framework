@@ -200,7 +200,9 @@ class GuildController extends BaseController
         /** @var Guild $guild */
         $guild = $this->guildRepository->get($getMaxMemberGuild['id']);
 
-        $guild->getRoom()->setGuild(null);
+        if($guild->getRoom()->getGuild()) {
+            $guild->getRoom()->setGuild(null);
+        }
 
         return $this->respond(
             $response,

@@ -132,7 +132,9 @@ class RoomController extends BaseController
             throw new RoomException(__('No Room found'), 404);
         }
 
-        $room->getGuild()->setRoom(null);
+        if($room->getGuild()->getRoom()) {
+            $room->getGuild()->setRoom(null);
+        }
 
         return $this->respond(
             $response,
