@@ -12,6 +12,10 @@ use Ares\User\Entity\User;
 use Ares\Vote\Entity\Vote;
 use Ares\Vote\Exception\VoteException;
 use Ares\Vote\Repository\VoteRepository;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\Cache\InvalidArgumentException;
 
 /**
  * Class CreateVoteService
@@ -46,10 +50,15 @@ class CreateVoteService
     /**
      * Create new vote with given data.
      *
-     * @param User $user
+     * @param User  $user
      * @param array $data
+     *
      * @return CustomResponseInterface
      * @throws VoteException
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws InvalidArgumentException
      */
     public function execute(User $user, array $data): CustomResponseInterface
     {
