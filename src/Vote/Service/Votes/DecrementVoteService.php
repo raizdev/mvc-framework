@@ -63,7 +63,7 @@ class DecrementVoteService
             $dislikes = $entity->getDislikes();
             $dislikes = $dislikes > 0 ? --$dislikes : $dislikes;
 
-            $entity->setDislikes(++$dislikes);
+            $entity->setDislikes($dislikes);
         }
 
         try {

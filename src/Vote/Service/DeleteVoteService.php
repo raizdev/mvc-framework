@@ -15,6 +15,7 @@ use Ares\Vote\Repository\VoteRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\Cache\InvalidArgumentException;
 
 /**
  * Class DeleteVoteService
@@ -50,7 +51,7 @@ class DeleteVoteService
      * @throws OptimisticLockException
      * @throws PhpfastcacheSimpleCacheException
      * @throws VoteException
-     * @throws \Psr\Cache\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function execute(User $user, array $data): CustomResponseInterface
     {

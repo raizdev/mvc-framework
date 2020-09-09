@@ -48,8 +48,10 @@ abstract class BaseRepository extends PaginatedRepository
      * @param   EntityManager  $em
      * @param   CacheService   $cacheService
      */
-    public function __construct(EntityManager $em, CacheService $cacheService)
-    {
+    public function __construct(
+        EntityManager $em,
+        CacheService $cacheService
+    ) {
         parent::__construct($em, new ClassMetadata($this->entity));
         $this->cacheService = $cacheService;
     }
@@ -172,7 +174,7 @@ abstract class BaseRepository extends PaginatedRepository
      */
     public function delete(int $id): bool
     {
-        $model = $this->get($id);
+        $model = $this->get($id, false);
 
         if (!$model) {
             return false;
