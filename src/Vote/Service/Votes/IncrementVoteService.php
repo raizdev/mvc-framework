@@ -10,6 +10,9 @@ namespace Ares\Vote\Service\Votes;
 use Ares\Vote\Exception\VoteException;
 use Ares\Vote\Interfaces\VoteTypeInterface;
 use Ares\Vote\Service\GetVoteEntityService;
+use Exception;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\Cache\InvalidArgumentException;
 
 /**
  * Class IncrementVoteService
@@ -40,8 +43,11 @@ class IncrementVoteService
      * @param int $entityId
      * @param int $voteEntity
      * @param int $voteType
+     *
      * @return bool
      * @throws VoteException
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws InvalidArgumentException
      */
     public function execute(int $entityId, int $voteEntity, int $voteType): bool
     {
@@ -59,7 +65,7 @@ class IncrementVoteService
         try {
             $entityRepository->update($entity);
             return true;
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return false;
         }
     }
