@@ -28,6 +28,7 @@ class CreateVoteService
      * @var VoteRepository
      */
     private VoteRepository $voteRepository;
+
     /**
      * @var GetVoteEntityService
      */

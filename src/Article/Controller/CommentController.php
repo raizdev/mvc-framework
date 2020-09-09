@@ -179,7 +179,8 @@ class CommentController extends BaseController
                 'pagination' => [
                     'totalPages' => $comments->getPages(),
                     'prevPage' => $comments->getPrevPage(),
-                    'nextPage' => $comments->getNextPage()
+                    'nextPage' => $comments->getNextPage(),
+                    'totalComments' => $comments->getTotal()
                 ],
                 'comments' => $comments->toArray()
             ])
