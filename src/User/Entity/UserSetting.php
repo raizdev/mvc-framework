@@ -37,7 +37,7 @@ class UserSetting extends Entity
     private ?User $user;
 
     /**
-     * @ORM\Column(type="string", columnDefinition="ENUM('0',1')")
+     * @ORM\Column(type="integer")
      */
     private string $achievement_score;
 
@@ -67,7 +67,7 @@ class UserSetting extends Entity
     private string $block_camera_follow;
 
     /**
-     * @ORM\Column(type="string", columnDefinition="ENUM('0',1')")
+     * @ORM\Column(type="integer")
      */
     private string $online_time;
 
