@@ -7,6 +7,7 @@
 
 namespace Ares\Article\Controller;
 
+use Ares\Article\Entity\Comment;
 use Ares\Article\Exception\CommentException;
 use Ares\Article\Repository\CommentRepository;
 use Ares\Article\Service\CreateCommentService;
@@ -14,6 +15,7 @@ use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Model\Adapter\DoctrineSearchCriteria;
 use Ares\Framework\Service\ValidationService;
+use Ares\User\Entity\User;
 use Ares\User\Exception\UserException;
 use Ares\User\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -59,11 +61,11 @@ class CommentController extends BaseController
     /**
      * CommentController constructor.
      *
-     * @param CommentRepository $commentRepository
-     * @param DoctrineSearchCriteria $searchCriteria
-     * @param ValidationService $validationService
-     * @param CreateCommentService $createCommentService
-     * @param UserRepository $userRepository
+     * @param   CommentRepository       $commentRepository
+     * @param   DoctrineSearchCriteria  $searchCriteria
+     * @param   ValidationService       $validationService
+     * @param   CreateCommentService    $createCommentService
+     * @param   UserRepository          $userRepository
      */
     public function __construct(
         CommentRepository $commentRepository,
@@ -72,17 +74,17 @@ class CommentController extends BaseController
         CreateCommentService $createCommentService,
         UserRepository $userRepository
     ) {
-        $this->commentRepository = $commentRepository;
-        $this->searchCriteria = $searchCriteria;
-        $this->validationService = $validationService;
+        $this->commentRepository    = $commentRepository;
+        $this->searchCriteria       = $searchCriteria;
+        $this->validationService    = $validationService;
         $this->createCommentService = $createCommentService;
-        $this->userRepository = $userRepository;
+        $this->userRepository       = $userRepository;
     }
 
     /**
-     * @param Request  $request
-     * @param Response $response
-     * @param          $args
+     * @param   Request   $request
+     * @param   Response  $response
+     * @param             $args
      *
      * @return Response
      * @throws InvalidArgumentException
@@ -99,23 +101,28 @@ class CommentController extends BaseController
         $parsedData = $request->getParsedBody();
 
         $this->validationService->validate($parsedData, [
-            'content' => 'required',
+            'content'    => 'required',
             'article_id' => 'required|numeric'
         ]);
 
+        /** @var User $user */
         $user = $this->getUser($this->userRepository, $request, false);
 
         $customResponse = $this->createCommentService->execute($user, $parsedData);
 
-        return $this->respond($response, $customResponse);
+        return $this->respond(
+            $response,
+            $customResponse
+        );
     }
 
     /**
-     * @param Request  $request
-     * @param Response $response
-     * @param          $args
+     * @param   Request   $request
+     * @param   Response  $response
+     * @param             $args
      *
      * @return Response
+     * @throws CommentException
      * @throws InvalidArgumentException
      * @throws ORMException
      * @throws OptimisticLockException
@@ -129,10 +136,15 @@ class CommentController extends BaseController
 
         $this->validationService->validate($parsedData, [
             'comment_id' => 'required|numeric',
-            'content' => 'required'
+            'content'    => 'required'
         ]);
 
-        $comment = $this->commentRepository->get($parsedData['comment_id']);
+        /** @var Comment $comment */
+        $comment = $this->commentRepository->get($parsedData['comment_id'], false);
+
+        if (!$comment) {
+            throw new CommentException(__('Related Comment could not be found'));
+        }
 
         $comment
             ->setContent($parsedData['content'])
@@ -142,14 +154,16 @@ class CommentController extends BaseController
 
         return $this->respond(
             $response,
-            response()->setData($comment)
+            response()
+                ->setData($comment)
         );
     }
 
     /**
-     * @param Request $request
-     * @param Response $response
-     * @param $args
+     * @param   Request   $request
+     * @param   Response  $response
+     * @param             $args
+     *
      * @return Response
      * @throws InvalidArgumentException
      * @throws PhpfastcacheSimpleCacheException
@@ -166,7 +180,7 @@ class CommentController extends BaseController
         $resultPerPage = $args['rpp'];
 
         $this->searchCriteria->setPage((int)$page)
-            ->setLimit((int)$resultPerPage)
+            ->setLimit($resultPerPage)
             ->addFilter('article', $articleId)
             ->addOrder('id', 'DESC');
 
@@ -175,22 +189,23 @@ class CommentController extends BaseController
 
         return $this->respond(
             $response,
-            response()->setData([
-                'pagination' => [
-                    'totalPages' => $comments->getPages(),
-                    'prevPage' => $comments->getPrevPage(),
-                    'nextPage' => $comments->getNextPage()
-                ],
-                'comments' => $comments->toArray(),
-                'totalComments' => $comments->getTotal()
-            ])
+            response()
+                ->setData([
+                    'pagination'    => [
+                        'totalPages' => $comments->getPages(),
+                        'prevPage'   => $comments->getPrevPage(),
+                        'nextPage'   => $comments->getNextPage()
+                    ],
+                    'comments'      => $comments->toArray(),
+                    'totalComments' => $comments->getTotal()
+                ])
         );
     }
 
     /**
-     * @param Request  $request
-     * @param Response $response
-     * @param          $args
+     * @param   Request   $request
+     * @param   Response  $response
+     * @param             $args
      *
      * @return Response
      * @throws CommentException
@@ -201,8 +216,8 @@ class CommentController extends BaseController
      */
     public function delete(Request $request, Response $response, $args): Response
     {
-        /** @var int $page */
-        $id = (int) $args['id'];
+        /** @var int $id */
+        $id = $args['id'];
 
         $deleted = $this->commentRepository->delete($id);
 
@@ -212,7 +227,8 @@ class CommentController extends BaseController
 
         return $this->respond(
             $response,
-            response()->setData(true)
+            response()
+                ->setData(true)
         );
     }
 }

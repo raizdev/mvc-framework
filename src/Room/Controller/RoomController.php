@@ -64,7 +64,7 @@ class RoomController extends BaseController
         $id = $args['id'];
 
         /** @var Room $room */
-        $room = $this->roomRepository->get((int)$id);
+        $room = $this->roomRepository->get($id);
 
         if (is_null($room)) {
             throw new RoomException(__('No specific Room found'), 404);
@@ -72,7 +72,8 @@ class RoomController extends BaseController
 
         return $this->respond(
             $response,
-            response()->setData($room)
+            response()
+                ->setData($room)
         );
     }
 
@@ -94,8 +95,9 @@ class RoomController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        $this->searchCriteria->setPage((int)$page)
-            ->setLimit((int)$resultPerPage)
+        $this->searchCriteria
+            ->setPage($page)
+            ->setLimit($resultPerPage)
             ->addOrder('id', 'DESC');
 
         $rooms = $this->roomRepository->paginate($this->searchCriteria);
@@ -121,7 +123,7 @@ class RoomController extends BaseController
      * @return Response
      * @throws RoomException
      */
-    public function mostVisited(Request $request, Response $response)
+    public function mostVisited(Request $request, Response $response): Response
     {
         /** @var Room $room */
         $room = $this->roomRepository->findOneBy([], [
@@ -134,7 +136,8 @@ class RoomController extends BaseController
 
         return $this->respond(
             $response,
-            response()->setData($room)
+            response()
+                ->setData($room)
         );
     }
 }

@@ -7,6 +7,7 @@
 
 namespace Ares\Article\Service;
 
+use Ares\Article\Entity\Article;
 use Ares\Article\Entity\Comment;
 use Ares\Article\Exception\CommentException;
 use Ares\Article\Repository\ArticleRepository;
@@ -67,7 +68,8 @@ class CreateCommentService
 
         $comment = $this->commentRepository->save($comment);
 
-        return response()->setData($comment);
+        return response()
+            ->setData($comment);
     }
 
     /**
@@ -84,6 +86,7 @@ class CreateCommentService
     {
         $comment = new Comment();
 
+        /** @var Article $article */
         $article = $this->articleRepository->get($data['article_id'], false);
 
         if (!$article) {

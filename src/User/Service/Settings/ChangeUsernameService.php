@@ -85,6 +85,7 @@ class ChangeUsernameService
 
         $user = $this->userRepository->update($user->setUsername($username));
 
-        return response()->setData($user);
+        return response()
+            ->setData($user);
     }
 }

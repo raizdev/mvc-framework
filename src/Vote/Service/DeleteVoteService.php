@@ -69,6 +69,7 @@ class DeleteVoteService
 
         $deleted = $this->voteRepository->delete($vote->getId());
 
-        return response()->setData($deleted);
+        return response()
+            ->setData($deleted);
     }
 }

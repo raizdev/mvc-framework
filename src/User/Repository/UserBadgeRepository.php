@@ -35,7 +35,7 @@ class UserBadgeRepository extends BaseRepository
     {
         return $this->getEntityManager()->createQueryBuilder()
             ->select('b')
-            ->from('Ares\User\Entity\UserBadge', 'b')
+            ->from(UserBadge::class, 'b')
             ->andWhere('b.user = ?1')
             ->andWhere('b.slot_id > 1')
             ->orderBy('b.slot_id', 'ASC')

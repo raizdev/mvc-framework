@@ -11,6 +11,7 @@ use Ares\Framework\Repository\BaseRepository;
 use Ares\Article\Entity\Article;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Cache\InvalidArgumentException;
+use Ares\Article\Entity\Comment;
 
 /**
  * Class ArticleRepository
@@ -63,9 +64,9 @@ class ArticleRepository extends BaseRepository
     {
         return $this->getEntityManager()->createQueryBuilder()
             ->select('a.id, a.title, a.description, count(c.article) as comments')
-            ->from('Ares\Article\Entity\Article', 'a')
+            ->from(Article::class, 'a')
             ->leftJoin(
-                'Ares\Article\Entity\Comment',
+                Comment::class,
                 'c',
                 \Doctrine\ORM\Query\Expr\Join::WITH,
                 'a.id = c.article'

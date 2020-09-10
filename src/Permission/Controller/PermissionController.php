@@ -36,7 +36,7 @@ class PermissionController extends BaseController
     /**
      * PermissionController constructor.
      *
-     * @param   PermissionRepository     $permissionRepository
+     * @param   PermissionRepository    $permissionRepository
      * @param   DoctrineSearchCriteria  $searchCriteria
      */
     public function __construct(
@@ -44,7 +44,7 @@ class PermissionController extends BaseController
         DoctrineSearchCriteria $searchCriteria
     ) {
         $this->permissionRepository = $permissionRepository;
-        $this->searchCriteria = $searchCriteria;
+        $this->searchCriteria       = $searchCriteria;
     }
 
     /**
@@ -65,23 +65,25 @@ class PermissionController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        $this->searchCriteria->setPage((int)$page)
-            ->setLimit((int)$resultPerPage)
+        $this->searchCriteria->setPage($page)
+            ->setLimit($resultPerPage)
             ->addOrder('id', 'DESC');
 
-        $users = $this->permissionRepository->paginate($this->searchCriteria);
+        $users    = $this->permissionRepository->paginate($this->searchCriteria);
         $criteria = Criteria::create()
             ->andWhere(
                 Criteria::expr()
-                ->gt('id', '1')
+                    ->gt('id', '1')
             );
 
         return $this->respond(
             $response,
-            response()->setData([
-                'users' => $users->matching($criteria)->toArray()
-            ])
+            response()
+                ->setData([
+                    'users' => $users
+                        ->matching($criteria)
+                        ->toArray()
+                ])
         );
     }
-
 }

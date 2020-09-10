@@ -76,7 +76,8 @@ class CreateArticleService
 
         $article = $this->articleRepository->save($article);
 
-        return response()->setData($article);
+        return response()
+            ->setData($article);
     }
 
     /**

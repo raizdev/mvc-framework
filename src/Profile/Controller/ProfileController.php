@@ -107,7 +107,8 @@ class ProfileController extends BaseController
      */
     public function slotBadges(Request $request, Response $response, $args): Response
     {
-        $profile_id = (int)$args['profile_id'];
+        /** @var int $profile_id */
+        $profile_id = $args['profile_id'];
 
         /** @var User $profile */
         $profile = $this->userRepository->get($profile_id);
@@ -125,7 +126,8 @@ class ProfileController extends BaseController
 
         return $this->respond(
             $response,
-            response()->setData($badges)
+            response()
+                ->setData($badges)
         );
     }
 
@@ -158,7 +160,7 @@ class ProfileController extends BaseController
         }
 
         $this->searchCriteria->setPage((int)$page)
-            ->setLimit((int)$resultPerPage)
+            ->setLimit($resultPerPage)
             ->addOrder('id', 'DESC');
 
         /** @var ArrayCollection $pinnedArticles */
@@ -166,7 +168,10 @@ class ProfileController extends BaseController
 
         return $this->respond(
             $response,
-            response()->setData($badges->toArray())
+            response()
+                ->setData(
+                    $badges->toArray()
+                )
         );
     }
 
@@ -198,8 +203,9 @@ class ProfileController extends BaseController
             throw new ProfileException(__('No associated Profile was found'), 404);
         }
 
-        $this->searchCriteria->setPage((int)$page)
-            ->setLimit((int)$resultPerPage)
+        $this->searchCriteria
+            ->setPage($page)
+            ->setLimit($resultPerPage)
             ->addFilter('user', $profile_id)
             ->addOrder('id', 'DESC');
 
@@ -208,7 +214,10 @@ class ProfileController extends BaseController
 
         return $this->respond(
             $response,
-            response()->setData($friends->toArray())
+            response()
+                ->setData(
+                    $friends->toArray()
+                )
         );
     }
 
@@ -234,23 +243,26 @@ class ProfileController extends BaseController
         $resultPerPage = $args['rpp'];
 
         /** @var User $profile */
-        $profile = $this->userRepository->get((int)$profile_id);
+        $profile = $this->userRepository->get($profile_id);
 
         if (!$profile) {
             throw new ProfileException(__('No associated Profile was found'), 404);
         }
 
-        $this->searchCriteria->setPage((int)$page)
-            ->setLimit((int)$resultPerPage)
+        $this->searchCriteria
+            ->setPage($page)
+            ->setLimit($resultPerPage)
             ->addFilter('owner', $profile_id)
             ->addOrder('id', 'DESC');
 
-        /** @var ArrayCollection $pinnedArticles */
         $rooms = $this->roomRepository->paginate($this->searchCriteria);
 
         return $this->respond(
             $response,
-            response()->setData($rooms->toArray())
+            response()
+                ->setData(
+                    $rooms->toArray()
+                )
         );
     }
 
@@ -282,17 +294,20 @@ class ProfileController extends BaseController
             throw new ProfileException(__('No associated Profile was found'), 404);
         }
 
-        $this->searchCriteria->setPage((int)$page)
-            ->setLimit((int)$resultPerPage)
+        $this->searchCriteria
+            ->setPage($page)
+            ->setLimit($resultPerPage)
             ->addFilter('creator', $profile_id)
             ->addOrder('id', 'DESC');
 
-        /** @var ArrayCollection $pinnedArticles */
         $guilds = $this->guildRepository->profileGuilds($this->searchCriteria);
 
         return $this->respond(
             $response,
-            response()->setData($guilds->toArray())
+            response()
+                ->setData(
+                    $guilds->toArray()
+                )
         );
     }
 
@@ -318,23 +333,26 @@ class ProfileController extends BaseController
         $resultPerPage = $args['rpp'];
 
         /** @var User $profile */
-        $profile = $this->userRepository->get((int)$profile_id);
+        $profile = $this->userRepository->get($profile_id);
 
         if (!$profile) {
             throw new ProfileException(__('No associated Profile was found'), 404);
         }
 
-        $this->searchCriteria->setPage((int)$page)
-            ->setLimit((int)$resultPerPage)
+        $this->searchCriteria
+            ->setPage($page)
+            ->setLimit($resultPerPage)
             ->addFilter('creator', $profile_id)
             ->addOrder('id', 'DESC');
 
-        /** @var ArrayCollection $pinnedArticles */
         $photos = $this->photoRepository->paginate($this->searchCriteria);
 
         return $this->respond(
             $response,
-            response()->setData($photos->toArray())
+            response()
+                ->setData(
+                    $photos->toArray()
+                )
         );
     }
 }

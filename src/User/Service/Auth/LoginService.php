@@ -46,9 +46,9 @@ class LoginService
     /**
      * LoginService constructor.
      *
-     * @param UserRepository $userRepository
-     * @param BanRepository  $banRepository
-     * @param TokenService   $tokenService
+     * @param   UserRepository  $userRepository
+     * @param   BanRepository   $banRepository
+     * @param   TokenService    $tokenService
      */
     public function __construct(
         UserRepository $userRepository,
@@ -56,15 +56,15 @@ class LoginService
         TokenService $tokenService
     ) {
         $this->userRepository = $userRepository;
-        $this->banRepository = $banRepository;
-        $this->tokenService = $tokenService;
+        $this->banRepository  = $banRepository;
+        $this->tokenService   = $tokenService;
     }
 
     /**
      * Login user.
      *
-     * @param string $username
-     * @param string $password
+     * @param   string  $username
+     * @param   string  $password
      *
      * @return CustomResponseInterface
      * @throws BanException
@@ -80,7 +80,7 @@ class LoginService
         /** @var User $user */
         $user = $this->userRepository->getByUsername($username);
 
-        if (empty($user) || !password_verify($password, $user->getPassword())) {
+        if ($user === null || !password_verify($password, $user->getPassword())) {
             throw new LoginException(__('general.failed'), 403);
         }
 
@@ -89,7 +89,7 @@ class LoginService
             'user' => $user->getId()
         ]);
 
-        if (!is_null($isBanned) && $isBanned->getBanExpire() > time()) {
+        if (!$isBanned && $isBanned->getBanExpire() > time()) {
             throw new BanException(__('general.banned', [$isBanned->getBanReason()]), 401);
         }
 
@@ -101,9 +101,10 @@ class LoginService
         /** @var TokenService $token */
         $token = $this->tokenService->execute($user->getId());
 
-        return response()->setData([
-            'token' => $token
-        ]);
+        return response()
+            ->setData([
+                'token' => $token
+            ]);
     }
 }
 

@@ -11,6 +11,10 @@ use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\Guestbook\Entity\Guestbook;
 use Ares\Guestbook\Repository\GuestbookRepository;
 use Ares\User\Entity\User;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\Cache\InvalidArgumentException;
 
 /**
  * Class CreateGuestbookEntryService
@@ -40,17 +44,20 @@ class CreateGuestbookEntryService
      * @param   array  $data
      *
      * @return CustomResponseInterface
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
-     * @throws \Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws InvalidArgumentException
      */
     public function execute(User $user, array $data): CustomResponseInterface
     {
         $entry = $this->getNewEntry($user, $data);
 
-        $entry = $this->guestbookRepository->save($entry);
+        $entry = $this->guestbookRepository
+            ->save($entry);
 
-        return response()->setData($entry);
+        return response()
+            ->setData($entry);
     }
 
     /**

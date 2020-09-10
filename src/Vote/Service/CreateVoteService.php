@@ -76,6 +76,11 @@ class CreateVoteService
         }
 
         $entityRepository = $this->getVoteEntityService->execute($vote->getEntityId(), $vote->getVoteEntity());
+
+        if (!$entityRepository) {
+            throw new VoteException(__('Related EntityRepository could not be found'));
+        }
+
         $entity = $entityRepository->get($vote->getEntityId(), false);
 
         if (!$entity) {
@@ -84,7 +89,8 @@ class CreateVoteService
 
         $vote = $this->voteRepository->save($vote);
 
-        return response()->setData($vote);
+        return response()
+            ->setData($vote);
     }
 
     /**

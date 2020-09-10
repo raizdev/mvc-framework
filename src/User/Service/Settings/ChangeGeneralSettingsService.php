@@ -62,7 +62,8 @@ class ChangeGeneralSettingsService
 
         $userSetting = $this->userSettingRepository->update($this->getUpdatedUserSettings($userSetting, $data));
 
-        return response()->setData($userSetting);
+        return response()
+            ->setData($userSetting);
     }
 
     /**

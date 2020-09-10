@@ -30,7 +30,7 @@ class CreateCurrencyService
     /**
      * CreateCurrencyService constructor.
      *
-     * @param UserCurrencyRepository $userCurrencyRepository
+     * @param   UserCurrencyRepository  $userCurrencyRepository
      */
     public function __construct(
         UserCurrencyRepository $userCurrencyRepository
@@ -41,9 +41,10 @@ class CreateCurrencyService
     /**
      * Creates new user currency by given data.
      *
-     * @param User $user
-     * @param int $type
-     * @param int $amount
+     * @param   User  $user
+     * @param   int   $type
+     * @param   int   $amount
+     *
      * @return CustomResponseInterface
      * @throws ORMException
      * @throws OptimisticLockException
@@ -56,18 +57,21 @@ class CreateCurrencyService
                 $this->getNewUserCurrency(
                     $user,
                     $type,
-                    $amount)
+                    $amount
+                )
             );
 
-        return response()->setData($userCurrency);
+        return response()
+            ->setData($userCurrency);
     }
 
     /**
      * Returns new user currency object.
      *
-     * @param User $user
-     * @param int $type
-     * @param int $amount
+     * @param   User  $user
+     * @param   int   $type
+     * @param   int   $amount
+     *
      * @return UserCurrency
      */
     private function getNewUserCurrency(User $user, int $type, int $amount): UserCurrency

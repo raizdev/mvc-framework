@@ -65,9 +65,11 @@ class CreatePaymentService
             throw new PaymentException(__('You already have an ongoing payment, wait till its processed'));
         }
 
+        /** @var Payment $payment */
         $payment = $this->paymentRepository->save($payment);
 
-        return response()->setData($payment);
+        return response()
+            ->setData($payment);
     }
 
     /**

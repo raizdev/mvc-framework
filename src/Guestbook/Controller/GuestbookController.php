@@ -129,7 +129,7 @@ class GuestbookController extends BaseController
         $guild = $this->guildRepository->get($guild_id, false);
 
         if (!$profile && !$guild) {
-            throw new GuestbookException(__('The associated Entities couldnt be found'));
+            throw new GuestbookException(__('The associated Entities could not be found'));
         }
 
         $parsedData['profile'] = $profile;
@@ -137,7 +137,10 @@ class GuestbookController extends BaseController
 
         $customResponse = $this->createGuestbookEntryService->execute($user, $parsedData);
 
-        return $this->respond($response, $customResponse);
+        return $this->respond(
+            $response,
+            $customResponse
+        );
     }
 
     /**
@@ -157,15 +160,15 @@ class GuestbookController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        /** @var int $type */
+        /** @var int $profileId */
         $profileId = $args['profile_id'];
 
-        $this->searchCriteria->setPage((int)$page)
-            ->setLimit((int)$resultPerPage)
+        $this->searchCriteria
+            ->setPage($page)
+            ->setLimit($resultPerPage)
             ->addFilter('profile', $profileId)
             ->addOrder('id', 'DESC');
 
-        /** @var ArrayCollection $pinnedArticles */
         $entries = $this->guestbookRepository->paginate($this->searchCriteria);
 
         if ($entries->isEmpty()) {
@@ -174,7 +177,10 @@ class GuestbookController extends BaseController
 
         return $this->respond(
             $response,
-            response()->setData($entries->toArray())
+            response()
+                ->setData(
+                    $entries->toArray()
+                )
         );
     }
 
@@ -198,21 +204,20 @@ class GuestbookController extends BaseController
         /** @var int $guildId */
         $guildId = $args['guild_id'];
 
-        $this->searchCriteria->setPage((int)$page)
-            ->setLimit((int)$resultPerPage)
+        $this->searchCriteria
+            ->setPage($page)
+            ->setLimit($resultPerPage)
             ->addFilter('guild', $guildId)
             ->addOrder('id', 'DESC');
 
-        /** @var ArrayCollection $pinnedArticles */
         $entries = $this->guestbookRepository->paginate($this->searchCriteria);
-
-        if ($entries->isEmpty()) {
-            throw new GuestbookException(__('No Entries were found'), 404);
-        }
 
         return $this->respond(
             $response,
-            response()->setData($entries->toArray())
+            response()
+                ->setData(
+                    $entries->toArray()
+                )
         );
     }
 
@@ -223,13 +228,15 @@ class GuestbookController extends BaseController
      *
      * @return Response
      * @throws GuestbookException
+     * @throws InvalidArgumentException
      * @throws ORMException
      * @throws OptimisticLockException
      * @throws PhpfastcacheSimpleCacheException
      */
     public function delete(Request $request, Response $response, $args): Response
     {
-        $id = (int) $args['id'];
+        /** @var int $id */
+        $id = $args['id'];
 
         $deleted = $this->guestbookRepository->delete($id);
 
@@ -239,7 +246,8 @@ class GuestbookController extends BaseController
 
         return $this->respond(
             $response,
-            response()->setData(true)
+            response()
+                ->setData(true)
         );
     }
 }

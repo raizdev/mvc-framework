@@ -57,11 +57,11 @@ class RegisterService
     /**
      * LoginService constructor.
      *
-     * @param UserRepository $userRepository
-     * @param TokenService $tokenService
-     * @param TicketService $ticketService
-     * @param Config $config
-     * @param CreateCurrencyService $createCurrencyService
+     * @param   UserRepository         $userRepository
+     * @param   TokenService           $tokenService
+     * @param   TicketService          $ticketService
+     * @param   Config                 $config
+     * @param   CreateCurrencyService  $createCurrencyService
      */
     public function __construct(
         UserRepository $userRepository,
@@ -70,17 +70,17 @@ class RegisterService
         Config $config,
         CreateCurrencyService $createCurrencyService
     ) {
-        $this->userRepository = $userRepository;
-        $this->tokenService = $tokenService;
-        $this->ticketService = $ticketService;
-        $this->config = $config;
+        $this->userRepository        = $userRepository;
+        $this->tokenService          = $tokenService;
+        $this->ticketService         = $ticketService;
+        $this->config                = $config;
         $this->createCurrencyService = $createCurrencyService;
     }
 
     /**
      * Registers a new User.
      *
-     * @param array $data
+     * @param   array  $data
      *
      * @return CustomResponseInterface
      * @throws ORMException
@@ -130,15 +130,17 @@ class RegisterService
             throw new RegisterException($exception->getMessage(), $exception->getCode());
         }
 
-        return response()->setData([
-            'token' => $token
-        ]);
+        return response()
+            ->setData([
+                'token' => $token
+            ]);
     }
 
     /**
      * Returns new user.
      *
-     * @param array $data
+     * @param   array  $data
+     *
      * @return User
      */
     private function getNewUser(array $data): User
@@ -148,8 +150,8 @@ class RegisterService
         return $user
             ->setUsername($data['username'])
             ->setPassword(password_hash(
-                $data['password'],
-                PASSWORD_ARGON2ID)
+                    $data['password'],
+                    PASSWORD_ARGON2ID)
             )
             ->setMail($data['mail'])
             ->setLook($data['look'])
@@ -179,7 +181,7 @@ class RegisterService
         ]);
 
         if ($accountExistence >= $maxAccountsPerIp) {
-           throw new RegisterException(__('You can only have %s Accounts', [$maxAccountsPerIp]));
+            throw new RegisterException(__('You can only have %s Accounts', [$maxAccountsPerIp]));
         }
 
         return true;
@@ -206,7 +208,7 @@ class RegisterService
             throw new RegisterException(__('The gender must be valid'), 422);
         }
 
-        if (!in_array($data['look'], $looks)) {
+        if (!in_array($data['look'], $looks, true)) {
             $data['look'] = $this->config->get('hotel_settings.register.looks.fallback_look');
         }
 

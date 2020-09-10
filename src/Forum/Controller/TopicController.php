@@ -78,12 +78,12 @@ class TopicController extends BaseController
         ValidationService $validationService,
         DoctrineSearchCriteria $searchCriteria
     ) {
-        $this->topicRepository = $topicRepository;
-        $this->userRepository = $userRepository;
+        $this->topicRepository    = $topicRepository;
+        $this->userRepository     = $userRepository;
         $this->createTopicService = $createTopicService;
-        $this->editTopicService = $editTopicService;
-        $this->validationService = $validationService;
-        $this->searchCriteria = $searchCriteria;
+        $this->editTopicService   = $editTopicService;
+        $this->validationService  = $validationService;
+        $this->searchCriteria     = $searchCriteria;
     }
 
     /**
@@ -105,13 +105,16 @@ class TopicController extends BaseController
         $parsedData = $request->getParsedBody();
 
         $this->validationService->validate($parsedData, [
-            'title' => 'required',
+            'title'       => 'required',
             'description' => 'required',
         ]);
 
         $customResponse = $this->createTopicService->execute($parsedData);
 
-        return $this->respond($response, $customResponse);
+        return $this->respond(
+            $response,
+            $customResponse
+        );
     }
 
     /**
@@ -133,8 +136,8 @@ class TopicController extends BaseController
 
         $this->validationService->validate($parsedData, [
             'topic_id' => 'required|numeric',
-            'title' => 'required',
-            'content' => 'required'
+            'title'    => 'required',
+            'content'  => 'required'
         ]);
 
         /** @var Topic $topic */
@@ -142,7 +145,8 @@ class TopicController extends BaseController
 
         return $this->respond(
             $response,
-            response()->setData($topic)
+            response()
+                ->setData($topic)
         );
     }
 
@@ -164,14 +168,17 @@ class TopicController extends BaseController
         $resultPerPage = $args['rpp'];
 
         $this->searchCriteria->setPage((int)$page)
-            ->setLimit((int)$resultPerPage)
+            ->setLimit($resultPerPage)
             ->addOrder('id', 'DESC');
 
         $topic = $this->topicRepository->paginate($this->searchCriteria);
 
         return $this->respond(
             $response,
-            response()->setData($topic->toArray())
+            response()
+                ->setData(
+                    $topic->toArray()
+                )
         );
     }
 
@@ -200,7 +207,8 @@ class TopicController extends BaseController
 
         return $this->respond(
             $response,
-            response()->setData(true)
+            response()
+                ->setData(true)
         );
     }
 }

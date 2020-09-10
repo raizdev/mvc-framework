@@ -16,8 +16,10 @@ use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Model\Adapter\DoctrineSearchCriteria;
 use Ares\Framework\Service\ValidationService;
+use Ares\User\Entity\User;
 use Ares\User\Exception\UserException;
 use Ares\User\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -111,11 +113,15 @@ class CommentController extends BaseController
             'content'   => 'required'
         ]);
 
+        /** @var User $user */
         $user = $this->getUser($this->userRepository, $request, false);
 
         $customResponse = $this->createCommentService->execute($user, $parsedData);
 
-        return $this->respond($response, $customResponse);
+        return $this->respond(
+            $response,
+            $customResponse
+        );
     }
 
     /**
@@ -138,9 +144,10 @@ class CommentController extends BaseController
 
         $this->validationService->validate($parsedData, [
             'thread_id' => 'required|numeric',
-            'content' => 'required'
+            'content'   => 'required'
         ]);
 
+        /** @var User $user */
         $user = $this->getUser($this->userRepository, $request, false);
 
         /** @var Comment $comment */
@@ -148,7 +155,8 @@ class CommentController extends BaseController
 
         return $this->respond(
             $response,
-            response()->setData($comment)
+            response()
+                ->setData($comment)
         );
     }
 
@@ -172,8 +180,9 @@ class CommentController extends BaseController
         /** @var int $thread */
         $thread = $args['thread_id'];
 
-        $this->searchCriteria->setPage((int)$page)
-            ->setLimit((int)$resultPerPage)
+        $this->searchCriteria
+            ->setPage($page)
+            ->setLimit($resultPerPage)
             ->addFilter('thread', $thread)
             ->addOrder('id', 'DESC');
 
@@ -181,7 +190,10 @@ class CommentController extends BaseController
 
         return $this->respond(
             $response,
-            response()->setData($comments->toArray())
+            response()
+                ->setData(
+                    $comments->toArray()
+                )
         );
     }
 
@@ -202,7 +214,7 @@ class CommentController extends BaseController
         /** @var int $id */
         $id = $args['id'];
 
-        $deleted = $this->commentRepository->delete((int)$id);
+        $deleted = $this->commentRepository->delete($id);
 
         if (!$deleted) {
             throw new CommentException(__('Comment could not be deleted.'), 409);
@@ -210,7 +222,8 @@ class CommentController extends BaseController
 
         return $this->respond(
             $response,
-            response()->setData(true)
+            response()
+                ->setData(true)
         );
     }
 }

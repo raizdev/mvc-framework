@@ -63,7 +63,7 @@ abstract class BaseRepository extends PaginatedRepository
      *
      * @param   bool  $cachedEntity
      *
-     * @return Payment|null
+     * @return Object|null
      * @throws PhpfastcacheSimpleCacheException
      * @throws InvalidArgumentException
      */

@@ -11,6 +11,10 @@ use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\User\Entity\User;
 use Ares\User\Exception\UserSettingsException;
 use Ares\User\Repository\UserRepository;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\Cache\InvalidArgumentException;
 
 /**
  * Class ChangePasswordService
@@ -38,11 +42,16 @@ class ChangePasswordService
     /**
      * Changes user password.
      *
-     * @param User $user
-     * @param string $password
-     * @param string $oldPassword
+     * @param   User    $user
+     * @param   string  $password
+     * @param   string  $oldPassword
+     *
      * @return CustomResponseInterface
      * @throws UserSettingsException
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws InvalidArgumentException
      */
     public function execute(User $user, string $password, string $oldPassword): CustomResponseInterface
     {
@@ -59,6 +68,7 @@ class ChangePasswordService
 
         $user = $this->userRepository->update($user->setPassword($password));
 
-        return response()->setData($user);
+        return response()
+            ->setData($user);
     }
 }

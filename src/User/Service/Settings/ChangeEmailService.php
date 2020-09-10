@@ -72,6 +72,7 @@ class ChangeEmailService
 
         $this->userRepository->update($user->setMail($email));
 
-        return response()->setData($user);
+        return response()
+            ->setData($user);
     }
 }

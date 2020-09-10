@@ -9,7 +9,6 @@ namespace Ares\Community\Controller;
 
 use Ares\Article\Repository\ArticleRepository;
 use Ares\Framework\Controller\BaseController;
-use Ares\Framework\Model\Adapter\DoctrineSearchCriteria;
 use Ares\Guild\Repository\GuildRepository;
 use Ares\Room\Repository\RoomRepository;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -22,11 +21,6 @@ use Psr\Http\Message\ServerRequestInterface as Request;
  */
 class CommunityController extends BaseController
 {
-    /**
-     * @var DoctrineSearchCriteria
-     */
-    private DoctrineSearchCriteria $doctrineSearchCriteria;
-
     /**
      * @var GuildRepository
      */
@@ -45,44 +39,43 @@ class CommunityController extends BaseController
     /**
      * CommunityController constructor.
      *
-     * @param DoctrineSearchCriteria $doctrineSearchCriteria
-     * @param GuildRepository $guildRepository
-     * @param RoomRepository $roomRepository
-     * @param ArticleRepository $articleRepository
+     * @param   GuildRepository    $guildRepository
+     * @param   RoomRepository     $roomRepository
+     * @param   ArticleRepository  $articleRepository
      */
     public function __construct(
-        DoctrineSearchCriteria $doctrineSearchCriteria,
         GuildRepository $guildRepository,
         RoomRepository $roomRepository,
         ArticleRepository $articleRepository
     ) {
-        $this->doctrineSearchCriteria = $doctrineSearchCriteria;
-        $this->guildRepository = $guildRepository;
-        $this->roomRepository = $roomRepository;
+        $this->guildRepository   = $guildRepository;
+        $this->roomRepository    = $roomRepository;
         $this->articleRepository = $articleRepository;
     }
 
     /**
      * Searchs with term in groups, rooms and news.
      *
-     * @param Request $request
-     * @param Response $response
-     * @param $args
+     * @param   Request   $request
+     * @param   Response  $response
+     * @param             $args
+     *
      * @return Response
      */
-    public function search(Request $request, Response $response, $args)
+    public function search(Request $request, Response $response, $args): Response
     {
         /** @var string $id */
-        $term = (string) $args['term'];
+        $term    = (string)$args['term'];
         $results = [];
 
-        $results['guilds'] = $this->guildRepository->searchGuilds($term);
-        $results['rooms'] = $this->roomRepository->searchRooms($term);
+        $results['guilds']   = $this->guildRepository->searchGuilds($term);
+        $results['rooms']    = $this->roomRepository->searchRooms($term);
         $results['articles'] = $this->articleRepository->searchArticles($term);
 
         return $this->respond(
             $response,
-            response()->setData($results)
+            response()
+                ->setData($results)
         );
     }
 }
