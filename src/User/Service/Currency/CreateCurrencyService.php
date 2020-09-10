@@ -14,6 +14,7 @@ use Ares\User\Repository\UserCurrencyRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\Cache\InvalidArgumentException;
 
 /**
  * Class CreateCurrencyService
@@ -42,12 +43,14 @@ class CreateCurrencyService
      * Creates new user currency by given data.
      *
      * @param User $user
-     * @param int $type
-     * @param int $amount
+     * @param int  $type
+     * @param int  $amount
+     *
      * @return CustomResponseInterface
      * @throws ORMException
      * @throws OptimisticLockException
      * @throws PhpfastcacheSimpleCacheException
+     * @throws InvalidArgumentException
      */
     public function execute(User $user, int $type, int $amount): CustomResponseInterface
     {

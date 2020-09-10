@@ -24,7 +24,8 @@ class UserCurrency extends Entity
 {
     /**
      * @ORM\Id
-     * @ORM\Column(name="user_id", type="integer")
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private int $id;
 
@@ -34,7 +35,6 @@ class UserCurrency extends Entity
     private User $user;
 
     /**
-     * @ORM\Id
      * @ORM\Column(type="integer", length=11)
      */
     private int $type;
