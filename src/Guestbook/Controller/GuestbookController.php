@@ -169,7 +169,15 @@ class GuestbookController extends BaseController
 
         return $this->respond(
             $response,
-            response()->setData($entries->toArray())
+            response()->setData([
+                'pagination' => [
+                    'totalPages' => $entries->getPages(),
+                    'prevPage' => $entries->getPrevPage(),
+                    'nextPage' => $entries->getNextPage()
+                ],
+                'entries' => $entries->toArray(),
+                'totalEntries' => $entries->getTotal()
+            ])
         );
     }
 
@@ -202,7 +210,15 @@ class GuestbookController extends BaseController
 
         return $this->respond(
             $response,
-            response()->setData($entries->toArray())
+            response()->setData([
+                'pagination' => [
+                    'totalPages' => $entries->getPages(),
+                    'prevPage' => $entries->getPrevPage(),
+                    'nextPage' => $entries->getNextPage()
+                ],
+                'entries' => $entries->toArray(),
+                'totalEntries' => $entries->getTotal()
+            ])
         );
     }
 

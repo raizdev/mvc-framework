@@ -104,13 +104,14 @@ class ArticleController extends BaseController
      *
      * @param Request $request
      * @param Response $response
+     *
      * @return Response
      * @throws InvalidArgumentException
      * @throws PhpfastcacheSimpleCacheException
      * @throws ValidationException
      * @throws UserException
      * @throws ORMException
-     * @throws OptimisticLockException
+     * @throws OptimisticLockException|ArticleException
      */
     public function create(Request $request, Response $response)
     {
