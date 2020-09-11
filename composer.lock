@@ -2614,12 +2614,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "903b24393e49a4e4800b98aab9a621e50e864b68"
+                "reference": "37746b24cd2979a43dfbabddef19eada2f40c59a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/903b24393e49a4e4800b98aab9a621e50e864b68",
-                "reference": "903b24393e49a4e4800b98aab9a621e50e864b68",
+                "url": "https://api.github.com/repos/symfony/console/zipball/37746b24cd2979a43dfbabddef19eada2f40c59a",
+                "reference": "37746b24cd2979a43dfbabddef19eada2f40c59a",
                 "shasum": ""
             },
             "require": {
@@ -2683,7 +2683,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2020-09-08T11:16:46+00:00"
+            "time": "2020-09-09T05:14:52+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -3115,26 +3115,25 @@
         },
         {
             "name": "tuupola/callable-handler",
-            "version": "1.0.0",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tuupola/callable-handler.git",
-                "reference": "8b9d87f88056d4234af317d65612d7b6307a747a"
+                "reference": "0bc7b88630ca753de9aba8f411046856f5ca6f8c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tuupola/callable-handler/zipball/8b9d87f88056d4234af317d65612d7b6307a747a",
-                "reference": "8b9d87f88056d4234af317d65612d7b6307a747a",
+                "url": "https://api.github.com/repos/tuupola/callable-handler/zipball/0bc7b88630ca753de9aba8f411046856f5ca6f8c",
+                "reference": "0bc7b88630ca753de9aba8f411046856f5ca6f8c",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.1",
+                "php": "^7.1|^8.0",
                 "psr/http-server-middleware": "^1.0"
             },
             "require-dev": {
-                "codedungeon/phpunit-result-printer": "^0.4.4",
                 "overtrue/phplint": "^1.0",
-                "phpunit/phpunit": "^6.5",
+                "phpunit/phpunit": "^7.0|^8.0|^9.0",
                 "squizlabs/php_codesniffer": "^3.2",
                 "tuupola/http-factory": "^0.4.0|^1.0",
                 "zendframework/zend-diactoros": "^1.6.0|^2.0"
@@ -3164,7 +3163,7 @@
                 "psr-15",
                 "psr-7"
             ],
-            "time": "2018-10-12T09:59:35+00:00"
+            "time": "2020-09-09T08:31:54+00:00"
         },
         {
             "name": "tuupola/cors-middleware",
@@ -3172,29 +3171,28 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tuupola/cors-middleware.git",
-                "reference": "832bbf0521a7054c202da15cf05ff2101b152f94"
+                "reference": "9412ed898772e993d8620369a3c4d79b05c5807e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tuupola/cors-middleware/zipball/832bbf0521a7054c202da15cf05ff2101b152f94",
-                "reference": "832bbf0521a7054c202da15cf05ff2101b152f94",
+                "url": "https://api.github.com/repos/tuupola/cors-middleware/zipball/9412ed898772e993d8620369a3c4d79b05c5807e",
+                "reference": "9412ed898772e993d8620369a3c4d79b05c5807e",
                 "shasum": ""
             },
             "require": {
                 "neomerx/cors-psr7": "^1.0.4",
-                "php": "^7.1",
+                "php": "^7.1|^8.0",
                 "psr/http-message": "^1.0.1",
                 "psr/http-server-middleware": "^1.0",
                 "tuupola/callable-handler": "^1.0",
                 "tuupola/http-factory": "^1.0"
             },
             "require-dev": {
-                "codedungeon/phpunit-result-printer": "^0.23.2",
                 "equip/dispatch": "^2.0",
                 "overtrue/phplint": "^1.0",
-                "phpstan/phpstan": "^0.11.15",
-                "phpunit/phpunit": "^7.4",
-                "squizlabs/php_codesniffer": "^3.3.1",
+                "phpstan/phpstan": "^0.12.42",
+                "phpunit/phpunit": "^7.0|^8.0|^9.0",
+                "squizlabs/php_codesniffer": "^3.5",
                 "zendframework/zend-diactoros": "^1.0|^2.0"
             },
             "type": "library",
@@ -3223,7 +3221,7 @@
                 "psr-15",
                 "psr-7"
             ],
-            "time": "2019-11-01T14:58:50+00:00"
+            "time": "2020-09-09T10:39:29+00:00"
         },
         {
             "name": "tuupola/http-factory",

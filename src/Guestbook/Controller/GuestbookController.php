@@ -146,7 +146,6 @@ class GuestbookController extends BaseController
      * @param             $args
      *
      * @return Response
-     * @throws GuestbookException
      * @throws PhpfastcacheSimpleCacheException|InvalidArgumentException
      */
     public function profileList(Request $request, Response $response, $args): Response
@@ -168,10 +167,6 @@ class GuestbookController extends BaseController
         /** @var ArrayCollection $pinnedArticles */
         $entries = $this->guestbookRepository->paginate($this->searchCriteria);
 
-        if ($entries->isEmpty()) {
-            throw new GuestbookException(__('No Entries were found'), 404);
-        }
-
         return $this->respond(
             $response,
             response()->setData($entries->toArray())
@@ -184,7 +179,6 @@ class GuestbookController extends BaseController
      * @param             $args
      *
      * @return Response
-     * @throws GuestbookException
      * @throws PhpfastcacheSimpleCacheException|InvalidArgumentException
      */
     public function guildList(Request $request, Response $response, $args): Response
@@ -206,10 +200,6 @@ class GuestbookController extends BaseController
         /** @var ArrayCollection $pinnedArticles */
         $entries = $this->guestbookRepository->paginate($this->searchCriteria);
 
-        if ($entries->isEmpty()) {
-            throw new GuestbookException(__('No Entries were found'), 404);
-        }
-
         return $this->respond(
             $response,
             response()->setData($entries->toArray())
@@ -217,12 +207,13 @@ class GuestbookController extends BaseController
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request     $request
+     * @param Response    $response
      * @param             $args
      *
      * @return Response
      * @throws GuestbookException
+     * @throws InvalidArgumentException
      * @throws ORMException
      * @throws OptimisticLockException
      * @throws PhpfastcacheSimpleCacheException
