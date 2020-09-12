@@ -56,6 +56,16 @@ class Guestbook extends Entity
     private ?Guild $guild;
 
     /**
+     * @ORM\Column(type="integer", length=11)
+     */
+    private int $likes;
+
+    /**
+     * @ORM\Column(type="integer", length=11)
+     */
+    private int $dislikes;
+
+    /**
      * @ORM\Column(type="datetime")
      */
     protected \DateTime $created_at;
@@ -167,6 +177,47 @@ class Guestbook extends Entity
     }
 
     /**
+     * @return int
+     */
+    public function getLikes(): int
+    {
+        return $this->likes;
+    }
+
+    /**
+     * @param int $likes
+     *
+     * @return Guestbook
+     */
+    public function setLikes(int $likes): self
+    {
+        $this->likes = $likes;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDislikes(): int
+    {
+        return $this->dislikes;
+    }
+
+    /**
+     * @param int $dislikes
+     *
+     * @return Guestbook
+     */
+    public function setDislikes(int $dislikes): self
+    {
+        $this->dislikes = $dislikes;
+
+        return $this;
+    }
+
+
+    /**
      * @return \DateTime
      */
     public function getCreatedAt(): \DateTime
@@ -238,6 +289,8 @@ class Guestbook extends Entity
             'id' => $this->getId(),
             'user' => $this->getUser(),
             'content' => $this->getContent(),
+            'likes' => $this->getLikes(),
+            'dislikes' => $this->getDislikes(),
             'created_at' => $this->getCreatedAt()
         ];
     }
