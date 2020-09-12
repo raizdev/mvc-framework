@@ -24,9 +24,6 @@ return function (App $app) {
         "credentials" => true,
         "cache" => $_ENV['TOKEN_DURATION']
     ]));
-    if ($_ENV['CACHE_REDIS_ENABLED']) {
-        $app->add(\Ares\Framework\Middleware\ThrottleMiddleware::class);
-    }
     $app->add(\Ares\Framework\Middleware\BodyParserMiddleware::class);
     $app->add(\Ares\Framework\Middleware\ClaimMiddleware::class);
     $app->addRoutingMiddleware();

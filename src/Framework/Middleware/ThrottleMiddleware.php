@@ -22,6 +22,11 @@ use Psr\Http\Server\RequestHandlerInterface;
 class ThrottleMiddleware implements MiddlewareInterface
 {
     /**
+     * @var string
+     */
+    private const LOCALE_KEY = 1;
+
+    /**
      * @var int
      */
     private int $requests = 30;
@@ -65,6 +70,10 @@ class ThrottleMiddleware implements MiddlewareInterface
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ): ResponseInterface {
+        if (!$_ENV['CACHE_REDIS_ENABLED']) {
+            return $handler->handle($request);
+        }
+
         if ($this->hasExceededRateLimit()) {
             throw new ThrottleException('There was an issue with your request, try again', 429);
         }
@@ -139,16 +148,31 @@ class ThrottleMiddleware implements MiddlewareInterface
         return sprintf($this->storageKey, $this->getIdentifier());
     }
 
-
     /**
+     * Binds the Url with the UserIp for the Identifier
+     *
      * @return mixed
      */
-    private function getIdentifier()
+    private function getIdentifier(): string
     {
-        return $this->determineIp() . $_SERVER['REQUEST_URI'];
+        return $this->determineIp() . ' URL:/' . $this->getUrl();
     }
 
     /**
+     * Gets the Url out of the request and splits the country code
+     *
+     * @return string
+     */
+    private function getUrl(): string
+    {
+        $url = preg_split('/\/([a-zA-Z0-9]{0,}\/)/', $_SERVER['REQUEST_URI']);
+
+        return $url[self::LOCALE_KEY];
+    }
+
+    /**
+     * Determines the real user ip
+     *
      * @return string|null
      */
     private function determineIp(): ?string

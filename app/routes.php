@@ -192,7 +192,8 @@ return function (App $app) {
 
         // Global Routes
         $group->get('/user/online', \Ares\User\Controller\UserController::class . ':onlineUser');
-    })->add(\Ares\Framework\Middleware\LocaleMiddleware::class);
+    })->add(\Ares\Framework\Middleware\LocaleMiddleware::class)
+        ->add(\Ares\Framework\Middleware\ThrottleMiddleware::class);
 
     // Catches every route that is not found
     $app->map(['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], '/{routes:.+}', function ($request, $response) {
