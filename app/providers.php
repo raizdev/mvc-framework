@@ -48,5 +48,9 @@ return [
     // Adds our SlugServiceProvider
     $container->addServiceProvider(
         new \Ares\Framework\Provider\SlugServiceProvider()
+    ),
+    // Adds our ThrottleServiceProvider
+    $container->addServiceProvider(
+        new \Ares\Framework\Provider\ThrottleServiceProvider()
     )
 ];
