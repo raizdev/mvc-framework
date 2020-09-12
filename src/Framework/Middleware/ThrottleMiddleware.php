@@ -32,11 +32,6 @@ class ThrottleMiddleware implements MiddlewareInterface
     private int $perSecond = 60;
 
     /**
-     * @var mixed|string
-     */
-    private string $identifier;
-
-    /**
      * @var string
      */
     private string $storageKey = 'rate:%s:requests';
@@ -55,7 +50,6 @@ class ThrottleMiddleware implements MiddlewareInterface
         Predis $predis
     ) {
         $this->predis = $predis;
-        $this->identifier = $this->getIdentifier();
     }
 
     /**
@@ -142,32 +136,15 @@ class ThrottleMiddleware implements MiddlewareInterface
      */
     private function getStorageKey(): string
     {
-        return sprintf($this->storageKey, $this->identifier);
+        return sprintf($this->storageKey, $this->getIdentifier());
     }
 
-    /**
-     * @param $identifier
-     *
-     * @return $this
-     */
-    public function setIdentifier($identifier): self
-    {
-        $this->identifier = $identifier;
-
-        return $this;
-    }
 
     /**
-     * @param null $identifier
-     *
      * @return mixed
      */
-    private function getIdentifier($identifier = null)
+    private function getIdentifier()
     {
-        if ($identifier === null) {
-            return $_SERVER['REMOTE_ADDR'];
-        }
-
-        return $identifier;
+        return $_SERVER['REMOTE_ADDR'] . $_SERVER['REQUEST_URI'];
     }
 }

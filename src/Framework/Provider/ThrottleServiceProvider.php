@@ -37,7 +37,6 @@ class ThrottleServiceProvider extends AbstractServiceProvider
             $throttleMiddleware = new ThrottleMiddleware($predis);
             $throttleMiddleware
                 ->setRateLimit(60, 40)
-                ->setIdentifier('127.0.0.1')
                 ->setStorageKey('api:limit:%s');
 
             return $throttleMiddleware;
