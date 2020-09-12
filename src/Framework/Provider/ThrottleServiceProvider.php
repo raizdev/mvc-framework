@@ -36,7 +36,7 @@ class ThrottleServiceProvider extends AbstractServiceProvider
 
             $throttleMiddleware = new ThrottleMiddleware($predis);
             $throttleMiddleware
-                ->setRateLimit(15, 30)
+                ->setRateLimit(10, 30)
                 ->setStorageKey('ARES_API:limit:%s');
 
             return $throttleMiddleware;
