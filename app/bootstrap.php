@@ -51,6 +51,10 @@ $proxy = \Ares\Framework\Proxy\App::class;
 $manager = new Statical\Manager();
 $manager->addProxyInstance($alias, $proxy, $app);
 
+if(!file_exists(tmp_dir())) {
+    mkdir(tmp_dir(), 0755, true);
+}
+
 // Sets our Route-Cache
 if ($_ENV['API_DEBUG'] == "production") {
     $routeCollector = $app->getRouteCollector();

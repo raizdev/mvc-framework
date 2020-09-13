@@ -67,6 +67,17 @@ if (!function_exists('cache_dir')) {
     }
 }
 
+if (!function_exists('tmp_dir')) {
+    /**
+     * Returns directory path of tmp directory.
+     *
+     * @return string
+     */
+    function tmp_dir() {
+        return __DIR__ . '/../tmp';
+    }
+}
+
 if (!function_exists('route_cache_dir')) {
     /**
      * Returns directory path of routing cache.
