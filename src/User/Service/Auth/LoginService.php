@@ -63,24 +63,23 @@ class LoginService
     /**
      * Login user.
      *
-     * @param string $username
-     * @param string $password
+     * @param array $data
      *
      * @return CustomResponseInterface
      * @throws BanException
      * @throws InvalidArgumentException
      * @throws LoginException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws ValidateException
      * @throws ORMException
      * @throws OptimisticLockException
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws ValidateException
      */
-    public function login(string $username, string $password): CustomResponseInterface
+    public function login(array $data): CustomResponseInterface
     {
         /** @var User $user */
-        $user = $this->userRepository->getByUsername($username);
+        $user = $this->userRepository->getByUsername($data['username']);
 
-        if (empty($user) || !password_verify($password, $user->getPassword())) {
+        if (empty($user) || !password_verify($data['password'], $user->getPassword())) {
             throw new LoginException(__('general.failed'), 403);
         }
 
@@ -94,6 +93,7 @@ class LoginService
         }
 
         $user->setLastLogin(time());
+        $user->setCurrentIP($data['ip_current']);
 
         /** @var $user $this */
         $this->userRepository->update($user);

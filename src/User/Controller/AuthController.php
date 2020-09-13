@@ -118,7 +118,8 @@ class AuthController extends BaseController
             'password' => 'required'
         ]);
 
-        $customResponse = $this->loginService->login($parsedData['username'], $parsedData['password']);
+        $parsedData['ip_current'] = $this->determineIp();
+        $customResponse = $this->loginService->login($parsedData);
 
         return $this->respond($response, $customResponse);
     }
