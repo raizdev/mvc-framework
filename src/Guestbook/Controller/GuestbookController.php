@@ -165,7 +165,7 @@ class GuestbookController extends BaseController
             ->addOrder('id', 'DESC');
 
         /** @var ArrayCollection $pinnedArticles */
-        $entries = $this->guestbookRepository->paginate($this->searchCriteria);
+        $entries = $this->guestbookRepository->paginate($this->searchCriteria, false);
 
         return $this->respond(
             $response,
@@ -206,7 +206,7 @@ class GuestbookController extends BaseController
             ->addOrder('id', 'DESC');
 
         /** @var ArrayCollection $pinnedArticles */
-        $entries = $this->guestbookRepository->paginate($this->searchCriteria);
+        $entries = $this->guestbookRepository->paginate($this->searchCriteria, false);
 
         return $this->respond(
             $response,

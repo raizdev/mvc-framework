@@ -122,7 +122,7 @@ class CommentController extends BaseController
      * @throws PhpfastcacheSimpleCacheException
      * @throws ValidationException
      */
-    public function edit(Request $request, Response $response, $args): Response
+    public function edit(Request $request, Response $response): Response
     {
         /** @var array $parsedData */
         $parsedData = $request->getParsedBody();
@@ -171,7 +171,7 @@ class CommentController extends BaseController
             ->addOrder('id', 'DESC');
 
         /** @var ArrayCollection $pinnedArticles */
-        $comments = $this->commentRepository->paginate($this->searchCriteria);
+        $comments = $this->commentRepository->paginate($this->searchCriteria, false);
 
         return $this->respond(
             $response,
