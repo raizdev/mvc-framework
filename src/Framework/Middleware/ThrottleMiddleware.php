@@ -90,11 +90,7 @@ class ThrottleMiddleware implements MiddlewareInterface
      */
     private function hasExceededRateLimit(): bool
     {
-        if ($this->predis->get($this->getStorageKey()) >= $this->requests) {
-            return true;
-        }
-
-        return false;
+        return $this->predis->get($this->getStorageKey()) >= $this->requests;
     }
 
     /**
