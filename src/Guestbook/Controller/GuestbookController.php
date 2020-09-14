@@ -190,7 +190,6 @@ class GuestbookController extends BaseController
      * @param             $args
      *
      * @return Response
-     * @throws GuestbookException
      * @throws PhpfastcacheSimpleCacheException|InvalidArgumentException
      */
     public function guildList(Request $request, Response $response, $args): Response
