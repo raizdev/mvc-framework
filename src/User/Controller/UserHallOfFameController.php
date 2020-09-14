@@ -16,7 +16,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 /**
- * @TODO needs refactoring
+ * @TODO    needs refactoring
  *
  * Class UserHallOfFameController
  *
@@ -47,16 +47,15 @@ class UserHallOfFameController extends BaseController
         UserRepository $userRepository,
         UserSettingRepository $userSettingRepository
     ) {
-        $this->userRepository = $userRepository;
+        $this->userRepository        = $userRepository;
         $this->userSettingRepository = $userSettingRepository;
     }
 
     /**
-     * @param Request  $request
-     * @param Response $response
+     * @param   Request   $request
+     * @param   Response  $response
      *
      * @return Response
-     * @throws UserException
      */
     public function topCredits(Request $request, Response $response): Response
     {
@@ -65,22 +64,20 @@ class UserHallOfFameController extends BaseController
             'credits' => 'DESC'
         ], self::TOP_USER_QUANTITY);
 
-        if ($users->isEmpty()) {
-            throw new UserException(__('There were no Top Users found'), 404);
-        }
-
         return $this->respond(
             $response,
-            response()->setData($users->toArray())
+            response()
+                ->setData(
+                    $users->toArray()
+                )
         );
     }
 
     /**
-     * @param Request  $request
-     * @param Response $response
+     * @param   Request   $request
+     * @param   Response  $response
      *
      * @return Response
-     * @throws UserException
      */
     public function topDiamonds(Request $request, Response $response): Response
     {
@@ -89,13 +86,12 @@ class UserHallOfFameController extends BaseController
             'points' => 'DESC'
         ], self::TOP_USER_QUANTITY);
 
-        if ($users->isEmpty()) {
-            throw new UserException(__('There were no Top Users found'), 404);
-        }
-
         return $this->respond(
             $response,
-            response()->setData($users->toArray())
+            response()
+                ->setData(
+                    $users->toArray()
+                )
         );
     }
 
@@ -104,7 +100,6 @@ class UserHallOfFameController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws UserException
      */
     public function topPixels(Request $request, Response $response): Response
     {
@@ -113,37 +108,34 @@ class UserHallOfFameController extends BaseController
             'pixels' => 'DESC'
         ], self::TOP_USER_QUANTITY);
 
-        if ($users->isEmpty()) {
-            throw new UserException(__('There were no Top Users found'), 404);
-        }
-
         return $this->respond(
             $response,
-            response()->setData($users->toArray())
+            response()
+                ->setData(
+                    $users->toArray()
+                )
         );
     }
 
     /**
-     * @param Request  $request
-     * @param Response $response
+     * @param   Request   $request
+     * @param   Response  $response
      *
      * @return Response
-     * @throws UserException
      */
     public function topAchievement(Request $request, Response $response): Response
     {
         /** @var ArrayCollection $users */
         $users = $this->userSettingRepository->findBy([], [
-           'achievement_score' => 'DESC'
+            'achievement_score' => 'DESC'
         ], self::TOP_USER_QUANTITY);
-
-        if ($users->isEmpty()) {
-            throw new UserException(__('There were no Top Users found'), 404);
-        }
 
         return $this->respond(
             $response,
-            response()->setData($users->toArray())
+            response()
+                ->setData(
+                    $users->toArray()
+                )
         );
     }
 
@@ -152,7 +144,6 @@ class UserHallOfFameController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws UserException
      */
     public function topOnlineTime(Request $request, Response $response): Response
     {
@@ -161,13 +152,13 @@ class UserHallOfFameController extends BaseController
             'online_time' => 'DESC'
         ], self::TOP_USER_QUANTITY);
 
-        if ($users->isEmpty()) {
-            throw new UserException(__('There were no Top Users found'), 404);
-        }
 
         return $this->respond(
             $response,
-            response()->setData($users->toArray())
+            response()
+                ->setData(
+                    $users->toArray()
+                )
         );
     }
 }

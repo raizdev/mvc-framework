@@ -56,7 +56,8 @@ class CreatePaymentService
     {
         $payment = $this->getNewPayment($user, $data);
 
-        $existingPayment = $this->paymentRepository->findOneBy([
+        /** @var Payment $existingPayment */
+        $existingPayment = $this->paymentRepository->getOneBy([
             'user' => $payment->getUser(),
             'processed' => 0
         ]);
@@ -65,9 +66,11 @@ class CreatePaymentService
             throw new PaymentException(__('You already have an ongoing payment, wait till its processed'));
         }
 
+        /** @var Payment $payment */
         $payment = $this->paymentRepository->save($payment);
 
-        return response()->setData($payment);
+        return response()
+            ->setData($payment);
     }
 
     /**

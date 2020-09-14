@@ -179,7 +179,7 @@ class Topic extends Entity
      *
      * @ORM\PrePersist
      */
-    public function onPrePersist()
+    public function onPrePersist(): void
     {
         $this->created_at = new \DateTime("now");
         $this->updated_at = new \DateTime("now");
@@ -190,7 +190,7 @@ class Topic extends Entity
      *
      * @ORM\PreUpdate
      */
-    public function onPreUpdate()
+    public function onPreUpdate(): void
     {
         $this->updated_at = new \DateTime("now");
     }

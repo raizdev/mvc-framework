@@ -10,6 +10,7 @@ namespace Ares\Forum\Repository;
 use Ares\Forum\Entity\Thread;
 use Ares\Framework\Repository\BaseRepository;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\Cache\InvalidArgumentException;
 
 /**
  * Class ThreadRepository
@@ -34,7 +35,7 @@ class ThreadRepository extends BaseRepository
      *
      * @return mixed|object|null
      * @throws PhpfastcacheSimpleCacheException
-     * @throws \Psr\Cache\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function findByCriteria(int $topic, string $slug, bool $cachedEntity = true)
     {
@@ -44,7 +45,7 @@ class ThreadRepository extends BaseRepository
             return unserialize($entity);
         }
 
-        $entity = $this->findOneBy([
+        $entity = $this->getOneBy([
             'topic' => $topic,
             'slug' => $slug
         ]);

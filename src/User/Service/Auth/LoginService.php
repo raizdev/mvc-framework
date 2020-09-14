@@ -46,9 +46,9 @@ class LoginService
     /**
      * LoginService constructor.
      *
-     * @param UserRepository $userRepository
-     * @param BanRepository  $banRepository
-     * @param TokenService   $tokenService
+     * @param   UserRepository  $userRepository
+     * @param   BanRepository   $banRepository
+     * @param   TokenService    $tokenService
      */
     public function __construct(
         UserRepository $userRepository,
@@ -56,8 +56,8 @@ class LoginService
         TokenService $tokenService
     ) {
         $this->userRepository = $userRepository;
-        $this->banRepository = $banRepository;
-        $this->tokenService = $tokenService;
+        $this->banRepository  = $banRepository;
+        $this->tokenService   = $tokenService;
     }
 
     /**
@@ -69,6 +69,8 @@ class LoginService
      * @throws BanException
      * @throws InvalidArgumentException
      * @throws LoginException
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws ValidateException
      * @throws ORMException
      * @throws OptimisticLockException
      * @throws PhpfastcacheSimpleCacheException
@@ -77,18 +79,20 @@ class LoginService
     public function login(array $data): CustomResponseInterface
     {
         /** @var User $user */
-        $user = $this->userRepository->getByUsername($data['username']);
+        $user = $this->userRepository->getOneBy([
+            'username' => $data['username']
+        ]);
 
-        if (empty($user) || !password_verify($data['password'], $user->getPassword())) {
+        if ($user === null || !password_verify($data['password'], $user->getPassword())) {
             throw new LoginException(__('general.failed'), 403);
         }
 
         /** @var Ban $isBanned */
-        $isBanned = $this->banRepository->getBy([
+        $isBanned = $this->banRepository->getOneBy([
             'user' => $user->getId()
         ]);
 
-        if (!is_null($isBanned) && $isBanned->getBanExpire() > time()) {
+        if ($isBanned && $isBanned->getBanExpire() > time()) {
             throw new BanException(__('general.banned', [$isBanned->getBanReason()]), 401);
         }
 
@@ -101,9 +105,10 @@ class LoginService
         /** @var TokenService $token */
         $token = $this->tokenService->execute($user->getId());
 
-        return response()->setData([
-            'token' => $token
-        ]);
+        return response()
+            ->setData([
+                'token' => $token
+            ]);
     }
 }
 

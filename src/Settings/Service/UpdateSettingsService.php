@@ -31,7 +31,7 @@ class UpdateSettingsService
     /**
      * UpdateSettingsService constructor.
      *
-     * @param SettingsRepository $settingsRepository
+     * @param   SettingsRepository  $settingsRepository
      */
     public function __construct(
         SettingsRepository $settingsRepository
@@ -58,17 +58,20 @@ class UpdateSettingsService
         $value = $data['value'];
 
         /** @var Setting $configData */
-        $configData = $this->settingsRepository->getBy([
+        $configData = $this->settingsRepository->getOneBy([
             'key' => $key
         ]);
 
-        if (is_null($configData)) {
+        if (!$configData) {
             throw new SettingsException(__('Key not found in Config'));
         }
 
         $configData->setValue($value);
         $configData = $this->settingsRepository->update($configData);
 
-        return response()->setData($configData->toArray());
+        return response()
+            ->setData(
+                $configData->toArray()
+            );
     }
 }

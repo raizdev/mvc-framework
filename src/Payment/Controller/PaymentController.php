@@ -15,6 +15,7 @@ use Ares\Payment\Entity\Payment;
 use Ares\Payment\Exception\PaymentException;
 use Ares\Payment\Repository\PaymentRepository;
 use Ares\Payment\Service\CreatePaymentService;
+use Ares\User\Entity\User;
 use Ares\User\Exception\UserException;
 use Ares\User\Repository\UserRepository;
 use Doctrine\ORM\OptimisticLockException;
@@ -102,6 +103,7 @@ class PaymentController extends BaseController
             'type' => 'required|numeric'
         ]);
 
+        /** @var User $user */
         $user = $this->getUser($this->userRepository, $request, false);
 
         $customResponse = $this->createPaymentService->execute($user, $parsedData);
@@ -128,7 +130,7 @@ class PaymentController extends BaseController
         $id = $args['id'];
 
         /** @var Payment $payment */
-        $payment = $this->paymentRepository->get((int)$id);
+        $payment = $this->paymentRepository->get((int) $id);
 
         if (!$payment) {
             throw new PaymentException(__('No specific Payment found'), 404);
@@ -136,7 +138,8 @@ class PaymentController extends BaseController
 
         return $this->respond(
             $response,
-            response()->setData($payment)
+            response()
+                ->setData($payment)
         );
     }
 
@@ -165,7 +168,10 @@ class PaymentController extends BaseController
 
         return $this->respond(
             $response,
-            response()->setData($payments->toArray())
+            response()
+                ->setData(
+                    $payments->toArray()
+                )
         );
     }
 
@@ -194,7 +200,8 @@ class PaymentController extends BaseController
 
         return $this->respond(
             $response,
-            response()->setData(true)
+            response()
+                ->setData(true)
         );
     }
 }

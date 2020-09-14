@@ -7,6 +7,7 @@
 
 namespace Ares\Forum\Service\Thread;
 
+use Ares\Forum\Entity\Thread;
 use Ares\Forum\Entity\Topic;
 use Ares\Forum\Exception\ThreadException;
 use Ares\Forum\Repository\ThreadRepository;
@@ -66,9 +67,10 @@ class EditThreadService
         /** @var string $content */
         $content = $data['content'];
 
-        $thread = $this->threadRepository->findOneBy([
-           'user' => $user,
-           'topic' => $topic,
+        /** @var Thread $thread */
+        $thread = $this->threadRepository->getOneBy([
+           'user' => $user->getId(),
+           'topic' => $topic->getId(),
            'slug' => $slug
         ]);
 
@@ -81,8 +83,9 @@ class EditThreadService
             ->setDescription($description)
             ->setContent($content);
 
+        /** @var Thread $thread */
         $thread = $this->threadRepository->update($thread);
 
-        return response()->setData($thread->toArray());
+        return response()->setData($thread);
     }
 }

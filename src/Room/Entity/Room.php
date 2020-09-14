@@ -258,9 +258,9 @@ class Room extends Entity
     /**
      * @ORM\PostLoad
      */
-    public function loadNullGuild()
+    public function loadNullGuild(): void
     {
-        if ($this->guild && $this->guild->getId() == 0) {
+        if ($this->guild && $this->guild->getId() === 0) {
             $this->guild = null;
         }
     }

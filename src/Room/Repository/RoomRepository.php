@@ -36,7 +36,7 @@ class RoomRepository extends BaseRepository
     {
         return $this->getEntityManager()->createQueryBuilder()
             ->select('r.id, r.name, r.description, r.users as members')
-            ->from('Ares\Room\Entity\Room', 'r')
+            ->from(Room::class, 'r')
             ->where('r.name LIKE :term')
             ->orderBy('members', 'DESC')
             ->setParameter('term', '%'.$term.'%')

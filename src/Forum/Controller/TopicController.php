@@ -20,9 +20,9 @@ use Ares\User\Repository\UserRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\SimpleCache\InvalidArgumentException;
 
 /**
  * Class TopicController
@@ -78,12 +78,12 @@ class TopicController extends BaseController
         ValidationService $validationService,
         DoctrineSearchCriteria $searchCriteria
     ) {
-        $this->topicRepository = $topicRepository;
-        $this->userRepository = $userRepository;
+        $this->topicRepository    = $topicRepository;
+        $this->userRepository     = $userRepository;
         $this->createTopicService = $createTopicService;
-        $this->editTopicService = $editTopicService;
-        $this->validationService = $validationService;
-        $this->searchCriteria = $searchCriteria;
+        $this->editTopicService   = $editTopicService;
+        $this->validationService  = $validationService;
+        $this->searchCriteria     = $searchCriteria;
     }
 
     /**
@@ -96,7 +96,6 @@ class TopicController extends BaseController
      * @throws ORMException
      * @throws OptimisticLockException
      * @throws PhpfastcacheSimpleCacheException
-     * @throws \Psr\Cache\InvalidArgumentException
      * @throws InvalidArgumentException
      */
     public function create(Request $request, Response $response): Response
@@ -105,13 +104,16 @@ class TopicController extends BaseController
         $parsedData = $request->getParsedBody();
 
         $this->validationService->validate($parsedData, [
-            'title' => 'required',
+            'title'       => 'required',
             'description' => 'required',
         ]);
 
         $customResponse = $this->createTopicService->execute($parsedData);
 
-        return $this->respond($response, $customResponse);
+        return $this->respond(
+            $response,
+            $customResponse
+        );
     }
 
     /**
@@ -124,7 +126,7 @@ class TopicController extends BaseController
      * @throws PhpfastcacheSimpleCacheException
      * @throws TopicException
      * @throws ValidationException
-     * @throws \Psr\Cache\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function edit(Request $request, Response $response): Response
     {
@@ -133,8 +135,8 @@ class TopicController extends BaseController
 
         $this->validationService->validate($parsedData, [
             'topic_id' => 'required|numeric',
-            'title' => 'required',
-            'content' => 'required'
+            'title'    => 'required',
+            'content'  => 'required'
         ]);
 
         /** @var Topic $topic */
@@ -142,7 +144,8 @@ class TopicController extends BaseController
 
         return $this->respond(
             $response,
-            response()->setData($topic)
+            response()
+                ->setData($topic)
         );
     }
 
@@ -153,7 +156,7 @@ class TopicController extends BaseController
      *
      * @return Response
      * @throws PhpfastcacheSimpleCacheException
-     * @throws \Psr\Cache\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function list(Request $request, Response $response, $args): Response
     {
@@ -163,15 +166,18 @@ class TopicController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        $this->searchCriteria->setPage((int)$page)
-            ->setLimit((int)$resultPerPage)
+        $this->searchCriteria->setPage((int) $page)
+            ->setLimit((int) $resultPerPage)
             ->addOrder('id', 'DESC');
 
         $topic = $this->topicRepository->paginate($this->searchCriteria);
 
         return $this->respond(
             $response,
-            response()->setData($topic->toArray())
+            response()
+                ->setData(
+                    $topic->toArray()
+                )
         );
     }
 
@@ -185,14 +191,14 @@ class TopicController extends BaseController
      * @throws OptimisticLockException
      * @throws PhpfastcacheSimpleCacheException
      * @throws TopicException
-     * @throws \Psr\Cache\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function delete(Request $request, Response $response, $args): Response
     {
         /** @var int $id */
         $id = $args['id'];
 
-        $deleted = $this->topicRepository->delete((int)$id);
+        $deleted = $this->topicRepository->delete((int) $id);
 
         if (!$deleted) {
             throw new TopicException(__('Topic could not be deleted.'), 409);
@@ -200,7 +206,8 @@ class TopicController extends BaseController
 
         return $this->respond(
             $response,
-            response()->setData(true)
+            response()
+                ->setData(true)
         );
     }
 }

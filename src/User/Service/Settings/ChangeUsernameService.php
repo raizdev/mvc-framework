@@ -9,6 +9,7 @@ namespace Ares\User\Service\Settings;
 
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\User\Entity\User;
+use Ares\User\Entity\UserSetting;
 use Ares\User\Exception\UserSettingsException;
 use Ares\User\Repository\UserRepository;
 use Ares\User\Repository\UserSettingRepository;
@@ -63,7 +64,10 @@ class ChangeUsernameService
      */
     public function execute(User $user, string $username, string $password): CustomResponseInterface
     {
-        $userSetting = $this->userSettingRepository->getBy(['user' => $user->getId()]);
+        /** @var UserSetting $userSetting */
+        $userSetting = $this->userSettingRepository->getOneBy([
+            'user' => $user->getId()
+        ]);
 
         if (!password_verify($password, $user->getPassword())) {
             throw new UserSettingsException(__('Given old password does not match the current password.'));
@@ -77,14 +81,19 @@ class ChangeUsernameService
             throw new UserSettingsException(__('User is not allowed to change username.'));
         }
 
-        $usernameExists = $this->userRepository->getByUsername($username);
+        /** @var User $usernameExists */
+        $usernameExists = $this->userRepository->getOneBy([
+            'username' => $username
+        ]);
 
         if ($usernameExists) {
             throw new UserSettingsException(__('User with given username already exists.'));
         }
 
+        /** @var User $user */
         $user = $this->userRepository->update($user->setUsername($username));
 
-        return response()->setData($user);
+        return response()
+            ->setData($user);
     }
 }

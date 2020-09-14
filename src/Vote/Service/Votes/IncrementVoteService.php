@@ -52,7 +52,17 @@ class IncrementVoteService
     public function execute(int $entityId, int $voteEntity, int $voteType): bool
     {
         $entityRepository = $this->getVoteEntityService->execute($entityId, $voteEntity);
+
+        if (!$entityRepository) {
+            throw new VoteException(__('Related EntityRepository could not be found'));
+        }
+
+        /** @var Object $entity */
         $entity = $entityRepository->get($entityId, false);
+
+        if (!$entity) {
+            throw new VoteException(__('Related Entity could not be found'));
+        }
 
         if ($voteType === VoteTypeInterface::VOTE_LIKE) {
             $likes = $entity->getLikes();

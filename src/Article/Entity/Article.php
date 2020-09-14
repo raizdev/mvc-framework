@@ -25,6 +25,16 @@ use Doctrine\ORM\Mapping\OneToOne;
 class Article extends Entity
 {
     /**
+     * Represents the Value of pinned Articles
+     */
+    public const IS_PINNED = 1;
+
+    /**
+     * Represents the Value of Visible Articles
+     */
+    public const IS_VISIBLE = 1;
+
+    /**
      * @ORM\Id
      * @ORM\Column(name="id", type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
@@ -324,7 +334,7 @@ class Article extends Entity
      *
      * @ORM\PrePersist
      */
-    public function onPrePersist()
+    public function onPrePersist(): void
     {
         $this->created_at = new \DateTime("now");
         $this->updated_at = new \DateTime("now");
@@ -335,7 +345,7 @@ class Article extends Entity
      *
      * @ORM\PreUpdate
      */
-    public function onPreUpdate()
+    public function onPreUpdate(): void
     {
         $this->updated_at = new \DateTime("now");
     }

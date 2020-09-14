@@ -44,24 +44,24 @@ class GuildController extends BaseController
     /**
      * RoomController constructor.
      *
-     * @param GuildRepository        $guildRepository
-     * @param GuildMemberRepository  $guildMemberRepository
-     * @param DoctrineSearchCriteria $searchCriteria
+     * @param   GuildRepository         $guildRepository
+     * @param   GuildMemberRepository   $guildMemberRepository
+     * @param   DoctrineSearchCriteria  $searchCriteria
      */
     public function __construct(
         GuildRepository $guildRepository,
         GuildMemberRepository $guildMemberRepository,
         DoctrineSearchCriteria $searchCriteria
     ) {
-        $this->guildRepository = $guildRepository;
+        $this->guildRepository       = $guildRepository;
         $this->guildMemberRepository = $guildMemberRepository;
-        $this->searchCriteria = $searchCriteria;
+        $this->searchCriteria        = $searchCriteria;
     }
 
     /**
-     * @param Request  $request
-     * @param Response $response
-     * @param          $args
+     * @param   Request   $request
+     * @param   Response  $response
+     * @param             $args
      *
      * @return Response
      * @throws GuildException
@@ -90,18 +90,19 @@ class GuildController extends BaseController
 
         return $this->respond(
             $response,
-            response()->setData([
-                'guild' => $guild,
-                'member_count' => $memberCount
-            ])
+            response()
+                ->setData([
+                    'guild'        => $guild,
+                    'member_count' => $memberCount
+                ])
         );
     }
 
     /**
-     * @param Request  $request
-     * @param Response $response
+     * @param   Request   $request
+     * @param   Response  $response
      *
-     * @param          $args
+     * @param             $args
      *
      * @return Response
      * @throws InvalidArgumentException
@@ -115,8 +116,9 @@ class GuildController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        $this->searchCriteria->setPage((int)$page)
-            ->setLimit((int)$resultPerPage)
+        $this->searchCriteria
+            ->setPage((int) $page)
+            ->setLimit((int) $resultPerPage)
             ->addOrder('id', 'DESC');
 
         $guilds = $this->guildRepository->paginate($this->searchCriteria);
@@ -127,19 +129,19 @@ class GuildController extends BaseController
                 ->setData([
                     'pagination' => [
                         'totalPages' => $guilds->getPages(),
-                        'prevPage' => $guilds->getPrevPage(),
-                        'nextPage' => $guilds->getNextPage()
+                        'prevPage'   => $guilds->getPrevPage(),
+                        'nextPage'   => $guilds->getNextPage()
                     ],
-                    'guilds' => $guilds->toArray()
+                    'guilds'     => $guilds->toArray()
                 ])
         );
     }
 
     /**
-     * @param Request  $request
-     * @param Response $response
+     * @param   Request   $request
+     * @param   Response  $response
      *
-     * @param          $args
+     * @param             $args
      *
      * @return Response
      * @throws InvalidArgumentException
@@ -147,7 +149,7 @@ class GuildController extends BaseController
      */
     public function members(Request $request, Response $response, $args): Response
     {
-        /** @var int $args */
+        /** @var int $id */
         $id = $args['id'];
 
         /** @var int $page */
@@ -156,9 +158,10 @@ class GuildController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        $this->searchCriteria->setPage((int)$page)
-            ->setLimit((int)$resultPerPage)
-            ->addFilter('guild', $id)
+        $this->searchCriteria
+            ->setPage((int) $page)
+            ->setLimit((int) $resultPerPage)
+            ->addFilter('guild', (int) $id)
             ->addOrder('level_id', 'ASC');
 
         $members = $this->guildMemberRepository->paginate($this->searchCriteria);
@@ -167,13 +170,13 @@ class GuildController extends BaseController
             $response,
             response()
                 ->setData([
-                'pagination' => [
-                    'totalPages' => $members->getPages(),
-                    'prevPage' => $members->getPrevPage(),
-                    'nextPage' => $members->getNextPage()
-                ],
-                'members' => $members->toArray()
-            ])
+                    'pagination' => [
+                        'totalPages' => $members->getPages(),
+                        'prevPage'   => $members->getPrevPage(),
+                        'nextPage'   => $members->getNextPage()
+                    ],
+                    'members'    => $members->toArray()
+                ])
         );
     }
 
@@ -202,10 +205,11 @@ class GuildController extends BaseController
 
         return $this->respond(
             $response,
-            response()->setData([
-                'guild' => $guild,
-                'member_count' => $getMaxMemberGuild['member']
-            ])
+            response()
+                ->setData([
+                    'guild'        => $guild,
+                    'member_count' => $getMaxMemberGuild['member']
+                ])
         );
     }
 }

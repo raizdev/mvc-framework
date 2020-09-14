@@ -10,6 +10,8 @@ namespace Ares\Guild\Repository;
 use Ares\Framework\Interfaces\SearchCriteriaInterface;
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Guild\Entity\Guild;
+use Ares\Guild\Entity\GuildMember;
+use Doctrine\ORM\Query\Expr\Join;
 
 /**
  * Class GuildRepository
@@ -36,11 +38,11 @@ class GuildRepository extends BaseRepository
         return $this->createPaginatedQueryBuilder()
             ->addPagination($searchCriteria->getPage(), $searchCriteria->getLimit())
             ->select('g.id, g.name, g.description, g.badge')
-            ->from('Ares\Guild\Entity\Guild', 'g')
+            ->from(Guild::class, 'g')
             ->join(
-                'Ares\Guild\Entity\GuildMember',
+                GuildMember::class,
                 'm',
-                \Doctrine\ORM\Query\Expr\Join::WITH,
+                Join::WITH,
                 'g.id = m.guild'
             )
             ->getQuery()
@@ -57,11 +59,11 @@ class GuildRepository extends BaseRepository
     {
         return $this->getEntityManager()->createQueryBuilder()
             ->select('g.id, g.name, g.description, g.badge, count(gm.guild) as online')
-            ->from('Ares\Guild\Entity\Guild', 'g')
+            ->from(Guild::class, 'g')
             ->leftJoin(
-                'Ares\Guild\Entity\GuildMember',
+                GuildMember::class,
                 'gm',
-                \Doctrine\ORM\Query\Expr\Join::WITH,
+                Join::WITH,
                 'g.id = gm.guild'
             )
             ->where('g.name LIKE :term')

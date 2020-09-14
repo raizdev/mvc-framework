@@ -54,7 +54,10 @@ class ChangeGeneralSettingsService
      */
     public function execute(User $user, array $data): CustomResponseInterface
     {
-        $userSetting = $this->userSettingRepository->getBy(['user' => $user]);
+        /** @var UserSetting $userSetting */
+        $userSetting = $this->userSettingRepository->getOneBy([
+            'user' => $user->getId()
+        ]);
 
         if (!$userSetting) {
             throw new UserSettingsException(__('Settings for given user does not exist.'));
@@ -62,7 +65,8 @@ class ChangeGeneralSettingsService
 
         $userSetting = $this->userSettingRepository->update($this->getUpdatedUserSettings($userSetting, $data));
 
-        return response()->setData($userSetting);
+        return response()
+            ->setData($userSetting);
     }
 
     /**

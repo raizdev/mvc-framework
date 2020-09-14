@@ -13,6 +13,7 @@ use Ares\User\Entity\UserCurrency;
 use Ares\User\Exception\UserCurrencyException;
 use Ares\User\Repository\UserCurrencyRepository;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\Cache\InvalidArgumentException;
 
 /**
  * Class UpdateCurrencyService
@@ -51,9 +52,10 @@ class UpdateCurrencyService
      * @param int $userId
      * @param int $type
      * @param int $amount
+     *
      * @return void
      * @throws PhpfastcacheSimpleCacheException
-     * @throws UserCurrencyException
+     * @throws UserCurrencyException|InvalidArgumentException
      */
     public function execute(int $userId, int $type, int $amount): void
     {
@@ -62,7 +64,8 @@ class UpdateCurrencyService
             ->addFilter('type', $type);
 
         /** @var UserCurrency[] $currencies */
-        $currencies = $this->userCurrencyRepository->getList($searchCriteria)->toArray();
+        $currencies = $this->userCurrencyRepository->getList($searchCriteria)
+            ->toArray();
 
         if (!$currencies) {
             throw new UserCurrencyException(__('Currencies was not found.'), 404);

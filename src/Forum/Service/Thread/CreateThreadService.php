@@ -8,6 +8,7 @@
 namespace Ares\Forum\Service\Thread;
 
 use Ares\Forum\Entity\Thread;
+use Ares\Forum\Entity\Topic;
 use Ares\Forum\Exception\ThreadException;
 use Ares\Forum\Repository\ThreadRepository;
 use Ares\Forum\Repository\TopicRepository;
@@ -92,8 +93,11 @@ class CreateThreadService
     {
         $thread = new Thread();
 
+        /** @var Topic $topic */
         $topic = $this->topicRepository->get($data['topic_id'], false);
-        $existingThread = $this->threadRepository->findOneBy([
+
+        /** @var Thread $existingThread */
+        $existingThread = $this->threadRepository->getOneBy([
             'title' => $data['title']
         ]);
 

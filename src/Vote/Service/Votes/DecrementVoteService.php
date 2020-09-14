@@ -29,7 +29,7 @@ class DecrementVoteService
     /**
      * DecrementVoteService constructor.
      *
-     * @param GetVoteEntityService $getVoteEntityService
+     * @param   GetVoteEntityService  $getVoteEntityService
      */
     public function __construct(
         GetVoteEntityService $getVoteEntityService
@@ -40,9 +40,9 @@ class DecrementVoteService
     /**
      * Decrements votes by given data.
      *
-     * @param int $entityId
-     * @param int $voteEntity
-     * @param int $voteType
+     * @param   int  $entityId
+     * @param   int  $voteEntity
+     * @param   int  $voteType
      *
      * @return bool
      * @throws VoteException
@@ -52,7 +52,17 @@ class DecrementVoteService
     public function execute(int $entityId, int $voteEntity, int $voteType): bool
     {
         $entityRepository = $this->getVoteEntityService->execute($entityId, $voteEntity);
+
+        if (!$entityRepository) {
+            throw new VoteException(__('Related EntityRepository could not be found'));
+        }
+
+        /** @var Object $entity */
         $entity = $entityRepository->get($entityId, false);
+
+        if (!$entity) {
+            throw new VoteException(__('Related Entity could not be found'));
+        }
 
         if ($voteType === VoteTypeInterface::VOTE_LIKE) {
             $likes = $entity->getLikes();
@@ -68,6 +78,7 @@ class DecrementVoteService
 
         try {
             $entityRepository->update($entity);
+
             return true;
         } catch (Exception $exception) {
             return false;

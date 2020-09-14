@@ -25,28 +25,4 @@ class UserRepository extends BaseRepository
 
     /** @var string */
     protected string $entity = User::class;
-
-    /**
-     * @param string $username
-     *
-     * @return User|object
-     */
-    public function getByUsername(string $username)
-    {
-        return $this->findOneBy([
-            'username' => $username
-        ]);
-    }
-
-    /**
-     * @param string $mail
-     *
-     * @return User|object
-     */
-    public function getByMail(string $mail)
-    {
-        return $this->findOneBy([
-            'mail' => $mail
-        ]);
-    }
 }

@@ -68,7 +68,7 @@ class PhotoController extends BaseController
         $this->photoRepository   = $photoRepository;
         $this->searchCriteria    = $searchCriteria;
         $this->validationService = $validationService;
-        $this->userRepository = $userRepository;
+        $this->userRepository    = $userRepository;
     }
 
     /**
@@ -87,15 +87,16 @@ class PhotoController extends BaseController
         $id = $args['id'];
 
         /** @var Photo $photo */
-        $photo = $this->photoRepository->get($id);
+        $photo = $this->photoRepository->get((int) $id);
 
-        if (is_null($photo)) {
+        if (!$photo) {
             throw new PhotoException(__('No Photo was found'), 404);
         }
 
         return $this->respond(
             $response,
-            response()->setData($photo)
+            response()
+                ->setData($photo)
         );
     }
 
@@ -119,9 +120,11 @@ class PhotoController extends BaseController
         $username = $parsedData['username'];
 
         /** @var User $user */
-        $user = $this->userRepository->getByUsername($username);
+        $user = $this->userRepository->getOneBy([
+            'username' => $username
+        ]);
 
-        if (is_null($user)) {
+        if (!$user) {
             throw new PhotoException(__('No Photo was found'), 404);
         }
 
@@ -130,13 +133,16 @@ class PhotoController extends BaseController
             'creator' => $user
         ]);
 
-        if (empty($photos)) {
+        if ($photos === null) {
             throw new PhotoException(__('No Photo was found'), 404);
         }
 
         return $this->respond(
             $response,
-            response()->setData($photos->toArray())
+            response()
+                ->setData(
+                    $photos->toArray()
+                )
         );
     }
 
@@ -146,7 +152,6 @@ class PhotoController extends BaseController
      * @param             $args
      *
      * @return Response
-     * @throws PhotoException
      * @throws PhpfastcacheSimpleCacheException
      * @throws InvalidArgumentException
      */
@@ -158,19 +163,19 @@ class PhotoController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        $this->searchCriteria->setPage((int)$page)
-            ->setLimit((int)$resultPerPage)
+        $this->searchCriteria
+            ->setPage((int) $page)
+            ->setLimit((int) $resultPerPage)
             ->addOrder('id', 'DESC');
 
         $photos = $this->photoRepository->paginate($this->searchCriteria);
 
-        if ($photos->isEmpty()) {
-            throw new PhotoException(__('No Photos were found'), 404);
-        }
-
         return $this->respond(
             $response,
-            response()->setData($photos->toArray())
+            response()
+                ->setData(
+                    $photos->toArray()
+                )
         );
     }
 
@@ -191,15 +196,16 @@ class PhotoController extends BaseController
         /** @var int $id */
         $id = $args['id'];
 
-        $photo = $this->photoRepository->delete($id);
+        $photo = $this->photoRepository->delete((int) $id);
 
         if (!$photo) {
-            throw new PhotoException(__('Photo couldnt be deleted'));
+            throw new PhotoException(__('Photo could not be deleted'));
         }
 
         return $this->respond(
             $response,
-            response()->setData(true)
+            response()
+                ->setData(true)
         );
     }
 }

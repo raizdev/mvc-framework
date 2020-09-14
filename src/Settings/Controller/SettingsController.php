@@ -52,10 +52,10 @@ class SettingsController extends BaseController
     /**
      * SettingsController constructor.
      *
-     * @param ValidationService      $validationService
-     * @param SettingsRepository     $settingsRepository
-     * @param UpdateSettingsService  $updateSettingsService
-     * @param DoctrineSearchCriteria $searchCriteria
+     * @param   ValidationService       $validationService
+     * @param   SettingsRepository      $settingsRepository
+     * @param   UpdateSettingsService   $updateSettingsService
+     * @param   DoctrineSearchCriteria  $searchCriteria
      */
     public function __construct(
         ValidationService $validationService,
@@ -63,15 +63,15 @@ class SettingsController extends BaseController
         UpdateSettingsService $updateSettingsService,
         DoctrineSearchCriteria $searchCriteria
     ) {
-        $this->validationService = $validationService;
-        $this->settingsRepository = $settingsRepository;
+        $this->validationService     = $validationService;
+        $this->settingsRepository    = $settingsRepository;
         $this->updateSettingsService = $updateSettingsService;
-        $this->searchCriteria = $searchCriteria;
+        $this->searchCriteria        = $searchCriteria;
     }
 
     /**
-     * @param Request   $request
-     * @param Response $response
+     * @param   Request   $request
+     * @param   Response  $response
      *
      * @return Response
      * @throws ValidationException
@@ -90,15 +90,19 @@ class SettingsController extends BaseController
         $key = $parsedData['key'];
 
         /** @var Setting $configData */
-        $configData = $this->settingsRepository->getBy([
+        $configData = $this->settingsRepository->getOneBy([
             'key' => $key
         ]);
 
-        if (is_null($configData)) {
+        if (!$configData) {
             throw new SettingsException(__('Key not found in Config'));
         }
 
-        return $this->respond($response, response()->setData($configData));
+        return $this->respond(
+            $response,
+            response()
+                ->setData($configData)
+        );
     }
 
     /**
@@ -110,7 +114,6 @@ class SettingsController extends BaseController
      * @return Response
      * @throws InvalidArgumentException
      * @throws PhpfastcacheSimpleCacheException
-     * @throws SettingsException
      */
     public function list(Request $request, Response $response, $args): Response
     {
@@ -120,21 +123,24 @@ class SettingsController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        $this->searchCriteria->setPage((int)$page)
-            ->setLimit((int)$resultPerPage);
+        $this->searchCriteria
+            ->setPage((int) $page)
+            ->setLimit((int) $resultPerPage);
 
         $settings = $this->settingsRepository->paginate($this->searchCriteria, false);
 
-        if ($settings->isEmpty()) {
-            throw new SettingsException(__('No Config Data found'));
-        }
-
-        return $this->respond($response, response()->setData($settings->toArray()));
+        return $this->respond(
+            $response,
+            response()
+                ->setData(
+                    $settings->toArray()
+                )
+        );
     }
 
     /**
-     * @param Request  $request
-     * @param Response $response
+     * @param   Request   $request
+     * @param   Response  $response
      *
      * @return Response
      * @throws SettingsException
@@ -150,12 +156,15 @@ class SettingsController extends BaseController
         $parsedData = $request->getParsedBody();
 
         $this->validationService->validate($parsedData, [
-            'key' => 'required',
+            'key'   => 'required',
             'value' => 'required'
         ]);
 
         $customResponse = $this->updateSettingsService->update($parsedData);
 
-        return $this->respond($response, $customResponse);
+        return $this->respond(
+            $response,
+            $customResponse
+        );
     }
 }

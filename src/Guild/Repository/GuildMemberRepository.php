@@ -9,6 +9,8 @@ namespace Ares\Guild\Repository;
 
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Guild\Entity\GuildMember;
+use Ares\Guild\Entity\Guild;
+use Doctrine\ORM\Query\Expr\Join;
 
 /**
  * Class GuildMemberRepository
@@ -33,11 +35,11 @@ class GuildMemberRepository extends BaseRepository
     {
         return $this->getEntityManager()->createQueryBuilder()
             ->select('g.id, count(m.guild) as member')
-            ->from('Ares\Guild\Entity\Guild', 'g')
+            ->from(Guild::class, 'g')
             ->leftJoin(
-                'Ares\Guild\Entity\GuildMember',
+                GuildMember::class,
                 'm',
-                \Doctrine\ORM\Query\Expr\Join::WITH,
+                Join::WITH,
                 'g.id = m.guild'
             )
             ->groupBy('g.id')

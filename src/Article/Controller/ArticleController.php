@@ -8,7 +8,6 @@
 namespace Ares\Article\Controller;
 
 use Ares\Article\Service\CreateArticleService;
-use Ares\Forum\Repository\CommentRepository;
 use Ares\Framework\Controller\BaseController;
 use Ares\Article\Entity\Article;
 use Ares\Article\Exception\ArticleException;
@@ -33,16 +32,6 @@ use Psr\Http\Message\ServerRequestInterface as Request;
  */
 class ArticleController extends BaseController
 {
-    /**
-     * Represents the Value of pinned Articles
-     */
-    private const IS_PINNED = 1;
-
-    /**
-     * Represents the Value of Visible Articles
-     */
-    private const IS_VISIBLE = 1;
-
     /**
      * @var ArticleRepository
      */
@@ -69,62 +58,55 @@ class ArticleController extends BaseController
     private UserRepository $userRepository;
 
     /**
-     * @var CommentRepository
-     */
-    private CommentRepository $commentRepository;
-
-    /**
      * NewsController constructor.
      *
-     * @param ArticleRepository      $articleRepository
-     * @param UserRepository         $userRepository
-     * @param CommentRepository      $commentRepository
-     * @param DoctrineSearchCriteria $searchCriteria
-     * @param CreateArticleService   $createArticleService
-     * @param ValidationService      $validationService
+     * @param   ArticleRepository       $articleRepository
+     * @param   UserRepository          $userRepository
+     * @param   DoctrineSearchCriteria  $searchCriteria
+     * @param   CreateArticleService    $createArticleService
+     * @param   ValidationService       $validationService
      */
     public function __construct(
         ArticleRepository $articleRepository,
         UserRepository $userRepository,
-        CommentRepository $commentRepository,
         DoctrineSearchCriteria $searchCriteria,
         CreateArticleService $createArticleService,
         ValidationService $validationService
     ) {
-        $this->articleRepository = $articleRepository;
-        $this->userRepository = $userRepository;
-        $this->commentRepository = $commentRepository;
-        $this->searchCriteria = $searchCriteria;
+        $this->articleRepository    = $articleRepository;
+        $this->userRepository       = $userRepository;
+        $this->searchCriteria       = $searchCriteria;
         $this->createArticleService = $createArticleService;
-        $this->validationService = $validationService;
+        $this->validationService    = $validationService;
     }
 
     /**
      * Creates new article.
      *
-     * @param Request $request
-     * @param Response $response
+     * @param   Request   $request
+     * @param   Response  $response
      *
      * @return Response
+     * @throws ArticleException
      * @throws InvalidArgumentException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws ValidationException
-     * @throws UserException
      * @throws ORMException
-     * @throws OptimisticLockException|ArticleException
+     * @throws OptimisticLockException
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws UserException
+     * @throws ValidationException
      */
-    public function create(Request $request, Response $response)
+    public function create(Request $request, Response $response): Response
     {
         /** @var array $parsedData */
         $parsedData = $request->getParsedBody();
 
         $this->validationService->validate($parsedData, [
-            'title' => 'required',
+            'title'       => 'required',
             'description' => 'required',
-            'content' => 'required',
-            'image' => 'required',
-            'hidden' => 'required|numeric',
-            'pinned' => 'required|numeric'
+            'content'     => 'required',
+            'image'       => 'required',
+            'hidden'      => 'required|numeric',
+            'pinned'      => 'required|numeric'
         ]);
 
         $user = $this->getUser($this->userRepository, $request, false);
@@ -150,8 +132,7 @@ class ArticleController extends BaseController
      */
     public function article(Request $request, Response $response, $args): Response
     {
-        /** @var string $slug */
-        $slug = $args['slug'];
+        $slug = (string) $args['slug'];
 
         /** @var Article $article */
         $article = $this->articleRepository->findBySlug($slug);
@@ -162,13 +143,14 @@ class ArticleController extends BaseController
 
         return $this->respond(
             $response,
-            response()->setData($article)
+            response()
+                ->setData($article)
         );
     }
 
     /**
-     * @param Request  $request
-     * @param Response $response
+     * @param   Request   $request
+     * @param   Response  $response
      *
      * @return Response
      * @throws InvalidArgumentException
@@ -177,23 +159,26 @@ class ArticleController extends BaseController
     public function pinned(Request $request, Response $response): Response
     {
         $this->searchCriteria
-            ->addFilter('pinned', self::IS_PINNED)
-            ->addFilter('hidden', self::IS_VISIBLE);
+            ->addFilter('pinned', Article::IS_PINNED)
+            ->addFilter('hidden', Article::IS_VISIBLE);
 
         /** @var ArrayCollection $pinnedArticles */
         $pinnedArticles = $this->articleRepository->getList($this->searchCriteria);
 
         return $this->respond(
             $response,
-            response()->setData($pinnedArticles->toArray())
+            response()
+                ->setData(
+                    $pinnedArticles->toArray()
+                )
         );
     }
 
     /**
-     * @param Request  $request
-     * @param Response $response
+     * @param   Request   $request
+     * @param   Response  $response
      *
-     * @param          $args
+     * @param             $args
      *
      * @return Response
      * @throws InvalidArgumentException
@@ -207,24 +192,28 @@ class ArticleController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        $this->searchCriteria->setPage((int)$page)
-            ->setLimit((int)$resultPerPage)
+        $this->searchCriteria
+            ->setPage((int) $page)
+            ->setLimit((int) $resultPerPage)
             ->addOrder('id', 'DESC');
 
         $articles = $this->articleRepository->paginate($this->searchCriteria);
 
         return $this->respond(
             $response,
-            response()->setData($articles->toArray())
+            response()
+                ->setData(
+                    $articles->toArray()
+                )
         );
     }
 
     /**
      * Deletes specific article.
      *
-     * @param Request  $request
-     * @param Response $response
-     * @param          $args
+     * @param   Request   $request
+     * @param   Response  $response
+     * @param             $args
      *
      * @return Response
      * @throws ArticleException
@@ -246,7 +235,8 @@ class ArticleController extends BaseController
 
         return $this->respond(
             $response,
-            response()->setData(true)
+            response()
+                ->setData(true)
         );
     }
 }

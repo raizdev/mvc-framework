@@ -26,11 +26,6 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class UserController extends BaseController
 {
     /**
-     * 2 equals the second field in the enum-field
-     */
-    private const USER_EQUALS_ONLINE = 2;
-
-    /**
      * @var UserRepository Gets the current UserRepository
      */
     private UserRepository $userRepository;
@@ -38,7 +33,7 @@ class UserController extends BaseController
     /**
      * UserController constructor.
      *
-     * @param UserRepository $userRepository
+     * @param   UserRepository  $userRepository
      */
     public function __construct(
         UserRepository $userRepository
@@ -49,8 +44,8 @@ class UserController extends BaseController
     /**
      * Retrieves the logged in User via JWT - Token
      *
-     * @param Request  $request  The current incoming Request
-     * @param Response $response The current Response
+     * @param   Request   $request   The current incoming Request
+     * @param   Response  $response  The current Response
      *
      * @return Response Returns a Response with the given Data
      * @throws UserException
@@ -64,15 +59,16 @@ class UserController extends BaseController
 
         return $this->respond(
             $response,
-            response()->setData($user)
+            response()
+                ->setData($user)
         );
     }
 
     /**
      * Gets all current Online User and counts them
      *
-     * @param Request  $request
-     * @param Response $response
+     * @param   Request   $request
+     * @param   Response  $response
      *
      * @return Response
      */
@@ -80,22 +76,23 @@ class UserController extends BaseController
     {
         /** @var User $onlineUser */
         $onlineUser = $this->userRepository->count([
-            'online' => self::USER_EQUALS_ONLINE
+            'online' => User::USER_EQUALS_ONLINE
         ]);
 
         return $this->respond(
             $response,
-            response()->setData([
-                'count' => $onlineUser
-            ])
+            response()
+                ->setData([
+                    'count' => $onlineUser
+                ])
         );
     }
 
     /**
      * Saves the given Language to the User
      *
-     * @param Request  $request
-     * @param Response $response
+     * @param   Request   $request
+     * @param   Response  $response
      *
      * @return Response
      * @throws InvalidArgumentException
@@ -117,7 +114,8 @@ class UserController extends BaseController
 
         return $this->respond(
             $response,
-            response()->setData($user)
+            response()
+                ->setData($user)
         );
     }
 }

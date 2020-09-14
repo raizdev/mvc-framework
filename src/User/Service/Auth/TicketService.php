@@ -60,12 +60,13 @@ class TicketService
     /**
      * Hashes our User object to a Ticket and returns it
      *
-     * @param object $user
+     * @param   object  $user
      *
      * @return string
+     * @throws \Exception
      */
     public function hash(object $user): string
     {
-        return hash('sha256', $user->getUsername() . rand(1337, 2337) . '-' . $_ENV["WEB_NAME"], false);
+        return hash('sha256', $user->getUsername() . random_int(1337, 2337) . '-' . $_ENV["WEB_NAME"], false);
     }
 }

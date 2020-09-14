@@ -77,14 +77,14 @@ class VoteController extends BaseController
     /**
      * VoteController constructor.
      *
-     * @param VoteRepository $voteRepository
-     * @param UserRepository $userRepository
-     * @param ValidationService $validationService
-     * @param CreateVoteService $createVoteService
-     * @param DeleteVoteService $deleteVoteService
-     * @param DoctrineSearchCriteria $doctrineSearchCriteria
-     * @param IncrementVoteService $incrementVoteService
-     * @param DecrementVoteService $decrementVoteService
+     * @param   VoteRepository          $voteRepository
+     * @param   UserRepository          $userRepository
+     * @param   ValidationService       $validationService
+     * @param   CreateVoteService       $createVoteService
+     * @param   DeleteVoteService       $deleteVoteService
+     * @param   DoctrineSearchCriteria  $doctrineSearchCriteria
+     * @param   IncrementVoteService    $incrementVoteService
+     * @param   DecrementVoteService    $decrementVoteService
      */
     public function __construct(
         VoteRepository $voteRepository,
@@ -96,27 +96,30 @@ class VoteController extends BaseController
         IncrementVoteService $incrementVoteService,
         DecrementVoteService $decrementVoteService
     ) {
-        $this->voteRepository = $voteRepository;
-        $this->userRepository = $userRepository;
-        $this->validationService = $validationService;
-        $this->createVoteService = $createVoteService;
-        $this->deleteVoteService = $deleteVoteService;
+        $this->voteRepository         = $voteRepository;
+        $this->userRepository         = $userRepository;
+        $this->validationService      = $validationService;
+        $this->createVoteService      = $createVoteService;
+        $this->deleteVoteService      = $deleteVoteService;
         $this->doctrineSearchCriteria = $doctrineSearchCriteria;
-        $this->incrementVoteService = $incrementVoteService;
-        $this->decrementVoteService = $decrementVoteService;
+        $this->incrementVoteService   = $incrementVoteService;
+        $this->decrementVoteService   = $decrementVoteService;
     }
 
     /**
      * Create new vote.
      *
-     * @param Request $request
-     * @param Response $response
+     * @param   Request   $request
+     * @param   Response  $response
+     *
      * @return Response
-     * @throws ValidationException
-     * @throws UserException
-     * @throws VoteException
-     * @throws PhpfastcacheSimpleCacheException
      * @throws InvalidArgumentException
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws UserException
+     * @throws ValidationException
+     * @throws VoteException
      */
     public function create(Request $request, Response $response): Response
     {
@@ -124,9 +127,9 @@ class VoteController extends BaseController
         $parsedData = $request->getParsedBody();
 
         $this->validationService->validate($parsedData, [
-            'entity_id' => 'required|numeric',
+            'entity_id'   => 'required|numeric',
             'vote_entity' => 'required|numeric',
-            'vote_type' => 'required|numeric'
+            'vote_type'   => 'required|numeric'
         ]);
 
         $user = $this->getUser($this->userRepository, $request, false);
@@ -154,8 +157,9 @@ class VoteController extends BaseController
     /**
      * Returns total count of likes/dislikes for given entity.
      *
-     * @param Request $request
-     * @param Response $response
+     * @param   Request   $request
+     * @param   Response  $response
+     *
      * @return Response
      * @throws InvalidArgumentException
      * @throws PhpfastcacheSimpleCacheException
@@ -178,15 +182,17 @@ class VoteController extends BaseController
 
         return $this->respond(
             $response,
-            response()->setData($votes)
+            response()
+                ->setData($votes)
         );
     }
 
     /**
      * Delete vote.
      *
-     * @param Request $request
-     * @param Response $response
+     * @param   Request   $request
+     * @param   Response  $response
+     *
      * @return Response
      * @throws InvalidArgumentException
      * @throws ORMException
@@ -202,9 +208,9 @@ class VoteController extends BaseController
         $parsedData = $request->getParsedBody();
 
         $this->validationService->validate($parsedData, [
-            'entity_id' => 'required|numeric',
+            'entity_id'   => 'required|numeric',
             'vote_entity' => 'required|numeric',
-            'vote_type' => 'required|numeric'
+            'vote_type'   => 'required|numeric'
         ]);
 
         $user = $this->getUser($this->userRepository, $request, false);
