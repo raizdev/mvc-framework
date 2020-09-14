@@ -209,7 +209,7 @@ class GuestbookController extends BaseController
             ->addFilter('guild', (int)$guildId)
             ->addOrder('id', 'DESC');
 
-        $entries = $this->guestbookRepository->paginate($this->searchCriteria);
+        $entries = $this->guestbookRepository->paginate($this->searchCriteria, false);
 
         return $this->respond(
             $response,
