@@ -107,15 +107,26 @@ abstract class BaseRepository extends PaginatedRepository
      *
      * @return Object|null
      */
-    public function getBy($criteria, $orderBy = null): ?object
+    public function getOneBy($criteria, $orderBy = null): ?object
     {
         return $this->findOneBy($criteria, $orderBy);
     }
 
     /**
+     * @param      $criteria
+     * @param null $orderBy
+     *
+     * @return Object|null
+     */
+    public function getBy($criteria, $orderBy = null): ?object
+    {
+        return $this->findBy($criteria, $orderBy);
+    }
+
+    /**
      * @param   object  $model
      *
-     * @return Payment
+     * @return Object
      * @throws ORMException
      * @throws PhpfastcacheSimpleCacheException
      * @throws OptimisticLockException

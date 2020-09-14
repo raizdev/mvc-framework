@@ -56,11 +56,11 @@ class DeleteVoteService
     public function execute(User $user, array $data): CustomResponseInterface
     {
         /** @var Vote $vote */
-        $vote = $this->voteRepository->findOneBy([
+        $vote = $this->voteRepository->getOneBy([
             'entity_id' => $data['entity_id'],
             'vote_entity' => $data['vote_entity'],
             'vote_type' => $data['vote_type'],
-            'user' => $user
+            'user' => $user->getId()
         ]);
 
         if (!$vote) {

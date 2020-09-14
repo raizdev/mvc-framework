@@ -19,7 +19,6 @@ use Ares\Guild\Repository\GuildRepository;
 use Ares\User\Entity\User;
 use Ares\User\Exception\UserException;
 use Ares\User\Repository\UserRepository;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -123,10 +122,10 @@ class GuestbookController extends BaseController
         $user = $this->getUser($this->userRepository, $request, false);
 
         /** @var User $profile */
-        $profile = $this->userRepository->get($profile_id, false);
+        $profile = $this->userRepository->get((int) $profile_id, false);
 
         /** @var Guild $guild */
-        $guild = $this->guildRepository->get($guild_id, false);
+        $guild = $this->guildRepository->get((int) $guild_id, false);
 
         if (!$profile && !$guild) {
             throw new GuestbookException(__('The associated Entities could not be found'));
@@ -164,9 +163,9 @@ class GuestbookController extends BaseController
         $profileId = $args['profile_id'];
 
         $this->searchCriteria
-            ->setPage($page)
-            ->setLimit($resultPerPage)
-            ->addFilter('profile', $profileId)
+            ->setPage((int) $page)
+            ->setLimit((int) $resultPerPage)
+            ->addFilter('profile', (int) $profileId)
             ->addOrder('id', 'DESC');
 
         $entries = $this->guestbookRepository->paginate($this->searchCriteria);
@@ -204,9 +203,9 @@ class GuestbookController extends BaseController
         $guildId = $args['guild_id'];
 
         $this->searchCriteria
-            ->setPage($page)
-            ->setLimit($resultPerPage)
-            ->addFilter('guild', $guildId)
+            ->setPage((int) $page)
+            ->setLimit((int) $resultPerPage)
+            ->addFilter('guild', (int) $guildId)
             ->addOrder('id', 'DESC');
 
         $entries = $this->guestbookRepository->paginate($this->searchCriteria);
@@ -237,7 +236,7 @@ class GuestbookController extends BaseController
         /** @var int $id */
         $id = $args['id'];
 
-        $deleted = $this->guestbookRepository->delete($id);
+        $deleted = $this->guestbookRepository->delete((int) $id);
 
         if (!$deleted) {
             throw new GuestbookException(__('Guestbook Entry could not be deleted.'), 409);

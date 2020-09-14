@@ -56,7 +56,8 @@ class CreatePaymentService
     {
         $payment = $this->getNewPayment($user, $data);
 
-        $existingPayment = $this->paymentRepository->findOneBy([
+        /** @var Payment $existingPayment */
+        $existingPayment = $this->paymentRepository->getOneBy([
             'user' => $payment->getUser(),
             'processed' => 0
         ]);

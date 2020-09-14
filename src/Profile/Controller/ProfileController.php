@@ -111,7 +111,7 @@ class ProfileController extends BaseController
         $profile_id = $args['profile_id'];
 
         /** @var User $profile */
-        $profile = $this->userRepository->get($profile_id);
+        $profile = $this->userRepository->get((int) $profile_id);
 
         if (!$profile) {
             throw new ProfileException(__('No associated Profile was found'), 404);
@@ -153,14 +153,14 @@ class ProfileController extends BaseController
         $resultPerPage = $args['rpp'];
 
         /** @var User $profile */
-        $profile = $this->userRepository->get((int)$profile_id);
+        $profile = $this->userRepository->get((int) $profile_id);
 
         if (!$profile) {
             throw new ProfileException(__('No associated Profile was found'), 404);
         }
 
-        $this->searchCriteria->setPage((int)$page)
-            ->setLimit($resultPerPage)
+        $this->searchCriteria->setPage((int) $page)
+            ->setLimit((int) $resultPerPage)
             ->addOrder('id', 'DESC');
 
         /** @var ArrayCollection $pinnedArticles */
@@ -197,16 +197,16 @@ class ProfileController extends BaseController
         $resultPerPage = $args['rpp'];
 
         /** @var User $profile */
-        $profile = $this->userRepository->get((int)$profile_id);
+        $profile = $this->userRepository->get((int) $profile_id);
 
         if (!$profile) {
             throw new ProfileException(__('No associated Profile was found'), 404);
         }
 
         $this->searchCriteria
-            ->setPage($page)
-            ->setLimit($resultPerPage)
-            ->addFilter('user', $profile_id)
+            ->setPage((int) $page)
+            ->setLimit((int) $resultPerPage)
+            ->addFilter('user', (int) $profile_id)
             ->addOrder('id', 'DESC');
 
         /** @var ArrayCollection $pinnedArticles */
@@ -243,16 +243,16 @@ class ProfileController extends BaseController
         $resultPerPage = $args['rpp'];
 
         /** @var User $profile */
-        $profile = $this->userRepository->get($profile_id);
+        $profile = $this->userRepository->get((int) $profile_id);
 
         if (!$profile) {
             throw new ProfileException(__('No associated Profile was found'), 404);
         }
 
         $this->searchCriteria
-            ->setPage($page)
-            ->setLimit($resultPerPage)
-            ->addFilter('owner', $profile_id)
+            ->setPage((int) $page)
+            ->setLimit((int) $resultPerPage)
+            ->addFilter('owner', (int) $profile_id)
             ->addOrder('id', 'DESC');
 
         $rooms = $this->roomRepository->paginate($this->searchCriteria);
@@ -288,16 +288,16 @@ class ProfileController extends BaseController
         $resultPerPage = $args['rpp'];
 
         /** @var User $profile */
-        $profile = $this->userRepository->get((int)$profile_id);
+        $profile = $this->userRepository->get((int) $profile_id);
 
         if (!$profile) {
             throw new ProfileException(__('No associated Profile was found'), 404);
         }
 
         $this->searchCriteria
-            ->setPage($page)
-            ->setLimit($resultPerPage)
-            ->addFilter('creator', $profile_id)
+            ->setPage((int) $page)
+            ->setLimit((int) $resultPerPage)
+            ->addFilter('creator', (int) $profile_id)
             ->addOrder('id', 'DESC');
 
         $guilds = $this->guildRepository->profileGuilds($this->searchCriteria);
@@ -333,16 +333,16 @@ class ProfileController extends BaseController
         $resultPerPage = $args['rpp'];
 
         /** @var User $profile */
-        $profile = $this->userRepository->get($profile_id);
+        $profile = $this->userRepository->get((int) $profile_id);
 
         if (!$profile) {
             throw new ProfileException(__('No associated Profile was found'), 404);
         }
 
         $this->searchCriteria
-            ->setPage($page)
-            ->setLimit($resultPerPage)
-            ->addFilter('creator', $profile_id)
+            ->setPage((int) $page)
+            ->setLimit((int) $resultPerPage)
+            ->addFilter('creator', (int) $profile_id)
             ->addOrder('id', 'DESC');
 
         $photos = $this->photoRepository->paginate($this->searchCriteria);

@@ -75,8 +75,8 @@ class MessengerController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        $this->searchCriteria->setPage($page)
-            ->setLimit($resultPerPage)
+        $this->searchCriteria->setPage((int) $page)
+            ->setLimit((int) $resultPerPage)
             ->addFilter('user', $this->getUser($this->userRepository, $request)->getId())
             ->addOrder('id', 'DESC');
 

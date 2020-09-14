@@ -87,7 +87,7 @@ class PhotoController extends BaseController
         $id = $args['id'];
 
         /** @var Photo $photo */
-        $photo = $this->photoRepository->get($id);
+        $photo = $this->photoRepository->get((int) $id);
 
         if (!$photo) {
             throw new PhotoException(__('No Photo was found'), 404);
@@ -120,7 +120,9 @@ class PhotoController extends BaseController
         $username = $parsedData['username'];
 
         /** @var User $user */
-        $user = $this->userRepository->getByUsername($username);
+        $user = $this->userRepository->getOneBy([
+            'username' => $username
+        ]);
 
         if (!$user) {
             throw new PhotoException(__('No Photo was found'), 404);
@@ -162,8 +164,8 @@ class PhotoController extends BaseController
         $resultPerPage = $args['rpp'];
 
         $this->searchCriteria
-            ->setPage($page)
-            ->setLimit($resultPerPage)
+            ->setPage((int) $page)
+            ->setLimit((int) $resultPerPage)
             ->addOrder('id', 'DESC');
 
         $photos = $this->photoRepository->paginate($this->searchCriteria);
@@ -194,7 +196,7 @@ class PhotoController extends BaseController
         /** @var int $id */
         $id = $args['id'];
 
-        $photo = $this->photoRepository->delete($id);
+        $photo = $this->photoRepository->delete((int) $id);
 
         if (!$photo) {
             throw new PhotoException(__('Photo could not be deleted'));

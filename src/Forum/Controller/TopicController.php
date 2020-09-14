@@ -20,9 +20,9 @@ use Ares\User\Repository\UserRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\SimpleCache\InvalidArgumentException;
 
 /**
  * Class TopicController
@@ -96,7 +96,6 @@ class TopicController extends BaseController
      * @throws ORMException
      * @throws OptimisticLockException
      * @throws PhpfastcacheSimpleCacheException
-     * @throws \Psr\Cache\InvalidArgumentException
      * @throws InvalidArgumentException
      */
     public function create(Request $request, Response $response): Response
@@ -127,7 +126,7 @@ class TopicController extends BaseController
      * @throws PhpfastcacheSimpleCacheException
      * @throws TopicException
      * @throws ValidationException
-     * @throws \Psr\Cache\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function edit(Request $request, Response $response): Response
     {
@@ -157,7 +156,7 @@ class TopicController extends BaseController
      *
      * @return Response
      * @throws PhpfastcacheSimpleCacheException
-     * @throws \Psr\Cache\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function list(Request $request, Response $response, $args): Response
     {
@@ -167,8 +166,8 @@ class TopicController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        $this->searchCriteria->setPage((int)$page)
-            ->setLimit($resultPerPage)
+        $this->searchCriteria->setPage((int) $page)
+            ->setLimit((int) $resultPerPage)
             ->addOrder('id', 'DESC');
 
         $topic = $this->topicRepository->paginate($this->searchCriteria);
@@ -192,14 +191,14 @@ class TopicController extends BaseController
      * @throws OptimisticLockException
      * @throws PhpfastcacheSimpleCacheException
      * @throws TopicException
-     * @throws \Psr\Cache\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function delete(Request $request, Response $response, $args): Response
     {
         /** @var int $id */
         $id = $args['id'];
 
-        $deleted = $this->topicRepository->delete((int)$id);
+        $deleted = $this->topicRepository->delete((int) $id);
 
         if (!$deleted) {
             throw new TopicException(__('Topic could not be deleted.'), 409);

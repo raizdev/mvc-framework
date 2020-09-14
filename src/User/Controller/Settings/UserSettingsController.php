@@ -10,11 +10,17 @@ namespace Ares\User\Controller\Settings;
 use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
+use Ares\User\Exception\UserException;
+use Ares\User\Exception\UserSettingsException;
 use Ares\User\Repository\UserRepository;
 use Ares\User\Service\Settings\ChangeEmailService;
 use Ares\User\Service\Settings\ChangeGeneralSettingsService;
 use Ares\User\Service\Settings\ChangePasswordService;
 use Ares\User\Service\Settings\ChangeUsernameService;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -82,11 +88,19 @@ class UserSettingsController extends BaseController
     }
 
     /**
-     * @param Request $request
+     * @param Request  $request
      * @param Response $response
+     *
+     * @return Response
      * @throws ValidationException
+     * @throws UserException
+     * @throws UserSettingsException
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws InvalidArgumentException
      */
-    public function changeGeneralSettings(Request $request, Response $response)
+    public function changeGeneralSettings(Request $request, Response $response): Response
     {
         /** @var array $parsedData */
         $parsedData = $request->getParsedBody();
@@ -111,11 +125,19 @@ class UserSettingsController extends BaseController
     }
 
     /**
-     * @param Request $request
+     * @param Request  $request
      * @param Response $response
+     *
+     * @return Response
+     * @throws InvalidArgumentException
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws UserException
+     * @throws UserSettingsException
      * @throws ValidationException
      */
-    public function changePassword(Request $request, Response $response)
+    public function changePassword(Request $request, Response $response): Response
     {
         /** @var array $parsedData */
         $parsedData = $request->getParsedBody();
@@ -139,12 +161,19 @@ class UserSettingsController extends BaseController
     }
 
     /**
-     * @param Request $request
+     * @param Request  $request
      * @param Response $response
-     * @throws ValidationException
+     *
+     * @return Response
+     * @throws InvalidArgumentException
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws UserException
+     * @throws UserSettingsException
      * @throws ValidationException
      */
-    public function changeEmail(Request $request, Response $response)
+    public function changeEmail(Request $request, Response $response): Response
     {
         /** @var array $parsedData */
         $parsedData = $request->getParsedBody();
@@ -168,12 +197,19 @@ class UserSettingsController extends BaseController
     }
 
     /**
-     * @param Request $request
+     * @param Request  $request
      * @param Response $response
-     * @throws ValidationException
+     *
+     * @return Response
+     * @throws InvalidArgumentException
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws UserException
+     * @throws UserSettingsException
      * @throws ValidationException
      */
-    public function changeUsername(Request $request, Response $response)
+    public function changeUsername(Request $request, Response $response): Response
     {
         /** @var array $parsedData */
         $parsedData = $request->getParsedBody();

@@ -58,7 +58,7 @@ class UpdateSettingsService
         $value = $data['value'];
 
         /** @var Setting $configData */
-        $configData = $this->settingsRepository->getBy([
+        $configData = $this->settingsRepository->getOneBy([
             'key' => $key
         ]);
 

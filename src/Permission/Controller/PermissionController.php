@@ -65,8 +65,8 @@ class PermissionController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        $this->searchCriteria->setPage($page)
-            ->setLimit($resultPerPage)
+        $this->searchCriteria->setPage((int) $page)
+            ->setLimit((int) $resultPerPage)
             ->addOrder('id', 'DESC');
 
         $users    = $this->permissionRepository->paginate($this->searchCriteria);

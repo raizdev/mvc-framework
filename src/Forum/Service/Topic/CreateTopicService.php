@@ -57,13 +57,13 @@ class CreateTopicService
      * @throws OptimisticLockException
      * @throws PhpfastcacheSimpleCacheException
      * @throws \Psr\Cache\InvalidArgumentException
-     * @throws InvalidArgumentException
      */
     public function execute(array $data)
     {
         $topic = $this->getNewTopic($data);
 
-        $existingTopic = $this->topicRepository->findOneBy([
+        /** @var Topic $existingTopic */
+        $existingTopic = $this->topicRepository->getOneBy([
            'title' => $topic->getTitle()
         ]);
 
@@ -71,9 +71,11 @@ class CreateTopicService
             throw new TopicException(__('There is already a Topic with that title'));
         }
 
+        /** @var Topic $topic */
         $topic = $this->topicRepository->save($topic);
 
-        return response()->setData($topic);
+        return response()
+            ->setData($topic);
     }
 
     /**

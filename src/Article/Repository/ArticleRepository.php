@@ -45,7 +45,7 @@ class ArticleRepository extends BaseRepository
             return unserialize($entity);
         }
 
-        $entity = $this->findOneBy([
+        $entity = $this->getOneBy([
             'slug' => $slug
         ]);
 

@@ -117,8 +117,8 @@ class GuildController extends BaseController
         $resultPerPage = $args['rpp'];
 
         $this->searchCriteria
-            ->setPage($page)
-            ->setLimit($resultPerPage)
+            ->setPage((int) $page)
+            ->setLimit((int) $resultPerPage)
             ->addOrder('id', 'DESC');
 
         $guilds = $this->guildRepository->paginate($this->searchCriteria);
@@ -159,9 +159,9 @@ class GuildController extends BaseController
         $resultPerPage = $args['rpp'];
 
         $this->searchCriteria
-            ->setPage($page)
-            ->setLimit($resultPerPage)
-            ->addFilter('guild', $id)
+            ->setPage((int) $page)
+            ->setLimit((int) $resultPerPage)
+            ->addFilter('guild', (int) $id)
             ->addOrder('level_id', 'ASC');
 
         $members = $this->guildMemberRepository->paginate($this->searchCriteria);

@@ -78,18 +78,20 @@ class LoginService
     public function login(string $username, string $password): CustomResponseInterface
     {
         /** @var User $user */
-        $user = $this->userRepository->getByUsername($username);
+        $user = $this->userRepository->getOneBy([
+            'username' => $username
+        ]);
 
         if ($user === null || !password_verify($password, $user->getPassword())) {
             throw new LoginException(__('general.failed'), 403);
         }
 
         /** @var Ban $isBanned */
-        $isBanned = $this->banRepository->getBy([
+        $isBanned = $this->banRepository->getOneBy([
             'user' => $user->getId()
         ]);
 
-        if (!$isBanned && $isBanned->getBanExpire() > time()) {
+        if ($isBanned && $isBanned->getBanExpire() > time()) {
             throw new BanException(__('general.banned', [$isBanned->getBanReason()]), 401);
         }
 

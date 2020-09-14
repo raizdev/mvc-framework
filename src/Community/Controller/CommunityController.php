@@ -54,7 +54,7 @@ class CommunityController extends BaseController
     }
 
     /**
-     * Searchs with term in groups, rooms and news.
+     * Searches with term in groups, rooms and news.
      *
      * @param   Request   $request
      * @param   Response  $response
@@ -65,7 +65,7 @@ class CommunityController extends BaseController
     public function search(Request $request, Response $response, $args): Response
     {
         /** @var string $id */
-        $term    = (string)$args['term'];
+        $term    = (string) $args['term'];
         $results = [];
 
         $results['guilds']   = $this->guildRepository->searchGuilds($term);

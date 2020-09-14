@@ -65,10 +65,10 @@ class CreateVoteService
     {
         $vote = $this->getNewVote($user, $data);
 
-        $existingVote = $this->voteRepository->findOneBy([
+        $existingVote = $this->voteRepository->getOneBy([
             'entity_id' => $vote->getEntityId(),
             'vote_entity' => $vote->getVoteEntity(),
-            'user' => $user
+            'user' => $user->getId()
         ]);
 
         if ($existingVote) {

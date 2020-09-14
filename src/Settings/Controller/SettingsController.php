@@ -90,7 +90,7 @@ class SettingsController extends BaseController
         $key = $parsedData['key'];
 
         /** @var Setting $configData */
-        $configData = $this->settingsRepository->getBy([
+        $configData = $this->settingsRepository->getOneBy([
             'key' => $key
         ]);
 
@@ -124,8 +124,8 @@ class SettingsController extends BaseController
         $resultPerPage = $args['rpp'];
 
         $this->searchCriteria
-            ->setPage($page)
-            ->setLimit($resultPerPage);
+            ->setPage((int) $page)
+            ->setLimit((int) $resultPerPage);
 
         $settings = $this->settingsRepository->paginate($this->searchCriteria, false);
 

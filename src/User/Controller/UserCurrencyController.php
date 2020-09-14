@@ -13,6 +13,7 @@ use Ares\Framework\Service\ValidationService;
 use Ares\User\Exception\UserCurrencyException;
 use Ares\User\Service\Currency\UpdateCurrencyService;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -56,7 +57,7 @@ class UserCurrencyController extends BaseController
      * @return Response
      * @throws ValidationException
      * @throws UserCurrencyException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws PhpfastcacheSimpleCacheException|InvalidArgumentException
      */
     public function update(Request $request, Response $response)
     {
@@ -70,9 +71,9 @@ class UserCurrencyController extends BaseController
         ]);
 
         $this->updateCurrencyService->execute(
-            (int)$parsedData['user_id'],
-            (int)$parsedData['type'],
-            (int)$parsedData['amount']
+            (int) $parsedData['user_id'],
+            (int) $parsedData['type'],
+            (int) $parsedData['amount']
         );
 
         return $this->respond(

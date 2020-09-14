@@ -26,11 +26,6 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class UserController extends BaseController
 {
     /**
-     * 2 equals the second field in the enum-field
-     */
-    private const USER_EQUALS_ONLINE = 2;
-
-    /**
      * @var UserRepository Gets the current UserRepository
      */
     private UserRepository $userRepository;
@@ -81,7 +76,7 @@ class UserController extends BaseController
     {
         /** @var User $onlineUser */
         $onlineUser = $this->userRepository->count([
-            'online' => self::USER_EQUALS_ONLINE
+            'online' => User::USER_EQUALS_ONLINE
         ]);
 
         return $this->respond(

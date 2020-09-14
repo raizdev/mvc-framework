@@ -179,9 +179,9 @@ class CommentController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        $this->searchCriteria->setPage((int)$page)
-            ->setLimit($resultPerPage)
-            ->addFilter('article', $articleId)
+        $this->searchCriteria->setPage((int) $page)
+            ->setLimit((int) $resultPerPage)
+            ->addFilter('article', (int) $articleId)
             ->addOrder('id', 'DESC');
 
         /** @var ArrayCollection $pinnedArticles */
@@ -219,7 +219,7 @@ class CommentController extends BaseController
         /** @var int $id */
         $id = $args['id'];
 
-        $deleted = $this->commentRepository->delete($id);
+        $deleted = $this->commentRepository->delete((int) $id);
 
         if (!$deleted) {
             throw new CommentException(__('Comment could not be deleted.'), 409);

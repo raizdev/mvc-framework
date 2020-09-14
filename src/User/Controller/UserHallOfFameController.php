@@ -56,7 +56,6 @@ class UserHallOfFameController extends BaseController
      * @param   Response  $response
      *
      * @return Response
-     * @throws UserException
      */
     public function topCredits(Request $request, Response $response): Response
     {
@@ -79,7 +78,6 @@ class UserHallOfFameController extends BaseController
      * @param   Response  $response
      *
      * @return Response
-     * @throws UserException
      */
     public function topDiamonds(Request $request, Response $response): Response
     {
@@ -98,11 +96,10 @@ class UserHallOfFameController extends BaseController
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request  $request
+     * @param Response $response
      *
      * @return Response
-     * @throws UserException
      */
     public function topPixels(Request $request, Response $response): Response
     {
@@ -125,7 +122,6 @@ class UserHallOfFameController extends BaseController
      * @param   Response  $response
      *
      * @return Response
-     * @throws UserException
      */
     public function topAchievement(Request $request, Response $response): Response
     {
@@ -144,11 +140,10 @@ class UserHallOfFameController extends BaseController
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request  $request
+     * @param Response $response
      *
      * @return Response
-     * @throws UserException
      */
     public function topOnlineTime(Request $request, Response $response): Response
     {

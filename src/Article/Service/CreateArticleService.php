@@ -66,7 +66,7 @@ class CreateArticleService
     {
         $article = $this->getNewArticle($user, $data);
 
-        $existingArticle = $this->articleRepository->findOneBy([
+        $existingArticle = $this->articleRepository->getOneBy([
             'title' => $article->getTitle()
         ]);
 

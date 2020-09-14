@@ -27,6 +27,11 @@ use Doctrine\ORM\Mapping\ManyToOne;
 class User extends Entity
 {
     /**
+     * @var int
+     */
+    public const USER_EQUALS_ONLINE = 2;
+
+    /**
      * @ORM\Id
      * @ORM\Column(name="id", type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")

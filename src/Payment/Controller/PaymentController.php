@@ -130,7 +130,7 @@ class PaymentController extends BaseController
         $id = $args['id'];
 
         /** @var Payment $payment */
-        $payment = $this->paymentRepository->get($id);
+        $payment = $this->paymentRepository->get((int) $id);
 
         if (!$payment) {
             throw new PaymentException(__('No specific Payment found'), 404);
@@ -161,7 +161,7 @@ class PaymentController extends BaseController
         $resultPerPage = $args['rpp'];
 
         $this->searchCriteria->setPage((int) $page)
-            ->setLimit($resultPerPage)
+            ->setLimit((int) $resultPerPage)
             ->addOrder('id', 'DESC');
 
         $payments = $this->paymentRepository->paginate($this->searchCriteria);

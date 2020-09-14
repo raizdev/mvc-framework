@@ -33,16 +33,6 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class ArticleController extends BaseController
 {
     /**
-     * Represents the Value of pinned Articles
-     */
-    private const IS_PINNED = 1;
-
-    /**
-     * Represents the Value of Visible Articles
-     */
-    private const IS_VISIBLE = 1;
-
-    /**
      * @var ArticleRepository
      */
     private ArticleRepository $articleRepository;
@@ -142,8 +132,7 @@ class ArticleController extends BaseController
      */
     public function article(Request $request, Response $response, $args): Response
     {
-        /** @var string $slug */
-        $slug = $args['slug'];
+        $slug = (string) $args['slug'];
 
         /** @var Article $article */
         $article = $this->articleRepository->findBySlug($slug);
@@ -170,8 +159,8 @@ class ArticleController extends BaseController
     public function pinned(Request $request, Response $response): Response
     {
         $this->searchCriteria
-            ->addFilter('pinned', self::IS_PINNED)
-            ->addFilter('hidden', self::IS_VISIBLE);
+            ->addFilter('pinned', Article::IS_PINNED)
+            ->addFilter('hidden', Article::IS_VISIBLE);
 
         /** @var ArrayCollection $pinnedArticles */
         $pinnedArticles = $this->articleRepository->getList($this->searchCriteria);
@@ -204,8 +193,8 @@ class ArticleController extends BaseController
         $resultPerPage = $args['rpp'];
 
         $this->searchCriteria
-            ->setPage($page)
-            ->setLimit($resultPerPage)
+            ->setPage((int) $page)
+            ->setLimit((int) $resultPerPage)
             ->addOrder('id', 'DESC');
 
         $articles = $this->articleRepository->paginate($this->searchCriteria);
@@ -238,7 +227,7 @@ class ArticleController extends BaseController
         /** @var int $id */
         $id = $args['id'];
 
-        $deleted = $this->articleRepository->delete((int)$id);
+        $deleted = $this->articleRepository->delete((int) $id);
 
         if (!$deleted) {
             throw new ArticleException(__('Article could not be deleted.'), 409);

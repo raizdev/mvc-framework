@@ -181,9 +181,9 @@ class CommentController extends BaseController
         $thread = $args['thread_id'];
 
         $this->searchCriteria
-            ->setPage($page)
-            ->setLimit($resultPerPage)
-            ->addFilter('thread', $thread)
+            ->setPage((int) $page)
+            ->setLimit((int) $resultPerPage)
+            ->addFilter('thread', (int) $thread)
             ->addOrder('id', 'DESC');
 
         $comments = $this->commentRepository->paginate($this->searchCriteria);
@@ -214,7 +214,7 @@ class CommentController extends BaseController
         /** @var int $id */
         $id = $args['id'];
 
-        $deleted = $this->commentRepository->delete($id);
+        $deleted = $this->commentRepository->delete((int) $id);
 
         if (!$deleted) {
             throw new CommentException(__('Comment could not be deleted.'), 409);

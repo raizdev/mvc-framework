@@ -140,7 +140,7 @@ class ThreadController extends BaseController
         $topic = $args['topic_id'];
 
         /** @var Thread $thread */
-        $thread = $this->threadRepository->findByCriteria($topic, $slug);
+        $thread = $this->threadRepository->findByCriteria((int) $topic, (string) $slug);
 
         if (!$thread) {
             throw new ThreadException(__('No specific Thread found'), 404);
@@ -174,9 +174,9 @@ class ThreadController extends BaseController
         $topic = $args['topic_id'];
 
         $this->searchCriteria
-            ->setPage($page)
-            ->setLimit($resultPerPage)
-            ->addFilter('topic', $topic)
+            ->setPage((int) $page)
+            ->setLimit((int) $resultPerPage)
+            ->addFilter('topic', (int) $topic)
             ->addOrder('id', 'DESC');
 
         $thread = $this->threadRepository->paginate($this->searchCriteria);
@@ -207,7 +207,7 @@ class ThreadController extends BaseController
         /** @var int $id */
         $id = $args['id'];
 
-        $deleted = $this->threadRepository->delete((int)$id);
+        $deleted = $this->threadRepository->delete((int) $id);
 
         if (!$deleted) {
             throw new ThreadException(__('Thread could not be deleted.'), 409);

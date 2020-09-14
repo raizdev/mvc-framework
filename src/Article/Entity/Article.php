@@ -25,6 +25,16 @@ use Doctrine\ORM\Mapping\OneToOne;
 class Article extends Entity
 {
     /**
+     * Represents the Value of pinned Articles
+     */
+    public const IS_PINNED = 1;
+
+    /**
+     * Represents the Value of Visible Articles
+     */
+    public const IS_VISIBLE = 1;
+
+    /**
      * @ORM\Id
      * @ORM\Column(name="id", type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
