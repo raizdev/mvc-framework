@@ -8,6 +8,7 @@
 namespace Ares\Forum\Entity;
 
 use Ares\Framework\Entity\Entity;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -28,6 +29,11 @@ class Topic extends Entity
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private int $id;
+
+    /**
+     * @ORM\OneToMany(targetEntity="\Ares\Forum\Entity\Thread", mappedBy="topic", fetch="EAGER")
+     */
+    private ?Collection $threads;
 
     /**
      * @ORM\Column(type="string", length=100)
@@ -70,6 +76,25 @@ class Topic extends Entity
     public function setId(int $id): self
     {
         $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|null
+     */
+    public function getThreads(): ?Collection
+    {
+        return $this->threads;
+    }
+
+    /**
+     * @param Collection|null $threads
+     * @return Topic
+     */
+    public function setThreads(?Collection $threads): self
+    {
+        $this->threads = $threads;
 
         return $this;
     }
@@ -175,6 +200,21 @@ class Topic extends Entity
     }
 
     /**
+     * @return int
+     */
+    public function getCommentQuantity(): int
+    {
+        $comments = 0;
+
+        /** @var Thread $thread */
+        foreach ($this->getThreads() as $thread) {
+            $comments += $thread->getComments()->count();
+        }
+
+        return $comments;
+    }
+
+    /**
      * Gets triggered only on insert
      *
      * @ORM\PrePersist
@@ -207,6 +247,8 @@ class Topic extends Entity
             'title' => $this->getTitle(),
             'slug' => $this->getId() . '-' . $this->getSlug(),
             'description' => $this->getDescription(),
+            'threads' => $this->getThreads()->count(),
+            'comments' => $this->getCommentQuantity(),
             'created_at' => $this->getCreatedAt(),
             'updated_at' => $this->getUpdatedAt()
         ];

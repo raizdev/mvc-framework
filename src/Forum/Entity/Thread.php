@@ -15,6 +15,7 @@ namespace Ares\Forum\Entity;
 
 use Ares\Framework\Entity\Entity;
 use Ares\User\Entity\User;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -45,6 +46,11 @@ class Thread extends Entity
      * @ORM\OneToOne(targetEntity="\Ares\User\Entity\User")
      */
     private ?User $user;
+
+    /**
+     * @ORM\OneToMany(targetEntity="\Ares\Forum\Entity\Comment", mappedBy="thread", fetch="EAGER")
+     */
+    private ?Collection $comments;
 
     /**
      * @ORM\Column(type="string", length=100)
@@ -142,6 +148,25 @@ class Thread extends Entity
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|null
+     */
+    public function getComments(): ?Collection
+    {
+        return $this->comments;
+    }
+
+    /**
+     * @param Collection|null $comments
+     * @return Thread
+     */
+    public function setComments(?Collection $comments): self
+    {
+        $this->comments = $comments;
 
         return $this;
     }
@@ -344,6 +369,7 @@ class Thread extends Entity
             'description' => $this->getDescription(),
             'likes' => $this->getLikes(),
             'dislikes' => $this->getDislikes(),
+            'comments' => $this->getComments()->count(),
             'created_at' => $this->getCreatedAt(),
             'updated_at' => $this->getUpdatedAt()
         ];

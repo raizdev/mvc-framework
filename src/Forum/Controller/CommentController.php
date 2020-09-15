@@ -178,7 +178,7 @@ class CommentController extends BaseController
         $resultPerPage = $args['rpp'];
 
         /** @var int $thread */
-        $thread = $args['thread_id'];
+        $thread = $args['thread'];
 
         $this->searchCriteria
             ->setPage((int) $page)

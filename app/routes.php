@@ -152,7 +152,7 @@ return function (App $app) {
             $group->group('/forum', function ($group) {
                 $group->group('/comments', function ($group) {
                     $group->post('/{thread:[0-9]+}/create', \Ares\Forum\Controller\CommentController::class . ':create');
-                    $group->get('{thread:[0-9]+}/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Forum\Controller\CommentController::class . ':list');
+                    $group->get('/{thread:[0-9]+}/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Forum\Controller\CommentController::class . ':list');
                     $group->post('/{thread:[0-9]+}/{id:[0-9]+}', \Ares\Forum\Controller\CommentController::class . ':edit');
                     $group->delete('/{thread:[0-9]+}/{id:[0-9]+}', \Ares\Forum\Controller\CommentController::class . ':delete');
                 });

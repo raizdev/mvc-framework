@@ -9,6 +9,7 @@ namespace Ares\Article\Entity;
 
 use Ares\Framework\Entity\Entity;
 use Ares\User\Entity\User;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\OneToOne;
 
@@ -70,6 +71,11 @@ class Article extends Entity
      * @OneToOne(targetEntity="\Ares\User\Entity\User")
      */
     private ?User $author;
+
+    /**
+     * @ORM\OneToMany(targetEntity="\Ares\Article\Entity\Comment", mappedBy="article", fetch="EAGER")
+     */
+    private ?Collection $comments;
 
     /**
      * @ORM\Column(type="integer", columnDefinition="ENUM('0',1')")
@@ -236,6 +242,25 @@ class Article extends Entity
     }
 
     /**
+     * @return Collection|null
+     */
+    public function getComments(): ?Collection
+    {
+        return $this->comments;
+    }
+
+    /**
+     * @param Collection|null $comments
+     * @return Article
+     */
+    public function setComments(?Collection $comments): self
+    {
+        $this->comments = $comments;
+
+        return $this;
+    }
+
+    /**
      * @return int
      */
     public function getHidden(): ?int
@@ -369,6 +394,7 @@ class Article extends Entity
             'pinned' => $this->getPinned(),
             'likes' => $this->getLikes(),
             'dislikes' => $this->getDislikes(),
+            'comments' => $this->getComments()->count(),
             'created_at' => $this->getCreatedAt(),
             'updated_at' => $this->getUpdatedAt()
         ];
