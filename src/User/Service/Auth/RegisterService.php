@@ -93,12 +93,16 @@ class RegisterService
     public function register(array $data): CustomResponseInterface
     {
         /** @var User $checkUser */
-        $checkUser = $this->userRepository->getByUsername($data['username']);
+        $checkUser = $this->userRepository->getOneBy([
+            'username' => $data['username']
+        ]);
 
         /** @var User $checkMail */
-        $checkMail = $this->userRepository->getByMail($data['mail']);
+        $checkMail = $this->userRepository->getOneBy([
+            'mail' => $data['mail']
+        ]);
 
-        if (!is_null($checkUser) || !is_null($checkMail)) {
+        if (!$checkUser || !$checkMail) {
             throw new RegisterException(__('register.already.exists'), 422);
         }
 

@@ -55,6 +55,7 @@ class TopicController extends BaseController
      * @var ValidationService
      */
     private ValidationService $validationService;
+
     /**
      * @var EditTopicService
      */

@@ -113,17 +113,6 @@ abstract class BaseRepository extends PaginatedRepository
     }
 
     /**
-     * @param      $criteria
-     * @param null $orderBy
-     *
-     * @return Object|null
-     */
-    public function getBy($criteria, $orderBy = null): ?object
-    {
-        return $this->findBy($criteria, $orderBy);
-    }
-
-    /**
      * @param   object  $model
      *
      * @return Object
