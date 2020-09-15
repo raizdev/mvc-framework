@@ -143,9 +143,10 @@ class RegisterService
     /**
      * Returns new user.
      *
-     * @param   array  $data
+     * @param array $data
      *
      * @return User
+     * @throws \Exception
      */
     private function getNewUser(array $data): User
     {
