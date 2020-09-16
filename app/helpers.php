@@ -13,10 +13,11 @@ if (!function_exists('__')) {
      *
      * @param string $key
      * @param array $placeholder
-     * @return mixed
+     * @return string
      */
-    function __(string $key, array $placeholder = []) {
+    function __(string $key, array $placeholder = []): string {
         $container = \Ares\Framework\Proxy\App::getContainer();
+        /** @var \Ares\Framework\Service\LocaleService $localeService */
         $localeService = $container->get(\Ares\Framework\Service\LocaleService::class);
         return $localeService->translate($key, $placeholder);
     }
