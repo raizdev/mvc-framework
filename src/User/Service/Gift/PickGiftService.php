@@ -63,64 +63,74 @@ class PickGiftService
     public function execute(User $user): CustomResponseInterface
     {
         $userId = $user->getId();
+
         /** @var DailyGift $dailyGift */
-        $dailyGift = $this->dailyGiftRepository->getOneBy(['user_id' => $userId]);
+        $dailyGift = $this->dailyGiftRepository->getOneBy([
+            'user_id' => $userId
+        ]);
 
         if (!$dailyGift) {
             $dailyGift = $this->getNewDailyGift($userId);
         }
 
-        $allowedPickTime = strtotime('+1 day', time());
-        $pickTime = (int) $dailyGift->getPickTime();
+        $pickTime = $dailyGift->getPickTime();
 
-        if ($pickTime > $allowedPickTime) {
+        if (time() <= $pickTime) {
             throw new DailyGiftException(__('User already picked the daily gift.'), 409);
         }
 
-        $this->applyGift($user, $dailyGift->getAmount());
+        $this->applyGift($dailyGift, $user, $dailyGift->getAmount());
 
-        return response()->setData($dailyGift);
+        return response()
+            ->setData($dailyGift);
     }
 
     /**
      * Returns random gift amount.
      *
      * @return int
+     * @throws \Exception
      */
     private function getRandomGiftAmount(): int
     {
-        return rand(3000, 5000);
+        return random_int(3000, 5000);
     }
 
     /**
      * Applies gift to user.
      *
-     * @param User $user
-     * @param int $amount
+     * @param   DailyGift  $dailyGift
+     * @param   User       $user
+     * @param   int        $amount
+     *
      * @throws InvalidArgumentException
      * @throws ORMException
      * @throws OptimisticLockException
      * @throws PhpfastcacheSimpleCacheException
      */
-    private function applyGift(User $user, int $amount): void
+    private function applyGift(DailyGift $dailyGift, User $user, int $amount): void
     {
         $credits = $user->getCredits();
         $credits += $amount;
 
         $user->setCredits($credits);
+        $dailyGift->setPickTime(strtotime('+1 day'));
 
         $this->userRepository->update($user);
+        $this->dailyGiftRepository->update($dailyGift);
     }
 
     /**
      * Saves and returns new daily gift.
      *
-     * @param int $userId
+     * @param   int  $userId
+     *
      * @return DailyGift
      * @throws InvalidArgumentException
      * @throws ORMException
      * @throws OptimisticLockException
      * @throws PhpfastcacheSimpleCacheException
+     * @throws \Exception
      */
     private function getNewDailyGift(int $userId): DailyGift
     {
@@ -128,7 +138,7 @@ class PickGiftService
 
         $dailyGift
             ->setUserId($userId)
-            ->setPickTime(time())
+            ->setPickTime(strtotime('+1 day'))
             ->setAmount($this->getRandomGiftAmount());
 
         $this->dailyGiftRepository->save($dailyGift);

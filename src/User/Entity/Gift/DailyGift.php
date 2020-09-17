@@ -18,7 +18,6 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity
  * @ORM\Table(name="ares_gifts")
  * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
- * @ORM\HasLifecycleCallbacks
  */
 class DailyGift extends Entity
 {
@@ -30,19 +29,19 @@ class DailyGift extends Entity
     private int $id;
 
     /**
-     * @ORM\Column(type="int", length=20)
+     * @ORM\Column(type="integer", length=20)
      */
     private string $user_id;
 
     /**
-     * @ORM\Column(type="int", length=20)
+     * @ORM\Column(type="integer", length=20)
      */
     private string $amount;
 
     /**
-     * @ORM\Column(type="string", length=20)
+     * @ORM\Column(type="integer", length=11)
      */
-    private string $pickTime;
+    private string $pick_time;
 
     /**
      * @return int
@@ -102,20 +101,20 @@ class DailyGift extends Entity
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getPickTime(): string
+    public function getPickTime(): int
     {
-        return $this->pickTime;
+        return $this->pick_time;
     }
 
     /**
-     * @param string $pickTime
+     * @param  int $pickTime
      * @return DailyGift
      */
-    public function setPickTime(string $pickTime): self
+    public function setPickTime(int $pickTime): self
     {
-        $this->pickTime = $pickTime;
+        $this->pick_time = $pickTime;
 
         return $this;
     }

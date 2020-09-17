@@ -8,10 +8,14 @@
 namespace Ares\User\Controller\Gift;
 
 use Ares\Framework\Controller\BaseController;
-use Ares\Framework\Exception\ValidationException;
-use Ares\Framework\Service\ValidationService;
+use Ares\User\Exception\Gift\DailyGiftException;
+use Ares\User\Exception\UserException;
 use Ares\User\Repository\UserRepository;
 use Ares\User\Service\Gift\PickGiftService;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
+use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -23,11 +27,6 @@ use Psr\Http\Message\ServerRequestInterface as Request;
  */
 class DailyGiftController extends BaseController
 {
-    /**
-     * @var ValidationService
-     */
-    private ValidationService $validationService;
-
     /**
      * @var PickGiftService
      */
@@ -41,16 +40,13 @@ class DailyGiftController extends BaseController
     /**
      * DailyGiftController constructor.
      *
-     * @param ValidationService $validationService
      * @param PickGiftService $pickGiftService
      * @param UserRepository $userRepository
      */
     public function __construct(
-        ValidationService $validationService,
         PickGiftService $pickGiftService,
         UserRepository $userRepository
     ) {
-        $this->validationService = $validationService;
         $this->pickGiftService = $pickGiftService;
         $this->userRepository = $userRepository;
     }
@@ -58,27 +54,26 @@ class DailyGiftController extends BaseController
     /**
      * Pick daily gift route.
      *
-     * @param Request $request
-     * @param Response $response
+     * @param   Request   $request
+     * @param   Response  $response
+     *
      * @return Response
-     * @throws ValidationException
+     * @throws DailyGiftException
+     * @throws UserException
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws PhpfastcacheSimpleCacheException
+     * @throws InvalidArgumentException
      */
     public function pick(Request $request, Response $response): ResponseInterface
     {
-        /** @var array $body */
-        $parsedData = $request->getParsedBody();
-
-        $this->validationService->validate($parsedData, [
-            'user_id' => 'required'
-        ]);
-
         $user = $this->getUser($this->userRepository, $request, false);
 
-        $customReponse = $this->pickGiftService->execute($user);
+        $customResponse = $this->pickGiftService->execute($user);
 
         return $this->respond(
             $response,
-            $customReponse
+            $customResponse
         );
     }
 }
