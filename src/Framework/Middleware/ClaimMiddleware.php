@@ -22,23 +22,7 @@ use ReallySimpleJWT\Token;
 class ClaimMiddleware implements MiddlewareInterface
 {
     /**
-     * @var TokenService
-     */
-    private TokenService $tokenService;
-
-    /**
-     * The constructor.
-     *
-     * @param   TokenService  $tokenService
-     */
-    public function __construct(
-        TokenService $tokenService
-    ) {
-        $this->tokenService = $tokenService;
-    }
-
-    /**
-     * Invoke middleware.
+     * Process an incoming server request.
      *
      * @param   ServerRequestInterface   $request  The request
      * @param   RequestHandlerInterface  $handler  The handler
@@ -49,7 +33,7 @@ class ClaimMiddleware implements MiddlewareInterface
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ): ResponseInterface {
-        $authorization = explode(' ', (string)$request->getHeaderLine('Authorization'));
+        $authorization = explode(' ', (string) $request->getHeaderLine('Authorization'));
         $type          = $authorization[0] ?? '';
         $credentials   = $authorization[1] ?? '';
         $secret        = $_ENV['TOKEN_SECRET'];
