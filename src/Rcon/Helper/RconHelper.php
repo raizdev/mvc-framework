@@ -7,6 +7,7 @@
 
 namespace Ares\Rcon\Helper;
 
+use Ares\Rcon\Exception\RconException;
 use PHLAK\Config\Config;
 
 /**
@@ -33,16 +34,49 @@ class RconHelper
     }
 
     /**
-     * @return bool
+     * Builds the Socket connection
+     *
+     * @return RconHelper
+     * @throws RconException
      */
-    public function buildConnection(): bool
+    public function buildConnection(): self
     {
+        /** @var string $host */
         $host = $this->config->get('hotel_settings.client.rcon_host');
+        /** @var int $port */
         $port = $this->config->get('hotel_settings.client.rcon_port');
 
-        $socket = $this->createSocket(AF_INET, SOCK_STREAM, SOL_TCP);
+        $socket = $this->createSocket(
+            AF_INET,
+            SOCK_STREAM,
+            SOL_TCP
+        );
 
-        return $result = $this->connectToSocket($socket, $host, $port);
+        if (!$socket) {
+            throw new RconException(__('Could not create the Socket'), 409);
+        }
+
+        $this->connectToSocket($socket, $host, $port);
+
+        return $this;
+    }
+
+    /**
+     * @param        $socket
+     * @param string $command
+     *
+     * @return false|string
+     * @throws RconException
+     */
+    public function sendCommand($socket, string $command)
+    {
+        $executor = socket_write($socket, $command, strlen($command));
+
+        if (!$executor) {
+            throw new RconException(__('Could not send the Command'));
+        }
+
+        return socket_read($socket, 2048);
     }
 
     /**
@@ -54,7 +88,7 @@ class RconHelper
      *
      * @return false|resource
      */
-    private function createSocket($domain, $type, $protocol): bool
+    public function createSocket($domain, $type, $protocol): bool
     {
         return socket_create($domain, $type, $protocol);
     }
@@ -68,7 +102,7 @@ class RconHelper
      *
      * @return bool
      */
-    private function connectToSocket($socket, $host, $port): bool
+    public function connectToSocket($socket, $host, $port): bool
     {
         return socket_connect($socket, $host, $port);
     }

@@ -7,6 +7,7 @@
 
 namespace Ares\Rcon\Model;
 
+use Ares\Rcon\Exception\RconException;
 use Ares\Rcon\Helper\RconHelper;
 
 /**
@@ -16,7 +17,10 @@ use Ares\Rcon\Helper\RconHelper;
  */
 class Rcon
 {
-    private array $commands = [];
+    /**
+     * @var string
+     */
+    private string $socket;
 
     /**
      * @var RconHelper
@@ -34,15 +38,28 @@ class Rcon
         $this->rconHelper = $rconHelper;
     }
 
-    public function addOperations(array $operation): self
+    /**
+     * @return RconHelper
+     * @throws RconException
+     */
+    public function getConnection(): RconHelper
     {
-        $this->commands = $operation;
-
-        return $this;
+        return $this->rconHelper->buildConnection();
     }
 
-    public function getOperations(): array
+    /**
+     * @return string
+     */
+    public function getSocket(): string
     {
-        return $this->commands;
+        return $this->socket;
+    }
+
+    /**
+     * @param string $socket
+     */
+    public function setSocket(string $socket): void
+    {
+        $this->socket = $socket;
     }
 }

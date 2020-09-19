@@ -7,6 +7,11 @@
 
 namespace Ares\Rcon\Service;
 
+use Ares\Framework\Interfaces\CustomResponseInterface;
+use Ares\Rcon\Exception\RconException;
+use Ares\Rcon\Model\Rcon;
+use Ares\Rcon\Repository\RconRepository;
+
 /**
  * Class ExecuteRconCommandService
  *
@@ -14,8 +19,53 @@ namespace Ares\Rcon\Service;
  */
 class ExecuteRconCommandService
 {
-    public function execute()
-    {
+    /**
+     * @var RconRepository
+     */
+    private RconRepository $rconRepository;
+    /**
+     * @var Rcon
+     */
+    private Rcon $rcon;
 
+    /**
+     * ExecuteRconCommandService constructor.
+     *
+     * @param RconRepository $rconRepository
+     * @param Rcon           $rcon
+     */
+    public function __construct(
+        RconRepository $rconRepository,
+        Rcon $rcon
+    ) {
+        $this->rconRepository = $rconRepository;
+        $this->rcon = $rcon;
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return CustomResponseInterface
+     * @throws RconException
+     */
+    public function execute(array $data): CustomResponseInterface
+    {
+        $existingCommand = $this->rconRepository->getOneBy([
+            'command' => $data['command']
+        ]);
+
+        if (!$existingCommand) {
+            throw new RconException(__('Could not found the given command to execute'), 404);
+        }
+
+        $executeCommand = $this->rcon
+            ->getConnection()
+            ->sendCommand(
+                $this->rcon->getSocket(),
+                $data['data']
+            );
+
+        return response()
+            ->setData($executeCommand);
     }
 }
