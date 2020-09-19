@@ -59,17 +59,10 @@ class PermissionController extends BaseController
      */
     public function listUserWithRank(Request $request, Response $response, $args): Response
     {
-        /** @var int $page */
-        $page = $args['page'];
-
-        /** @var int $resultPerPage */
-        $resultPerPage = $args['rpp'];
-
-        $this->searchCriteria->setPage((int) $page)
-            ->setLimit((int) $resultPerPage)
+        $this->searchCriteria
             ->addOrder('id', 'DESC');
 
-        $users    = $this->permissionRepository->paginate($this->searchCriteria);
+        $users    = $this->permissionRepository->getList($this->searchCriteria, false);
         $criteria = Criteria::create()
             ->andWhere(
                 Criteria::expr()

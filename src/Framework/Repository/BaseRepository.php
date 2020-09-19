@@ -131,15 +131,15 @@ abstract class BaseRepository extends PaginatedRepository
     }
 
     /**
-     * @param   SearchCriteriaInterface  $searchCriteria
+     * @param SearchCriteriaInterface $searchCriteria
      *
-     * @param   bool                     $cachedEntity
+     * @param bool                    $cachedEntity
      *
-     * @return array|object[]
-     * @throws PhpfastcacheSimpleCacheException
+     * @return PaginatedArrayCollection
      * @throws InvalidArgumentException
+     * @throws PhpfastcacheSimpleCacheException
      */
-    public function getList(SearchCriteriaInterface $searchCriteria, bool $cachedEntity = true)
+    public function getList(SearchCriteriaInterface $searchCriteria, bool $cachedEntity = true): PaginatedArrayCollection
     {
         $cacheKey = $searchCriteria->getCacheKey();
 
