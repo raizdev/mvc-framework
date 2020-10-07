@@ -31,28 +31,21 @@ class RolePermission extends Entity
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $id;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="created_at", type="datetime", nullable=false)
-     */
-    private $createdAt;
+    private int $id;
 
     /**
      * @var integer
      *
      * @ORM\Column(name="role_id", type="integer", nullable=false)
      */
-    private $roleId;
+    private int $roleId;
 
     /**
      * @var integer
      *
      * @ORM\Column(name="permission_id", type="integer", nullable=false)
      */
-    private $permissionId;
+    private int $permissionId;
 
     /**
      * @var Permission
@@ -73,6 +66,13 @@ class RolePermission extends Entity
      * })
      */
     private Role $role;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created_at", type="datetime", nullable=false)
+     */
+    private \DateTime $createdAt;
 
     /**
      * @return int
@@ -175,6 +175,16 @@ class RolePermission extends Entity
     }
 
     /**
+     * @ORM\PrePersist
+     *
+     * @throws \Exception
+     */
+    public function prePersist(): void
+    {
+        $this->createdAt = new \DateTime();
+    }
+
+    /**
      * @return \DateTime
      */
     public function getCreatedAt(): \DateTime
@@ -192,14 +202,6 @@ class RolePermission extends Entity
         $this->createdAt = $createdAt;
 
         return $this;
-    }
-
-    /** @ORM\PrePersist
-     * @throws \Exception
-     */
-    public function prePersist(): void
-    {
-        $this->createdAt = new \DateTime();
     }
 
     /**
