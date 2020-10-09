@@ -78,6 +78,7 @@ class MessengerController extends BaseController
         $this->searchCriteria->setPage((int) $page)
             ->setLimit((int) $resultPerPage)
             ->addFilter('user', $this->getUser($this->userRepository, $request)->getId())
+            ->addOrder('online', 'DESC')
             ->addOrder('id', 'DESC');
 
         $friends = $this->messengerRepository->paginate($this->searchCriteria);
