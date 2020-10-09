@@ -36,20 +36,20 @@ class PermissionController extends BaseController
     /**
      * PermissionController constructor.
      *
-     * @param   PermissionRepository    $permissionRepository
-     * @param   DoctrineSearchCriteria  $searchCriteria
+     * @param PermissionRepository   $permissionRepository
+     * @param DoctrineSearchCriteria $searchCriteria
      */
     public function __construct(
         PermissionRepository $permissionRepository,
         DoctrineSearchCriteria $searchCriteria
     ) {
         $this->permissionRepository = $permissionRepository;
-        $this->searchCriteria       = $searchCriteria;
+        $this->searchCriteria = $searchCriteria;
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request     $request
+     * @param Response    $response
      *
      * @param             $args
      *
@@ -62,21 +62,21 @@ class PermissionController extends BaseController
         $this->searchCriteria
             ->addOrder('id', 'DESC');
 
-        $users    = $this->permissionRepository->getList($this->searchCriteria, false);
+        $users = $this->permissionRepository->getList($this->searchCriteria, false);
         $criteria = Criteria::create()
             ->andWhere(
                 Criteria::expr()
-                    ->gt('id', '1')
+                    ->gt('id', '2')
             );
 
         return $this->respond(
             $response,
             response()
-                ->setData([
-                    'users' => $users
+                ->setData(
+                    $users
                         ->matching($criteria)
                         ->toArray()
-                ])
+                )
         );
     }
 }
