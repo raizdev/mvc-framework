@@ -62,7 +62,7 @@ class PermissionController extends BaseController
         $this->searchCriteria
             ->addOrder('id', 'DESC');
 
-        $users = $this->permissionRepository->getList($this->searchCriteria, true);
+        $users = $this->permissionRepository->getList($this->searchCriteria, false);
         $criteria = Criteria::create()
             ->andWhere(
                 Criteria::expr()
