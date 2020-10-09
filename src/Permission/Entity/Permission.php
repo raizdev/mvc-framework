@@ -187,7 +187,7 @@ class Permission extends Entity
             'badge' => $this->getBadge(),
             'prefix' => $this->getPrefix(),
             'prefix_color' => $this->getPrefixColor(),
-            'user' => $this->getUserWithRank()->toArray()
+            'users' => $this->getUserWithRank()->toArray()
         ];
     }
 
