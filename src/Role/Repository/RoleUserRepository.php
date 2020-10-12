@@ -37,7 +37,10 @@ class RoleUserRepository extends BaseRepository
         $qb = $this->createQueryBuilder('userRole');
 
         $qb->select('userRole.roleId')
-            ->where($qb->expr()->eq('userRole.userId', $userId))
+            ->where(
+                $qb->expr()
+                ->eq('userRole.userId', $userId)
+            )
             ->indexBy('userRole', 'userRole.roleId');
 
         $roleIds = $qb->getQuery()

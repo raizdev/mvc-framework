@@ -7,7 +7,6 @@
 
 namespace Ares\Role\Service;
 
-use Ares\Framework\Model\Adapter\DoctrineSearchCriteria;
 use Ares\Role\Entity\Permission;
 use Ares\Role\Repository\PermissionRepository;
 use Ares\Role\Repository\RoleHierarchyRepository;

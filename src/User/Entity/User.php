@@ -9,6 +9,7 @@ namespace Ares\User\Entity;
 
 use Ares\Framework\Entity\Entity;
 use Ares\Permission\Entity\Permission;
+use Ares\Role\Entity\Role;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinColumn;
@@ -77,6 +78,11 @@ class User extends Entity
      * @ORM\Column(type="integer", length=11)
      */
     private ?int $rank;
+
+    /**
+     * @ORM\OneToOne(targetEntity="\Ares\Role\Entity\Role")
+     */
+    private ?Role $role;
 
     /**
      * @ManyToOne(targetEntity="\Ares\Permission\Entity\Permission", inversedBy="user_with_rank")
@@ -473,6 +479,27 @@ class User extends Entity
     }
 
     /**
+     * @return Role|null
+     */
+    public function getRole(): ?Role
+    {
+        return $this->role;
+    }
+
+    /**
+     * @param Role|null $role
+     *
+     * @return User
+     */
+    public function setRole(?Role $role): self
+    {
+        $this->role = $role;
+
+        return $this;
+    }
+
+
+    /**
      * @return \DateTime
      */
     public function getCreatedAt(): \DateTime
@@ -527,6 +554,7 @@ class User extends Entity
             'online' => $this->getOnline(),
             'locale' => $this->getLocale(),
             'last_login' => $this->getLastLogin(),
+            'role' => $this->getRole()->getName(),
             'currencies' => $this->getCurrencies()->toArray(),
             'created_at' => $this->getCreatedAt(),
             'updated_at' => $this->getUpdatedAt()

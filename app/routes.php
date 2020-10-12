@@ -161,13 +161,26 @@ return function (App $app) {
                 $group->group('/comments', function ($group) {
                     $group->post('/{thread:[0-9]+}/create', \Ares\Forum\Controller\CommentController::class . ':create');
                     $group->get('/{thread:[0-9]+}/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Forum\Controller\CommentController::class . ':list');
+                    $group->post('/{thread:[0-9]+}/{id:[0-9]+}', \Ares\Forum\Controller\CommentController::class . ':edit');
+                    $group->delete('/{thread:[0-9]+}/{id:[0-9]+}', \Ares\Forum\Controller\CommentController::class . ':delete')
+                        ->setName('delete-forum-comment');
                 });
                 $group->group('/topics', function ($group) {
+                    $group->post('/create', \Ares\Forum\Controller\TopicController::class . ':create')
+                        ->setName('create-forum-topic');
                     $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Forum\Controller\TopicController::class . ':list');
+                    $group->post('{id:[0-9]+}', \Ares\Forum\Controller\TopicController::class . ':edit')
+                        ->setName('edit-forum-topic');
+                    $group->delete('{id:[0-9]+}', \Ares\Forum\Controller\TopicController::class . ':delete')
+                        ->setName('delete-forum-topic');
                 });
                 $group->group('/threads', function ($group) {
+                    $group->post('/create', \Ares\Forum\Controller\ThreadController::class . ':create');
                     $group->get('/{topic_id:[0-9]+}/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Forum\Controller\ThreadController::class . ':list');
                     $group->get('/{topic_id:[0-9]+}/{slug}', \Ares\Forum\Controller\ThreadController::class . ':thread');
+                    $group->post('/{id:[0-9]+}', \Ares\Forum\Controller\ThreadController::class . ':edit');
+                    $group->delete('/{topic:[0-9]+}/{id:[0-9]+}', \Ares\Forum\Controller\ThreadController::class . ':delete')
+                        ->setName('delete-forum-thread');
                 });
             });
 

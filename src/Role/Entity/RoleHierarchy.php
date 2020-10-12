@@ -84,26 +84,6 @@ class RoleHierarchy extends Entity
     }
 
     /**
-     * @return DateTime
-     */
-    public function getCreatedAt(): DateTime
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * @param   DateTime  $createdAt
-     *
-     * @return RoleHierarchy
-     */
-    public function setCreatedAt($createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    /**
      * @return Role
      */
     public function getChildRole(): Role
@@ -139,6 +119,26 @@ class RoleHierarchy extends Entity
     public function setParentRole($parentRole): self
     {
         $this->parentRole = $parentRole;
+
+        return $this;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getCreatedAt(): DateTime
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @param   DateTime  $createdAt
+     *
+     * @return RoleHierarchy
+     */
+    public function setCreatedAt($createdAt): self
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }

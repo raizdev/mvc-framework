@@ -12,8 +12,10 @@ use Ares\Role\Entity\Role;
 use Ares\Role\Entity\RoleHierarchy;
 use Ares\Role\Exception\RoleException;
 use Ares\Role\Repository\RoleHierarchyRepository;
+use Ares\Role\Repository\RoleRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Doctrine\ORM\Query\QueryException;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Cache\InvalidArgumentException;
 
@@ -30,19 +32,26 @@ class CreateChildRoleService
     private RoleHierarchyRepository $roleHierarchyRepository;
 
     /**
+     * @var RoleRepository
+     */
+    private RoleRepository $roleRepository;
+
+    /**
      * CreateChildRoleService constructor.
      *
      * @param RoleHierarchyRepository $roleHierarchyRepository
+     * @param RoleRepository          $roleRepository
      */
     public function __construct(
-        RoleHierarchyRepository $roleHierarchyRepository
+        RoleHierarchyRepository $roleHierarchyRepository,
+        RoleRepository $roleRepository
     ) {
         $this->roleHierarchyRepository = $roleHierarchyRepository;
+        $this->roleRepository = $roleRepository;
     }
 
     /**
-     * @param Role $parentRole
-     * @param Role $childRole
+     * @param array $data
      *
      * @return CustomResponseInterface
      * @throws InvalidArgumentException
@@ -51,20 +60,33 @@ class CreateChildRoleService
      * @throws PhpfastcacheSimpleCacheException
      * @throws RoleException
      */
-    public function execute(Role $parentRole, Role $childRole): CustomResponseInterface
+    public function execute(array $data): CustomResponseInterface
     {
-        $childRole = $this->getNewChildRole($parentRole, $childRole);
+        /** @var int $parentRoleId */
+        $parentRoleId = $data['parent_role_id'];
 
-        $existingPermission = $this->roleHierarchyRepository->getOneBy([
-            'childRole' => $childRole,
-            'parentRole' => $parentRole
-        ]);
+        /** @var int $childRoleId */
+        $childRoleId = $data['child_role_id'];
 
-        if ($existingPermission) {
-            throw new RoleException(__('There is already a ChildRole with that ParentRole'));
+        $isCycle = $this->checkForCycle($parentRoleId, $childRoleId);
+
+        if ($isCycle) {
+            throw new RoleException(__('Cycle detected for given Role notations'));
         }
 
-        $this->roleHierarchyRepository->save($childRole);
+        /** @var Role $parentRole */
+        $parentRole = $this->roleRepository->get($parentRoleId);
+
+        /** @var Role $childRole */
+        $childRole = $this->roleRepository->get($childRoleId);
+
+        if (!$parentRole || !$childRole) {
+            throw new RoleException(__('Could not found given Roles'));
+        }
+
+        $newChildRole = $this->getNewChildRole($parentRole, $childRole);
+
+        $this->roleHierarchyRepository->save($newChildRole);
 
         return response()
             ->setData(true);
@@ -85,5 +107,23 @@ class CreateChildRoleService
             ->setChildRole($childRole);
 
         return $roleHierarchy;
+    }
+
+    /**
+     * @param int $parentRoleId
+     * @param int $childRoleId
+     *
+     * @return bool
+     * @throws QueryException
+     */
+    private function checkForCycle(int $parentRoleId, int $childRoleId): bool
+    {
+        $hasChildRole = $this->roleHierarchyRepository->hasChildRoleId($parentRoleId, $childRoleId);
+
+        if (!$hasChildRole) {
+            return false;
+        }
+
+        return true;
     }
 }
