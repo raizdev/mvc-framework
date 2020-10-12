@@ -28,6 +28,11 @@ class RolePermissionMiddleware implements MiddlewareInterface
      */
     private CheckAccessService $checkAccessService;
 
+    /**
+     * RolePermissionMiddleware constructor.
+     *
+     * @param CheckAccessService $checkAccessService
+     */
     public function __construct(
         CheckAccessService $checkAccessService
     ) {
@@ -51,6 +56,11 @@ class RolePermissionMiddleware implements MiddlewareInterface
         $route = $routeContext->getRoute();
 
         $permissionName = $route->getName();
+
+        if ($permissionName === null) {
+            return $handler->handle($request);
+        }
+
         $userId = (int) $this->fetchUserId($request);
 
         $isPermitted = $this->checkAccessService->execute($userId, $permissionName);

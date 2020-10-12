@@ -174,7 +174,7 @@ return function (App $app) {
             // De-Authentication
             $group->post('/logout', \Ares\User\Controller\AuthController::class . ':logout');
         })->add(\Ares\Role\Middleware\RolePermissionMiddleware::class)
-        ->add(\Ares\Framework\Middleware\AuthMiddleware::class);
+            ->add(\Ares\Framework\Middleware\AuthMiddleware::class);
 
         // Authentication
         $group->post('/login', \Ares\User\Controller\AuthController::class . ':login');
