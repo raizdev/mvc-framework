@@ -8,6 +8,7 @@
 namespace Ares\Role\Entity;
 
 use Ares\Framework\Entity\Entity;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -26,44 +27,38 @@ class Role extends Entity
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private int $id;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="name", type="string", length=50, nullable=false)
      */
     private string $name;
 
     /**
-     * @var boolean
+     * @ORM\Column(name="description", type="string", nullable=true)
+     */
+    private string $description;
+
+    /**
+     * @var bool
      *
      * @ORM\Column(name="status", type="boolean", nullable=false)
      */
     private $status = '1';
 
     /**
-     * @var \DateTime
-     *
      * @ORM\Column(name="created_at", type="datetime", nullable=false)
      */
-    private \DateTime $createdAt;
+    private DateTime $createdAt;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
-    private \DateTime $updatedAt;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="description", type="string", nullable=true)
-     */
-    private string $description;
+    private DateTime $updatedAt;
 
     /**
      * @return int
@@ -106,62 +101,6 @@ class Role extends Entity
     }
 
     /**
-     * @return bool
-     */
-    public function getStatus(): bool
-    {
-        return $this->status;
-    }
-
-    /**
-     * @param   bool  $status
-     *
-     * @return Role
-     */
-    public function setStatus($status): self
-    {
-        $this->status = $status;
-
-        return $this;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getCreatedAt(): \DateTime
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * @param   \DateTime  $createdAt
-     *
-     * @return Role
-     */
-    public function setCreatedAt($createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getUpdatedAt(): \DateTime
-    {
-        return $this->updatedAt;
-    }
-
-    /**
-     * @param   \DateTime  $updatedAt
-     */
-    public function setUpdatedAt($updatedAt): void
-    {
-        $this->updatedAt = $updatedAt;
-    }
-
-    /**
      * @return string
      */
     public function getDescription(): string
@@ -182,13 +121,69 @@ class Role extends Entity
     }
 
     /**
+     * @return bool
+     */
+    public function getStatus(): bool
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param   bool  $status
+     *
+     * @return Role
+     */
+    public function setStatus($status): self
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getCreatedAt(): DateTime
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @param   DateTime  $createdAt
+     *
+     * @return Role
+     */
+    public function setCreatedAt($createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getUpdatedAt(): DateTime
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @param   DateTime  $updatedAt
+     */
+    public function setUpdatedAt($updatedAt): void
+    {
+        $this->updatedAt = $updatedAt;
+    }
+
+    /**
      * @ORM\PrePersist
      *
      * @throws \Exception
      */
     public function prePersist(): void
     {
-        $this->createdAt = new \DateTime();
+        $this->createdAt = new DateTime();
     }
 
     /**
@@ -198,7 +193,7 @@ class Role extends Entity
      */
     public function preUpdate(): void
     {
-        $this->updatedAt = new \DateTime();
+        $this->updatedAt = new DateTime();
     }
 
     /**

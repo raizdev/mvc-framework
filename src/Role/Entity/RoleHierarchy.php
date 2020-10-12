@@ -8,6 +8,7 @@
 namespace Ares\Role\Entity;
 
 use Ares\Framework\Entity\Entity;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -25,31 +26,23 @@ use Doctrine\ORM\Mapping as ORM;
 class RoleHierarchy extends Entity
 {
     /**
-     * @var integer
-     *
      * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private int $id;
 
     /**
-     * @var integer
-     *
      * @ORM\Column(name="parent_role_id", type="integer", nullable=false)
      */
     private int $parentRoleId;
 
     /**
-     * @var integer
-     *
      * @ORM\Column(name="child_role_id", type="integer", nullable=false)
      */
     private int $childRoleId;
 
     /**
-     * @var Role
-     *
      * @ORM\ManyToOne(targetEntity="Ares\Role\Entity\Role")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="child_role_id", referencedColumnName="id")
@@ -58,8 +51,6 @@ class RoleHierarchy extends Entity
     private Role $childRole;
 
     /**
-     * @var Role
-     *
      * @ORM\ManyToOne(targetEntity="Ares\Role\Entity\Role")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="parent_role_id", referencedColumnName="id")
@@ -68,11 +59,9 @@ class RoleHierarchy extends Entity
     private Role $parentRole;
 
     /**
-     * @var \DateTime
-     *
      * @ORM\Column(name="created_at", type="datetime", nullable=false)
      */
-    private \DateTime $createdAt;
+    private DateTime $createdAt;
 
     /**
      * @return int
@@ -83,8 +72,10 @@ class RoleHierarchy extends Entity
     }
 
     /**
-     * @param   int  $id
-     */
+     * @param int $id
+     *
+     * @return RoleHierarchy
+     */#
     public function setId($id): self
     {
         $this->id = $id;
@@ -93,15 +84,15 @@ class RoleHierarchy extends Entity
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getCreatedAt(): \DateTime
+    public function getCreatedAt(): DateTime
     {
         return $this->createdAt;
     }
 
     /**
-     * @param   \DateTime  $createdAt
+     * @param   DateTime  $createdAt
      *
      * @return RoleHierarchy
      */
@@ -159,7 +150,7 @@ class RoleHierarchy extends Entity
      */
     public function prePersist(): void
     {
-        $this->createdAt = new \DateTime();
+        $this->createdAt = new DateTime();
     }
 
     /**

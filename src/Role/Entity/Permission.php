@@ -8,6 +8,7 @@
 namespace Ares\Role\Entity;
 
 use Ares\Framework\Entity\Entity;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -15,55 +16,47 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @package Ares\Role\Entity
  *
- * @ORM\Table(name="ares_permission", uniqueConstraints={@ORM\UniqueConstraint(name="ares_role_name", columns={"name"})})
+ * @ORM\Table(name="ares_permissions", uniqueConstraints={@ORM\UniqueConstraint(name="ares_role_name", columns={"name"})})
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  */
 class Permission extends Entity
 {
     /**
-     * @var integer
-     *
      * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private int $id;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="name", type="string", length=100, nullable=false)
      */
     private string $name;
 
     /**
-     * @var boolean
+     * @var bool
      *
      * @ORM\Column(name="status", type="boolean", nullable=false)
      */
     private $status = '1';
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="created_at", type="datetime", nullable=false)
-     */
-    private \DateTime $createdAt;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
-     */
-    private \DateTime $updatedAt;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="description", type="string", nullable=true)
      */
     private string $description;
+
+    /**
+     * @ORM\Column(name="created_at", type="datetime", nullable=false)
+     */
+    private DateTime $createdAt;
+
+    /**
+     * @var DateTime
+     *
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
+     */
+    private DateTime $updatedAt;
 
     /**
      * @return int
@@ -106,66 +99,6 @@ class Permission extends Entity
     }
 
     /**
-     * @return bool
-     */
-    public function getStatus(): bool
-    {
-        return $this->status;
-    }
-
-    /**
-     * @param   bool  $status
-     *
-     * @return Permission
-     */
-    public function setStatus($status): self
-    {
-        $this->status = $status;
-
-        return $this;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getCreatedAt(): \DateTime
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * @param   \DateTime  $createdAt
-     *
-     * @return Permission
-     */
-    public function setCreatedAt($createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getUpdatedAt(): \DateTime
-    {
-        return $this->updatedAt;
-    }
-
-    /**
-     * @param   \DateTime  $updatedAt
-     *
-     * @return Permission
-     */
-    public function setUpdatedAt($updatedAt): self
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
-
-    /**
      * @return string
      */
     public function getDescription(): string
@@ -186,13 +119,73 @@ class Permission extends Entity
     }
 
     /**
+     * @return bool
+     */
+    public function getStatus(): bool
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param   bool  $status
+     *
+     * @return Permission
+     */
+    public function setStatus($status): self
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getCreatedAt(): DateTime
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @param   DateTime  $createdAt
+     *
+     * @return Permission
+     */
+    public function setCreatedAt($createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getUpdatedAt(): DateTime
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @param   DateTime  $updatedAt
+     *
+     * @return Permission
+     */
+    public function setUpdatedAt($updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
      * @ORM\PrePersist
      *
      * @throws \Exception
      */
     public function prePersist(): void
     {
-        $this->createdAt = new \DateTime();
+        $this->createdAt = new DateTime();
     }
 
     /**
@@ -202,7 +195,7 @@ class Permission extends Entity
      */
     public function preUpdate(): void
     {
-        $this->updatedAt = new \DateTime();
+        $this->updatedAt = new DateTime();
     }
 
     /**

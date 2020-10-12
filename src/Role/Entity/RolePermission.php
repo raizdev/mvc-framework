@@ -8,6 +8,7 @@
 namespace Ares\Role\Entity;
 
 use Ares\Framework\Entity\Entity;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -25,31 +26,23 @@ use Doctrine\ORM\Mapping as ORM;
 class RolePermission extends Entity
 {
     /**
-     * @var integer
-     *
      * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private int $id;
 
     /**
-     * @var integer
-     *
      * @ORM\Column(name="role_id", type="integer", nullable=false)
      */
     private int $roleId;
 
     /**
-     * @var integer
-     *
      * @ORM\Column(name="permission_id", type="integer", nullable=false)
      */
     private int $permissionId;
 
     /**
-     * @var Permission
-     *
      * @ORM\ManyToOne(targetEntity="Ares\Role\Entity\Permission")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="permission_id", referencedColumnName="id")
@@ -58,8 +51,6 @@ class RolePermission extends Entity
     private Permission $permission;
 
     /**
-     * @var Role
-     *
      * @ORM\ManyToOne(targetEntity="Ares\Role\Entity\Role")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="role_id", referencedColumnName="id")
@@ -68,11 +59,9 @@ class RolePermission extends Entity
     private Role $role;
 
     /**
-     * @var \DateTime
-     *
      * @ORM\Column(name="created_at", type="datetime", nullable=false)
      */
-    private \DateTime $createdAt;
+    private DateTime $createdAt;
 
     /**
      * @return int
@@ -175,25 +164,15 @@ class RolePermission extends Entity
     }
 
     /**
-     * @ORM\PrePersist
-     *
-     * @throws \Exception
+     * @return DateTime
      */
-    public function prePersist(): void
-    {
-        $this->createdAt = new \DateTime();
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getCreatedAt(): \DateTime
+    public function getCreatedAt(): DateTime
     {
         return $this->createdAt;
     }
 
     /**
-     * @param   \DateTime  $createdAt
+     * @param   DateTime  $createdAt
      *
      * @return RolePermission
      */
@@ -202,6 +181,16 @@ class RolePermission extends Entity
         $this->createdAt = $createdAt;
 
         return $this;
+    }
+
+    /**
+     * @ORM\PrePersist
+     *
+     * @throws \Exception
+     */
+    public function prePersist(): void
+    {
+        $this->createdAt = new DateTime();
     }
 
     /**

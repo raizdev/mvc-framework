@@ -38,21 +38,25 @@ return function (App $app) {
 
             // Articles
             $group->group('/articles', function ($group) {
-                $group->post('/create', \Ares\Article\Controller\ArticleController::class . ':create');
+                $group->post('/create', \Ares\Article\Controller\ArticleController::class . ':create')
+                    ->setName('create-article');
                 $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}',
                     \Ares\Article\Controller\ArticleController::class . ':list');
                 $group->get('/pinned', \Ares\Article\Controller\ArticleController::class . ':pinned');
                 $group->get('/{slug}', \Ares\Article\Controller\ArticleController::class . ':article');
-                $group->delete('/{id:[0-9]+}', \Ares\Article\Controller\ArticleController::class . ':delete');
+                $group->delete('/{id:[0-9]+}', \Ares\Article\Controller\ArticleController::class . ':delete')
+                    ->setName('delete-article');
             });
 
             // Comments
             $group->group('/comments', function ($group) {
                 $group->post('/create', \Ares\Article\Controller\CommentController::class . ':create');
-                $group->post('/edit', \Ares\Article\Controller\CommentController::class . ':edit');
+                $group->post('/edit', \Ares\Article\Controller\CommentController::class . ':edit')
+                    ->setName('edit-article-comment');
                 $group->get('/{article_id:[0-9]+}/list/{page:[0-9]+}/{rpp:[0-9]+}',
                     \Ares\Article\Controller\CommentController::class . ':list');
-                $group->delete('/{id:[0-9]+}', \Ares\Article\Controller\CommentController::class . ':delete');
+                $group->delete('/{id:[0-9]+}', \Ares\Article\Controller\CommentController::class . ':delete')
+                    ->setName('delete-article-comment');
             });
 
             // Votes
@@ -84,7 +88,8 @@ return function (App $app) {
                     \Ares\Guestbook\Controller\GuestbookController::class . ':profileList');
                 $group->get('/guild/{guild_id:[0-9]+}/list/{page:[0-9]+}/{rpp:[0-9]+}',
                     \Ares\Guestbook\Controller\GuestbookController::class . ':guildList');
-                $group->delete('/{id:[0-9]+}', \Ares\Guestbook\Controller\GuestbookController::class . ':delete');
+                $group->delete('/{id:[0-9]+}', \Ares\Guestbook\Controller\GuestbookController::class . ':delete')
+                    ->setName('delete-guestbook-entry');
             });
 
             // Friends
@@ -117,7 +122,8 @@ return function (App $app) {
                     \Ares\Photo\Controller\PhotoController::class . ':list');
                 $group->get('/{id:[0-9]+}', \Ares\Photo\Controller\PhotoController::class . ':photo');
                 $group->post('/search', \Ares\Photo\Controller\PhotoController::class . ':search');
-                $group->delete('/{id:[0-9]+}', \Ares\Photo\Controller\PhotoController::class . ':delete');
+                $group->delete('/{id:[0-9]+}', \Ares\Photo\Controller\PhotoController::class . ':delete')
+                    ->setName('delete-photo');
             });
 
             // Profiles
@@ -147,7 +153,7 @@ return function (App $app) {
                 $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Payment\Controller\PaymentController::class . ':list');
                 $group->get('/{id:[0-9]+}', \Ares\Payment\Controller\PaymentController::class . ':payment');
                 $group->delete('/{id:[0-9]+}', \Ares\Payment\Controller\PaymentController::class . ':delete')
-                    ->setName('deletePayment');
+                    ->setName('delete-payment');
             });
 
             // Forum
@@ -155,32 +161,20 @@ return function (App $app) {
                 $group->group('/comments', function ($group) {
                     $group->post('/{thread:[0-9]+}/create', \Ares\Forum\Controller\CommentController::class . ':create');
                     $group->get('/{thread:[0-9]+}/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Forum\Controller\CommentController::class . ':list');
-                    $group->post('/{thread:[0-9]+}/{id:[0-9]+}', \Ares\Forum\Controller\CommentController::class . ':edit')
-                        ->setName('editComment');
-                    $group->delete('/{thread:[0-9]+}/{id:[0-9]+}', \Ares\Forum\Controller\CommentController::class . ':delete')
-                        ->setName('deleteComment');
                 });
                 $group->group('/topics', function ($group) {
-                    $group->post('/create', \Ares\Forum\Controller\TopicController::class . ':create')
-                        ->setName('createTopic');
                     $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Forum\Controller\TopicController::class . ':list');
-                    $group->post('{id:[0-9]+}', \Ares\Forum\Controller\TopicController::class . ':edit')
-                        ->setName('editTopic');
-                    $group->delete('{id:[0-9]+}', \Ares\Forum\Controller\TopicController::class . ':delete')
-                        ->setName('deleteTopic');
                 });
                 $group->group('/threads', function ($group) {
-                    $group->post('/create', \Ares\Forum\Controller\ThreadController::class . ':create');
                     $group->get('/{topic_id:[0-9]+}/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Forum\Controller\ThreadController::class . ':list');
                     $group->get('/{topic_id:[0-9]+}/{slug}', \Ares\Forum\Controller\ThreadController::class . ':thread');
-                    $group->post('/{id:[0-9]+}', \Ares\Forum\Controller\ThreadController::class . ':edit');
-                    $group->delete('/{topic:[0-9]+}/{id:[0-9]+}', \Ares\Forum\Controller\ThreadController::class . ':delete');
                 });
             });
 
             // De-Authentication
             $group->post('/logout', \Ares\User\Controller\AuthController::class . ':logout');
-        })->add(\Ares\Framework\Middleware\AuthMiddleware::class);
+        })->add(\Ares\Role\Middleware\RolePermissionMiddleware::class)
+        ->add(\Ares\Framework\Middleware\AuthMiddleware::class);
 
         // Authentication
         $group->post('/login', \Ares\User\Controller\AuthController::class . ':login');
@@ -194,7 +188,8 @@ return function (App $app) {
             $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}',
                 \Ares\Settings\Controller\SettingsController::class . ':list');
             $group->post('/get', \Ares\Settings\Controller\SettingsController::class . ':get');
-            $group->post('/set', \Ares\Settings\Controller\SettingsController::class . ':set');
+            $group->post('/set', \Ares\Settings\Controller\SettingsController::class . ':set')
+                ->setName('set-global-setting');
         });
 
         // Global Routes

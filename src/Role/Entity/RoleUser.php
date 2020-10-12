@@ -8,6 +8,7 @@
 namespace Ares\Role\Entity;
 
 use Ares\Framework\Entity\Entity;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -24,32 +25,24 @@ use Doctrine\ORM\Mapping as ORM;
 class RoleUser extends Entity
 {
     /**
-     * @var integer
-     *
      * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private int $id;
 
     /**
-     * @var integer
-     *
      * @ORM\Column(name="user_id", type="integer", nullable=false)
      */
     private int $userId;
 
     /**
-     * @var integer
-     *
      * @ORM\Column(name="role_id", type="integer", nullable=false)
      */
     private int $roleId;
 
     /**
-     * @var Role
-     *
-     * @ORM\ManyToOne(targetEntity="Potievdev\SlimRbac\Models\Entity\Role")
+     * @ORM\ManyToOne(targetEntity="Ares\Role\Entity\Role")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="role_id", referencedColumnName="id")
      * })
@@ -57,11 +50,9 @@ class RoleUser extends Entity
     private Role $role;
 
     /**
-     * @var \DateTime
-     *
      * @ORM\Column(name="created_at", type="datetime", nullable=false)
      */
-    private \DateTime $createdAt;
+    private DateTime $createdAt;
 
     /**
      * @return int
@@ -144,15 +135,15 @@ class RoleUser extends Entity
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getCreatedAt(): \DateTime
+    public function getCreatedAt(): DateTime
     {
         return $this->createdAt;
     }
 
     /**
-     * @param   \DateTime  $createdAt
+     * @param   DateTime  $createdAt
      *
      * @return RoleUser
      */
@@ -170,7 +161,7 @@ class RoleUser extends Entity
      */
     public function prePersist(): void
     {
-        $this->createdAt = new \DateTime();
+        $this->createdAt = new DateTime();
     }
 
     /**

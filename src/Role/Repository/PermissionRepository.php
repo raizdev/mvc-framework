@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * Ares (https://ares.to)
  *
@@ -8,8 +8,13 @@
 namespace Ares\Role\Repository;
 
 use Ares\Framework\Repository\BaseRepository;
-use Ares\Role\Entity\RolePermission;
+use Ares\Role\Entity\Permission;
 
+/**
+ * Class PermissionRepository
+ *
+ * @package Ares\Role\Repository
+ */
 class PermissionRepository extends BaseRepository
 {
     /** @var string */
@@ -19,5 +24,5 @@ class PermissionRepository extends BaseRepository
     protected const CACHE_COLLECTION_PREFIX = 'ARES_ROLE_PERMISSION_COLLECTION_';
 
     /** @var string */
-    protected string $entity = RolePermission::class;
+    protected string $entity = Permission::class;
 }

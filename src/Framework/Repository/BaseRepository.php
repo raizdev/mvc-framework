@@ -10,6 +10,7 @@ namespace Ares\Framework\Repository;
 use Ares\Framework\Interfaces\SearchCriteriaInterface;
 use Ares\Framework\Service\CacheService;
 use Ares\Payment\Entity\Payment;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\OptimisticLockException;
@@ -131,15 +132,15 @@ abstract class BaseRepository extends PaginatedRepository
     }
 
     /**
-     * @param   SearchCriteriaInterface  $searchCriteria
+     * @param SearchCriteriaInterface $searchCriteria
      *
-     * @param   bool                     $cachedEntity
+     * @param bool                    $cachedEntity
      *
-     * @return array|object[]
-     * @throws PhpfastcacheSimpleCacheException
+     * @return ArrayCollection
      * @throws InvalidArgumentException
+     * @throws PhpfastcacheSimpleCacheException
      */
-    public function getList(SearchCriteriaInterface $searchCriteria, bool $cachedEntity = true)
+    public function getList(SearchCriteriaInterface $searchCriteria, bool $cachedEntity = true): ArrayCollection
     {
         $cacheKey = $searchCriteria->getCacheKey();
 
