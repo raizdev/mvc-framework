@@ -39,7 +39,7 @@ class ArticleRepository extends BaseRepository
      */
     public function findBySlug(string $slug, bool $cachedEntity = true)
     {
-        $entity = $this->cacheService->get(self::CACHE_PREFIX . $slug);
+        $entity = $this->cacheService->get($this->cachePrefix . $slug);
 
         if ($entity && $cachedEntity) {
             return unserialize($entity);
@@ -49,7 +49,7 @@ class ArticleRepository extends BaseRepository
             'slug' => $slug
         ]);
 
-        $this->cacheService->set(self::CACHE_PREFIX . $slug, serialize($entity));
+        $this->cacheService->set($this->cachePrefix . $slug, serialize($entity));
 
         return $entity;
     }

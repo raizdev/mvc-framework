@@ -39,7 +39,7 @@ class ThreadRepository extends BaseRepository
      */
     public function findByCriteria(int $topic, string $slug, bool $cachedEntity = true)
     {
-        $entity = $this->cacheService->get(self::CACHE_PREFIX . $slug);
+        $entity = $this->cacheService->get($this->cachePrefix . $slug);
 
         if ($entity && $cachedEntity) {
             return unserialize($entity);
@@ -50,7 +50,7 @@ class ThreadRepository extends BaseRepository
             'slug' => $slug
         ]);
 
-        $this->cacheService->set(self::CACHE_PREFIX . $slug, serialize($entity));
+        $this->cacheService->set($this->cachePrefix . $slug, serialize($entity));
 
         return $entity;
     }
