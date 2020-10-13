@@ -10,7 +10,9 @@ namespace Ares\User\Entity;
 use Ares\Framework\Entity\Entity;
 use Ares\Permission\Entity\Permission;
 use Ares\Role\Entity\Role;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
@@ -70,7 +72,7 @@ class User extends Entity
     private ?string $motto;
 
     /**
-     * @ORM\Column(type="integer", length=20)
+     * @ORM\Column(type="integer", length=11)
      */
     private int $credits;
 
@@ -80,9 +82,9 @@ class User extends Entity
     private ?int $rank;
 
     /**
-     * @ORM\OneToOne(targetEntity="\Ares\Role\Entity\Role")
+     * @ORM\OneToMany(targetEntity="\Ares\Role\Entity\RoleUser", mappedBy="user", fetch="EXTRA_LAZY")
      */
-    private ?Role $role;
+    private ?Collection $roles;
 
     /**
      * @ManyToOne(targetEntity="\Ares\Permission\Entity\Permission", inversedBy="user_with_rank")
@@ -479,25 +481,24 @@ class User extends Entity
     }
 
     /**
-     * @return Role|null
+     * @return Collection|null
      */
-    public function getRole(): ?Role
+    public function getRoles(): ?Collection
     {
-        return $this->role;
+        return $this->roles;
     }
 
     /**
-     * @param Role|null $role
+     * @param Collection|null $roles
      *
      * @return User
      */
-    public function setRole(?Role $role): self
+    public function setRoles(?Collection $roles): self
     {
-        $this->role = $role;
+        $this->roles = $roles;
 
         return $this;
     }
-
 
     /**
      * @return \DateTime
@@ -554,7 +555,7 @@ class User extends Entity
             'online' => $this->getOnline(),
             'locale' => $this->getLocale(),
             'last_login' => $this->getLastLogin(),
-            'role' => $this->getRole()->getName(),
+            'roles' => $this->getRoles()->toArray(),
             'currencies' => $this->getCurrencies()->toArray(),
             'created_at' => $this->getCreatedAt(),
             'updated_at' => $this->getUpdatedAt()

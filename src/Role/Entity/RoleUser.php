@@ -5,6 +5,12 @@
  * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
  */
 
+/**
+ * Ares (https://ares.to)
+ *
+ * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ */
+
 namespace Ares\Role\Entity;
 
 use Ares\Framework\Entity\Entity;
@@ -35,6 +41,9 @@ class RoleUser extends Entity
 
     /**
      * @ORM\OneToOne(targetEntity="\Ares\User\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * })
      */
     private ?User $user;
 
@@ -172,11 +181,8 @@ class RoleUser extends Entity
     public function jsonSerialize(): array
     {
         return [
-            'id' => $this->getId(),
-            'user_id' => $this->getUser()->getId(),
-            'username' => $this->getUser()->getUsername(),
-            'role_id' => $this->getRole()->getId(),
-            'role_name' => $this->getRole()->getName()
+            'id' => $this->getRole()->getId(),
+            'name' => $this->getRole()->getName()
         ];
     }
 

@@ -34,7 +34,7 @@ class Role extends Entity
     /**
      * @ORM\Column(name="name", type="string", length=50, nullable=false)
      */
-    private string $name;
+    private ?string $name;
 
     /**
      * @ORM\Column(name="description", type="string", nullable=true)
@@ -83,7 +83,7 @@ class Role extends Entity
     /**
      * @return string
      */
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
