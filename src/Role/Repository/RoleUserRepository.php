@@ -34,14 +34,14 @@ class RoleUserRepository extends BaseRepository
      */
     public function getUserRoleIds($userId)
     {
-        $qb = $this->createQueryBuilder('userRole');
+        $qb = $this->createQueryBuilder('ur');
 
-        $qb->select('userRole.roleId')
+        $qb->select('ur.roleId')
             ->where(
                 $qb->expr()
-                ->eq('userRole.userId', $userId)
+                ->eq('ur.userId', $userId)
             )
-            ->indexBy('userRole', 'userRole.roleId');
+            ->indexBy('ur', 'ur.roleId');
 
         $roleIds = $qb->getQuery()
             ->getArrayResult();

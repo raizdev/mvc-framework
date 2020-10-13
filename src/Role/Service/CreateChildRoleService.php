@@ -86,10 +86,11 @@ class CreateChildRoleService
 
         $newChildRole = $this->getNewChildRole($parentRole, $childRole);
 
-        $this->roleHierarchyRepository->save($newChildRole);
+        /** @var RoleHierarchy $newChildRole */
+        $newChildRole = $this->roleHierarchyRepository->save($newChildRole);
 
         return response()
-            ->setData(true);
+            ->setData($newChildRole);
     }
 
     /**

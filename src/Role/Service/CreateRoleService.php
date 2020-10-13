@@ -51,15 +51,15 @@ class CreateRoleService
      */
     public function execute(array $data): CustomResponseInterface
     {
-        $role = $this->getNewRole($data);
-
-        $existingPermission = $this->roleRepository->getOneBy([
+        $existingRole = $this->roleRepository->getOneBy([
             'name' => $data['name']
         ]);
 
-        if ($existingPermission) {
+        if ($existingRole) {
             throw new RoleException(__('There is already a Role with that name'));
         }
+
+        $role = $this->getNewRole($data);
 
         /** @var Role $role */
         $role = $this->roleRepository->save($role);

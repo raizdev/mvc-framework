@@ -8,6 +8,7 @@
 namespace Ares\Role\Entity;
 
 use Ares\Framework\Entity\Entity;
+use Ares\User\Entity\User;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -17,8 +18,9 @@ use Doctrine\ORM\Mapping as ORM;
  * @package Ares\Role\Entity
  *
  * @ORM\Table(name="ares_role_user",
- *     uniqueConstraints={@ORM\UniqueConstraint(name="idx_user_role_unique", columns={"user_id", "role_id"})},
- *      indexes={@ORM\Index(name="fk_user_role_role", columns={"role_id"})})
+ *     uniqueConstraints={@ORM\UniqueConstraint(name="idx_user_role_unique",
+ *      columns={"user_id", "role_id"})}
+ *     )
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  */
@@ -32,9 +34,9 @@ class RoleUser extends Entity
     private int $id;
 
     /**
-     * @ORM\Column(name="user_id", type="integer", nullable=false)
+     * @ORM\OneToOne(targetEntity="\Ares\User\Entity\User")
      */
-    private int $userId;
+    private ?User $user;
 
     /**
      * @ORM\Column(name="role_id", type="integer", nullable=false)
@@ -42,7 +44,7 @@ class RoleUser extends Entity
     private int $roleId;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Ares\Role\Entity\Role")
+     * @ORM\ManyToOne(targetEntity="\Ares\Role\Entity\Role")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="role_id", referencedColumnName="id")
      * })
@@ -75,21 +77,21 @@ class RoleUser extends Entity
     }
 
     /**
-     * @return int
+     * @return User|null
      */
-    public function getUserId(): int
+    public function getUser(): ?User
     {
-        return $this->userId;
+        return $this->user;
     }
 
     /**
-     * @param   int  $userId
+     * @param User|null $user
      *
      * @return RoleUser
      */
-    public function setUserId($userId): self
+    public function setUser(?User $user): self
     {
-        $this->userId = $userId;
+        $this->user = $user;
 
         return $this;
     }
@@ -169,7 +171,13 @@ class RoleUser extends Entity
      */
     public function jsonSerialize(): array
     {
-        return [];
+        return [
+            'id' => $this->getId(),
+            'user_id' => $this->getUser()->getId(),
+            'username' => $this->getUser()->getUsername(),
+            'role_id' => $this->getRole()->getId(),
+            'role_name' => $this->getRole()->getName()
+        ];
     }
 
     /**

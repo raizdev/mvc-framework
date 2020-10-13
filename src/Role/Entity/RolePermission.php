@@ -17,9 +17,9 @@ use Doctrine\ORM\Mapping as ORM;
  * @package Ares\Role\Entity
  *
  * @ORM\Table(name="ares_role_permission",
- *     uniqueConstraints={@ORM\UniqueConstraint(name="ares_role_permission_unique", columns={"role_id", "permission_id"})},
- *      indexes={@ORM\Index(name="fk_role_permission_permission", columns={"permission_id"}),
- *      @ORM\Index(name="IDX_6F7DF886D60322AC", columns={"role_id"})})
+ *     uniqueConstraints={@ORM\UniqueConstraint(name="ares_role_permission_unique",
+ *      columns={"role_id", "permission_id"})}
+ *     )
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  */
@@ -198,7 +198,14 @@ class RolePermission extends Entity
      */
     public function jsonSerialize(): array
     {
-        return [];
+        return [
+            'id' => $this->getId(),
+            'role_id' => $this->getRole()->getId(),
+            'role_name' => $this->getRole()->getName(),
+            'permission_id' => $this->getPermission()->getId(),
+            'permission_name' => $this->getPermission()->getName(),
+            'created_at' => $this->getCreatedAt()
+        ];
     }
 
     /**

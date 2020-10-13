@@ -17,9 +17,9 @@ use Doctrine\ORM\Mapping as ORM;
  * @package Ares\Role\Entity
  *
  * @ORM\Table(name="ares_role_hierarchy",
- *      uniqueConstraints={@ORM\UniqueConstraint(name="ares_role_hierarchy_unique", columns={"parent_role_id", "child_role_id"})},
- *      indexes={@ORM\Index(name="fk_role_hierarchy_child",columns={"child_role_id"}),
- *      @ORM\Index(name="IDX_AB8EFB72A44B56EA",columns={"parent_role_id"})})
+ *      uniqueConstraints={@ORM\UniqueConstraint(name="ares_role_hierarchy_unique",
+ *      columns={"parent_role_id", "child_role_id"})}
+ *     )
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  */

@@ -51,8 +51,6 @@ class CreatePermissionService
      */
     public function execute(array $data): CustomResponseInterface
     {
-        $permission = $this->getNewPermission($data);
-
         $existingPermission = $this->permissionRepository->getOneBy([
            'name' => $data['name']
         ]);
@@ -60,6 +58,8 @@ class CreatePermissionService
         if ($existingPermission) {
             throw new RoleException(__('There is already a Permission with that name'));
         }
+
+        $permission = $this->getNewPermission($data);
 
         /** @var Permission $permission */
         $permission = $this->permissionRepository->save($permission);
