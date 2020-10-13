@@ -81,7 +81,7 @@ class RolePermissionController extends BaseController
      * @throws PhpfastcacheSimpleCacheException
      * @throws InvalidArgumentException
      */
-    public function createRolePermission(Request $request, Response $response): Response
+    public function createPermission(Request $request, Response $response): Response
     {
         /** @var array $parsedData */
         $parsedData = $request->getParsedBody();
@@ -110,7 +110,7 @@ class RolePermissionController extends BaseController
      * @throws RoleException
      * @throws ValidationException
      */
-    public function createChildPermission(Request $request, Response $response): Response
+    public function createRolePermission(Request $request, Response $response): Response
     {
         /** @var array $parsedData */
         $parsedData = $request->getParsedBody();

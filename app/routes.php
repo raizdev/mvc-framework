@@ -142,9 +142,31 @@ return function (App $app) {
                     \Ares\Profile\Controller\ProfileController::class . ':photoList');
             });
 
-            // Permissions
+            // Habbo Permissions
             $group->group('/permissions', function ($group) {
                 $group->get('/rank/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Permission\Controller\PermissionController::class . ':listUserWithRank');
+            });
+
+            // Roles, Permissions
+            $group->group('/roles', function ($group) {
+                $group->post('/create', \Ares\Role\Controller\RoleController::class . ':createRole')
+                    ->setName('create-role');
+                $group->post('create_child', \Ares\Role\Controller\RoleController::class . ':createChildRole')
+                    ->setName('create-child-role');
+                $group->post('/assign', \Ares\Role\Controller\RoleController::class . ':assignRole')
+                    ->setName('assign-role');
+                $group->delete('', \Ares\Role\Controller\RoleController::class . ':deleteRole')
+                    ->setName('delete-role');
+
+                // Permissions
+                $group->group('/permissions', function ($group) {
+                    $group->post('/create', \Ares\Role\Controller\RolePermissionController::class . ':createPermission')
+                        ->setName('create-permission');
+                    $group->post('/create_role_permission', \Ares\Role\Controller\RolePermissionController::class . ':createRolePermission')
+                        ->setName('create-role-permission');
+                    $group->delete('', \Ares\Role\Controller\RolePermissionController::class . ':deleteRolePermission')
+                        ->setName('delete-role-permission');
+                });
             });
 
             // Payments
