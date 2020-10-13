@@ -18,10 +18,10 @@ use Ares\Role\Entity\Role;
 class RoleRepository extends BaseRepository
 {
     /** @var string */
-    protected const CACHE_PREFIX = 'ARES_ROLE_';
+    protected string $cachePrefix = 'ARES_ROLE_';
 
     /** @var string */
-    protected const CACHE_COLLECTION_PREFIX = 'ARES_ROLE_COLLECTION_';
+    protected string $cacheCollectionPrefix = 'ARES_ROLE_COLLECTION_';
 
     /** @var string */
     protected string $entity = Role::class;

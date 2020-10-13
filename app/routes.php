@@ -149,6 +149,9 @@ return function (App $app) {
 
             // Roles, Permissions
             $group->group('/roles', function ($group) {
+                $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}',
+                    \Ares\Role\Controller\RoleController::class . ':list')
+                    ->setName('list-all-roles');
                 $group->post('/create', \Ares\Role\Controller\RoleController::class . ':createRole')
                     ->setName('create-role');
                 $group->post('create_child', \Ares\Role\Controller\RoleController::class . ':createChildRole')
@@ -160,6 +163,9 @@ return function (App $app) {
 
                 // Permissions
                 $group->group('/permissions', function ($group) {
+                    $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}',
+                        \Ares\Role\Controller\RolePermissionController::class . ':list')
+                        ->setName('list-all-permissions');
                     $group->post('/create', \Ares\Role\Controller\RolePermissionController::class . ':createPermission')
                         ->setName('create-permission');
                     $group->post('/create_role_permission', \Ares\Role\Controller\RolePermissionController::class . ':createRolePermission')

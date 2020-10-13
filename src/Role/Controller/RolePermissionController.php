@@ -9,6 +9,7 @@ namespace Ares\Role\Controller;
 
 use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\ValidationException;
+use Ares\Framework\Model\Adapter\DoctrineSearchCriteria;
 use Ares\Framework\Service\ValidationService;
 use Ares\Role\Exception\RoleException;
 use Ares\Role\Repository\PermissionRepository;
@@ -50,23 +51,64 @@ class RolePermissionController extends BaseController
     private CreateRolePermissionService $createRolePermissionService;
 
     /**
+     * @var DoctrineSearchCriteria
+     */
+    private DoctrineSearchCriteria $searchCriteria;
+
+    /**
      * RolePermissionController constructor.
      *
      * @param PermissionRepository        $permissionRepository
      * @param CreatePermissionService     $createPermissionService
      * @param CreateRolePermissionService $createRolePermissionService
      * @param ValidationService           $validationService
+     * @param DoctrineSearchCriteria      $searchCriteria
      */
     public function __construct(
         PermissionRepository $permissionRepository,
         CreatePermissionService $createPermissionService,
         CreateRolePermissionService $createRolePermissionService,
-        ValidationService $validationService
+        ValidationService $validationService,
+        DoctrineSearchCriteria $searchCriteria
     ) {
         $this->permissionRepository = $permissionRepository;
         $this->createPermissionService = $createPermissionService;
         $this->createRolePermissionService = $createRolePermissionService;
         $this->validationService = $validationService;
+        $this->searchCriteria = $searchCriteria;
+    }
+
+    /**
+     * @param Request  $request
+     * @param Response $response
+     * @param array    $args
+     *
+     * @return Response
+     * @throws InvalidArgumentException
+     * @throws PhpfastcacheSimpleCacheException
+     */
+    public function list(Request $request, Response $response, array $args): Response
+    {
+        /** @var int $page */
+        $page = $args['page'];
+
+        /** @var int $resultPerPage */
+        $resultPerPage = $args['rpp'];
+
+        $this->searchCriteria
+            ->setPage((int) $page)
+            ->setLimit((int) $resultPerPage)
+            ->addOrder('id', 'DESC');
+
+        $permissions = $this->permissionRepository->paginate($this->searchCriteria);
+
+        return $this->respond(
+            $response,
+            response()
+                ->setData(
+                    $permissions->toArray()
+                )
+        );
     }
 
     /**

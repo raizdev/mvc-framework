@@ -89,6 +89,39 @@ class RoleController extends BaseController
     /**
      * @param Request  $request
      * @param Response $response
+     * @param array    $args
+     *
+     * @return Response
+     * @throws InvalidArgumentException
+     * @throws PhpfastcacheSimpleCacheException
+     */
+    public function list(Request $request, Response $response, array $args): Response
+    {
+        /** @var int $page */
+        $page = $args['page'];
+
+        /** @var int $resultPerPage */
+        $resultPerPage = $args['rpp'];
+
+        $this->searchCriteria
+            ->setPage((int) $page)
+            ->setLimit((int) $resultPerPage)
+            ->addOrder('id', 'DESC');
+
+        $roles = $this->roleRepository->paginate($this->searchCriteria);
+
+        return $this->respond(
+            $response,
+            response()
+                ->setData(
+                    $roles->toArray()
+                )
+        );
+    }
+
+    /**
+     * @param Request  $request
+     * @param Response $response
      *
      * @return Response
      * @throws ValidationException

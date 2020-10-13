@@ -28,18 +28,19 @@ class RoleUserRepository extends BaseRepository
     protected string $entity = RoleUser::class;
 
     /**
-     * @param integer $userId
+     * @param int $userId
+     *
      * @return array
      * @throws QueryException
      */
-    public function getUserRoleIds($userId)
+    public function getUserRoleIds($userId): array
     {
         $qb = $this->createQueryBuilder('ur');
 
         $qb->select('ur.roleId')
             ->where(
                 $qb->expr()
-                ->eq('ur.userId', $userId)
+                ->eq('ur.user', $userId)
             )
             ->indexBy('ur', 'ur.roleId');
 
