@@ -9,7 +9,6 @@ namespace Ares\Framework\Repository;
 
 use Ares\Framework\Interfaces\SearchCriteriaInterface;
 use Ares\Framework\Service\CacheService;
-use Ares\Payment\Entity\Payment;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;

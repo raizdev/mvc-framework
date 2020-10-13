@@ -18,10 +18,10 @@ use Ares\Framework\Repository\BaseRepository;
 class UserRepository extends BaseRepository
 {
     /** @var string */
-    protected const CACHE_PREFIX = 'ARES_USER_';
+    protected string $cachePrefix = 'ARES_USER_';
 
     /** @var string */
-    protected const CACHE_COLLECTION_PREFIX = 'ARES_USER_COLLECTION_';
+    protected string $cacheCollectionPrefix = 'ARES_USER_COLLECTION_';
 
     /** @var string */
     protected string $entity = User::class;

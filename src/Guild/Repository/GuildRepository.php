@@ -21,10 +21,10 @@ use Doctrine\ORM\Query\Expr\Join;
 class GuildRepository extends BaseRepository
 {
     /** @var string */
-    protected const CACHE_PREFIX = 'ARES_GUILD_';
+    protected string $cachePrefix = 'ARES_GUILD_';
 
     /** @var string */
-    protected const CACHE_COLLECTION_PREFIX = 'ARES_GUILD_COLLECTION_';
+    protected string $cacheCollectionPrefix = 'ARES_GUILD_COLLECTION_';
 
     /** @var string */
     protected string $entity = Guild::class;

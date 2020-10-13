@@ -19,10 +19,10 @@ use Doctrine\ORM\Query\QueryException;
 class RoleUserRepository extends BaseRepository
 {
     /** @var string */
-    protected const CACHE_PREFIX = 'ARES_ROLE_USER_';
+    protected string $cachePrefix = 'ARES_ROLE_USER_';
 
     /** @var string */
-    protected const CACHE_COLLECTION_PREFIX = 'ARES_ROLE_USER_COLLECTION_';
+    protected string $cacheCollectionPrefix = 'ARES_ROLE_USER_COLLECTION_';
 
     /** @var string */
     protected string $entity = RoleUser::class;

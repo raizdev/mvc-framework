@@ -19,10 +19,10 @@ use Doctrine\ORM\Query\QueryException;
 class RoleHierarchyRepository extends BaseRepository
 {
     /** @var string */
-    protected const CACHE_PREFIX = 'ARES_ROLE_HIERARCHY_';
+    protected string $cachePrefix = 'ARES_ROLE_HIERARCHY_';
 
     /** @var string */
-    protected const CACHE_COLLECTION_PREFIX = 'ARES_ROLE_HIERARCHY_COLLECTION_';
+    protected string $cacheCollectionPrefix = 'ARES_ROLE_HIERARCHY_COLLECTION_';
 
     /** @var string */
     protected string $entity = RoleHierarchy::class;

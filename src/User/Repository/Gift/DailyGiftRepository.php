@@ -18,10 +18,10 @@ use Ares\User\Entity\Gift\DailyGift;
 class DailyGiftRepository extends BaseRepository
 {
     /** @var string */
-    protected const CACHE_PREFIX = 'ARES_USER_DAILY_GIFT_';
+    protected string $cachePrefix = 'ARES_USER_DAILY_GIFT_';
 
     /** @var string */
-    protected const CACHE_COLLECTION_PREFIX = 'ARES_USER_DAILY_GIFT_COLLECTION_';
+    protected string $cacheCollectionPrefix = 'ARES_USER_DAILY_GIFT_COLLECTION_';
 
     /** @var string */
     protected string $entity = DailyGift::class;

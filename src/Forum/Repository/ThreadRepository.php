@@ -20,10 +20,10 @@ use Psr\Cache\InvalidArgumentException;
 class ThreadRepository extends BaseRepository
 {
     /** @var string */
-    protected const CACHE_PREFIX = 'ARES_FORUM_THREAD_';
+    protected string $cachePrefix = 'ARES_FORUM_THREAD_';
 
     /** @var string */
-    protected const CACHE_COLLECTION_PREFIX = 'ARES_FORUM_THREAD_COLLECTION_';
+    protected string $cacheCollectionPrefix = 'ARES_FORUM_THREAD_COLLECTION_';
 
     /** @var string */
     protected string $entity = Thread::class;

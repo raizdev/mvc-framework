@@ -18,10 +18,10 @@ use Ares\Framework\Repository\BaseRepository;
 class BanRepository extends BaseRepository
 {
     /** @var string */
-    protected const CACHE_PREFIX = 'ARES_BAN_';
+    protected string $cachePrefix = 'ARES_BAN_';
 
     /** @var string */
-    protected const CACHE_COLLECTION_PREFIX = 'ARES_BAN_COLLECTION_';
+    protected string $cacheCollectionPrefix = 'ARES_BAN_COLLECTION_';
 
     /** @var string */
     protected string $entity = Ban::class;

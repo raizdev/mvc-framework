@@ -18,10 +18,10 @@ use Ares\Framework\Repository\BaseRepository;
 class TopicRepository extends BaseRepository
 {
     /** @var string */
-    protected const CACHE_PREFIX = 'ARES_FORUM_TOPIC_';
+    protected string $cachePrefix = 'ARES_FORUM_TOPIC_';
 
     /** @var string */
-    protected const CACHE_COLLECTION_PREFIX = 'ARES_FORUM_TOPIC_COLLECTION_';
+    protected string $cacheCollectionPrefix = 'ARES_FORUM_TOPIC_COLLECTION_';
 
     /** @var string */
     protected string $entity = Topic::class;

@@ -18,10 +18,10 @@ use Ares\Messenger\Entity\MessengerFriendship;
 class MessengerRepository extends BaseRepository
 {
     /** @var string */
-    protected const CACHE_PREFIX = 'ARES_MESSENGER_';
+    protected string $cachePrefix = 'ARES_MESSENGER_';
 
     /** @var string */
-    protected const CACHE_COLLECTION_PREFIX = 'ARES_MESSENGER_COLLECTION_';
+    protected string $cacheCollectionPrefix = 'ARES_MESSENGER_COLLECTION_';
 
     /** @var string */
     protected string $entity = MessengerFriendship::class;

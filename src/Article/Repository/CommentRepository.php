@@ -18,10 +18,10 @@ use Ares\Framework\Repository\BaseRepository;
 class CommentRepository extends BaseRepository
 {
     /** @var string */
-    protected const CACHE_PREFIX = 'ARES_COMMENT_';
+    protected string $cachePrefix = 'ARES_COMMENT_';
 
     /** @var string */
-    protected const CACHE_COLLECTION_PREFIX = 'ARES_COMMENT_COLLECTION_';
+    protected string $cacheCollectionPrefix = 'ARES_COMMENT_COLLECTION_';
 
     /** @var string */
     protected string $entity = Comment::class;

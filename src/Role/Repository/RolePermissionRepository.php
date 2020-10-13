@@ -18,10 +18,10 @@ use Ares\Role\Entity\RolePermission;
 class RolePermissionRepository extends BaseRepository
 {
     /** @var string */
-    protected const CACHE_PREFIX = 'ARES_ROLE_ROLE_PERMISSION_';
+    protected string $cachePrefix = 'ARES_ROLE_ROLE_PERMISSION_';
 
     /** @var string */
-    protected const CACHE_COLLECTION_PREFIX = 'ARES_ROLE_ROLE_PERMISSION_COLLECTION_';
+    protected string $cacheCollectionPrefix = 'ARES_ROLE_ROLE_PERMISSION_COLLECTION_';
 
     /** @var string */
     protected string $entity = RolePermission::class;

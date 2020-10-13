@@ -18,10 +18,10 @@ use Ares\Photo\Entity\Photo;
 class PhotoRepository extends BaseRepository
 {
     /** @var string */
-    protected const CACHE_PREFIX = 'ARES_PHOTO_';
+    protected string $cachePrefix = 'ARES_PHOTO_';
 
     /** @var string */
-    protected const CACHE_COLLECTION_PREFIX = 'ARES_PHOTO_COLLECTION_';
+    protected string $cacheCollectionPrefix = 'ARES_PHOTO_COLLECTION_';
 
     /** @var string */
     protected string $entity = Photo::class;

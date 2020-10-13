@@ -18,10 +18,10 @@ use Ares\Settings\Entity\Setting;
 class SettingsRepository extends BaseRepository
 {
     /** @var string */
-    protected const CACHE_PREFIX = 'ARES_SETTINGS_';
+    protected string $cachePrefix = 'ARES_SETTINGS_';
 
     /** @var string */
-    protected const CACHE_COLLECTION_PREFIX = 'ARES_SETTINGS_COLLECTION_';
+    protected string $cacheCollectionPrefix = 'ARES_SETTINGS_COLLECTION_';
 
     /** @var string */
     protected string $entity = Setting::class;
