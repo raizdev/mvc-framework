@@ -132,7 +132,6 @@ class UserCurrency extends Entity
     {
         return [
             'id' => $this->getId(),
-            'user_id' => $this->getUser()->getId(),
             'type' => $this->getType(),
             'amount' => $this->getAmount()
         ];

@@ -18,10 +18,10 @@ use Ares\User\Entity\UserCurrency;
 class UserCurrencyRepository extends BaseRepository
 {
     /** @var string */
-    protected const CACHE_PREFIX = 'ARES_USER_CURRENCY';
+    protected string $cachePrefix = 'ARES_USER_CURRENCY';
 
     /** @var string */
-    protected const CACHE_COLLECTION_PREFIX = 'ARES_USER_CURRENCY_COLLECTION_';
+    protected string $cacheCollectionPrefix = 'ARES_USER_CURRENCY_COLLECTION_';
 
     /** @var string */
     protected string $entity = UserCurrency::class;

@@ -5,23 +5,23 @@
  * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
  */
 
-namespace Ares\Permission\Repository;
+namespace Ares\Role\Repository;
 
 use Ares\Framework\Repository\BaseRepository;
-use Ares\Permission\Entity\Permission;
+use Ares\Role\Entity\Permission;
 
 /**
  * Class PermissionRepository
  *
- * @package Ares\Permission\Repository
+ * @package Ares\Role\Repository
  */
 class PermissionRepository extends BaseRepository
 {
     /** @var string */
-    protected string $cachePrefix = 'ARES_PERMISSION_';
+    protected string $cachePrefix = 'ARES_ROLE_PERMISSION';
 
     /** @var string */
-    protected string $cacheCollectionPrefix = 'ARES_PERMISSION_COLLECTION_';
+    protected string $cacheCollectionPrefix = 'ARES_ROLE_PERMISSION_COLLECTION_';
 
     /** @var string */
     protected string $entity = Permission::class;

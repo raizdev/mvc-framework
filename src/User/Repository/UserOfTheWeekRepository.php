@@ -18,10 +18,10 @@ use Ares\User\Entity\UserOfTheWeek;
 class UserOfTheWeekRepository extends BaseRepository
 {
     /** @var string */
-    protected const CACHE_PREFIX = 'ARES_UOTW_';
+    protected string $cachePrefix = 'ARES_UOTW_';
 
     /** @var string */
-    protected const CACHE_COLLECTION_PREFIX = 'ARES_UOTW_COLLECTION_';
+    protected string $cacheCollectionPrefix = 'ARES_UOTW_COLLECTION_';
 
     /** @var string */
     protected string $entity = UserOfTheWeek::class;

@@ -46,6 +46,7 @@ class TicketService
      * @throws OptimisticLockException
      * @throws PhpfastcacheSimpleCacheException
      * @throws InvalidArgumentException
+     * @throws \Exception
      */
     public function generate(object $user): string
     {

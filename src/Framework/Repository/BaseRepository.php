@@ -9,7 +9,7 @@ namespace Ares\Framework\Repository;
 
 use Ares\Framework\Interfaces\SearchCriteriaInterface;
 use Ares\Framework\Service\CacheService;
-use Ares\Payment\Entity\Payment;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\OptimisticLockException;
@@ -26,11 +26,15 @@ use Psr\Cache\InvalidArgumentException;
  */
 abstract class BaseRepository extends PaginatedRepository
 {
-    /** @var string */
-    protected const CACHE_PREFIX = '';
+    /**
+     * @var string
+     */
+    protected string $cachePrefix;
 
-    /** @var string */
-    protected const CACHE_COLLECTION_PREFIX = '';
+    /**
+     * @var string
+     */
+    protected string $cacheCollectionPrefix;
 
     /**
      * @var string
@@ -69,7 +73,7 @@ abstract class BaseRepository extends PaginatedRepository
      */
     public function get(int $id, bool $cachedEntity = true): ?object
     {
-        $entity = $this->cacheService->get(self::CACHE_PREFIX . $id);
+        $entity = $this->cacheService->get($this->cachePrefix . $id);
 
         if ($entity && $cachedEntity) {
             return unserialize($entity);
@@ -77,7 +81,7 @@ abstract class BaseRepository extends PaginatedRepository
 
         $entity = $this->find($id);
 
-        $this->cacheService->set(self::CACHE_PREFIX . $id, serialize($entity));
+        $this->cacheService->set($this->cachePrefix . $id, serialize($entity));
 
         return $entity;
     }
@@ -96,7 +100,7 @@ abstract class BaseRepository extends PaginatedRepository
         $this->getEntityManager()->persist($model);
         $this->getEntityManager()->flush();
 
-        $this->cacheService->set(self::CACHE_COLLECTION_PREFIX . $model->getId(), serialize($model));
+        $this->cacheService->set($this->cacheCollectionPrefix . $model->getId(), serialize($model));
 
         return $model;
     }
@@ -125,7 +129,7 @@ abstract class BaseRepository extends PaginatedRepository
     {
         $this->getEntityManager()->flush();
 
-        $this->cacheService->set(self::CACHE_PREFIX . $model->getId(), serialize($model));
+        $this->cacheService->set($this->cachePrefix . $model->getId(), serialize($model));
 
         return $model;
     }
@@ -135,15 +139,15 @@ abstract class BaseRepository extends PaginatedRepository
      *
      * @param bool                    $cachedEntity
      *
-     * @return PaginatedArrayCollection
+     * @return ArrayCollection
      * @throws InvalidArgumentException
      * @throws PhpfastcacheSimpleCacheException
      */
-    public function getList(SearchCriteriaInterface $searchCriteria, bool $cachedEntity = true): PaginatedArrayCollection
+    public function getList(SearchCriteriaInterface $searchCriteria, bool $cachedEntity = true): ArrayCollection
     {
         $cacheKey = $searchCriteria->getCacheKey();
 
-        $collection = $this->cacheService->get(self::CACHE_COLLECTION_PREFIX . $cacheKey);
+        $collection = $this->cacheService->get($this->cacheCollectionPrefix . $cacheKey);
 
         if ($collection && $cachedEntity) {
             return unserialize($collection);
@@ -156,7 +160,7 @@ abstract class BaseRepository extends PaginatedRepository
             $searchCriteria->getOffset()
         );
 
-        $this->cacheService->set(self::CACHE_COLLECTION_PREFIX . $cacheKey, serialize($collection));
+        $this->cacheService->set($this->cacheCollectionPrefix . $cacheKey, serialize($collection));
 
         return $collection;
     }
@@ -183,7 +187,7 @@ abstract class BaseRepository extends PaginatedRepository
         $this->getEntityManager()->remove($model);
         $this->getEntityManager()->flush();
 
-        $this->cacheService->delete(self::CACHE_PREFIX . $id);
+        $this->cacheService->delete($this->cachePrefix . $id);
 
         return true;
     }
@@ -201,7 +205,7 @@ abstract class BaseRepository extends PaginatedRepository
     {
         $cacheKey = $searchCriteria->getCacheKey();
 
-        $collection = $this->cacheService->get(self::CACHE_COLLECTION_PREFIX . $cacheKey);
+        $collection = $this->cacheService->get($this->cacheCollectionPrefix . $cacheKey);
 
         if ($collection && $cachedEntity) {
             return unserialize($collection);
@@ -214,7 +218,7 @@ abstract class BaseRepository extends PaginatedRepository
             $searchCriteria->getOrders()
         );
 
-        $this->cacheService->set(self::CACHE_COLLECTION_PREFIX . $cacheKey, serialize($collection));
+        $this->cacheService->set($this->cacheCollectionPrefix . $cacheKey, serialize($collection));
 
         return $collection;
     }

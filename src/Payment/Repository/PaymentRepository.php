@@ -18,10 +18,10 @@ use Ares\Payment\Entity\Payment;
 class PaymentRepository extends BaseRepository
 {
     /** @var string */
-    protected const CACHE_PREFIX = 'ARES_PAYMENT_';
+    protected string $cachePrefix = 'ARES_PAYMENT_';
 
     /** @var string */
-    protected const CACHE_COLLECTION_PREFIX = 'ARES_PAYMENT_COLLECTION_';
+    protected string $cacheCollectionPrefix = 'ARES_PAYMENT_COLLECTION_';
 
     /** @var string */
     protected string $entity = Payment::class;

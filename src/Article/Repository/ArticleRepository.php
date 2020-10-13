@@ -21,10 +21,10 @@ use Ares\Article\Entity\Comment;
 class ArticleRepository extends BaseRepository
 {
     /** @var string */
-    protected const CACHE_PREFIX = 'ARES_ARTICLE_';
+    protected string $cachePrefix = 'ARES_ARTICLE_';
 
     /** @var string */
-    protected const CACHE_COLLECTION_PREFIX = 'ARES_ARTICLE_COLLECTION_';
+    protected string $cacheCollectionPrefix = 'ARES_ARTICLE_COLLECTION_';
 
     /** @var string */
     protected string $entity = Article::class;

@@ -13,5 +13,5 @@
 /tmp/Logs
 /tmp/Cache
 /.env
-/ares_vuemixin/
+composer.lock
 

@@ -18,10 +18,10 @@ use Ares\User\Entity\UserBadge;
 class UserBadgeRepository extends BaseRepository
 {
     /** @var string */
-    protected const CACHE_PREFIX = 'ARES_USER_BADGE_';
+    protected string $cachePrefix = 'ARES_USER_BADGE_';
 
     /** @var string */
-    protected const CACHE_COLLECTION_PREFIX = 'ARES_USER_BADGE_COLLECTION_';
+    protected string $cacheCollectionPrefix = 'ARES_USER_BADGE_COLLECTION_';
 
     /** @var string */
     protected string $entity = UserBadge::class;

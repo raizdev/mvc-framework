@@ -18,10 +18,10 @@ use Ares\Vote\Entity\Vote;
 class VoteRepository extends BaseRepository
 {
     /** @var string */
-    protected const CACHE_PREFIX = 'ARES_VOTE_';
+    protected string $cachePrefix = 'ARES_VOTE_';
 
     /** @var string */
-    protected const CACHE_COLLECTION_PREFIX = 'ARES_VOTE_COLLECTION_';
+    protected string $cacheCollectionPrefix = 'ARES_VOTE_COLLECTION_';
 
     /** @var string */
     protected string $entity = Vote::class;

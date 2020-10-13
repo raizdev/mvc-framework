@@ -18,10 +18,10 @@ use Ares\Room\Entity\Room;
 class RoomRepository extends BaseRepository
 {
     /** @var string */
-    protected const CACHE_PREFIX = 'ARES_ROOM_';
+    protected string $cachePrefix = 'ARES_ROOM_';
 
     /** @var string */
-    protected const CACHE_COLLECTION_PREFIX = 'ARES_ROOM_COLLECTION_';
+    protected string $cacheCollectionPrefix = 'ARES_ROOM_COLLECTION_';
 
     /** @var string */
     protected string $entity = Room::class;

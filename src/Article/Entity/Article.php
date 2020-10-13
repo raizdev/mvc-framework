@@ -9,6 +9,7 @@ namespace Ares\Article\Entity;
 
 use Ares\Framework\Entity\Entity;
 use Ares\User\Entity\User;
+use DateTime;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\OneToOne;
@@ -100,12 +101,12 @@ class Article extends Entity
     /**
      * @ORM\Column(type="datetime")
      */
-    protected \DateTime $created_at;
+    protected DateTime $created_at;
 
     /**
      * @ORM\Column(type="datetime", nullable = true)
      */
-    protected \DateTime $updated_at;
+    protected DateTime $updated_at;
 
     /**
      * Get Article id
@@ -339,17 +340,17 @@ class Article extends Entity
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getCreatedAt(): \DateTime
+    public function getCreatedAt(): DateTime
     {
         return $this->created_at;
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getUpdatedAt(): \DateTime
+    public function getUpdatedAt(): DateTime
     {
         return $this->updated_at;
     }
@@ -361,8 +362,8 @@ class Article extends Entity
      */
     public function onPrePersist(): void
     {
-        $this->created_at = new \DateTime("now");
-        $this->updated_at = new \DateTime("now");
+        $this->created_at = new DateTime("now");
+        $this->updated_at = new DateTime("now");
     }
 
     /**
@@ -372,7 +373,7 @@ class Article extends Entity
      */
     public function onPreUpdate(): void
     {
-        $this->updated_at = new \DateTime("now");
+        $this->updated_at = new DateTime("now");
     }
 
     /**
