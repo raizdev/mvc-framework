@@ -55,7 +55,7 @@ class UserController extends BaseController
     public function user(Request $request, Response $response): Response
     {
         /** @var User $user */
-        $user = $this->getUser($this->userRepository, $request);
+        $user = $this->getUser($this->userRepository, $request, false);
 
         return $this->respond(
             $response,
