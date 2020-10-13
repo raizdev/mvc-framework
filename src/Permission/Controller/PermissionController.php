@@ -36,20 +36,20 @@ class PermissionController extends BaseController
     /**
      * PermissionController constructor.
      *
-     * @param   PermissionRepository    $permissionRepository
-     * @param   DoctrineSearchCriteria  $searchCriteria
+     * @param PermissionRepository   $permissionRepository
+     * @param DoctrineSearchCriteria $searchCriteria
      */
     public function __construct(
         PermissionRepository $permissionRepository,
         DoctrineSearchCriteria $searchCriteria
     ) {
         $this->permissionRepository = $permissionRepository;
-        $this->searchCriteria       = $searchCriteria;
+        $this->searchCriteria = $searchCriteria;
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request     $request
+     * @param Response    $response
      *
      * @param             $args
      *
@@ -59,31 +59,24 @@ class PermissionController extends BaseController
      */
     public function listUserWithRank(Request $request, Response $response, $args): Response
     {
-        /** @var int $page */
-        $page = $args['page'];
-
-        /** @var int $resultPerPage */
-        $resultPerPage = $args['rpp'];
-
-        $this->searchCriteria->setPage((int) $page)
-            ->setLimit((int) $resultPerPage)
+        $this->searchCriteria
             ->addOrder('id', 'DESC');
 
-        $users    = $this->permissionRepository->paginate($this->searchCriteria);
+        $users = $this->permissionRepository->getList($this->searchCriteria, false);
         $criteria = Criteria::create()
             ->andWhere(
                 Criteria::expr()
-                    ->gt('id', '1')
+                    ->gt('id', '3')
             );
 
         return $this->respond(
             $response,
             response()
-                ->setData([
-                    'users' => $users
+                ->setData(
+                    $users
                         ->matching($criteria)
                         ->toArray()
-                ])
+                )
         );
     }
 }

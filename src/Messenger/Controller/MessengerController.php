@@ -12,6 +12,7 @@ use Ares\Framework\Model\Adapter\DoctrineSearchCriteria;
 use Ares\Messenger\Repository\MessengerRepository;
 use Ares\User\Exception\UserException;
 use Ares\User\Repository\UserRepository;
+use Doctrine\Common\Collections\Criteria;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -42,9 +43,9 @@ class MessengerController extends BaseController
     /**
      * MessengerController constructor.
      *
-     * @param   MessengerRepository     $messengerRepository
-     * @param   UserRepository          $userRepository
-     * @param   DoctrineSearchCriteria  $searchCriteria
+     * @param MessengerRepository    $messengerRepository
+     * @param UserRepository         $userRepository
+     * @param DoctrineSearchCriteria $searchCriteria
      */
     public function __construct(
         MessengerRepository $messengerRepository,
@@ -57,8 +58,8 @@ class MessengerController extends BaseController
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request     $request
+     * @param Response    $response
      *
      * @param             $args
      *
@@ -75,12 +76,17 @@ class MessengerController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        $this->searchCriteria->setPage((int) $page)
-            ->setLimit((int) $resultPerPage)
+        $this->searchCriteria->setPage((int)$page)
+            ->setLimit((int)$resultPerPage)
             ->addFilter('user', $this->getUser($this->userRepository, $request)->getId())
             ->addOrder('id', 'DESC');
 
         $friends = $this->messengerRepository->paginate($this->searchCriteria);
+
+        $criteria = Criteria::create()
+            ->orderBy([
+                'online' => Criteria::DESC
+            ]);
 
         return $this->respond(
             $response,
@@ -90,7 +96,9 @@ class MessengerController extends BaseController
                     'prevPage' => $friends->getPrevPage(),
                     'nextPage' => $friends->getNextPage()
                 ],
-                'friends' => $friends->toArray()
+                'friends' => $friends
+                    ->matching($criteria)
+                    ->toArray()
             ])
         );
     }

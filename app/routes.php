@@ -144,7 +144,7 @@ return function (App $app) {
 
             // Habbo Permissions
             $group->group('/permissions', function ($group) {
-                $group->get('/rank/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Permission\Controller\PermissionController::class . ':listUserWithRank');
+                $group->get('/staff/list', \Ares\Permission\Controller\PermissionController::class . ':listUserWithRank');
             });
 
             // Roles, Permissions

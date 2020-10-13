@@ -102,7 +102,7 @@ class RegisterService
             'mail' => $data['mail']
         ]);
 
-        if (!$checkUser || !$checkMail) {
+        if ($checkUser || $checkMail) {
             throw new RegisterException(__('register.already.exists'), 422);
         }
 
@@ -143,9 +143,10 @@ class RegisterService
     /**
      * Returns new user.
      *
-     * @param   array  $data
+     * @param array $data
      *
      * @return User
+     * @throws \Exception
      */
     private function getNewUser(array $data): User
     {
