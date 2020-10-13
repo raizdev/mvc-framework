@@ -76,17 +76,12 @@ class MessengerController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        $this->searchCriteria->setPage((int)$page)
-            ->setLimit((int)$resultPerPage)
+        $this->searchCriteria->setPage((int) $page)
+            ->setLimit((int) $resultPerPage)
             ->addFilter('user', $this->getUser($this->userRepository, $request)->getId())
             ->addOrder('id', 'DESC');
 
         $friends = $this->messengerRepository->paginate($this->searchCriteria);
-
-        $criteria = Criteria::create()
-            ->orderBy([
-                'online' => Criteria::DESC
-            ]);
 
         return $this->respond(
             $response,
@@ -96,9 +91,7 @@ class MessengerController extends BaseController
                     'prevPage' => $friends->getPrevPage(),
                     'nextPage' => $friends->getNextPage()
                 ],
-                'friends' => $friends
-                    ->matching($criteria)
-                    ->toArray()
+                'friends' => $friends->toArray()
             ])
         );
     }
