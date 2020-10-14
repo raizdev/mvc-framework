@@ -127,7 +127,7 @@ class User extends Entity
     /**
      * @ORM\Column(type="integer", length=11, nullable=true)
      */
-    private ?int $last_online;
+    private ?int $last_online = 0;
 
     /**
      * @ORM\OneToMany(targetEntity="\Ares\User\Entity\UserCurrency", mappedBy="user", fetch="EAGER")
