@@ -23,6 +23,7 @@ class ExecuteRconCommandService
      * @var RconRepository
      */
     private RconRepository $rconRepository;
+
     /**
      * @var Rcon
      */
@@ -43,6 +44,8 @@ class ExecuteRconCommandService
     }
 
     /**
+     * @TODO Add Role Based Command Execution
+     *
      * @param array $data
      *
      * @return CustomResponseInterface
@@ -59,10 +62,12 @@ class ExecuteRconCommandService
         }
 
         $executeCommand = $this->rcon
-            ->getConnection()
+            ->buildConnection()
             ->sendCommand(
                 $this->rcon->getSocket(),
-                $data['data']
+                $data['command'],
+                $data['param'] ?? null,
+                $data['value'] ?? null
             );
 
         return response()

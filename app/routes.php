@@ -171,6 +171,11 @@ return function (App $app) {
                 });
             });
 
+            $group->group('/rcon', function ($group) {
+               $group->post('/execute', \Ares\Rcon\Controller\RconController::class . ':executeCommand')
+                   ->setName('execute-rcon-command');
+            });
+
             // De-Authentication
             $group->post('/logout', \Ares\User\Controller\AuthController::class . ':logout');
         })->add(\Ares\Framework\Middleware\AuthMiddleware::class);

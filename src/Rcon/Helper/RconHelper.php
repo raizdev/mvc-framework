@@ -34,63 +34,56 @@ class RconHelper
     }
 
     /**
-     * Builds the Socket connection
+     * @param resource    $socket
      *
-     * @return RconHelper
+     * @param string      $command
+     *
+     * @param string|null $parameter
+     *
+     * @param string|null $value
+     *
+     * @return object
      * @throws RconException
      */
-    public function buildConnection(): self
+    public function sendCommand($socket, string $command, string $parameter = null, string $value = null): object
     {
-        /** @var string $host */
-        $host = $this->config->get('hotel_settings.client.rcon_host');
-        /** @var int $port */
-        $port = $this->config->get('hotel_settings.client.rcon_port');
+        /** @var string $encodedData */
+        $encodedData = json_encode([
+            'key' => $command,
+            'data' => [
+                $parameter => $value
+            ]
+        ]);
 
-        $socket = $this->createSocket(
-            AF_INET,
-            SOCK_STREAM,
-            SOL_TCP
-        );
-
-        if (!$socket) {
-            throw new RconException(__('Could not create the Socket'), 409);
-        }
-
-        $this->connectToSocket($socket, $host, $port);
-
-        return $this;
-    }
-
-    /**
-     * @param        $socket
-     * @param string $command
-     *
-     * @return false|string
-     * @throws RconException
-     */
-    public function sendCommand($socket, string $command)
-    {
-        $executor = socket_write($socket, $command, strlen($command));
+        $executor = socket_write($socket, $encodedData, strlen($encodedData));
 
         if (!$executor) {
             throw new RconException(__('Could not send the Command'));
         }
 
-        return socket_read($socket, 2048);
+        return json_decode(
+            socket_read($socket, 2048)
+        );
     }
 
     /**
-     * Creates a Socket
+     * Builds the Socket connection
      *
-     * @param $domain
-     * @param $type
-     * @param $protocol
+     * @param resource $socket
      *
-     * @return false|resource
+     * @return RconHelper
      */
-    public function createSocket($domain, $type, $protocol): bool
+    public function buildConnection($socket): self
     {
-        return socket_create($domain, $type, $protocol);
+        /** @var string $host */
+        $host = $this->config->get('hotel_settings.client.rcon_host');
+
+        /** @var int $port */
+        $port = $this->config->get('hotel_settings.client.rcon_port');
+
+        $this->connectToSocket($socket, $host, $port);
+
+        return $this;
     }
 
     /**
@@ -105,5 +98,26 @@ class RconHelper
     public function connectToSocket($socket, $host, $port): bool
     {
         return socket_connect($socket, $host, $port);
+    }
+
+    /**
+     * Creates a Socket
+     *
+     * @return resource
+     * @throws RconException
+     */
+    public function createSocket()
+    {
+        $socket = socket_create(
+            AF_INET,
+            SOCK_STREAM,
+            SOL_TCP
+        );
+
+        if (!$socket) {
+            throw new RconException(__('Could not create the Socket'), 409);
+        }
+
+        return $socket;
     }
 }

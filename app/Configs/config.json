@@ -24,7 +24,7 @@
     },
     "client": {
       "rcon_host": "127.0.0.1",
-      "rcon_port": 1337
+      "rcon_port": 3001
     },
     "news": {
       "comment_size": 10

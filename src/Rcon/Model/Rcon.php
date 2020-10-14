@@ -18,9 +18,9 @@ use Ares\Rcon\Helper\RconHelper;
 class Rcon
 {
     /**
-     * @var string
+     * @var resource
      */
-    private string $socket;
+    private $socket;
 
     /**
      * @var RconHelper
@@ -42,24 +42,18 @@ class Rcon
      * @return RconHelper
      * @throws RconException
      */
-    public function getConnection(): RconHelper
+    public function buildConnection(): RconHelper
     {
-        return $this->rconHelper->buildConnection();
+        $this->socket = $this->rconHelper->createSocket();
+
+        return $this->rconHelper->buildConnection($this->socket);
     }
 
     /**
-     * @return string
+     * @return resource
      */
-    public function getSocket(): string
+    public function getSocket()
     {
         return $this->socket;
-    }
-
-    /**
-     * @param string $socket
-     */
-    public function setSocket(string $socket): void
-    {
-        $this->socket = $socket;
     }
 }

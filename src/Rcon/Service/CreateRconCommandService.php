@@ -51,8 +51,6 @@ class CreateRconCommandService
      */
     public function execute(array $data): CustomResponseInterface
     {
-        $command = $this->getNewCommand($data);
-
         $existingCommand = $this->rconRepository->getOneBy([
             'command' => $data['command']
         ]);
@@ -60,6 +58,8 @@ class CreateRconCommandService
         if ($existingCommand) {
             throw new RconException(__('There is already an existing Command'));
         }
+
+        $command = $this->getNewCommand($data);
 
         /** @var Rcon $command */
         $command = $this->rconRepository->save($command);
