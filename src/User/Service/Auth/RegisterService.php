@@ -80,7 +80,7 @@ class RegisterService
     /**
      * Registers a new User.
      *
-     * @param   array  $data
+     * @param array $data
      *
      * @return CustomResponseInterface
      * @throws ORMException
@@ -89,6 +89,7 @@ class RegisterService
      * @throws OptimisticLockException
      * @throws PhpfastcacheSimpleCacheException
      * @throws InvalidArgumentException
+     * @throws \Exception
      */
     public function register(array $data): CustomResponseInterface
     {

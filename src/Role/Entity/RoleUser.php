@@ -23,7 +23,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @package Ares\Role\Entity
  *
- * @ORM\Table(name="ares_role_user",
+ * @ORM\Table(name="ares_roles_user",
  *     uniqueConstraints={@ORM\UniqueConstraint(name="idx_user_role_unique",
  *      columns={"user_id", "role_id"})}
  *     )

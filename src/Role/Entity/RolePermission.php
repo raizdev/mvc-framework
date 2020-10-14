@@ -16,7 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @package Ares\Role\Entity
  *
- * @ORM\Table(name="ares_role_permission",
+ * @ORM\Table(name="ares_roles_permission",
  *     uniqueConstraints={@ORM\UniqueConstraint(name="ares_role_permission_unique",
  *      columns={"role_id", "permission_id"})}
  *     )

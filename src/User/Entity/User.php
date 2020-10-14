@@ -9,10 +9,7 @@ namespace Ares\User\Entity;
 
 use Ares\Framework\Entity\Entity;
 use Ares\Permission\Entity\Permission;
-use Ares\Role\Entity\Role;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;

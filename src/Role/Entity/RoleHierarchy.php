@@ -16,7 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @package Ares\Role\Entity
  *
- * @ORM\Table(name="ares_role_hierarchy",
+ * @ORM\Table(name="ares_roles_hierarchy",
  *      uniqueConstraints={@ORM\UniqueConstraint(name="ares_role_hierarchy_unique",
  *      columns={"parent_role_id", "child_role_id"})}
  *     )
