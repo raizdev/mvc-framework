@@ -125,6 +125,11 @@ class User extends Entity
     private int $last_login;
 
     /**
+     * @ORM\Column(type="integer", length=11, nullable=true)
+     */
+    private ?int $last_online;
+
+    /**
      * @ORM\OneToMany(targetEntity="\Ares\User\Entity\UserCurrency", mappedBy="user", fetch="EAGER")
      */
     private Collection $currencies;
@@ -458,6 +463,26 @@ class User extends Entity
     }
 
     /**
+     * @return int
+     */
+    public function getLastOnline(): int
+    {
+        return $this->last_online;
+    }
+
+    /**
+     * @param int|null $last_online
+     *
+     * @return User
+     */
+    public function setLastOnline(?int $last_online): self
+    {
+        $this->last_online = $last_online;
+
+        return $this;
+    }
+
+    /**
      * @return Collection
      */
     public function getCurrencies(): Collection
@@ -552,6 +577,7 @@ class User extends Entity
             'online' => $this->getOnline(),
             'locale' => $this->getLocale(),
             'last_login' => $this->getLastLogin(),
+            'last_online' => $this->getLastOnline(),
             'roles' => $this->getRoles()->toArray(),
             'currencies' => $this->getCurrencies()->toArray(),
             'created_at' => $this->getCreatedAt(),
