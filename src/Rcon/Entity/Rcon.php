@@ -8,7 +8,9 @@
 namespace Ares\Rcon\Entity;
 
 use Ares\Framework\Entity\Entity;
+use Ares\Permission\Entity\Permission;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Tests\ORM\Functional\Ticket\Role;
 
 /**
  * Class Rcon
@@ -42,6 +44,16 @@ class Rcon extends Entity
      * @ORM\Column(type="string", length=100)
      */
     private string $description;
+
+    /**
+     * // @ORM\OneToOne(\Ares\Role\Entity\Role)
+     */
+    //private ?Role $role;
+
+    /**
+     * // @ORM\OneToOne(\Ares\Role\Entity\Permission)
+     */
+    //private ?Permission $permission;
 
     /**
      * @return int

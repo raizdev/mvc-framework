@@ -34,26 +34,27 @@ class RconHelper
     }
 
     /**
-     * @param resource    $socket
+     * @param   resource     $socket
      *
-     * @param string      $command
+     * @param   string       $command
      *
-     * @param string|null $parameter
+     * @param   string|null  $parameter
      *
-     * @param string|null $value
+     * @param   string|null  $value
      *
-     * @return object
+     * @return array
      * @throws RconException
+     * @throws \JsonException
      */
-    public function sendCommand($socket, string $command, string $parameter = null, string $value = null): object
+    public function sendCommand($socket, string $command, string $parameter = null, string $value = null): array
     {
         /** @var string $encodedData */
         $encodedData = json_encode([
-            'key' => $command,
+            'key'  => $command,
             'data' => [
                 $parameter => $value
             ]
-        ]);
+        ], JSON_THROW_ON_ERROR);
 
         $executor = socket_write($socket, $encodedData, strlen($encodedData));
 
@@ -62,16 +63,17 @@ class RconHelper
         }
 
         return json_decode(
-            socket_read($socket, 2048)
+            socket_read($socket, 2048), true, 512, JSON_THROW_ON_ERROR
         );
     }
 
     /**
      * Builds the Socket connection
      *
-     * @param resource $socket
+     * @param   resource  $socket
      *
      * @return RconHelper
+     * @throws RconException
      */
     public function buildConnection($socket): self
     {
@@ -81,7 +83,11 @@ class RconHelper
         /** @var int $port */
         $port = $this->config->get('hotel_settings.client.rcon_port');
 
-        $this->connectToSocket($socket, $host, $port);
+        $isConnectionEstablished = $this->connectToSocket($socket, $host, $port);
+
+        if (!$isConnectionEstablished) {
+            throw new RconException(__('Could not establish connection'));
+        }
 
         return $this;
     }
