@@ -32,7 +32,7 @@
         "statical/statical": "dev-master",
         "symfony/console": "^4.2",
         "tuupola/cors-middleware": "dev-master",
-        "vlucas/phpdotenv": "^5.0@dev",
+        "vlucas/phpdotenv": "^5.0@dev"
     },
     "config": {
         "sort-packages": true,
