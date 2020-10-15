@@ -23,7 +23,7 @@
       }
     },
     "client": {
-      "rcon_host": "51.195.90.178",
+      "rcon_host": "127.0.0.1",
       "rcon_port": 3001
     },
     "news": {
