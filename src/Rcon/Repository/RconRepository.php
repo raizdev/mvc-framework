@@ -18,10 +18,10 @@ use Ares\Rcon\Entity\Rcon;
 class RconRepository extends BaseRepository
 {
     /** @var string */
-    protected const CACHE_PREFIX = 'ARES_RCON_';
+    protected string $cachePrefix = 'ARES_RCON_';
 
     /** @var string */
-    protected const CACHE_COLLECTION_PREFIX = 'ARES_RCON_COLLECTION_';
+    protected string $cacheCollectionPrefix = 'ARES_RCON_COLLECTION_';
 
     /** @var string */
     protected string $entity = Rcon::class;

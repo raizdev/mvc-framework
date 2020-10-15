@@ -8,9 +8,8 @@
 namespace Ares\Rcon\Entity;
 
 use Ares\Framework\Entity\Entity;
-use Ares\Permission\Entity\Permission;
+use Ares\Role\Entity\Permission;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Tests\ORM\Functional\Ticket\Role;
 
 /**
  * Class Rcon
@@ -46,14 +45,9 @@ class Rcon extends Entity
     private string $description;
 
     /**
-     * // @ORM\OneToOne(\Ares\Role\Entity\Role)
+     * @ORM\OneToOne(targetEntity="\Ares\Role\Entity\Permission")
      */
-    //private ?Role $role;
-
-    /**
-     * // @ORM\OneToOne(\Ares\Role\Entity\Permission)
-     */
-    //private ?Permission $permission;
+    private ?Permission $permission;
 
     /**
      * @return int
@@ -136,6 +130,26 @@ class Rcon extends Entity
     }
 
     /**
+     * @return Permission|null
+     */
+    public function getPermission(): ?Permission
+    {
+        return $this->permission;
+    }
+
+    /**
+     * @param Permission|null $permission
+     *
+     * @return Rcon
+     */
+    public function setPermission(?Permission $permission): self
+    {
+        $this->permission = $permission;
+
+        return $this;
+    }
+
+    /**
      * @return array
      */
     public function jsonSerialize(): array
@@ -144,7 +158,8 @@ class Rcon extends Entity
             'id' => $this->getId(),
             'command' => $this->getCommand(),
             'title' => $this->getTitle(),
-            'description' => $this->getDescription()
+            'description' => $this->getDescription(),
+            'permission' => $this->getPermission()->getName()
         ];
     }
 
