@@ -5,6 +5,7 @@
  * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
  */
 
+use Illuminate\Database\Capsule\Manager as Capsule;
 use Slim\App;
 
 require __DIR__ . '/../vendor/autoload.php';
@@ -65,5 +66,20 @@ if ($_ENV['API_DEBUG'] == "production") {
 
     $routeCollector->setCacheFile(route_cache_dir() . '/route.cache.php');
 }
+
+$capsule = new Capsule;
+
+$capsule->addConnection([
+    'driver'    => 'mysql',
+    'host'      => $_ENV['DB_HOST'].':'.$_ENV['DB_PORT'],
+    'database'  => $_ENV['DB_NAME'],
+    'username'  => $_ENV['DB_USER'],
+    'password'  => $_ENV['DB_PASSWORD'],
+    'charset'   => 'utf8',
+    'collation' => 'utf8_unicode_ci',
+    'prefix'    => '',
+]);
+
+$capsule->setAsGlobal();
 
 return $app;

@@ -10,19 +10,19 @@ namespace Ares\User\Controller;
 use Ares\Ban\Exception\BanException;
 use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\ValidationException;
+use Ares\Framework\Factory\DataObjectManagerFactory;
+use Ares\Framework\Factory\SearchBuilderFactory;
+use Ares\Framework\Model\Query\DataObjectManager;
+use Ares\User\Entity\Contract\UserInterface;
 use Ares\User\Entity\User;
 use Ares\User\Exception\LoginException;
 use Ares\User\Exception\RegisterException;
 use Ares\User\Exception\UserException;
 use Ares\User\Repository\UserRepository;
-use Ares\Framework\Service\ValidationService;
-use Ares\User\Service\Auth\LoginService;
-use Ares\User\Service\Auth\RegisterService;
 use Ares\User\Service\Auth\TicketService;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Exception;
-use PHLAK\Config\Config;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -36,67 +36,90 @@ use ReallySimpleJWT\Exception\ValidateException;
  */
 class AuthController extends BaseController
 {
-    /**
-     * @var ValidationService
-     */
-    private ValidationService $validationService;
-
-    /**
-     * @var LoginService
-     */
-    private LoginService $loginService;
-
-    /**
-     * @var RegisterService
-     */
-    private RegisterService $registerService;
-
+//    /**
+//     * @var ValidationService
+//     */
+//    private ValidationService $validationService;
+//
+//    /**
+//     * @var LoginService
+//     */
+//    private LoginService $loginService;
+//
+//    /**
+//     * @var RegisterService
+//     */
+//    private RegisterService $registerService;
+//
+//    /**
+//     * @var UserRepository
+//     */
+//    private UserRepository $userRepository;
+//
+//    /**
+//     * @var TicketService
+//     */
+//    private TicketService $ticketService;
+//
+//    /**
+//     * @var Config
+//     */
+//    private Config $config;
+//
+//    /**
+//     * AuthController constructor.
+//     *
+//     * @param   ValidationService  $validationService
+//     * @param   LoginService       $loginService
+//     * @param   RegisterService    $registerService
+//     * @param   UserRepository     $userRepository
+//     * @param   TicketService      $ticketService
+//     * @param   Config             $config
+//     */
+//    public function __construct(
+//        ValidationService $validationService,
+//        LoginService $loginService,
+//        RegisterService $registerService,
+//        UserRepository $userRepository,
+//        TicketService $ticketService,
+//        Config $config
+//    ) {
+//        $this->validationService = $validationService;
+//        $this->loginService      = $loginService;
+//        $this->registerService   = $registerService;
+//        $this->userRepository    = $userRepository;
+//        $this->ticketService     = $ticketService;
+//        $this->config            = $config;
+//    }
     /**
      * @var UserRepository
      */
     private UserRepository $userRepository;
 
     /**
-     * @var TicketService
+     * @var DataObjectManagerFactory
      */
-    private TicketService $ticketService;
-
-    /**
-     * @var Config
-     */
-    private Config $config;
+    private DataObjectManagerFactory $dataObjectManagerFactory;
 
     /**
      * AuthController constructor.
      *
-     * @param   ValidationService  $validationService
-     * @param   LoginService       $loginService
-     * @param   RegisterService    $registerService
-     * @param   UserRepository     $userRepository
-     * @param   TicketService      $ticketService
-     * @param   Config             $config
+     * @param UserRepository $userRepository
+     * @param DataObjectManagerFactory $dataObjectManagerFactory
      */
     public function __construct(
-        ValidationService $validationService,
-        LoginService $loginService,
-        RegisterService $registerService,
         UserRepository $userRepository,
-        TicketService $ticketService,
-        Config $config
+        DataObjectManagerFactory $dataObjectManagerFactory
     ) {
-        $this->validationService = $validationService;
-        $this->loginService      = $loginService;
-        $this->registerService   = $registerService;
-        $this->userRepository    = $userRepository;
-        $this->ticketService     = $ticketService;
-        $this->config            = $config;
+        $this->userRepository = $userRepository;
+        $this->dataObjectManagerFactory = $dataObjectManagerFactory;
     }
 
     /**
      * Logs the User in and parses a generated Token into response
      *
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request $request
+     * @param Response $response
      *
      * @return Response Returns a Response with the given Data
      * @throws BanException
@@ -107,16 +130,30 @@ class AuthController extends BaseController
      * @throws PhpfastcacheSimpleCacheException
      * @throws ValidateException
      * @throws ValidationException
+     * @throws \Ares\Framework\Exception\DataObjectManagerException
      */
     public function login(Request $request, Response $response): Response
     {
         /** @var array $parsedData */
         $parsedData = $request->getParsedBody();
 
-        $this->validationService->validate($parsedData, [
-            'username' => 'required',
-            'password' => 'required'
-        ]);
+//        $this->validationService->validate($parsedData, [
+//            'username' => 'required',
+//            'password' => 'required'
+//        ]);
+
+        $dataObjectManager = $this->dataObjectManagerFactory->create(User::class);
+
+        $dataObjectManager
+            ->where(UserInterface::COLUMN_USERNAME, 'like', 'D%')
+            ->where('id', 2);
+
+        $result = $this->userRepository->getList($dataObjectManager);
+
+        return $this->respond(
+            $response,
+            response()->setData($result)
+        );
 
         $parsedData['ip_current'] = $this->determineIp();
         $customResponse = $this->loginService->login($parsedData);

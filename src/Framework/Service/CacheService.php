@@ -7,9 +7,8 @@
 
 namespace Ares\Framework\Service;
 
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
+use Ares\Framework\Exception\CacheException;
 use Phpfastcache\Helper\Psr16Adapter as FastCache;
-use Psr\Cache\InvalidArgumentException;
 
 /**
  * Class CacheService
@@ -35,151 +34,229 @@ class CacheService
     }
 
     /**
-     * @param   string  $key
+     * @param string $key
      *
      * @return bool
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws CacheException
      */
     public function has(string $key): bool
     {
-        if (!$this->isCacheEnabled()) {
-            return false;
-        }
+        try {
+            if (!$this->isCacheEnabled()) {
+                return false;
+            }
 
-        return $this->fastCache->has($key);
+            return $this->fastCache->has($key);
+        } catch (\Exception $exception) {
+            throw new CacheException(
+                $exception->getMessage(),
+                $exception->getCode(),
+                $exception
+            );
+        }
     }
 
     /**
-     * @param   string  $key
+     * @param string $key
      *
      * @return  mixed
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws InvalidArgumentException
+     * @throws CacheException
      */
     public function get(string $key)
     {
-        if (!$this->has($key) || !$this->isCacheEnabled()) {
-            return null;
-        }
+        try {
+            if (!$this->has($key) || !$this->isCacheEnabled()) {
+                return null;
+            }
 
-        return $this->fastCache->get($key);
+            return $this->fastCache->get($key);
+        } catch (\Exception $exception) {
+            throw new CacheException(
+                $exception->getMessage(),
+                $exception->getCode(),
+                $exception
+            );
+        }
     }
 
     /**
-     * @param   array  $keys
+     * @param array $keys
      *
      * @return string
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws InvalidArgumentException
+     * @throws CacheException
      */
     public function getMultiple(array $keys): string
     {
-        return $this->fastCache->getMultiple($keys);
+        try {
+            return $this->fastCache->getMultiple($keys);
+        } catch (\Exception $exception) {
+            throw new CacheException(
+                $exception->getMessage(),
+                $exception->getCode(),
+                $exception
+            );
+        }
     }
 
     /**
-     * @param   string  $key
-     * @param           $value
-     * @param   int     $ttl
+     * @param string $key
+     * @param mixed $value
+     * @param int $ttl
      *
      * @return bool
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws InvalidArgumentException
+     * @throws CacheException
      */
     public function set(string $key, $value, int $ttl = 0): bool
     {
-        if (!$this->isCacheEnabled()) {
-            return false;
-        }
+        try {
+            if (!$this->isCacheEnabled()) {
+                return false;
+            }
 
-        return $this->fastCache->set($key, $value, $this->getTTL($ttl));
+            return $this->fastCache->set($key, $value, $this->getTTL($ttl));
+        } catch (\Exception $exception) {
+            throw new CacheException(
+                $exception->getMessage(),
+                $exception->getCode(),
+                $exception
+            );
+        }
     }
 
     /**
-     * @param   array  $values
-     * @param   int    $ttl
+     * @param array $values
+     * @param int $ttl
      *
      * @return bool
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws CacheException
      */
     public function setMultiple(array $values, int $ttl = 0): bool
     {
-        if (!$this->isCacheEnabled()) {
-            return false;
-        }
+        try {
+            if (!$this->isCacheEnabled()) {
+                return false;
+            }
 
-        return $this->fastCache->setMultiple($values, $this->getTTL($ttl));
+            return $this->fastCache->setMultiple($values, $this->getTTL($ttl));
+        } catch (\Exception $exception) {
+            throw new CacheException(
+                $exception->getMessage(),
+                $exception->getCode(),
+                $exception
+            );
+        }
     }
 
     /**
-     * @param   string  $key
+     * @param string $key
      *
      * @return bool
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws CacheException
      */
     public function delete(string $key): bool
     {
-        if (!$this->isCacheEnabled()) {
-            return false;
-        }
+        try {
+            if (!$this->isCacheEnabled()) {
+                return false;
+            }
 
-        return $this->fastCache->delete($key);
+            return $this->fastCache->delete($key);
+        } catch (\Exception $exception) {
+            throw new CacheException(
+                $exception->getMessage(),
+                $exception->getCode(),
+                $exception
+            );
+        }
     }
 
     /**
-     * @param   array  $keys
+     * @param array $keys
      *
      * @return bool
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws InvalidArgumentException
+     * @throws CacheException
      */
     public function deleteMultiple(array $keys): bool
     {
-        if (!$this->isCacheEnabled()) {
-            return false;
-        }
+        try {
+            if (!$this->isCacheEnabled()) {
+                return false;
+            }
 
-        return $this->fastCache->deleteMultiple($keys);
+            return $this->fastCache->deleteMultiple($keys);
+        } catch (\Exception $exception) {
+            throw new CacheException(
+                $exception->getMessage(),
+                $exception->getCode(),
+                $exception
+            );
+        }
     }
 
     /**
      * @return bool
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws CacheException
      */
     public function clear(): bool
     {
-        if (!$this->isCacheEnabled()) {
-            return false;
-        }
+        try {
+            if (!$this->isCacheEnabled()) {
+                return false;
+            }
 
-        return $this->fastCache->clear();
+            return $this->fastCache->clear();
+        } catch (\Exception $exception) {
+            throw new CacheException(
+                $exception->getMessage(),
+                $exception->getCode(),
+                $exception
+            );
+        }
     }
 
     /**
-     * @param   int  $ttl
+     * @param int $ttl
      *
      * @return int|mixed
+     * @throws CacheException
      */
     private function getTTL(int $ttl)
     {
-        if (!$ttl) {
-            $ttl = $_ENV['CACHE_TTL'];
-        }
+        try {
+            if (!$ttl) {
+                $ttl = $_ENV['CACHE_TTL'];
+            }
 
-        return $ttl;
+            return $ttl;
+        } catch (\Exception $exception) {
+            throw new CacheException(
+                $exception->getMessage(),
+                $exception->getCode(),
+                $exception
+            );
+        }
     }
 
     /**
      * Check whether Caching is Enabled or not
      *
      * @return bool
+     * @throws CacheException
      */
     private function isCacheEnabled(): bool
     {
-        if (!$_ENV['CACHE_ENABLED']) {
-            return false;
-        }
+        try {
+            if (!$_ENV['CACHE_ENABLED']) {
+                return false;
+            }
 
-        return true;
+            return true;
+        } catch (\Exception $exception) {
+            throw new CacheException(
+                $exception->getMessage(),
+                $exception->getCode(),
+                $exception
+            );
+        }
     }
 }

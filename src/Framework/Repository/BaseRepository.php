@@ -7,25 +7,29 @@
 
 namespace Ares\Framework\Repository;
 
-use Ares\Framework\Interfaces\SearchCriteriaInterface;
+use Ares\Framework\Exception\CacheException;
+use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Factory\DataObjectManagerFactory;
+use Ares\Framework\Model\DataObject;
+use Ares\Framework\Model\Query\DataObjectManager;
 use Ares\Framework\Service\CacheService;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
-use Jhg\DoctrinePagination\Collection\PaginatedArrayCollection;
-use Jhg\DoctrinePagination\ORM\PaginatedRepository;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
+use Illuminate\Support\Collection;
 
 /**
  * Class BaseRepository
  *
  * @package Ares\Framework\Repository
  */
-abstract class BaseRepository extends PaginatedRepository
+abstract class BaseRepository
 {
+    /** @var string */
+    private const COLUMN_ID = 'id';
+
+    /**
+     * @var string
+     */
+    protected string $entity;
+
     /**
      * @var string
      */
@@ -37,9 +41,9 @@ abstract class BaseRepository extends PaginatedRepository
     protected string $cacheCollectionPrefix;
 
     /**
-     * @var string
+     * @var DataObjectManagerFactory
      */
-    protected string $entity;
+    private DataObjectManagerFactory $dataObjectManagerFactory;
 
     /**
      * @var CacheService
@@ -49,37 +53,35 @@ abstract class BaseRepository extends PaginatedRepository
     /**
      * BaseRepository constructor.
      *
-     * @param   EntityManager  $em
-     * @param   CacheService   $cacheService
+     * @param DataObjectManagerFactory $dataObjectManagerFactory
+     * @param CacheService $cacheService
      */
     public function __construct(
-        EntityManager $em,
+        DataObjectManagerFactory $dataObjectManagerFactory,
         CacheService $cacheService
     ) {
-        parent::__construct($em, new ClassMetadata($this->entity));
+        $this->dataObjectManagerFactory = $dataObjectManagerFactory;
         $this->cacheService = $cacheService;
     }
 
     /**
-     * Get object by id.
+     * Get dataobject by id.
      *
-     * @param   int   $id
-     *
-     * @param   bool  $cachedEntity
-     *
-     * @return Object|null
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws InvalidArgumentException
+     * @param int $id
+     * @param string $column
+     * @return DataObject|null
+     * @throws CacheException
      */
-    public function get(int $id, bool $cachedEntity = true): ?object
+    public function get(int $id, string $column = self::COLUMN_ID): DataObject
     {
         $entity = $this->cacheService->get($this->cachePrefix . $id);
 
-        if ($entity && $cachedEntity) {
+        if ($entity) {
             return unserialize($entity);
         }
 
-        $entity = $this->find($id);
+        $dataObjectManager = $this->dataObjectManagerFactory->create($this->entity);
+        $entity = $dataObjectManager->where($column, $id)->first();
 
         $this->cacheService->set($this->cachePrefix . $id, serialize($entity));
 
@@ -87,78 +89,23 @@ abstract class BaseRepository extends PaginatedRepository
     }
 
     /**
-     * @param   object  $model
+     * Get list of data objects by build search.
      *
-     * @return object
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws InvalidArgumentException
+     * @param DataObjectManager $dataObjectManager
+     * @return Collection
+     * @throws CacheException
      */
-    public function save(object $model): object
+    public function getList(DataObjectManager $dataObjectManager): Collection
     {
-        $this->getEntityManager()->persist($model);
-        $this->getEntityManager()->flush();
-
-        $this->cacheService->set($this->cacheCollectionPrefix . $model->getId(), serialize($model));
-
-        return $model;
-    }
-
-    /**
-     * @param      $criteria
-     * @param null $orderBy
-     *
-     * @return Object|null
-     */
-    public function getOneBy($criteria, $orderBy = null): ?object
-    {
-        return $this->findOneBy($criteria, $orderBy);
-    }
-
-    /**
-     * @param   object  $model
-     *
-     * @return Object
-     * @throws ORMException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws OptimisticLockException
-     * @throws InvalidArgumentException
-     */
-    public function update(object $model): object
-    {
-        $this->getEntityManager()->flush();
-
-        $this->cacheService->set($this->cachePrefix . $model->getId(), serialize($model));
-
-        return $model;
-    }
-
-    /**
-     * @param SearchCriteriaInterface $searchCriteria
-     *
-     * @param bool                    $cachedEntity
-     *
-     * @return ArrayCollection
-     * @throws InvalidArgumentException
-     * @throws PhpfastcacheSimpleCacheException
-     */
-    public function getList(SearchCriteriaInterface $searchCriteria, bool $cachedEntity = true): ArrayCollection
-    {
-        $cacheKey = $searchCriteria->getCacheKey();
+        $cacheKey = $this->getCacheKey($dataObjectManager);
 
         $collection = $this->cacheService->get($this->cacheCollectionPrefix . $cacheKey);
 
-        if ($collection && $cachedEntity) {
+        if ($collection) {
             return unserialize($collection);
         }
 
-        $collection = $this->findBy(
-            $searchCriteria->getFilters(),
-            $searchCriteria->getOrders(),
-            $searchCriteria->getLimit(),
-            $searchCriteria->getOffset()
-        );
+        $collection = $dataObjectManager->get();
 
         $this->cacheService->set($this->cacheCollectionPrefix . $cacheKey, serialize($collection));
 
@@ -166,60 +113,74 @@ abstract class BaseRepository extends PaginatedRepository
     }
 
     /**
-     * Delete object by id.
+     * Saves or updates given entity.
      *
-     * @param   int  $id
+     * @param DataObject $entity
+     * @return DataObject
+     * @throws DataObjectManagerException
+     */
+    public function save(DataObject $entity): DataObject
+    {
+        $dataObjectManager = $this->dataObjectManagerFactory->create($this->entity);
+
+        $id = $entity->getData(self::COLUMN_ID);
+
+        try {
+            if ($id) {
+                $dataObjectManager
+                    ->where(self::COLUMN_ID, $id)
+                    ->update($entity->getData());
+
+                return $entity;
+            }
+
+            $dataObjectManager->insert($entity->getData());
+
+            return $entity;
+        } catch (\Exception $exception) {
+            throw new DataObjectManagerException(
+                $exception->getMessage(),
+                500,
+                $exception
+            );
+        }
+    }
+
+    /**
+     * Delete by id.
      *
+     * @param int $id
      * @return bool
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws InvalidArgumentException
+     * @throws DataObjectManagerException
      */
     public function delete(int $id): bool
     {
-        $model = $this->get($id, false);
+        $dataObjectManager = $this->dataObjectManagerFactory->create($this->entity);
 
-        if (!$model) {
-            return false;
+        try {
+            return (bool) $dataObjectManager->delete($id);
+        } catch (\Exception $exception) {
+            throw new DataObjectManagerException(
+                $exception->getMessage(),
+                500,
+                $exception
+            );
         }
-
-        $this->getEntityManager()->remove($model);
-        $this->getEntityManager()->flush();
-
-        $this->cacheService->delete($this->cachePrefix . $id);
-
-        return true;
     }
 
     /**
-     * @param   SearchCriteriaInterface  $searchCriteria
+     * Generates cache key.
      *
-     * @param   bool                     $cachedEntity
-     *
-     * @return PaginatedArrayCollection
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws InvalidArgumentException
+     * @param DataObjectManager $dataObjectManager
+     * @return string
      */
-    public function paginate(SearchCriteriaInterface $searchCriteria, bool $cachedEntity = true): PaginatedArrayCollection
+    private function getCacheKey(DataObjectManager $dataObjectManager): string
     {
-        $cacheKey = $searchCriteria->getCacheKey();
+        $sql = $dataObjectManager->toSql();
+        $bindings = $dataObjectManager->getBindings();
 
-        $collection = $this->cacheService->get($this->cacheCollectionPrefix . $cacheKey);
+        $query = 'TODO: Add cache key with sql and bindings as best practice.';
 
-        if ($collection && $cachedEntity) {
-            return unserialize($collection);
-        }
-
-        $collection = $this->findPageBy(
-            $searchCriteria->getPage(),
-            $searchCriteria->getLimit(),
-            $searchCriteria->getFilters(),
-            $searchCriteria->getOrders()
-        );
-
-        $this->cacheService->set($this->cacheCollectionPrefix . $cacheKey, serialize($collection));
-
-        return $collection;
+        return hash('tiger192,3', $query);
     }
 }

@@ -17,10 +17,6 @@ return [
     $container->addServiceProvider(
         new \Ares\Framework\Provider\ConfigServiceProvider()
     ),
-    // Adds our DatabaseProvider
-    $container->addServiceProvider(
-        new \Ares\Framework\Provider\DatabaseServiceProvider()
-    ),
     // Adds our LoggingProvider
     $container->addServiceProvider(
         new \Ares\Framework\Provider\LoggingServiceProvider()
