@@ -14,6 +14,9 @@ namespace Ares\Framework\Model;
  */
 class DataObject
 {
+    /** @var array */
+    public const HIDDEN = [];
+
     /**
      * DataObject constructor.
      *

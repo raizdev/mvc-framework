@@ -10,6 +10,7 @@ namespace Ares\Framework\Model\Query;
 use Ares\Framework\Model\DataObject;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
+use ReflectionClass;
 
 /**
  * Class DataObjectManager
@@ -33,7 +34,10 @@ class DataObjectManager extends Builder
     {
         $items = [];
 
-        foreach (parent::get($columns) as $item) {
+        foreach (parent::get($this->getColumns($columns)) as $item) {
+            foreach ($this->entity::HIDDEN as $column) {
+                unset($item->$column);
+            }
             $items[] = new $this->entity($item);
         }
 
@@ -79,5 +83,32 @@ class DataObjectManager extends Builder
     public function setEntity(string $entity): void
     {
         $this->entity = $entity;
+    }
+
+    /**
+     * Returns selectable columns.
+     *
+     * @param array $columns
+     * @return array
+     */
+    private function getColumns(array $columns): array
+    {
+        if ($columns !== ['*']) {
+            return $columns;
+        }
+
+        if ($this->columns) {
+            return $this->columns;
+        }
+
+        try {
+            $reflectionClass = new ReflectionClass($this->entity);
+            $constants = $reflectionClass->getConstants();
+            unset($constants['TABLE'], $constants['HIDDEN']);
+
+            return array_values($constants);
+        } catch (\ReflectionException $e) {
+            return $columns;
+        }
     }
 }

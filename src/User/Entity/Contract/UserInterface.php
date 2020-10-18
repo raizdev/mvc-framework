@@ -15,10 +15,6 @@ namespace Ares\User\Entity\Contract;
 interface UserInterface
 {
     public const COLUMN_ID = 'id';
-
-    public const ROLES = 'roles';
-    public const PERMISSIONS = 'permissions';
-
     public const COLUMN_USERNAME = 'username';
     public const COLUMN_PASSWORD = 'password';
     public const COLUMN_MAIL = 'mail';

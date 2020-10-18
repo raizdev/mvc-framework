@@ -131,6 +131,7 @@ class AuthController extends BaseController
      * @throws ValidateException
      * @throws ValidationException
      * @throws \Ares\Framework\Exception\DataObjectManagerException
+     * @throws \Ares\Framework\Exception\CacheException
      */
     public function login(Request $request, Response $response): Response
     {
@@ -143,12 +144,11 @@ class AuthController extends BaseController
 //        ]);
 
         $dataObjectManager = $this->dataObjectManagerFactory->create(User::class);
+//        $result = $dataObjectManager->paginate();
 
-        $dataObjectManager
-            ->where(UserInterface::COLUMN_USERNAME, 'like', 'D%')
-            ->where('id', 2);
-
-        $result = $this->userRepository->getList($dataObjectManager);
+        /** @var User $result */
+        $result = $this->userRepository->get(96);
+        $result->getRoles();
 
         return $this->respond(
             $response,

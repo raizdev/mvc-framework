@@ -9,8 +9,9 @@ namespace Ares\User\Entity;
 
 use Ares\Framework\Model\DataObject;
 use Ares\Permission\Entity\Permission;
+use Ares\Role\Repository\RoleRepository;
 use Ares\User\Entity\Contract\UserInterface;
-use Doctrine\Common\Collections\Collection;
+use Illuminate\Support\Collection;
 
 /**
  * Class User
@@ -21,6 +22,11 @@ class User extends DataObject implements UserInterface
 {
     /** @var string */
     public const TABLE = 'users';
+
+    /** @var array */
+    public const HIDDEN = [
+        UserInterface::COLUMN_PASSWORD
+    ];
 
     /**
      * @return int
@@ -38,6 +44,56 @@ class User extends DataObject implements UserInterface
     public function setId(int $id): User
     {
         return $this->setData(UserInterface::COLUMN_ID, $id);
+    }
+
+    /**
+     * @return Collection|null
+     */
+    public function getRoles(): ?Collection
+    {
+        $roles = $this->getData('roles');
+
+        if ($roles) {
+            return $roles;
+        }
+
+        $roleRepository = repository(RoleRepository::class);
+        $dataObjectManager = $roleRepository->getDataObjectManager();
+
+        $roles = $dataObjectManager
+            ->select(['ares_roles.*'])
+            ->join(
+                'ares_roles_user',
+                'ares_roles.id',
+                '=',
+                'ares_roles_user.role_id'
+            )
+            ->join(
+                'users',
+                'users.id',
+                '=',
+                'ares_roles_user.user_id'
+            )
+            ->where('users.id', $this->getId())
+            ->get();
+
+        if (!$roles->toArray()) {
+            return null;
+        }
+
+        $this->setRoles($roles);
+
+        return $roles;
+    }
+
+    /**
+     * @param Collection $roles
+     *
+     * @return User
+     */
+    public function setRoles(Collection $roles): User
+    {
+        return $this->setData('roles', $roles);
     }
 
     /**
@@ -344,24 +400,6 @@ class User extends DataObject implements UserInterface
     public function setLastOnline(?int $last_online): User
     {
         return $this->setData(UserInterface::COLUMN_LAST_ONLINE, $last_online);
-    }
-
-    /**
-     * @return Collection
-     */
-    public function getCurrencies(): Collection
-    {
-        return $this->getData(UserInterface::COLUMN_CREDITS);
-    }
-
-    /**
-     * @param Collection $currencies
-     *
-     * @return User
-     */
-    public function setCurrencies(Collection $currencies): User
-    {
-        return $this->setData(UserInterface::COLUMN_CREDITS, $currencies);
     }
 
     /**

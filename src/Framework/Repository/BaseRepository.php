@@ -13,6 +13,7 @@ use Ares\Framework\Factory\DataObjectManagerFactory;
 use Ares\Framework\Model\DataObject;
 use Ares\Framework\Model\Query\DataObjectManager;
 use Ares\Framework\Service\CacheService;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
 /**
@@ -43,7 +44,7 @@ abstract class BaseRepository
     /**
      * @var DataObjectManagerFactory
      */
-    private DataObjectManagerFactory $dataObjectManagerFactory;
+    protected DataObjectManagerFactory $dataObjectManagerFactory;
 
     /**
      * @var CacheService
@@ -113,6 +114,15 @@ abstract class BaseRepository
     }
 
     /**
+     * @param DataObjectManager $dataObjectManager
+     * @return LengthAwarePaginator
+     */
+    public function getPaginatedList(DataObjectManager $dataObjectManager): LengthAwarePaginator
+    {
+        return $dataObjectManager->paginate();
+    }
+
+    /**
      * Saves or updates given entity.
      *
      * @param DataObject $entity
@@ -175,7 +185,7 @@ abstract class BaseRepository
      *
      * @return string
      */
-    private function getCacheKey(DataObjectManager $dataObjectManager): string
+    protected function getCacheKey(DataObjectManager $dataObjectManager): string
     {
         $sql = $dataObjectManager->toSql();
         $bindings = $dataObjectManager->getBindings();
@@ -183,5 +193,15 @@ abstract class BaseRepository
         $cacheKey = vsprintf(str_replace("?", "%s", $sql), $bindings);
 
         return hash('tiger192,3', $cacheKey);
+    }
+
+    /**
+     * Returns data object manager.
+     *
+     * @return DataObjectManager
+     */
+    public function getDataObjectManager(): DataObjectManager
+    {
+        return $this->dataObjectManagerFactory->create($this->entity);
     }
 }
