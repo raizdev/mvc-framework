@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Ares (https://ares.to)
  *
@@ -7,54 +7,25 @@
 
 namespace Ares\Rcon\Entity;
 
-use Ares\Framework\Entity\Entity;
-use Ares\Role\Entity\Permission;
-use Doctrine\ORM\Mapping as ORM;
+use Ares\Framework\Model\DataObject;
+use Ares\Rcon\Entity\Contract\RconInterface;
 
 /**
  * Class Rcon
  *
  * @package Ares\Rcon\Entity
- *
- * @ORM\Entity
- * @ORM\Table(name="ares_rcon_commands")
- * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
  */
-class Rcon extends Entity
+class Rcon extends DataObject implements RconInterface
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private int $id;
-
-    /**
-     * @ORM\Column(type="string", length=100)
-     */
-    private string $command;
-
-    /**
-     * @ORM\Column(type="string", length=100)
-     */
-    private string $title;
-
-    /**
-     * @ORM\Column(type="string", length=100)
-     */
-    private string $description;
-
-    /**
-     * @ORM\OneToOne(targetEntity="\Ares\Role\Entity\Permission")
-     */
-    private ?Permission $permission;
+    /** @var string */
+    public const TABLE = 'ares_rcon_commands';
 
     /**
      * @return int
      */
     public function getId(): int
     {
-        return $this->id;
+        return $this->getData(RconInterface::COLUMN_ID);
     }
 
     /**
@@ -62,11 +33,9 @@ class Rcon extends Entity
      *
      * @return Rcon
      */
-    public function setId(int $id): self
+    public function setId(int $id): Rcon
     {
-        $this->id = $id;
-
-        return $this;
+        return $this->setData(RconInterface::COLUMN_ID, $id);
     }
 
     /**
@@ -74,7 +43,7 @@ class Rcon extends Entity
      */
     public function getCommand(): string
     {
-        return $this->command;
+        return $this->getData(RconInterface::COLUMN_COMMAND);
     }
 
     /**
@@ -82,11 +51,9 @@ class Rcon extends Entity
      *
      * @return Rcon
      */
-    public function setCommand(string $command): self
+    public function setCommand(string $command): Rcon
     {
-        $this->command = $command;
-
-        return $this;
+        return $this->setData(RconInterface::COLUMN_COMMAND, $command);
     }
 
     /**
@@ -94,7 +61,7 @@ class Rcon extends Entity
      */
     public function getTitle(): string
     {
-        return $this->title;
+        return $this->getData(RconInterface::COLUMN_TITLE);
     }
 
     /**
@@ -102,11 +69,9 @@ class Rcon extends Entity
      *
      * @return Rcon
      */
-    public function setTitle(string $title): self
+    public function setTitle(string $title): Rcon
     {
-        $this->title = $title;
-
-        return $this;
+        return $this->setData(RconInterface::COLUMN_TITLE, $title);
     }
 
     /**
@@ -114,7 +79,7 @@ class Rcon extends Entity
      */
     public function getDescription(): string
     {
-        return $this->description;
+        return $this->getData(RconInterface::COLUMN_DESCRIPTION);
     }
 
     /**
@@ -122,64 +87,26 @@ class Rcon extends Entity
      *
      * @return Rcon
      */
-    public function setDescription(string $description): self
+    public function setDescription(string $description): Rcon
     {
-        $this->description = $description;
-
-        return $this;
+        return $this->setData(RconInterface::COLUMN_DESCRIPTION, $description);
     }
 
     /**
-     * @return Permission|null
+     * @return int
      */
-    public function getPermission(): ?Permission
+    public function getPermissionId(): int
     {
-        return $this->permission;
+        return $this->getData(RconInterface::COLUMN_PERMISSION_ID);
     }
 
     /**
-     * @param Permission|null $permission
+     * @param int $permission_id
      *
      * @return Rcon
      */
-    public function setPermission(?Permission $permission): self
+    public function setPermissionId(int $permission_id): Rcon
     {
-        $this->permission = $permission;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function jsonSerialize(): array
-    {
-        return [
-            'id' => $this->getId(),
-            'command' => $this->getCommand(),
-            'title' => $this->getTitle(),
-            'description' => $this->getDescription(),
-            'permission' => $this->getPermission()->getName()
-        ];
-    }
-
-    /**
-     * @return string
-     */
-    public function serialize(): string
-    {
-        return serialize(get_object_vars($this));
-    }
-
-    /**
-     * @param string $data
-     */
-    public function unserialize($data): void
-    {
-        $values = unserialize($data);
-
-        foreach ($values as $key => $value) {
-            $this->$key = $value;
-        }
+        return $this->setData(RconInterface::COLUMN_PERMISSION_ID, $permission_id);
     }
 }

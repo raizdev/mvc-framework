@@ -65,7 +65,7 @@ abstract class BaseRepository
     }
 
     /**
-     * Get dataobject by id.
+     * Get DataObject by id.
      *
      * @param int $id
      * @param string $column

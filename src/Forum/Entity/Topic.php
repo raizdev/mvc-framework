@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Ares (https://ares.to)
  *
@@ -7,96 +7,35 @@
 
 namespace Ares\Forum\Entity;
 
-use Ares\Framework\Entity\Entity;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
+use Ares\Forum\Entity\Contract\TopicInterface;
+use Ares\Framework\Model\DataObject;
 
 /**
  * Class Topic
  *
  * @package Ares\Forum\Entity
- *
- * @ORM\Entity
- * @ORM\Table(name="ares_forum_topics", uniqueConstraints={@ORM\UniqueConstraint(name="title", columns={"title"})}))
- * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
- * @ORM\HasLifecycleCallbacks
  */
-class Topic extends Entity
+class Topic extends DataObject implements TopicInterface
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private int $id;
-
-    /**
-     * @ORM\OneToMany(targetEntity="\Ares\Forum\Entity\Thread", mappedBy="topic", fetch="EAGER")
-     */
-    private ?Collection $threads;
-
-    /**
-     * @ORM\Column(type="string", length=100)
-     */
-    private string $title;
-
-    /**
-     * @ORM\Column(type="string", length=100)
-     */
-    private string $slug;
-
-    /**
-     * @ORM\Column(type="string", length=150)
-     */
-    private string $description;
-
-    /**
-     * @ORM\Column(type="datetime", nullable = true)
-     */
-    private \DateTime $created_at;
-
-    /**
-     * @ORM\Column(type="datetime", nullable = true)
-     */
-    private \DateTime $updated_at;
+    /** @var string */
+    public const TABLE = 'ares_forum_topics';
 
     /**
      * @return int
      */
     public function getId(): int
     {
-        return $this->id;
+        return $this->getData(TopicInterface::COLUMN_ID);
     }
 
     /**
-     * @param   int  $id
+     * @param int $id
      *
      * @return Topic
      */
-    public function setId(int $id): self
+    public function setId(int $id): Topic
     {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|null
-     */
-    public function getThreads(): ?Collection
-    {
-        return $this->threads;
-    }
-
-    /**
-     * @param Collection|null $threads
-     * @return Topic
-     */
-    public function setThreads(?Collection $threads): self
-    {
-        $this->threads = $threads;
-
-        return $this;
+        return $this->setData(TopicInterface::COLUMN_ID, $id);
     }
 
     /**
@@ -104,19 +43,17 @@ class Topic extends Entity
      */
     public function getTitle(): string
     {
-        return $this->title;
+        return $this->getData(TopicInterface::COLUMN_TITLE);
     }
 
     /**
-     * @param   string  $title
+     * @param string $title
      *
      * @return Topic
      */
-    public function setTitle(string $title): self
+    public function setTitle(string $title): Topic
     {
-        $this->title = $title;
-
-        return $this;
+        return $this->setData(TopicInterface::COLUMN_TITLE, $title);
     }
 
     /**
@@ -124,7 +61,7 @@ class Topic extends Entity
      */
     public function getSlug(): string
     {
-        return $this->slug;
+        return $this->getData(TopicInterface::COLUMN_SLUG);
     }
 
     /**
@@ -132,11 +69,9 @@ class Topic extends Entity
      *
      * @return Topic
      */
-    public function setSlug(string $slug): self
+    public function setSlug(string $slug): Topic
     {
-        $this->slug = $slug;
-
-        return $this;
+        return $this->setData(TopicInterface::COLUMN_SLUG, $slug);
     }
 
     /**
@@ -144,19 +79,17 @@ class Topic extends Entity
      */
     public function getDescription(): string
     {
-        return $this->description;
+        return $this->getData(TopicInterface::COLUMN_DESCRIPTION);
     }
 
     /**
-     * @param   string  $description
+     * @param string $description
      *
      * @return Topic
      */
-    public function setDescription(string $description): self
+    public function setDescription(string $description): Topic
     {
-        $this->description = $description;
-
-        return $this;
+        return $this->setData(TopicInterface::COLUMN_DESCRIPTION, $description);
     }
 
     /**
@@ -164,19 +97,17 @@ class Topic extends Entity
      */
     public function getCreatedAt(): \DateTime
     {
-        return $this->created_at;
+        return $this->getData(TopicInterface::COLUMN_CREATED_AT);
     }
 
     /**
-     * @param   \DateTime  $created_at
+     * @param \DateTime $created_at
      *
      * @return Topic
      */
-    public function setCreatedAt(\DateTime $created_at): self
+    public function setCreatedAt(\DateTime $created_at): Topic
     {
-        $this->created_at = $created_at;
-
-        return $this;
+        return $this->setData(TopicInterface::COLUMN_CREATED_AT, $created_at);
     }
 
     /**
@@ -184,93 +115,16 @@ class Topic extends Entity
      */
     public function getUpdatedAt(): \DateTime
     {
-        return $this->updated_at;
+        return $this->getData(TopicInterface::COLUMN_UPDATED_AT);
     }
 
     /**
-     * @param   \DateTime  $updated_at
+     * @param \DateTime $updated_at
      *
      * @return Topic
      */
-    public function setUpdatedAt(\DateTime $updated_at): self
+    public function setUpdatedAt(\DateTime $updated_at): Topic
     {
-        $this->updated_at = $updated_at;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getCommentQuantity(): int
-    {
-        $comments = 0;
-
-        /** @var Thread $thread */
-        foreach ($this->getThreads() as $thread) {
-            $comments += $thread->getComments()->count();
-        }
-
-        return $comments;
-    }
-
-    /**
-     * Gets triggered only on insert
-     *
-     * @ORM\PrePersist
-     */
-    public function onPrePersist(): void
-    {
-        $this->created_at = new \DateTime("now");
-        $this->updated_at = new \DateTime("now");
-    }
-
-    /**
-     * Gets triggered every time on update
-     *
-     * @ORM\PreUpdate
-     */
-    public function onPreUpdate(): void
-    {
-        $this->updated_at = new \DateTime("now");
-    }
-
-    /**
-     * Returns a copy of the current Entity safely
-     *
-     * @return array
-     */
-    public function jsonSerialize(): array
-    {
-        return [
-            'id' => $this->getId(),
-            'title' => $this->getTitle(),
-            'slug' => $this->getId() . '-' . $this->getSlug(),
-            'description' => $this->getDescription(),
-            'threads' => $this->getThreads()->count(),
-            'comments' => $this->getCommentQuantity(),
-            'created_at' => $this->getCreatedAt(),
-            'updated_at' => $this->getUpdatedAt()
-        ];
-    }
-
-    /**
-     * @return string
-     */
-    public function serialize(): string
-    {
-        return serialize(get_object_vars($this));
-    }
-
-    /**
-     * @param   string  $data
-     */
-    public function unserialize($data): void
-    {
-        $values = unserialize($data);
-
-        foreach ($values as $key => $value) {
-            $this->$key = $value;
-        }
+        return $this->setData(TopicInterface::COLUMN_UPDATED_AT, $updated_at);
     }
 }

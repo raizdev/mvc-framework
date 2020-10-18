@@ -7,58 +7,25 @@
 
 namespace Ares\Guild\Entity;
 
-use Ares\Framework\Entity\Entity;
-use Ares\User\Entity\User;
-use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\JoinColumn;
-use Doctrine\ORM\Mapping\OneToOne;
+use Ares\Framework\Model\DataObject;
+use Ares\Guild\Entity\Contract\GuildMemberInterface;
 
 /**
  * Class GuildMember
  *
  * @package Ares\Guild\Entity
- *
- * @ORM\Entity
- * @ORM\Table(name="guilds_members")
- * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
  */
-class GuildMember extends Entity
+class GuildMember extends DataObject implements GuildMemberInterface
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private int $id;
-
-    /**
-     * @OneToOne(targetEntity="\Ares\User\Entity\User", fetch="EAGER")
-     * @JoinColumn(name="user_id", referencedColumnName="id")
-     */
-    private ?User $member;
-
-    /**
-     * @OneToOne(targetEntity="\Ares\Guild\Entity\Guild", fetch="EAGER")
-     * @JoinColumn(name="guild_id", referencedColumnName="id")
-     */
-    private ?Guild $guild;
-
-    /**
-     * @ORM\Column(type="integer", length=11)
-     */
-    private int $level_id;
-
-    /**
-     * @ORM\Column(type="integer", length=11)
-     */
-    private int $member_since;
+    /** @var string */
+    public const TABLE = 'guilds_members';
 
     /**
      * @return int
      */
     public function getId(): int
     {
-        return $this->id;
+        return $this->getData(GuildMemberInterface::COLUMN_ID);
     }
 
     /**
@@ -66,51 +33,45 @@ class GuildMember extends Entity
      *
      * @return GuildMember
      */
-    public function setId(int $id): self
+    public function setId(int $id): GuildMember
     {
-        $this->id = $id;
-
-        return $this;
+        return $this->setData(GuildMemberInterface::COLUMN_ID, $id);
     }
 
     /**
-     * @return User|null
+     * @return int
      */
-    public function getMember(): ?User
+    public function getGuildId(): int
     {
-        return $this->member;
+        return $this->getData(GuildMemberInterface::COLUMN_GUILD_ID);
     }
 
     /**
-     * @param User|null $member
+     * @param int $guild_id
      *
      * @return GuildMember
      */
-    public function setMember(?User $member): self
+    public function setGuildId(int $guild_id): GuildMember
     {
-        $this->member = $member;
-
-        return $this;
+        return $this->setData(GuildMemberInterface::COLUMN_GUILD_ID, $guild_id);
     }
 
     /**
-     * @return Guild|null
+     * @return int
      */
-    public function getGuild(): ?Guild
+    public function getUserId(): int
     {
-        return $this->guild;
+        return $this->getData(GuildMemberInterface::COLUMN_USER_ID);
     }
 
     /**
-     * @param Guild|null $guild
+     * @param int $user_id
      *
      * @return GuildMember
      */
-    public function setGuild(?Guild $guild): self
+    public function setUserId(int $user_id): GuildMember
     {
-        $this->guild = $guild;
-
-        return $this;
+        return $this->setData(GuildMemberInterface::COLUMN_USER_ID, $user_id);
     }
 
     /**
@@ -118,7 +79,7 @@ class GuildMember extends Entity
      */
     public function getLevelId(): int
     {
-        return $this->level_id;
+        return $this->getData(GuildMemberInterface::COLUMN_LEVEL_ID);
     }
 
     /**
@@ -126,11 +87,9 @@ class GuildMember extends Entity
      *
      * @return GuildMember
      */
-    public function setLevelId(int $level_id): self
+    public function setLevelId(int $level_id): GuildMember
     {
-        $this->level_id = $level_id;
-
-        return $this;
+        return $this->setData(GuildMemberInterface::COLUMN_LEVEL_ID, $level_id);
     }
 
     /**
@@ -138,7 +97,7 @@ class GuildMember extends Entity
      */
     public function getMemberSince(): int
     {
-        return $this->member_since;
+        return $this->getData(GuildMemberInterface::COLUMN_MEMBER_SINCE);
     }
 
     /**
@@ -146,45 +105,8 @@ class GuildMember extends Entity
      *
      * @return GuildMember
      */
-    public function setMemberSince(int $member_since): self
+    public function setMemberSince(int $member_since): GuildMember
     {
-        $this->member_since = $member_since;
-
-        return $this;
-    }
-
-    /**
-     * Returns a copy of the current Entity safely
-     *
-     * @return array
-     */
-    public function jsonSerialize(): array
-    {
-        return [
-            'id' => $this->getId(),
-            'member' => $this->getMember(),
-            'level_id' => $this->getLevelId(),
-            'member_since' => $this->getMemberSince()
-        ];
-    }
-
-    /**
-     * @return string
-     */
-    public function serialize(): string
-    {
-        return serialize(get_object_vars($this));
-    }
-
-    /**
-     * @param   string  $data
-     */
-    public function unserialize($data): void
-    {
-        $values = unserialize($data);
-
-        foreach ($values as $key => $value) {
-            $this->$key = $value;
-        }
+        return $this->setData(GuildMemberInterface::COLUMN_MEMBER_SINCE, $member_since);
     }
 }

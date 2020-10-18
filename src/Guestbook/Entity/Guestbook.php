@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Ares (https://ares.to)
  *
@@ -7,173 +7,107 @@
 
 namespace Ares\Guestbook\Entity;
 
-use Ares\Framework\Entity\Entity;
-use Ares\Guild\Entity\Guild;
-use Ares\User\Entity\User;
-use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\JoinColumn;
+use Ares\Framework\Model\DataObject;
+use Ares\Guestbook\Entity\Contract\GuestbookInterface;
 
 /**
  * Class Guestbook
  *
  * @package Ares\Guestbook\Entity
- *
- * @ORM\Entity
- * @ORM\Table(name="ares_guestbook")
- * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
- * @ORM\HasLifecycleCallbacks
  */
-class Guestbook extends Entity
+class Guestbook extends DataObject implements GuestbookInterface
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private int $id;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private string $content;
-
-    /**
-     * @ORM\OneToOne(targetEntity="\Ares\User\Entity\User", fetch="EAGER")
-     * @JoinColumn(name="user_id", referencedColumnName="id")
-     */
-    private ?User $user;
-
-    /**
-     * @ORM\OneToOne(targetEntity="\Ares\User\Entity\User", fetch="EAGER")
-     * @JoinColumn(name="profile_id", referencedColumnName="id")
-     */
-    private ?User $profile;
-
-    /**
-     * @ORM\OneToOne(targetEntity="\Ares\Guild\Entity\Guild", fetch="EAGER")
-     * @JoinColumn(name="guild_id", referencedColumnName="id")
-     */
-    private ?Guild $guild;
-
-    /**
-     * @ORM\Column(type="integer", length=11)
-     */
-    private int $likes;
-
-    /**
-     * @ORM\Column(type="integer", length=11)
-     */
-    private int $dislikes;
-
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    protected \DateTime $created_at;
-
-    /**
-     * @ORM\Column(type="datetime", nullable = true)
-     */
-    protected \DateTime $updated_at;
+    /** @var string */
+    public const TABLE = 'ares_guestbook';
 
     /**
      * @return int
      */
     public function getId(): int
     {
-        return $this->id;
+        return $this->getData(GuestbookInterface::COLUMN_ID);
     }
 
     /**
-     * @param   int  $id
+     * @param int $id
      *
      * @return Guestbook
      */
-    public function setId(int $id): self
+    public function setId(int $id): Guestbook
     {
-        $this->id = $id;
-
-        return $this;
+        return $this->setData(GuestbookInterface::COLUMN_ID, $id);
     }
 
     /**
-     * @return User|null
+     * @return int
      */
-    public function getProfile(): ?User
+    public function getUserId(): int
     {
-        return $this->profile;
+        return $this->getData(GuestbookInterface::COLUMN_USER_ID);
     }
 
     /**
-     * @param   User|null  $profile
+     * @param int $user_id
      *
      * @return Guestbook
      */
-    public function setProfile(?User $profile): self
+    public function setUserId(int $user_id): Guestbook
     {
-        $this->profile = $profile;
-
-        return $this;
+        return $this->setData(GuestbookInterface::COLUMN_USER_ID, $user_id);
     }
 
     /**
-     * @return Guild|null
+     * @return int
      */
-    public function getGuild(): ?Guild
+    public function getProfileId(): int
     {
-        return $this->guild;
+        return $this->getData(GuestbookInterface::COLUMN_PROFILE_ID);
     }
 
     /**
-     * @param   Guild|null  $guild
+     * @param int $profile_id
      *
      * @return Guestbook
      */
-    public function setGuild(?Guild $guild): self
+    public function setProfileId(int $profile_id): Guestbook
     {
-        $this->guild = $guild;
-
-        return $this;
+        return $this->setData(GuestbookInterface::COLUMN_PROFILE_ID, $profile_id);
     }
 
+    /**
+     * @return int
+     */
+    public function getGuildId(): int
+    {
+        return $this->getData(GuestbookInterface::COLUMN_GUILD_ID);
+    }
+
+    /**
+     * @param int $guild_id
+     *
+     * @return Guestbook
+     */
+    public function setGuildId(int $guild_id): Guestbook
+    {
+        return $this->setData(GuestbookInterface::COLUMN_GUILD_ID, $guild_id);
+    }
 
     /**
      * @return string
      */
     public function getContent(): string
     {
-        return $this->content;
+        return $this->getData(GuestbookInterface::COLUMN_CONTENT);
     }
 
     /**
-     * @param   string  $content
+     * @param string $content
      *
      * @return Guestbook
      */
-    public function setContent(string $content): self
+    public function setContent(string $content): Guestbook
     {
-        $this->content = $content;
-
-        return $this;
-    }
-
-    /**
-     * @return User|null
-     */
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-    /**
-     * @param   User|null  $user
-     *
-     * @return Guestbook
-     */
-    public function setUser(?User $user): self
-    {
-        $this->user = $user;
-
-        return $this;
+        return $this->setData(GuestbookInterface::COLUMN_CONTENT, $content);
     }
 
     /**
@@ -181,7 +115,7 @@ class Guestbook extends Entity
      */
     public function getLikes(): int
     {
-        return $this->likes;
+        return $this->getData(GuestbookInterface::COLUMN_LIKES);
     }
 
     /**
@@ -189,11 +123,9 @@ class Guestbook extends Entity
      *
      * @return Guestbook
      */
-    public function setLikes(int $likes): self
+    public function setLikes(int $likes): Guestbook
     {
-        $this->likes = $likes;
-
-        return $this;
+        return $this->setData(GuestbookInterface::COLUMN_LIKES, $likes);
     }
 
     /**
@@ -201,7 +133,7 @@ class Guestbook extends Entity
      */
     public function getDislikes(): int
     {
-        return $this->dislikes;
+        return $this->getData(GuestbookInterface::COLUMN_DISLIKES);
     }
 
     /**
@@ -209,32 +141,27 @@ class Guestbook extends Entity
      *
      * @return Guestbook
      */
-    public function setDislikes(int $dislikes): self
+    public function setDislikes(int $dislikes): Guestbook
     {
-        $this->dislikes = $dislikes;
-
-        return $this;
+        return $this->setData(GuestbookInterface::COLUMN_DISLIKES, $dislikes);
     }
-
 
     /**
      * @return \DateTime
      */
     public function getCreatedAt(): \DateTime
     {
-        return $this->created_at;
+        return $this->getData(GuestbookInterface::COLUMN_CREATED_AT);
     }
 
     /**
-     * @param   \DateTime  $created_at
+     * @param \DateTime $created_at
      *
      * @return Guestbook
      */
-    public function setCreatedAt(\DateTime $created_at): self
+    public function setCreatedAt(\DateTime $created_at): Guestbook
     {
-        $this->created_at = $created_at;
-
-        return $this;
+        return $this->setData(GuestbookInterface::COLUMN_CREATED_AT, $created_at);
     }
 
     /**
@@ -242,76 +169,16 @@ class Guestbook extends Entity
      */
     public function getUpdatedAt(): \DateTime
     {
-        return $this->updated_at;
+        return $this->getData(GuestbookInterface::COLUMN_UPDATED_AT);
     }
 
     /**
-     * @param   \DateTime  $updated_at
+     * @param \DateTime $updated_at
      *
      * @return Guestbook
      */
-    public function setUpdatedAt(\DateTime $updated_at): self
+    public function setUpdatedAt(\DateTime $updated_at): Guestbook
     {
-        $this->updated_at = $updated_at;
-
-        return $this;
-    }
-
-    /**
-     * Gets triggered only on insert
-     *
-     * @ORM\PrePersist
-     */
-    public function onPrePersist(): void
-    {
-        $this->created_at = new \DateTime("now");
-        $this->updated_at = new \DateTime("now");
-    }
-
-    /**
-     * Gets triggered every time on update
-     *
-     * @ORM\PreUpdate
-     */
-    public function onPreUpdate(): void
-    {
-        $this->updated_at = new \DateTime("now");
-    }
-
-    /**
-     * Returns a copy of the current Entity safely
-     *
-     * @return array
-     */
-    public function jsonSerialize(): array
-    {
-        return [
-            'id' => $this->getId(),
-            'user' => $this->getUser(),
-            'content' => $this->getContent(),
-            'likes' => $this->getLikes(),
-            'dislikes' => $this->getDislikes(),
-            'created_at' => $this->getCreatedAt()
-        ];
-    }
-
-    /**
-     * @return string
-     */
-    public function serialize(): string
-    {
-        return serialize(get_object_vars($this));
-    }
-
-    /**
-     * @param $data
-     */
-    public function unserialize($data): void
-    {
-        $values = unserialize($data);
-
-        foreach ($values as $key => $value) {
-            $this->$key = $value;
-        }
+        return $this->setData(GuestbookInterface::COLUMN_UPDATED_AT, $updated_at);
     }
 }

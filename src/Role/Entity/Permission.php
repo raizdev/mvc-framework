@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Ares (https://ares.to)
  *
@@ -7,75 +7,35 @@
 
 namespace Ares\Role\Entity;
 
-use Ares\Framework\Entity\Entity;
-use DateTime;
-use Doctrine\ORM\Mapping as ORM;
+use Ares\Framework\Model\DataObject;
+use Ares\Role\Entity\Contract\PermissionInterface;
 
 /**
  * Class Permission
  *
  * @package Ares\Role\Entity
- *
- * @ORM\Table(name="ares_permissions", uniqueConstraints={@ORM\UniqueConstraint(name="ares_role_name", columns={"name"})})
- * @ORM\Entity
- * @ORM\HasLifecycleCallbacks
  */
-class Permission extends Entity
+class Permission extends DataObject implements PermissionInterface
 {
-    /**
-     * @ORM\Column(name="id", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private int $id;
-
-    /**
-     * @ORM\Column(name="name", type="string", length=100, nullable=false)
-     */
-    private string $name;
-
-    /**
-     * @var bool
-     *
-     * @ORM\Column(name="status", type="boolean", nullable=false)
-     */
-    private $status = '1';
-
-    /**
-     * @ORM\Column(name="description", type="string", nullable=true)
-     */
-    private string $description;
-
-    /**
-     * @ORM\Column(name="created_at", type="datetime", nullable=false)
-     */
-    private DateTime $createdAt;
-
-    /**
-     * @var DateTime
-     *
-     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
-     */
-    private DateTime $updatedAt;
+    /** @var string */
+    public const TABLE = 'ares_permissions';
 
     /**
      * @return int
      */
     public function getId(): int
     {
-        return $this->id;
+        return $this->getData(PermissionInterface::COLUMN_ID);
     }
 
     /**
-     * @param   int  $id
+     * @param int $id
      *
      * @return Permission
      */
-    public function setId($id): self
+    public function setId(int $id): Permission
     {
-        $this->id = $id;
-
-        return $this;
+        return $this->setData(PermissionInterface::COLUMN_ID, $id);
     }
 
     /**
@@ -83,19 +43,17 @@ class Permission extends Entity
      */
     public function getName(): string
     {
-        return $this->name;
+        return $this->getData(PermissionInterface::COLUMN_NAME);
     }
 
     /**
-     * @param   string  $name
+     * @param string $name
      *
      * @return Permission
      */
-    public function setName($name): self
+    public function setName(string $name): Permission
     {
-        $this->name = $name;
-
-        return $this;
+        return $this->setData(PermissionInterface::COLUMN_NAME, $name);
     }
 
     /**
@@ -103,133 +61,70 @@ class Permission extends Entity
      */
     public function getDescription(): string
     {
-        return $this->description;
+        return $this->getData(PermissionInterface::COLUMN_DESCRIPTION);
     }
 
     /**
-     * @param   string  $description
+     * @param string $description
      *
      * @return Permission
      */
-    public function setDescription($description): self
+    public function setDescription(string $description): Permission
     {
-        $this->description = $description;
-
-        return $this;
+        return $this->setData(PermissionInterface::COLUMN_DESCRIPTION, $description);
     }
 
     /**
-     * @return bool
+     * @return int
      */
-    public function getStatus(): bool
+    public function getStatus(): int
     {
-        return $this->status;
+        return $this->getData(PermissionInterface::COLUMN_STATUS);
     }
 
     /**
-     * @param   bool  $status
+     * @param int $status
      *
      * @return Permission
      */
-    public function setStatus($status): self
+    public function setStatus(int $status): Permission
     {
-        $this->status = $status;
-
-        return $this;
+        return $this->setData(PermissionInterface::COLUMN_STATUS, $status);
     }
 
     /**
-     * @return DateTime
+     * @return \DateTime
      */
-    public function getCreatedAt(): DateTime
+    public function getCreatedAt(): \DateTime
     {
-        return $this->createdAt;
+        return $this->getData(PermissionInterface::COLUMN_CREATED_AT);
     }
 
     /**
-     * @param   DateTime  $createdAt
+     * @param \DateTime $created_at
      *
      * @return Permission
      */
-    public function setCreatedAt($createdAt): self
+    public function setCreatedAt(\DateTime $created_at): Permission
     {
-        $this->createdAt = $createdAt;
-
-        return $this;
+        return $this->setData(PermissionInterface::COLUMN_CREATED_AT, $created_at);
     }
 
     /**
-     * @return DateTime
+     * @return \DateTime
      */
-    public function getUpdatedAt(): DateTime
+    public function getUpdatedAt(): \DateTime
     {
-        return $this->updatedAt;
+        return $this->getData(PermissionInterface::COLUMN_UPDATED_AT);
     }
 
     /**
-     * @param   DateTime  $updatedAt
+     * @param \DateTime $updated_at
      *
      * @return Permission
      */
-    public function setUpdatedAt($updatedAt): self
+    public function setUpdatedAt(\DateTime $updated_at): Permission
     {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
-
-    /**
-     * @ORM\PrePersist
-     *
-     * @throws \Exception
-     */
-    public function prePersist(): void
-    {
-        $this->createdAt = new DateTime();
-    }
-
-    /**
-     * @ORM\PreUpdate
-     *
-     * @throws \Exception
-     */
-    public function preUpdate(): void
-    {
-        $this->updatedAt = new DateTime();
-    }
-
-    /**
-     * @return array
-     */
-    public function jsonSerialize(): array
-    {
-        return [
-            'id'          => $this->getId(),
-            'name'        => $this->getName(),
-            'description' => $this->getDescription(),
-            'status'      => $this->getStatus(),
-            'created_at'  => $this->getCreatedAt(),
-            'updated_at'  => $this->getUpdatedAt()
-        ];
-    }
-
-    /**
-     * @return string
-     */
-    public function serialize(): string
-    {
-        return serialize(get_object_vars($this));
-    }
-
-    /**
-     * @param   string  $data
-     */
-    public function unserialize($data): void
-    {
-        $values = unserialize($data);
-
-        foreach ($values as $key => $value) {
-            $this->$key = $value;
-        }
+        return $this->setData(PermissionInterface::COLUMN_UPDATED_AT, $updated_at);
     }
 }

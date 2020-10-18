@@ -1,10 +1,4 @@
-<?php
-/**
- * Ares (https://ares.to)
- *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
- */
-
+<?php declare(strict_types=1);
 /**
  * Ares (https://ares.to)
  *
@@ -13,96 +7,35 @@
 
 namespace Ares\Role\Entity;
 
-use Ares\Framework\Entity\Entity;
-use Ares\User\Entity\User;
-use DateTime;
-use Doctrine\ORM\Mapping as ORM;
+use Ares\Framework\Model\DataObject;
+use Ares\Role\Entity\Contract\RoleUserInterface;
 
 /**
  * Class RoleUser
  *
  * @package Ares\Role\Entity
- *
- * @ORM\Table(name="ares_roles_user",
- *     uniqueConstraints={@ORM\UniqueConstraint(name="idx_user_role_unique",
- *      columns={"user_id", "role_id"})}
- *     )
- * @ORM\Entity
- * @ORM\HasLifecycleCallbacks
  */
-class RoleUser extends Entity
+class RoleUser extends DataObject implements RoleUserInterface
 {
-    /**
-     * @ORM\Column(name="id", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private int $id;
-
-    /**
-     * @ORM\OneToOne(targetEntity="\Ares\User\Entity\User")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="user_id", referencedColumnName="id")
-     * })
-     */
-    private ?User $user;
-
-    /**
-     * @ORM\Column(name="role_id", type="integer", nullable=false)
-     */
-    private int $roleId;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="\Ares\Role\Entity\Role")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="role_id", referencedColumnName="id")
-     * })
-     */
-    private Role $role;
-
-    /**
-     * @ORM\Column(name="created_at", type="datetime", nullable=false)
-     */
-    private DateTime $createdAt;
+    /** @var string */
+    public const TABLE = 'ares_roles_user';
 
     /**
      * @return int
      */
     public function getId(): int
     {
-        return $this->id;
+        return $this->getData(RoleUserInterface::COLUMN_ID);
     }
 
     /**
-     * @param   int  $id
+     * @param int $id
      *
      * @return RoleUser
      */
-    public function setId($id): self
+    public function setId(int $id): RoleUser
     {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * @return User|null
-     */
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-    /**
-     * @param User|null $user
-     *
-     * @return RoleUser
-     */
-    public function setUser(?User $user): self
-    {
-        $this->user = $user;
-
-        return $this;
+        return $this->setData(RoleUserInterface::COLUMN_ID, $id);
     }
 
     /**
@@ -110,99 +43,52 @@ class RoleUser extends Entity
      */
     public function getRoleId(): int
     {
-        return $this->roleId;
+        return $this->getData(RoleUserInterface::COLUMN_ROLE_ID);
     }
 
     /**
-     * @param   int  $roleId
+     * @param int $role_id
      *
      * @return RoleUser
      */
-    public function setRoleId($roleId): self
+    public function setRoleId(int $role_id): RoleUser
     {
-        $this->roleId = $roleId;
-
-        return $this;
+        return $this->setData(RoleUserInterface::COLUMN_ROLE_ID, $role_id);
     }
 
     /**
-     * @return Role
+     * @return int
      */
-    public function getRole(): Role
+    public function getUserId(): int
     {
-        return $this->role;
+        return $this->getData(RoleUserInterface::COLUMN_USER_ID);
     }
 
     /**
-     * @param   Role  $role
+     * @param int $user_id
      *
      * @return RoleUser
      */
-    public function setRole($role): self
+    public function setUserId(int $user_id): RoleUser
     {
-        $this->role = $role;
-
-        return $this;
+        return $this->setData(RoleUserInterface::COLUMN_USER_ID, $user_id);
     }
 
     /**
-     * @return DateTime
+     * @return \DateTime
      */
-    public function getCreatedAt(): DateTime
+    public function getCreatedAt(): \DateTime
     {
-        return $this->createdAt;
+        return $this->getData(RoleUserInterface::COLUMN_CREATED_AT);
     }
 
     /**
-     * @param   DateTime  $createdAt
+     * @param \DateTime $created_at
      *
      * @return RoleUser
      */
-    public function setCreatedAt($createdAt): self
+    public function setCreatedAt(\DateTime $created_at)
     {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    /**
-     * @ORM\PrePersist
-     *
-     * @throws \Exception
-     */
-    public function prePersist(): void
-    {
-        $this->createdAt = new DateTime();
-    }
-
-    /**
-     * @return array
-     */
-    public function jsonSerialize(): array
-    {
-        return [
-            'id' => $this->getRole()->getId(),
-            'name' => $this->getRole()->getName()
-        ];
-    }
-
-    /**
-     * @return string
-     */
-    public function serialize(): string
-    {
-        return serialize(get_object_vars($this));
-    }
-
-    /**
-     * @param   string  $data
-     */
-    public function unserialize($data): void
-    {
-        $values = unserialize($data);
-
-        foreach ($values as $key => $value) {
-            $this->$key = $value;
-        }
+        return $this->setData(RoleUserInterface::COLUMN_CREATED_AT, $created_at);
     }
 }

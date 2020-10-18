@@ -7,105 +7,52 @@
 
 namespace Ares\User\Entity;
 
-use Ares\Framework\Entity\Entity;
-use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\JoinColumn;
-use Doctrine\ORM\Mapping\OneToOne;
+use Ares\Framework\Model\DataObject;
+use Ares\User\Entity\Contract\UserOfTheWeekInterface;
 
 /**
  * Class UserOfTheWeek
  *
  * @package Ares\User\Entity
- *
- * @ORM\Entity
- * @ORM\Table(name="ares_uotw")
- * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
  */
-class UserOfTheWeek extends Entity
+class UserOfTheWeek extends DataObject implements UserOfTheWeekInterface
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private int $id;
-
-    /**
-     * @OneToOne(targetEntity="\Ares\User\Entity\User", fetch="EAGER")
-     * @JoinColumn(name="user_id", referencedColumnName="id")
-     */
-    private ?User $user;
+    /** @var string */
+    public const TABLE = 'ares_uotw';
 
     /**
      * @return int
      */
     public function getId(): int
     {
-        return $this->id;
+        return $this->getData(UserOfTheWeekInterface::COLUMN_ID);
     }
 
     /**
-     * @param   int  $id
+     * @param int $id
      *
      * @return UserOfTheWeek
      */
-    public function setId(int $id): self
+    public function setId(int $id): UserOfTheWeek
     {
-        $this->id = $id;
-
-        return $this;
+        return $this->setData(UserOfTheWeekInterface::COLUMN_ID, $id);
     }
 
     /**
-     * @return User|null
+     * @return int
      */
-    public function getUser(): ?User
+    public function getUserId(): int
     {
-        return $this->user;
+        return $this->getData(UserOfTheWeekInterface::COLUMN_USER_ID);
     }
 
     /**
-     * @param   User|null  $user
+     * @param int $user_id
      *
      * @return UserOfTheWeek
      */
-    public function setUser(?User $user): self
+    public function setUserId(int $user_id): UserOfTheWeek
     {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    /**
-     * Returns a copy of the current Entity safely
-     *
-     * @return array
-     */
-    public function jsonSerialize(): array
-    {
-        return [
-            'id' => $this->getId(),
-            'user' => $this->getUser()
-        ];
-    }
-
-    /**
-     * @return string
-     */
-    public function serialize(): string
-    {
-        return serialize(get_object_vars($this));
-    }
-
-    /**
-     * @param $data
-     */
-    public function unserialize($data): void
-    {
-        $values = unserialize($data);
-
-        foreach ($values as $key => $value) {
-            $this->$key = $value;
-        }
+        return $this->setData(UserOfTheWeekInterface::COLUMN_USER_ID, $user_id);
     }
 }

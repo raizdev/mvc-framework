@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Ares (https://ares.to)
  *
@@ -7,80 +7,35 @@
 
 namespace Ares\Role\Entity;
 
-use Ares\Framework\Entity\Entity;
-use DateTime;
-use Doctrine\ORM\Mapping as ORM;
+use Ares\Framework\Model\DataObject;
+use Ares\Role\Entity\Contract\RolePermissionInterface;
 
 /**
  * Class RolePermission
  *
  * @package Ares\Role\Entity
- *
- * @ORM\Table(name="ares_roles_permission",
- *     uniqueConstraints={@ORM\UniqueConstraint(name="ares_role_permission_unique",
- *      columns={"role_id", "permission_id"})}
- *     )
- * @ORM\Entity
- * @ORM\HasLifecycleCallbacks
  */
-class RolePermission extends Entity
+class RolePermission extends DataObject implements RolePermissionInterface
 {
-    /**
-     * @ORM\Column(name="id", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private int $id;
-
-    /**
-     * @ORM\Column(name="role_id", type="integer", nullable=false)
-     */
-    private int $roleId;
-
-    /**
-     * @ORM\Column(name="permission_id", type="integer", nullable=false)
-     */
-    private int $permissionId;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Ares\Role\Entity\Permission")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="permission_id", referencedColumnName="id")
-     * })
-     */
-    private Permission $permission;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Ares\Role\Entity\Role")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="role_id", referencedColumnName="id")
-     * })
-     */
-    private Role $role;
-
-    /**
-     * @ORM\Column(name="created_at", type="datetime", nullable=false)
-     */
-    private DateTime $createdAt;
+    /** @var string */
+    public const TABLE = 'ares_roles_permission';
 
     /**
      * @return int
      */
     public function getId(): int
     {
-        return $this->id;
+        return $this->getData(RolePermissionInterface::COLUMN_ID);
     }
 
     /**
-     * @param   int  $id
+     * @param int $id
      *
      * @return RolePermission
      */
-    public function setId($id): self
+    public function setId(int $id): RolePermission
     {
-        $this->id = $id;
-
-        return $this;
+        return $this->setData(RolePermissionInterface::COLUMN_ID, $id);
     }
 
     /**
@@ -88,19 +43,17 @@ class RolePermission extends Entity
      */
     public function getRoleId(): int
     {
-        return $this->roleId;
+        return $this->getData(RolePermissionInterface::COLUMN_ROLE_ID);
     }
 
     /**
-     * @param   int  $roleId
+     * @param int $role_id
      *
      * @return RolePermission
      */
-    public function setRoleId($roleId): self
+    public function setRoleId(int $role_id): RolePermission
     {
-        $this->roleId = $roleId;
-
-        return $this;
+        return $this->setData(RolePermissionInterface::COLUMN_ROLE_ID, $role_id);
     }
 
     /**
@@ -108,123 +61,34 @@ class RolePermission extends Entity
      */
     public function getPermissionId(): int
     {
-        return $this->permissionId;
+        return $this->getData(RolePermissionInterface::COLUMN_PERMISSION_ID);
     }
 
     /**
-     * @param   int  $permissionId
+     * @param int $permission_id
      *
      * @return RolePermission
      */
-    public function setPermissionId($permissionId): self
+    public function setPermissionId(int $permission_id): RolePermission
     {
-        $this->permissionId = $permissionId;
-
-        return $this;
+        return $this->setData(RolePermissionInterface::COLUMN_PERMISSION_ID, $permission_id);
     }
 
     /**
-     * @return Permission
+     * @return \DateTime
      */
-    public function getPermission(): Permission
+    public function getCreatedAt(): \DateTime
     {
-        return $this->permission;
+        return $this->getData(RolePermissionInterface::COLUMN_CREATED_AT);
     }
 
     /**
-     * @param   Permission  $permission
+     * @param \DateTime $created_at
      *
      * @return RolePermission
      */
-    public function setPermission($permission): self
+    public function setCreatedAt(\DateTime $created_at): RolePermission
     {
-        $this->permission = $permission;
-
-        return $this;
-    }
-
-    /**
-     * @return Role
-     */
-    public function getRole(): Role
-    {
-        return $this->role;
-    }
-
-    /**
-     * @param   Role  $role
-     *
-     * @return RolePermission
-     */
-    public function setRole($role): self
-    {
-        $this->role = $role;
-
-        return $this;
-    }
-
-    /**
-     * @return DateTime
-     */
-    public function getCreatedAt(): DateTime
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * @param   DateTime  $createdAt
-     *
-     * @return RolePermission
-     */
-    public function setCreatedAt($createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    /**
-     * @ORM\PrePersist
-     *
-     * @throws \Exception
-     */
-    public function prePersist(): void
-    {
-        $this->createdAt = new DateTime();
-    }
-
-    /**
-     * @return array
-     */
-    public function jsonSerialize(): array
-    {
-        return [
-            'id' => $this->getId(),
-            'role_id' => $this->getRole()->getId(),
-            'role_name' => $this->getRole()->getName(),
-            'permission_id' => $this->getPermission()->getId(),
-            'permission_name' => $this->getPermission()->getName(),
-            'created_at' => $this->getCreatedAt()
-        ];
-    }
-
-    /**
-     * @return string
-     */
-    public function serialize(): string
-    {
-        return serialize(get_object_vars($this));
-    }
-
-    /**
-     * @param   string  $data
-     */
-    public function unserialize($data): void
-    {
-        $values = unserialize($data);
-
-        foreach ($values as $key => $value) {
-            $this->$key = $value;
-        }
+        return $this->setData(RolePermissionInterface::COLUMN_CREATED_AT, $created_at);
     }
 }

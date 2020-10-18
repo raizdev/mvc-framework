@@ -7,365 +7,232 @@
 
 namespace Ares\User\Entity;
 
-use Ares\Framework\Entity\Entity;
-use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\JoinColumn;
-use Doctrine\ORM\Mapping\OneToOne;
+use Ares\Framework\Model\DataObject;
+use Ares\User\Entity\Contract\UserSettingInterface;
 
 /**
- * Class UserOfTheWeek
+ * Class UserSetting
  *
  * @package Ares\User\Entity
- *
- * @ORM\Entity
- * @ORM\Table(name="users_settings")
- * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
  */
-class UserSetting extends Entity
+class UserSetting extends DataObject implements UserSettingInterface
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private int $id;
-
-    /**
-     * @OneToOne(targetEntity="\Ares\User\Entity\User", fetch="EAGER")
-     * @JoinColumn(name="user_id", referencedColumnName="id")
-     */
-    private ?User $user;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private string $achievement_score;
-
-    /**
-     * @ORM\Column(type="string", columnDefinition="ENUM('0',1')")
-     */
-    private string $can_change_name;
-
-    /**
-     * @ORM\Column(type="string", columnDefinition="ENUM('0',1')")
-     */
-    private string $block_following;
-
-    /**
-     * @ORM\Column(type="string", columnDefinition="ENUM('0',1')")
-     */
-    private string $block_friendrequests;
-
-    /**
-     * @ORM\Column(type="string", columnDefinition="ENUM('0',1')")
-     */
-    private string $block_roominvites;
-
-    /**
-     * @ORM\Column(type="string", columnDefinition="ENUM('0',1')")
-     */
-    private string $block_camera_follow;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private string $online_time;
-
-    /**
-     * @ORM\Column(type="string", columnDefinition="ENUM('0',1')")
-     */
-    private string $block_alerts;
-
-    /**
-     * @ORM\Column(type="string", columnDefinition="ENUM('0',1')")
-     */
-    private string $ignore_bots;
-
-    /**
-     * @ORM\Column(type="string", columnDefinition="ENUM('0',1')")
-     */
-    private string $ignore_pets;
+    /** @var string */
+    public const TABLE = 'users_settings';
 
     /**
      * @return int
      */
     public function getId(): int
     {
-        return $this->id;
+        return $this->getData(UserSettingInterface::COLUMN_ID);
     }
 
     /**
-     * @param   int  $id
+     * @param int $id
      *
      * @return UserSetting
      */
-    public function setId(int $id): self
+    public function setId(int $id): UserSetting
     {
-        $this->id = $id;
-
-        return $this;
+        return $this->setData(UserSettingInterface::COLUMN_ID, $id);
     }
 
     /**
-     * @return User|null
+     * @return int
      */
-    public function getUser(): ?User
+    public function getUserId(): int
     {
-        return $this->user;
+        return $this->getData(UserSettingInterface::COLUMN_USER_ID);
     }
 
     /**
-     * @param   User|null  $user
+     * @param int $user_id
      *
      * @return UserSetting
      */
-    public function setUser(?User $user): self
+    public function setUserId(int $user_id): UserSetting
     {
-        $this->user = $user;
-
-        return $this;
+        return $this->setData(UserSettingInterface::COLUMN_USER_ID, $user_id);
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getAchievementScore(): string
+    public function getAchievementScore(): int
     {
-        return $this->achievement_score;
+        return $this->getData(UserSettingInterface::COLUMN_ACHIEVEMENT_SCORE);
     }
 
     /**
-     * @param string $achievement_score
+     * @param int $achievement_score
      *
      * @return UserSetting
      */
-    public function setAchievementScore(string $achievement_score): self
+    public function setAchievementScore(int $achievement_score): UserSetting
     {
-        $this->achievement_score = $achievement_score;
-
-        return $this;
+        return $this->setData(UserSettingInterface::COLUMN_ACHIEVEMENT_SCORE, $achievement_score);
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getCanChangeName(): string
+    public function getCanChangeName(): int
     {
-        return $this->can_change_name;
+        return $this->getData(UserSettingInterface::COLUMN_CAN_CHANGE_NAME);
     }
 
     /**
-     * @param string $can_change_name
+     * @param int $can_change_name
      *
      * @return UserSetting
      */
-    public function setCanChangeName(string $can_change_name): self
+    public function setCanChangeName(int $can_change_name): UserSetting
     {
-        $this->can_change_name = $can_change_name;
-
-        return $this;
+        return $this->setData(UserSettingInterface::COLUMN_CAN_CHANGE_NAME, $can_change_name);
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getBlockFollowing(): string
+    public function getBlockFollowing(): int
     {
-        return $this->block_following;
+        return $this->getData(UserSettingInterface::COLUMN_BLOCK_FOLLOWING);
     }
 
     /**
-     * @param string $block_following
+     * @param int $block_following
      *
      * @return UserSetting
      */
-    public function setBlockFollowing(string $block_following): self
+    public function setBlockFollowing(int $block_following): UserSetting
     {
-        $this->block_following = $block_following;
-
-        return $this;
+        return $this->setData(UserSettingInterface::COLUMN_BLOCK_FOLLOWING, $block_following);
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getBlockFriendrequests(): string
+    public function getBlockFriendRequests(): int
     {
-        return $this->block_friendrequests;
+        return $this->getData(UserSettingInterface::COLUMN_BLOCK_FRIENDREQUESTS);
     }
 
     /**
-     * @param string $block_friendrequests
+     * @param int $block_friend_requests
      *
      * @return UserSetting
      */
-    public function setBlockFriendrequests(string $block_friendrequests): self
+    public function setBlockFriendRequests(int $block_friend_requests): UserSetting
     {
-        $this->block_friendrequests = $block_friendrequests;
-
-        return $this;
+        return $this->setData(UserSettingInterface::COLUMN_BLOCK_FRIENDREQUESTS, $block_friend_requests);
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getBlockRoominvites(): string
+    public function getBlockRoomInvites(): int
     {
-        return $this->block_roominvites;
+        return $this->getData(UserSettingInterface::COLUMN_BLOCK_ROOMINVITES);
     }
 
     /**
-     * @param string $block_roominvites
+     * @param int $block_room_invites
      *
      * @return UserSetting
      */
-    public function setBlockRoominvites(string $block_roominvites): self
+    public function setBlockRoomInvites(int $block_room_invites): UserSetting
     {
-        $this->block_roominvites = $block_roominvites;
-
-        return $this;
+        return $this->setData(UserSettingInterface::COLUMN_BLOCK_ROOMINVITES, $block_room_invites);
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getBlockCameraFollow(): string
+    public function getBlockCameraFollow(): int
     {
-        return $this->block_camera_follow;
+        return $this->getData(UserSettingInterface::COLUMN_BLOCK_CAMERA_FOLLOW);
     }
 
     /**
-     * @param string $block_camera_follow
+     * @param int $block_camera_follow
      *
      * @return UserSetting
      */
-    public function setBlockCameraFollow(string $block_camera_follow): self
+    public function setBlockCameraFollow(int $block_camera_follow): UserSetting
     {
-        $this->block_camera_follow = $block_camera_follow;
-
-        return $this;
+        return $this->setData(UserSettingInterface::COLUMN_BLOCK_CAMERA_FOLLOW, $block_camera_follow);
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getOnlinetime(): string
+    public function getOnlineTime(): int
     {
-        return $this->online_time;
+        return $this->getData(UserSettingInterface::COLUMN_ONLINE_TIME);
     }
 
     /**
-     * @param string $online_time
+     * @param int $online_time
      *
      * @return UserSetting
      */
-    public function setOnlinetime(string $online_time): self
+    public function setOnlineTime(int $online_time): UserSetting
     {
-        $this->online_time = $online_time;
-
-        return $this;
+        return $this->setData(UserSettingInterface::COLUMN_ONLINE_TIME, $online_time);
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getBlockAlerts(): string
+    public function getBlockAlerts(): int
     {
-        return $this->block_alerts;
+        return $this->getData(UserSettingInterface::COLUMN_BLOCK_ALERTS);
     }
 
     /**
-     * @param string $block_alerts
+     * @param int $block_alerts
      *
      * @return UserSetting
      */
-    public function setBlockAlerts(string $block_alerts): self
+    public function setBlockAlerts(int $block_alerts): UserSetting
     {
-        $this->block_alerts = $block_alerts;
-
-        return $this;
+        return $this->setData(UserSettingInterface::COLUMN_BLOCK_ALERTS, $block_alerts);
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getIgnoreBots(): string
+    public function getIgnoreBots(): int
     {
-        return $this->ignore_bots;
+        return $this->getData(UserSettingInterface::COLUMN_IGNORE_BOTS);
     }
 
     /**
-     * @param string $ignore_bots
+     * @param int $ignore_bots
      *
      * @return UserSetting
      */
-    public function setIgnoreBots(string $ignore_bots): self
+    public function setIgnoreBots(int $ignore_bots): UserSetting
     {
-        $this->ignore_bots = $ignore_bots;
-
-        return $this;
+        return $this->setData(UserSettingInterface::COLUMN_IGNORE_BOTS, $ignore_bots);
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getIgnorePets(): string
+    public function getIgnorePets(): int
     {
-        return $this->ignore_pets;
+        return $this->getData(UserSettingInterface::COLUMN_IGNORE_PETS);
     }
 
     /**
-     * @param string $ignore_pets
+     * @param int $ignore_pets
      *
      * @return UserSetting
      */
-    public function setIgnorePets(string $ignore_pets): self
+    public function setIgnorePets(int $ignore_pets): UserSetting
     {
-        $this->ignore_pets = $ignore_pets;
-
-        return $this;
-    }
-
-    /**
-     * Returns a copy of the current Entity safely
-     *
-     * @return array
-     */
-    public function jsonSerialize(): array
-    {
-        return [
-            'id' => $this->getId(),
-            'user' => $this->getUser(),
-            'achievement_score' => $this->getAchievementScore(),
-            'online_time' => $this->getOnlinetime(),
-            'can_change_name' => $this->getCanChangeName(),
-            'block_following' => $this->getBlockFollowing(),
-            'block_friend_requests' => $this->getBlockFriendrequests(),
-            'block_room_invites' => $this->getBlockRoominvites(),
-            'block_camera_follow' => $this->getBlockCameraFollow(),
-            'block_alerts' => $this->getBlockAlerts(),
-            'ignore_bots' => $this->getIgnoreBots(),
-            'ignore_pets' => $this->getIgnorePets()
-        ];
-    }
-
-    /**
-     * @return string
-     */
-    public function serialize(): string
-    {
-        return serialize(get_object_vars($this));
-    }
-
-    /**
-     * @param $data
-     */
-    public function unserialize($data): void
-    {
-        $values = unserialize($data);
-
-        foreach ($values as $key => $value) {
-            $this->$key = $value;
-        }
+        return $this->setData(UserSettingInterface::COLUMN_IGNORE_PETS, $ignore_pets);
     }
 }

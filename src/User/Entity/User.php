@@ -32,6 +32,7 @@ class User extends DataObject implements UserInterface
 
     /**
      * @param int $id
+     *
      * @return User
      */
     public function setId(int $id): User
@@ -49,6 +50,7 @@ class User extends DataObject implements UserInterface
 
     /**
      * @param string $username
+     *
      * @return User
      */
     public function setUsername(string $username): User
@@ -66,6 +68,7 @@ class User extends DataObject implements UserInterface
 
     /**
      * @param string $password
+     *
      * @return User
      */
     public function setPassword(string $password): User
@@ -83,6 +86,7 @@ class User extends DataObject implements UserInterface
 
     /**
      * @param string $mail
+     *
      * @return User
      */
     public function setMail(string $mail): User
@@ -100,6 +104,7 @@ class User extends DataObject implements UserInterface
 
     /**
      * @param string $look
+     *
      * @return User
      */
     public function setLook(string $look): User
@@ -117,6 +122,7 @@ class User extends DataObject implements UserInterface
 
     /**
      * @param string $gender
+     *
      * @return User
      */
     public function setGender(string $gender): User
@@ -134,6 +140,7 @@ class User extends DataObject implements UserInterface
 
     /**
      * @param string|null $motto
+     *
      * @return User
      */
     public function setMotto(?string $motto): User
@@ -151,6 +158,7 @@ class User extends DataObject implements UserInterface
 
     /**
      * @param int $credits
+     *
      * @return User
      */
     public function setCredits(int $credits): User
@@ -168,28 +176,12 @@ class User extends DataObject implements UserInterface
 
     /**
      * @param int|null $rank
+     *
      * @return User
      */
     public function setRank(?int $rank): User
     {
         return $this->setData(UserInterface::COLUMN_RANK, $rank);
-    }
-
-    /**
-     * @return Collection|null
-     */
-    public function getRoles(): ?Collection
-    {
-        return $this->getData(UserInterface::COLUMN_ROLE_ID);
-    }
-
-    /**
-     * @param Collection|null $roles
-     * @return User
-     */
-    public function setRoles(?Collection $roles): User
-    {
-        return $this->setData(UserInterface::COLUMN_ROLE_ID, $roles);
     }
 
     /**
@@ -202,6 +194,7 @@ class User extends DataObject implements UserInterface
 
     /**
      * @param Permission|null $rank_data
+     *
      * @return User
      */
     public function setRankData(?Permission $rank_data): User
@@ -219,6 +212,7 @@ class User extends DataObject implements UserInterface
 
     /**
      * @param string|null $auth_ticket
+     *
      * @return User
      */
     public function setAuthTicket(?string $auth_ticket): User
@@ -236,6 +230,7 @@ class User extends DataObject implements UserInterface
 
     /**
      * @param int $account_created
+     *
      * @return User
      */
     public function setAccountCreated(int $account_created): User
@@ -253,6 +248,7 @@ class User extends DataObject implements UserInterface
 
     /**
      * @param string $ip_register
+     *
      * @return User
      */
     public function setIpRegister(string $ip_register): User
@@ -270,6 +266,7 @@ class User extends DataObject implements UserInterface
 
     /**
      * @param string|null $ip_current
+     *
      * @return User
      */
     public function setIpCurrent(?string $ip_current): User
@@ -287,6 +284,7 @@ class User extends DataObject implements UserInterface
 
     /**
      * @param int $online
+     *
      * @return User
      */
     public function setOnline(int $online): User
@@ -304,6 +302,7 @@ class User extends DataObject implements UserInterface
 
     /**
      * @param string|null $locale
+     *
      * @return User
      */
     public function setLocale(?string $locale): User
@@ -321,6 +320,7 @@ class User extends DataObject implements UserInterface
 
     /**
      * @param int $last_login
+     *
      * @return User
      */
     public function setLastLogin(int $last_login): User
@@ -338,6 +338,7 @@ class User extends DataObject implements UserInterface
 
     /**
      * @param int|null $last_online
+     *
      * @return User
      */
     public function setLastOnline(?int $last_online): User
@@ -355,6 +356,7 @@ class User extends DataObject implements UserInterface
 
     /**
      * @param Collection $currencies
+     *
      * @return User
      */
     public function setCurrencies(Collection $currencies): User
@@ -372,6 +374,7 @@ class User extends DataObject implements UserInterface
 
     /**
      * @param int $picked_daily_gift
+     *
      * @return User
      */
     public function setPickedDailyGift(int $picked_daily_gift): User
@@ -406,6 +409,7 @@ class User extends DataObject implements UserInterface
 
     /**
      * @param \DateTime $updated_at
+     *
      * @return User
      */
     public function setUpdatedAt(\DateTime $updated_at): User

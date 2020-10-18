@@ -11,14 +11,14 @@ use Ares\Framework\Model\Query\DataObjectManager;
 use Illuminate\Database\Capsule\Manager;
 
 /**
- * Class SearchBuilderFactory
+ * Class DataObjectManagerFactory
  *
  * @package Ares\Framework\Factory
  */
 class DataObjectManagerFactory
 {
     /**
-     * Creates new SearchBuilder instance.
+     * Creates new DataObject instance.
      *
      * @param string $entity
      * @return DataObjectManager

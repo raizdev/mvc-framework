@@ -12,7 +12,7 @@ use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
 
 /**
- * Class SearchBuilder
+ * Class DataObjectManager
  *
  * @package Ares\Framework\Model\Query
  */
