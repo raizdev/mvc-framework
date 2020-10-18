@@ -7,6 +7,7 @@
 
 namespace Ares\User\Entity;
 
+use Ares\Framework\Exception\CacheException;
 use Ares\Framework\Model\DataObject;
 use Ares\Permission\Entity\Permission;
 use Ares\Role\Repository\RoleRepository;
@@ -76,7 +77,11 @@ class User extends DataObject implements UserInterface
             )
             ->where('users.id', $this->getId());
 
-        $roles = $roleRepository->getList($dataObjectManager);
+        try {
+            $roles = $roleRepository->getList($dataObjectManager);
+        } catch (CacheException $e) {
+            return null;
+        }
 
         if (!$roles->toArray()) {
             return null;
