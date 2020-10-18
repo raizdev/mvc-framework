@@ -25,7 +25,10 @@ class User extends DataObject implements UserInterface
 
     /** @var array */
     public const HIDDEN = [
-        UserInterface::COLUMN_PASSWORD
+        UserInterface::COLUMN_PASSWORD,
+        UserInterface::COLUMN_AUTH_TICKET,
+        UserInterface::COLUMN_IP_CURRENT,
+        UserInterface::COLUMN_IP_REGISTER
     ];
 
     /**
