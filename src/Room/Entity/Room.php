@@ -59,6 +59,24 @@ class Room extends DataObject implements RoomInterface
     /**
      * @return string
      */
+    public function getName(): string
+    {
+        return $this->getData(RoomInterface::COLUMN_NAME);
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return Room
+     */
+    public function setName(string $name): Room
+    {
+        return $this->setData(RoomInterface::COLUMN_NAME, $name);
+    }
+
+    /**
+     * @return string
+     */
     public function getDescription(): string
     {
         return $this->getData(RoomInterface::COLUMN_DESCRIPTION);
