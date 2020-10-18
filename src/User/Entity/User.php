@@ -7,11 +7,9 @@
 
 namespace Ares\User\Entity;
 
-use Ares\Framework\Factory\DataObjectManagerFactory;
 use Ares\Framework\Model\DataObject;
 use Ares\Permission\Entity\Permission;
 use Ares\User\Entity\Contract\UserInterface;
-use Ares\User\Repository\UserRepository;
 use Doctrine\Common\Collections\Collection;
 
 /**
@@ -362,6 +360,23 @@ class User extends DataObject implements UserInterface
     public function setCurrencies(Collection $currencies): User
     {
         return $this->setData(UserInterface::COLUMN_CREDITS, $currencies);
+    }
+
+    /**
+     * @return int
+     */
+    public function getPickedDailyGift(): int
+    {
+        return $this->getData(UserInterface::COLUMN_PICKED_DAILY_GIFT);
+    }
+
+    /**
+     * @param int $picked_daily_gift
+     * @return User
+     */
+    public function setPickedDailyGift(int $picked_daily_gift): User
+    {
+        return $this->setData(UserInterface::COLUMN_PICKED_DAILY_GIFT, $picked_daily_gift);
     }
 
     /**
