@@ -172,6 +172,7 @@ abstract class BaseRepository
      * Generates cache key.
      *
      * @param DataObjectManager $dataObjectManager
+     *
      * @return string
      */
     private function getCacheKey(DataObjectManager $dataObjectManager): string
@@ -179,8 +180,8 @@ abstract class BaseRepository
         $sql = $dataObjectManager->toSql();
         $bindings = $dataObjectManager->getBindings();
 
-        $query = 'TODO: Add cache key with sql and bindings as best practice.';
+        $cacheKey = vsprintf(str_replace("?", "%s", $sql), $bindings);
 
-        return hash('tiger192,3', $query);
+        return hash('tiger192,3', $cacheKey);
     }
 }
