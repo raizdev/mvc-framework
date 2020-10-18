@@ -19,6 +19,7 @@
         "ext-sockets": "*",
         "cocur/slugify": "dev-master",
         "illuminate/database": "^9.0@dev",
+        "illuminate/pagination": "^9.0@dev",
         "league/container": "dev-master",
         "monolog/monolog": "^1.24",
         "phlak/config": "dev-master",

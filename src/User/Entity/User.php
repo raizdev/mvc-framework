@@ -60,7 +60,7 @@ class User extends DataObject implements UserInterface
         $roleRepository = repository(RoleRepository::class);
         $dataObjectManager = $roleRepository->getDataObjectManager();
 
-        $roles = $dataObjectManager
+        $dataObjectManager
             ->select(['ares_roles.*'])
             ->join(
                 'ares_roles_user',
@@ -74,8 +74,9 @@ class User extends DataObject implements UserInterface
                 '=',
                 'ares_roles_user.user_id'
             )
-            ->where('users.id', $this->getId())
-            ->get();
+            ->where('users.id', $this->getId());
+
+        $roles = $roleRepository->getList($dataObjectManager);
 
         if (!$roles->toArray()) {
             return null;

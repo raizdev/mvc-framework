@@ -144,11 +144,7 @@ class AuthController extends BaseController
 //        ]);
 
         $dataObjectManager = $this->dataObjectManagerFactory->create(User::class);
-//        $result = $dataObjectManager->paginate();
-
-        /** @var User $result */
-        $result = $this->userRepository->get(96);
-        $result->getRoles();
+        $result = $this->userRepository->getPaginatedList($dataObjectManager, 1, 5);
 
         return $this->respond(
             $response,

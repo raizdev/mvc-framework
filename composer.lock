@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f67d06d6b0ab8939ee799e566605bdc5",
+    "content-hash": "ab45b182ca76935ac03c48329a732e3b",
     "packages": [
         {
             "name": "cocur/slugify",
@@ -498,6 +498,52 @@
             "description": "The Illuminate Macroable package.",
             "homepage": "https://laravel.com",
             "time": "2020-09-03T16:07:48+00:00"
+        },
+        {
+            "name": "illuminate/pagination",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/illuminate/pagination.git",
+                "reference": "07529f04d6375856774dde06af87877407043d78"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/illuminate/pagination/zipball/07529f04d6375856774dde06af87877407043d78",
+                "reference": "07529f04d6375856774dde06af87877407043d78",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "illuminate/collections": "^9.0",
+                "illuminate/contracts": "^9.0",
+                "illuminate/support": "^9.0",
+                "php": "^7.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "9.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Illuminate\\Pagination\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                }
+            ],
+            "description": "The Illuminate Pagination package.",
+            "homepage": "https://laravel.com",
+            "time": "2020-10-12T00:37:13+00:00"
         },
         {
             "name": "illuminate/support",
@@ -3307,6 +3353,7 @@
     "stability-flags": {
         "cocur/slugify": 20,
         "illuminate/database": 20,
+        "illuminate/pagination": 20,
         "league/container": 20,
         "phlak/config": 20,
         "phpfastcache/phpfastcache": 20,
@@ -3326,5 +3373,6 @@
     "platform-dev": [],
     "platform-overrides": {
         "php": "7.4"
-    }
+    },
+    "plugin-api-version": "1.1.0"
 }

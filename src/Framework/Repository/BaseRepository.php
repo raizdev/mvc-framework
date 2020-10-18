@@ -114,12 +114,32 @@ abstract class BaseRepository
     }
 
     /**
+     * Get paginated list of data objects by build search.
+     *
      * @param DataObjectManager $dataObjectManager
+     * @param int $pageNumber
+     * @param int $limit
      * @return LengthAwarePaginator
+     * @throws CacheException
      */
-    public function getPaginatedList(DataObjectManager $dataObjectManager): LengthAwarePaginator
-    {
-        return $dataObjectManager->paginate();
+    public function getPaginatedList(
+        DataObjectManager $dataObjectManager,
+        int $pageNumber,
+        int $limit
+    ): LengthAwarePaginator {
+        $cacheKey = $this->getCacheKey($dataObjectManager, (string) $pageNumber, (string) $limit);
+
+        $collection = $this->cacheService->get($this->cacheCollectionPrefix . $cacheKey);
+
+        if ($collection) {
+            return unserialize($collection);
+        }
+
+        $collection = $dataObjectManager->paginate($limit, ['*'], 'page', $pageNumber);
+
+        $this->cacheService->set($this->cacheCollectionPrefix . $cacheKey, serialize($collection));
+
+        return $collection;
     }
 
     /**
@@ -183,14 +203,15 @@ abstract class BaseRepository
      *
      * @param DataObjectManager $dataObjectManager
      *
+     * @param string ...$postfix
      * @return string
      */
-    protected function getCacheKey(DataObjectManager $dataObjectManager): string
+    protected function getCacheKey(DataObjectManager $dataObjectManager, string ...$postfix): string
     {
         $sql = $dataObjectManager->toSql();
         $bindings = $dataObjectManager->getBindings();
 
-        $cacheKey = vsprintf(str_replace("?", "%s", $sql), $bindings);
+        $cacheKey = vsprintf(str_replace("?", "%s", $sql), $bindings) . implode($postfix);
 
         return hash('tiger192,3', $cacheKey);
     }
