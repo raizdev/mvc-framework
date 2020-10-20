@@ -7,6 +7,7 @@
 
 namespace Ares\Framework\Model\Query;
 
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Model\DataObject;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
