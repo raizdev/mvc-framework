@@ -45,12 +45,15 @@ class DataObjectManager extends Builder
                 unset($item->$column);
             }
 
+            if(isset($item->aggregate)) {
+                $items[] = $item;
+                continue;
+            }
+
             $entity = new $this->entity($item);
 
-            if (!$entity->getData('aggregate')) {
-                foreach ($this->relations as $relation) {
-                    $entity->{$relation}();
-                }
+            foreach ($this->relations as $relation) {
+                $entity->{$relation}();
             }
 
             $items[] = $entity;
