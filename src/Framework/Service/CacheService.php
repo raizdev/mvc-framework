@@ -7,8 +7,8 @@
 
 namespace Ares\Framework\Service;
 
-use Ares\Framework\Exception\CacheException;
 use Phpfastcache\Helper\Psr16Adapter as FastCache;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class CacheService
@@ -23,21 +23,29 @@ class CacheService
     private FastCache $fastCache;
 
     /**
+     * @var LoggerInterface
+     */
+    private LoggerInterface $logger;
+
+    /**
      * CacheService constructor.
      *
      * @param FastCache $fastCache
+     * @param LoggerInterface $logger
      */
     public function __construct(
-        FastCache $fastCache
+        FastCache $fastCache,
+        LoggerInterface $logger
     ) {
         $this->fastCache = $fastCache;
+        $this->logger = $logger;
     }
 
     /**
-     * @param string $key
+     * Checks whether cache is set or not.
      *
+     * @param string $key
      * @return bool
-     * @throws CacheException
      */
     public function has(string $key): bool
     {
@@ -48,19 +56,17 @@ class CacheService
 
             return $this->fastCache->has($key);
         } catch (\Exception $exception) {
-            throw new CacheException(
-                $exception->getMessage(),
-                $exception->getCode(),
-                $exception
+            $this->logger->error(
+                $exception->getMessage()
             );
         }
     }
 
     /**
-     * @param string $key
+     * Get single cache entry.
      *
+     * @param string $key
      * @return  mixed
-     * @throws CacheException
      */
     public function get(string $key)
     {
@@ -71,40 +77,40 @@ class CacheService
 
             return $this->fastCache->get($key);
         } catch (\Exception $exception) {
-            throw new CacheException(
-                $exception->getMessage(),
-                $exception->getCode(),
-                $exception
+            $this->logger->error(
+                $exception->getMessage()
             );
+
+            return null;
         }
     }
 
     /**
-     * @param array $keys
+     * Get multiple cache entries by keys.
      *
-     * @return string
-     * @throws CacheException
+     * @param array $keys
+     * @return array
      */
-    public function getMultiple(array $keys): string
+    public function getMultiple(array $keys): array
     {
         try {
             return $this->fastCache->getMultiple($keys);
         } catch (\Exception $exception) {
-            throw new CacheException(
-                $exception->getMessage(),
-                $exception->getCode(),
-                $exception
+            $this->logger->error(
+                $exception->getMessage()
             );
+
+            return [];
         }
     }
 
     /**
+     * Set single cache entry.
+     *
      * @param string $key
      * @param mixed $value
      * @param int $ttl
-     *
      * @return bool
-     * @throws CacheException
      */
     public function set(string $key, $value, int $ttl = 0): bool
     {
@@ -115,20 +121,20 @@ class CacheService
 
             return $this->fastCache->set($key, $value, $this->getTTL($ttl));
         } catch (\Exception $exception) {
-            throw new CacheException(
-                $exception->getMessage(),
-                $exception->getCode(),
-                $exception
+            $this->logger->error(
+                $exception->getMessage()
             );
+
+            return false;
         }
     }
 
     /**
+     * Sets multiple cache entries.
+     *
      * @param array $values
      * @param int $ttl
-     *
      * @return bool
-     * @throws CacheException
      */
     public function setMultiple(array $values, int $ttl = 0): bool
     {
@@ -139,19 +145,19 @@ class CacheService
 
             return $this->fastCache->setMultiple($values, $this->getTTL($ttl));
         } catch (\Exception $exception) {
-            throw new CacheException(
-                $exception->getMessage(),
-                $exception->getCode(),
-                $exception
+            $this->logger->error(
+                $exception->getMessage()
             );
+
+            return false;
         }
     }
 
     /**
-     * @param string $key
+     * Cleares specific cache entry by key.
      *
+     * @param string $key
      * @return bool
-     * @throws CacheException
      */
     public function delete(string $key): bool
     {
@@ -162,19 +168,17 @@ class CacheService
 
             return $this->fastCache->delete($key);
         } catch (\Exception $exception) {
-            throw new CacheException(
-                $exception->getMessage(),
-                $exception->getCode(),
-                $exception
+            $this->logger->error(
+                $exception->getMessage()
             );
         }
     }
 
     /**
-     * @param array $keys
+     * Cleares multiple cache entries by keys.
      *
+     * @param array $keys
      * @return bool
-     * @throws CacheException
      */
     public function deleteMultiple(array $keys): bool
     {
@@ -185,17 +189,18 @@ class CacheService
 
             return $this->fastCache->deleteMultiple($keys);
         } catch (\Exception $exception) {
-            throw new CacheException(
-                $exception->getMessage(),
-                $exception->getCode(),
-                $exception
+            $this->logger->error(
+                $exception->getMessage()
             );
+
+            return false;
         }
     }
 
     /**
+     * Cleares cache.
+     *
      * @return bool
-     * @throws CacheException
      */
     public function clear(): bool
     {
@@ -206,57 +211,40 @@ class CacheService
 
             return $this->fastCache->clear();
         } catch (\Exception $exception) {
-            throw new CacheException(
-                $exception->getMessage(),
-                $exception->getCode(),
-                $exception
+            $this->logger->error(
+                $exception->getMessage()
             );
+
+            return false;
         }
     }
 
     /**
-     * @param int $ttl
+     * Returns ttl for cache.
      *
+     * @param int $ttl
      * @return int|mixed
-     * @throws CacheException
      */
     private function getTTL(int $ttl)
     {
-        try {
-            if (!$ttl) {
-                $ttl = $_ENV['CACHE_TTL'];
-            }
-
-            return $ttl;
-        } catch (\Exception $exception) {
-            throw new CacheException(
-                $exception->getMessage(),
-                $exception->getCode(),
-                $exception
-            );
+        if (!$ttl) {
+            $ttl = $_ENV['CACHE_TTL'];
         }
+
+        return $ttl;
     }
 
     /**
-     * Check whether Caching is Enabled or not
+     * Check whether Caching is Enabled or not.
      *
      * @return bool
-     * @throws CacheException
      */
     private function isCacheEnabled(): bool
     {
-        try {
-            if (!$_ENV['CACHE_ENABLED']) {
-                return false;
-            }
-
-            return true;
-        } catch (\Exception $exception) {
-            throw new CacheException(
-                $exception->getMessage(),
-                $exception->getCode(),
-                $exception
-            );
+        if (!$_ENV['CACHE_ENABLED']) {
+            return false;
         }
+
+        return true;
     }
 }

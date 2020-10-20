@@ -7,11 +7,11 @@
 
 namespace Ares\User\Entity;
 
-use Ares\Framework\Exception\CacheException;
 use Ares\Framework\Model\DataObject;
 use Ares\Permission\Entity\Permission;
 use Ares\Role\Repository\RoleRepository;
 use Ares\User\Entity\Contract\UserInterface;
+use Ares\User\Repository\UserRepository;
 use Illuminate\Support\Collection;
 
 /**
@@ -53,6 +53,47 @@ class User extends DataObject implements UserInterface
     public function setId(int $id): User
     {
         return $this->setData(UserInterface::COLUMN_ID, $id);
+    }
+
+    /**
+     * @return Collection|null
+     */
+    public function getRoles(): ?Collection
+    {
+        $roles = $this->getData('roles');
+
+        if ($roles) {
+            return $roles;
+        }
+
+        $userRepository = repository(UserRepository::class);
+        $roleRepository = repository(RoleRepository::class);
+
+        $roles = $userRepository->getManyToMany(
+            $roleRepository,
+            $this->getId(),
+            'ares_roles_user',
+            'user_id',
+            'role_id'
+        );
+
+        if (!$roles->toArray()) {
+            return null;
+        }
+
+        $this->setRoles($roles);
+
+        return $roles;
+    }
+
+    /**
+     * @param Collection $roles
+     *
+     * @return User
+     */
+    public function setRoles(Collection $roles): User
+    {
+        return $this->setData('roles', $roles);
     }
 
     /**
@@ -412,60 +453,5 @@ class User extends DataObject implements UserInterface
     public function setUpdatedAt(\DateTime $updated_at): User
     {
         return $this->setData(UserInterface::COLUMN_UPDATED_AT, $updated_at);
-    }
-
-    /**
-     * @return Collection|null
-     */
-    public function getRoles(): ?Collection
-    {
-        $roles = $this->getData('roles');
-
-        if ($roles) {
-            return $roles;
-        }
-
-        $roleRepository = repository(RoleRepository::class);
-        $dataObjectManager = $roleRepository->getDataObjectManager();
-
-        $dataObjectManager
-            ->select(['ares_roles.*'])
-            ->join(
-                'ares_roles_user',
-                'ares_roles.id',
-                '=',
-                'ares_roles_user.role_id'
-            )
-            ->join(
-                'users',
-                'users.id',
-                '=',
-                'ares_roles_user.user_id'
-            )
-            ->where('users.id', $this->getId());
-
-        try {
-            $roles = $roleRepository->getList($dataObjectManager);
-        } catch (CacheException $e) {
-            return null;
-        }
-
-        if (!$roles->toArray()) {
-            return null;
-        }
-
-        $this->setRoles($roles);
-
-        return $roles;
-    }
-
-    /**
-     * @param Collection $roles
-     *
-     * @return User
-     */
-    public function setRoles(Collection $roles): User
-    {
-        return $this->setData('roles', $roles);
     }
 }

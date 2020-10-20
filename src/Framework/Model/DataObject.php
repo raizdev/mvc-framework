@@ -14,6 +14,12 @@ namespace Ares\Framework\Model;
  */
 class DataObject
 {
+    /** @var string */
+    public const PRIMARY_KEY = 'id';
+
+    /** @var string */
+    public const TABLE = '';
+
     /** @var array */
     public const HIDDEN = [];
 

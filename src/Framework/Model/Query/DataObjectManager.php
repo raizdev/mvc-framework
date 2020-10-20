@@ -7,7 +7,6 @@
 
 namespace Ares\Framework\Model\Query;
 
-use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Model\DataObject;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
@@ -77,7 +76,8 @@ class DataObjectManager extends Builder
      * Add relation by key to collection call.
      *
      * @param string $relation
-     * @return DataObject
+     *
+     * @return DataObjectManager
      */
     public function addRelation(string $relation): DataObjectManager
     {
@@ -148,7 +148,8 @@ class DataObjectManager extends Builder
             unset(
                 $constants['TABLE'],
                 $constants['HIDDEN'],
-                $constants['RELATIONS']
+                $constants['RELATIONS'],
+                $constants['PRIMARY_KEY']
             );
 
             return array_values($constants);
