@@ -8,8 +8,9 @@
 namespace Ares\Payment\Controller;
 
 use Ares\Framework\Controller\BaseController;
+use Ares\Framework\Exception\CacheException;
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\ValidationException;
-use Ares\Framework\Model\Adapter\DoctrineSearchCriteria;
 use Ares\Framework\Service\ValidationService;
 use Ares\Payment\Entity\Payment;
 use Ares\Payment\Exception\PaymentException;
@@ -18,10 +19,6 @@ use Ares\Payment\Service\CreatePaymentService;
 use Ares\User\Entity\User;
 use Ares\User\Exception\UserException;
 use Ares\User\Repository\UserRepository;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -53,45 +50,35 @@ class PaymentController extends BaseController
     private ValidationService $validationService;
 
     /**
-     * @var DoctrineSearchCriteria
-     */
-    private DoctrineSearchCriteria $searchCriteria;
-
-    /**
      * PaymentController constructor.
      *
      * @param   PaymentRepository       $paymentRepository
      * @param   UserRepository          $userRepository
      * @param   CreatePaymentService    $createPaymentService
      * @param   ValidationService       $validationService
-     * @param   DoctrineSearchCriteria  $searchCriteria
      */
     public function __construct(
         PaymentRepository $paymentRepository,
         UserRepository $userRepository,
         CreatePaymentService $createPaymentService,
-        ValidationService $validationService,
-        DoctrineSearchCriteria $searchCriteria
+        ValidationService $validationService
     ) {
         $this->paymentRepository = $paymentRepository;
         $this->userRepository = $userRepository;
         $this->createPaymentService = $createPaymentService;
         $this->validationService = $validationService;
-        $this->searchCriteria = $searchCriteria;
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request  $request
+     * @param Response $response
      *
      * @return Response
-     * @throws ValidationException
      * @throws PaymentException
      * @throws UserException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws InvalidArgumentException
+     * @throws ValidationException
+     * @throws CacheException
+     * @throws DataObjectManagerException
      */
     public function create(Request $request, Response $response): Response
     {
@@ -104,9 +91,9 @@ class PaymentController extends BaseController
         ]);
 
         /** @var User $user */
-        $user = $this->getUser($this->userRepository, $request, false);
+        $user = $this->getUser($this->userRepository, $request);
 
-        $customResponse = $this->createPaymentService->execute($user, $parsedData);
+        $customResponse = $this->createPaymentService->execute($user->getId(), $parsedData);
 
         return $this->respond(
             $response,
@@ -115,14 +102,13 @@ class PaymentController extends BaseController
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request     $request
+     * @param Response    $response
      * @param             $args
      *
      * @return Response
-     * @throws InvalidArgumentException
+     * @throws CacheException
      * @throws PaymentException
-     * @throws PhpfastcacheSimpleCacheException
      */
     public function payment(Request $request, Response $response, $args): Response
     {
@@ -144,13 +130,12 @@ class PaymentController extends BaseController
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request     $request
+     * @param Response    $response
      * @param             $args
      *
      * @return Response
-     * @throws InvalidArgumentException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws CacheException
      */
     public function list(Request $request, Response $response, $args): Response
     {
@@ -160,32 +145,27 @@ class PaymentController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        $this->searchCriteria->setPage((int) $page)
-            ->setLimit((int) $resultPerPage)
-            ->addOrder('id', 'DESC');
+        $searchCriteria = $this->paymentRepository
+            ->getDataObjectManager()
+            ->orderBy('id', 'DESC');
 
-        $payments = $this->paymentRepository->paginate($this->searchCriteria);
+        $payments = $this->paymentRepository->getPaginatedList($searchCriteria, (int) $page, (int) $resultPerPage);
 
         return $this->respond(
             $response,
             response()
-                ->setData(
-                    $payments->toArray()
-                )
+                ->setData($payments)
         );
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request     $request
+     * @param Response    $response
      * @param             $args
      *
      * @return Response
-     * @throws InvalidArgumentException
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @throws DataObjectManagerException
      * @throws PaymentException
-     * @throws PhpfastcacheSimpleCacheException
      */
     public function delete(Request $request, Response $response, $args): Response
     {

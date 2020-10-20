@@ -5,11 +5,11 @@
  * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
  */
 
-namespace Ares\Forum\Service\Comment;
+namespace Ares\Article\Service;
 
-use Ares\Forum\Entity\Comment;
-use Ares\Forum\Exception\CommentException;
-use Ares\Forum\Repository\CommentRepository;
+use Ares\Article\Entity\Comment;
+use Ares\Article\Exception\CommentException;
+use Ares\Article\Repository\CommentRepository;
 use Ares\Framework\Exception\CacheException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
@@ -17,7 +17,7 @@ use Ares\Framework\Interfaces\CustomResponseInterface;
 /**
  * Class EditCommentService
  *
- * @package Ares\Forum\Service\Comment
+ * @package Ares\Article\Service
  */
 class EditCommentService
 {
@@ -29,7 +29,7 @@ class EditCommentService
     /**
      * EditCommentService constructor.
      *
-     * @param   CommentRepository  $commentRepository
+     * @param CommentRepository $commentRepository
      */
     public function __construct(
         CommentRepository $commentRepository
@@ -47,14 +47,14 @@ class EditCommentService
      */
     public function execute(array $data): CustomResponseInterface
     {
-        /** @var int $comment_id */
-        $comment_id = $data['comment_id'];
+        /** @var int $commentId */
+        $commentId = $data['comment_id'];
 
         /** @var string $content */
         $content = $data['content'];
 
         /** @var Comment $comment */
-        $comment = $this->commentRepository->get((int) $comment_id);
+        $comment = $this->commentRepository->get($commentId);
 
         if (!$comment) {
             throw new CommentException(__('Comment not found'));

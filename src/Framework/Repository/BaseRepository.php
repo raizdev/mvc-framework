@@ -68,12 +68,13 @@ abstract class BaseRepository
     /**
      * Get DataObject by id.
      *
-     * @param int $id
+     * @param int    $id
      * @param string $column
+     *
      * @return DataObject|null
      * @throws CacheException
      */
-    public function get(int $id, string $column = self::COLUMN_ID): DataObject
+    public function get(int $id, string $column = self::COLUMN_ID): ?DataObject
     {
         $entity = $this->cacheService->get($this->cachePrefix . $id);
 
@@ -81,7 +82,7 @@ abstract class BaseRepository
             return unserialize($entity);
         }
 
-        $dataObjectManager = $this->dataObjectManagerFactory->create($this->entity);
+        $dataObjectManager = $this->getDataObjectManager();
         $entity = $dataObjectManager->where($column, $id)->first();
 
         $this->cacheService->set($this->cachePrefix . $id, serialize($entity));
@@ -93,16 +94,18 @@ abstract class BaseRepository
      * Get list of data objects by build search.
      *
      * @param DataObjectManager $dataObjectManager
+     * @param bool              $cachedList
+     *
      * @return Collection
      * @throws CacheException
      */
-    public function getList(DataObjectManager $dataObjectManager): Collection
+    public function getList(DataObjectManager $dataObjectManager, bool $cachedList = true): Collection
     {
         $cacheKey = $this->getCacheKey($dataObjectManager);
 
         $collection = $this->cacheService->get($this->cacheCollectionPrefix . $cacheKey);
 
-        if ($collection) {
+        if ($collection && $cachedList) {
             return unserialize($collection);
         }
 
@@ -164,7 +167,8 @@ abstract class BaseRepository
                 return $entity;
             }
 
-            $dataObjectManager->insert($entity->getData());
+            $polyMorphedId = $dataObjectManager->insertGetId($entity->getData());
+            $entity->setId($polyMorphedId);
 
             return $entity;
         } catch (\Exception $exception) {

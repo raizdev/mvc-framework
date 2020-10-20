@@ -7,14 +7,12 @@
 
 namespace Ares\Role\Service;
 
+use Ares\Framework\Exception\CacheException;
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\Role\Entity\Permission;
 use Ares\Role\Exception\RoleException;
 use Ares\Role\Repository\PermissionRepository;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 
 /**
  * Class CreatePermissionService
@@ -44,16 +42,19 @@ class CreatePermissionService
      *
      * @return CustomResponseInterface
      * @throws RoleException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws InvalidArgumentException
+     * @throws CacheException
+     * @throws DataObjectManagerException
      */
     public function execute(array $data): CustomResponseInterface
     {
-        $existingPermission = $this->permissionRepository->getOneBy([
-           'name' => $data['name']
-        ]);
+        $searchCriteria = $this->permissionRepository
+            ->getDataObjectManager()
+            ->where('name', $data['name']);
+
+        /** @var Permission $existingPermission */
+        $existingPermission = $this->permissionRepository
+            ->getList($searchCriteria)
+            ->first();
 
         if ($existingPermission) {
             throw new RoleException(__('There is already a Permission with that name'));

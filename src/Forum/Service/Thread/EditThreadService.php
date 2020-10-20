@@ -11,12 +11,10 @@ use Ares\Forum\Entity\Thread;
 use Ares\Forum\Entity\Topic;
 use Ares\Forum\Exception\ThreadException;
 use Ares\Forum\Repository\ThreadRepository;
+use Ares\Framework\Exception\CacheException;
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\User\Entity\User;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 
 /**
  * Class EditThreadService
@@ -42,16 +40,14 @@ class EditThreadService
     }
 
     /**
-     * @param   Topic  $topic
-     * @param   User   $user
-     * @param   array  $data
+     * @param Topic $topic
+     * @param User  $user
+     * @param array $data
      *
      * @return CustomResponseInterface
      * @throws ThreadException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws InvalidArgumentException
+     * @throws CacheException
+     * @throws DataObjectManagerException
      */
     public function execute(Topic $topic, User $user, array $data): CustomResponseInterface
     {
@@ -67,12 +63,18 @@ class EditThreadService
         /** @var string $content */
         $content = $data['content'];
 
+        $searchCriteria = $this->threadRepository
+            ->getDataObjectManager()
+            ->where([
+                'user_id' => $user->getId(),
+                'topic_id' => $topic->getId(),
+                'slug' => $slug
+            ]);
+
         /** @var Thread $thread */
-        $thread = $this->threadRepository->getOneBy([
-           'user' => $user->getId(),
-           'topic' => $topic->getId(),
-           'slug' => $slug
-        ]);
+        $thread = $this->threadRepository
+            ->getList($searchCriteria)
+            ->first();
 
         if (!$thread) {
             throw new ThreadException(__('Thread not found'));
@@ -84,8 +86,9 @@ class EditThreadService
             ->setContent($content);
 
         /** @var Thread $thread */
-        $thread = $this->threadRepository->update($thread);
+        $thread = $this->threadRepository->save($thread);
 
-        return response()->setData($thread);
+        return response()
+            ->setData($thread);
     }
 }

@@ -8,11 +8,8 @@
 namespace Ares\Permission\Controller;
 
 use Ares\Framework\Controller\BaseController;
-use Ares\Framework\Model\Adapter\DoctrineSearchCriteria;
+use Ares\Framework\Exception\CacheException;
 use Ares\Permission\Repository\PermissionRepository;
-use Doctrine\Common\Collections\Criteria;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -29,22 +26,14 @@ class PermissionController extends BaseController
     private PermissionRepository $permissionRepository;
 
     /**
-     * @var DoctrineSearchCriteria
-     */
-    private DoctrineSearchCriteria $searchCriteria;
-
-    /**
      * PermissionController constructor.
      *
      * @param PermissionRepository   $permissionRepository
-     * @param DoctrineSearchCriteria $searchCriteria
      */
     public function __construct(
-        PermissionRepository $permissionRepository,
-        DoctrineSearchCriteria $searchCriteria
+        PermissionRepository $permissionRepository
     ) {
         $this->permissionRepository = $permissionRepository;
-        $this->searchCriteria = $searchCriteria;
     }
 
     /**
@@ -54,29 +43,21 @@ class PermissionController extends BaseController
      * @param             $args
      *
      * @return Response
-     * @throws InvalidArgumentException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws CacheException
      */
     public function listUserWithRank(Request $request, Response $response, $args): Response
     {
-        $this->searchCriteria
-            ->addOrder('id', 'DESC');
+        $searchCriteria = $this->permissionRepository
+            ->getDataObjectManager()
+            ->where('id', '>', 3)
+            ->orderBy('id', 'DESC');
 
-        $users = $this->permissionRepository->getList($this->searchCriteria, false);
-        $criteria = Criteria::create()
-            ->andWhere(
-                Criteria::expr()
-                    ->gt('id', '3')
-            );
+        $users = $this->permissionRepository->getList($searchCriteria);
 
         return $this->respond(
             $response,
             response()
-                ->setData(
-                    $users
-                        ->matching($criteria)
-                        ->toArray()
-                )
+                ->setData($users)
         );
     }
 }

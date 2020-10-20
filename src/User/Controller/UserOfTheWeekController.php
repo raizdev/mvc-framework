@@ -13,6 +13,8 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 /**
+ * @TODO Create User Of The Week based on likes
+ *
  * Class UserOfTheWeekController
  *
  * @package Ares\User\Controller

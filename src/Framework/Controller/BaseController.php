@@ -7,12 +7,11 @@
 
 namespace Ares\Framework\Controller;
 
+use Ares\Framework\Exception\CacheException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\User\Entity\User;
 use Ares\User\Exception\UserException;
 use Ares\User\Repository\UserRepository;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -44,20 +43,17 @@ abstract class BaseController
      * @param UserRepository $userRepository
      * @param Request        $request
      *
-     * @param bool           $cachedEntity
-     *
      * @return object|User
-     * @throws InvalidArgumentException
-     * @throws PhpfastcacheSimpleCacheException
      * @throws UserException
+     * @throws CacheException
      */
-    protected function getUser(UserRepository $userRepository, Request $request, bool $cachedEntity = true): object
+    protected function getUser(UserRepository $userRepository, Request $request): object
     {
         /** @var array $authUser */
         $authUser = $this->authUser($request);
 
         /** @var User $user */
-        $user = $userRepository->get((int)$authUser, $cachedEntity);
+        $user = $userRepository->get((int) $authUser);
 
         if (!$user) {
             throw new UserException(__('User doesnt exists.'), 404);

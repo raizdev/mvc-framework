@@ -7,16 +7,15 @@
 
 namespace Ares\User\Service\Gift;
 
+use Ares\Framework\Exception\CacheException;
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\User\Entity\Gift\DailyGift;
 use Ares\User\Entity\User;
 use Ares\User\Exception\Gift\DailyGiftException;
 use Ares\User\Repository\Gift\DailyGiftRepository;
 use Ares\User\Repository\UserRepository;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
+use Exception;
 
 /**
  * Class PickGiftService
@@ -53,24 +52,28 @@ class PickGiftService
      * Checks and fetches user daily gift.
      *
      * @param User $user
+     *
      * @return CustomResponseInterface
+     * @throws CacheException
      * @throws DailyGiftException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws InvalidArgumentException
+     * @throws DataObjectManagerException
      */
     public function execute(User $user): CustomResponseInterface
     {
-        $userId = $user->getId();
+        $searchCriteria = $this->dailyGiftRepository
+            ->getDataObjectManager()
+            ->where('user_id', $user->getId());
 
         /** @var DailyGift $dailyGift */
-        $dailyGift = $this->dailyGiftRepository->getOneBy([
-            'user_id' => $userId
-        ]);
+        $dailyGift = $this->dailyGiftRepository
+            ->getList($searchCriteria)
+            ->first();
 
         if (!$dailyGift) {
-            $dailyGift = $this->getNewDailyGift($userId);
+            $dailyGift = $this->getNewDailyGift($user);
+
+            return response()
+                ->setData($dailyGift);
         }
 
         $pickTime = $dailyGift->getPickTime();
@@ -89,7 +92,7 @@ class PickGiftService
      * Returns random gift amount.
      *
      * @return int
-     * @throws \Exception
+     * @throws Exception
      */
     private function getRandomGiftAmount(): int
     {
@@ -99,14 +102,11 @@ class PickGiftService
     /**
      * Applies gift to user.
      *
-     * @param   DailyGift  $dailyGift
-     * @param   User       $user
-     * @param   int        $amount
+     * @param DailyGift $dailyGift
+     * @param User      $user
+     * @param int       $amount
      *
-     * @throws InvalidArgumentException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws DataObjectManagerException
      */
     private function applyGift(DailyGift $dailyGift, User $user, int $amount): void
     {
@@ -116,32 +116,35 @@ class PickGiftService
         $user->setCredits($credits);
         $dailyGift->setPickTime(strtotime('+1 day'));
 
-        $this->userRepository->update($user);
-        $this->dailyGiftRepository->update($dailyGift);
+        $this->userRepository->save($user);
+        $this->dailyGiftRepository->save($dailyGift);
     }
 
     /**
      * Saves and returns new daily gift.
      *
-     * @param   int  $userId
+     * @param User $user
      *
      * @return DailyGift
-     * @throws InvalidArgumentException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws \Exception
+     * @throws DataObjectManagerException
+     * @throws Exception
      */
-    private function getNewDailyGift(int $userId): DailyGift
+    private function getNewDailyGift(User $user): DailyGift
     {
         $dailyGift = new DailyGift();
 
         $dailyGift
-            ->setUserId($userId)
+            ->setUserId($user->getId())
             ->setPickTime(strtotime('+1 day'))
             ->setAmount($this->getRandomGiftAmount());
 
+        $credits = $user->getCredits();
+        $credits += $this->getRandomGiftAmount();
+
+        $user->setCredits($credits);
+
         $this->dailyGiftRepository->save($dailyGift);
+        $this->userRepository->save($user);
 
         return $dailyGift;
     }

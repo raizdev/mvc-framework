@@ -8,9 +8,9 @@
 namespace Ares\Guild\Controller;
 
 use Ares\Framework\Controller\BaseController;
+use Ares\Framework\Exception\CacheException;
 use Ares\Framework\Model\Adapter\DoctrineSearchCriteria;
 use Ares\Guild\Entity\Guild;
-use Ares\Guild\Entity\GuildMember;
 use Ares\Guild\Exception\GuildException;
 use Ares\Guild\Repository\GuildMemberRepository;
 use Ares\Guild\Repository\GuildRepository;
@@ -59,14 +59,13 @@ class GuildController extends BaseController
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request     $request
+     * @param Response    $response
      * @param             $args
      *
      * @return Response
      * @throws GuildException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws InvalidArgumentException
+     * @throws CacheException
      */
     public function guild(Request $request, Response $response, $args): Response
     {
@@ -74,19 +73,19 @@ class GuildController extends BaseController
         $id = $args['id'];
 
         /** @var Guild $guild */
-        $guild = $this->guildRepository->get($id);
+        $guild = $this->guildRepository->get((int) $id);
 
-        /** @var GuildMember $memberCount */
-        $memberCount = $this->guildMemberRepository->count([
-            'guild' => $id
-        ]);
-
-        if (is_null($guild)) {
+        if (!$guild) {
             throw new GuildException(__('No specific Guild found'));
         }
 
-        $guild->getRoom()->setGuild(null);
-        $guild->getRoom()->setOwner(null);
+        $searchCriteria = $this->guildMemberRepository
+            ->getDataObjectManager()
+            ->where('guild_id', $guild->getId());
+
+        $memberCount = $this->guildMemberRepository
+            ->getList($searchCriteria)
+            ->count();
 
         return $this->respond(
             $response,
@@ -99,14 +98,13 @@ class GuildController extends BaseController
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request     $request
+     * @param Response    $response
      *
      * @param             $args
      *
      * @return Response
-     * @throws InvalidArgumentException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws CacheException
      */
     public function list(Request $request, Response $response, $args): Response
     {
@@ -121,36 +119,33 @@ class GuildController extends BaseController
             ->setLimit((int) $resultPerPage)
             ->addOrder('id', 'DESC');
 
-        $guilds = $this->guildRepository->paginate($this->searchCriteria);
+        $searchCriteria = $this->guildRepository
+            ->getDataObjectManager()
+            ->orderBy('id', 'DESC');
+
+        $guilds = $this->guildRepository
+            ->getPaginatedList($searchCriteria, (int) $page, (int) $resultPerPage);
 
         return $this->respond(
             $response,
             response()
-                ->setData([
-                    'pagination' => [
-                        'totalPages' => $guilds->getPages(),
-                        'prevPage'   => $guilds->getPrevPage(),
-                        'nextPage'   => $guilds->getNextPage()
-                    ],
-                    'guilds'     => $guilds->toArray()
-                ])
+                ->setData($guilds)
         );
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request     $request
+     * @param Response    $response
      *
      * @param             $args
      *
      * @return Response
-     * @throws InvalidArgumentException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws CacheException
      */
     public function members(Request $request, Response $response, $args): Response
     {
         /** @var int $id */
-        $id = $args['id'];
+        $guildId = $args['guild_id'];
 
         /** @var int $page */
         $page = $args['page'];
@@ -158,37 +153,29 @@ class GuildController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        $this->searchCriteria
-            ->setPage((int) $page)
-            ->setLimit((int) $resultPerPage)
-            ->addFilter('guild', (int) $id)
-            ->addOrder('level_id', 'ASC');
+        $searchCriteria = $this->guildMemberRepository
+            ->getDataObjectManager()
+            ->where('guild_id', (int) $guildId)
+            ->orderBy('level_id', 'ASC');
 
-        $members = $this->guildMemberRepository->paginate($this->searchCriteria);
+        $members = $this->guildMemberRepository
+            ->getPaginatedList($searchCriteria, (int) $page, (int) $resultPerPage);
 
         return $this->respond(
             $response,
             response()
-                ->setData([
-                    'pagination' => [
-                        'totalPages' => $members->getPages(),
-                        'prevPage'   => $members->getPrevPage(),
-                        'nextPage'   => $members->getNextPage()
-                    ],
-                    'members'    => $members->toArray()
-                ])
+                ->setData($members)
         );
     }
 
     /**
      *
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request  $request
+     * @param Response $response
      *
      * @return Response
+     * @throws CacheException
      * @throws GuildException
-     * @throws InvalidArgumentException
-     * @throws PhpfastcacheSimpleCacheException
      */
     public function mostMembers(Request $request, Response $response): Response
     {

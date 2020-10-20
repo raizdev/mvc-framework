@@ -13,18 +13,15 @@ use Ares\Forum\Repository\ThreadRepository;
 use Ares\Forum\Service\Thread\CreateThreadService;
 use Ares\Forum\Service\Thread\EditThreadService;
 use Ares\Framework\Controller\BaseController;
+use Ares\Framework\Exception\CacheException;
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\ValidationException;
-use Ares\Framework\Model\Adapter\DoctrineSearchCriteria;
 use Ares\Framework\Service\ValidationService;
 use Ares\User\Entity\User;
 use Ares\User\Exception\UserException;
 use Ares\User\Repository\UserRepository;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\SimpleCache\InvalidArgumentException;
 
 class ThreadController extends BaseController
 {
@@ -54,11 +51,6 @@ class ThreadController extends BaseController
     private EditThreadService $editThreadService;
 
     /**
-     * @var DoctrineSearchCriteria
-     */
-    private DoctrineSearchCriteria $searchCriteria;
-
-    /**
      * CommentController constructor.
      *
      * @param   ThreadRepository        $threadRepository
@@ -66,37 +58,31 @@ class ThreadController extends BaseController
      * @param   CreateThreadService     $createThreadService
      * @param   EditThreadService       $editThreadService
      * @param   ValidationService       $validationService
-     * @param   DoctrineSearchCriteria  $searchCriteria
      */
     public function __construct(
         ThreadRepository $threadRepository,
         UserRepository $userRepository,
         CreateThreadService $createThreadService,
         EditThreadService $editThreadService,
-        ValidationService $validationService,
-        DoctrineSearchCriteria $searchCriteria
+        ValidationService $validationService
     ) {
         $this->threadRepository    = $threadRepository;
         $this->userRepository      = $userRepository;
         $this->createThreadService = $createThreadService;
         $this->editThreadService   = $editThreadService;
         $this->validationService   = $validationService;
-        $this->searchCriteria      = $searchCriteria;
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request  $request
+     * @param Response $response
      *
      * @return Response
-     * @throws InvalidArgumentException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws CacheException
+     * @throws DataObjectManagerException
      * @throws ThreadException
-     * @throws ValidationException
      * @throws UserException
-     * @throws \Psr\Cache\InvalidArgumentException
+     * @throws ValidationException
      */
     public function create(Request $request, Response $response): Response
     {
@@ -111,9 +97,9 @@ class ThreadController extends BaseController
         ]);
 
         /** @var User $user */
-        $user = $this->getUser($this->userRepository, $request, false);
+        $user = $this->getUser($this->userRepository, $request);
 
-        $customResponse = $this->createThreadService->execute($user, $parsedData);
+        $customResponse = $this->createThreadService->execute($user->getId(), $parsedData);
 
         return $this->respond(
             $response,
@@ -122,25 +108,33 @@ class ThreadController extends BaseController
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request     $request
+     * @param Response    $response
      * @param             $args
      *
      * @return Response
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws CacheException
      * @throws ThreadException
-     * @throws \Psr\Cache\InvalidArgumentException
      */
     public function thread(Request $request, Response $response, $args): Response
     {
         /** @var string $slug */
         $slug = $args['slug'];
 
-        /** @var int $topic */
-        $topic = $args['topic_id'];
+        /** @var int $topicId */
+        $topicId = $args['topic_id'];
+
+        $searchCriteria = $this->threadRepository
+            ->getDataObjectManager()
+            ->where([
+                'topic_id' => $topicId,
+                'slug' => $slug
+            ]);
 
         /** @var Thread $thread */
-        $thread = $this->threadRepository->findByCriteria((int) $topic, (string) $slug);
+        $thread = $this->threadRepository
+            ->getList($searchCriteria)
+            ->first();
 
         if (!$thread) {
             throw new ThreadException(__('No specific Thread found'), 404);
@@ -154,13 +148,12 @@ class ThreadController extends BaseController
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request     $request
+     * @param Response    $response
      * @param             $args
      *
      * @return Response
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws \Psr\Cache\InvalidArgumentException
+     * @throws CacheException
      */
     public function list(Request $request, Response $response, $args): Response
     {
@@ -171,36 +164,30 @@ class ThreadController extends BaseController
         $resultPerPage = $args['rpp'];
 
         /** @var int $topic */
-        $topic = $args['topic_id'];
+        $topicId = $args['topic_id'];
 
-        $this->searchCriteria
-            ->setPage((int) $page)
-            ->setLimit((int) $resultPerPage)
-            ->addFilter('topic', (int) $topic)
-            ->addOrder('id', 'DESC');
+        $searchCriteria = $this->threadRepository
+            ->getDataObjectManager()
+            ->where('topic_id', (int) $topicId)
+            ->orderBy('id', 'DESC');
 
-        $thread = $this->threadRepository->paginate($this->searchCriteria);
+        $thread = $this->threadRepository->getPaginatedList($searchCriteria, (int) $page, (int) $resultPerPage);
 
         return $this->respond(
             $response,
             response()
-                ->setData(
-                    $thread->toArray()
-                )
+                ->setData($thread)
         );
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request     $request
+     * @param Response    $response
      * @param             $args
      *
      * @return Response
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
      * @throws ThreadException
-     * @throws \Psr\Cache\InvalidArgumentException
+     * @throws DataObjectManagerException
      */
     public function delete(Request $request, Response $response, $args): Response
     {

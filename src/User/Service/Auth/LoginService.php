@@ -10,15 +10,14 @@ namespace Ares\User\Service\Auth;
 use Ares\Ban\Entity\Ban;
 use Ares\Ban\Exception\BanException;
 use Ares\Ban\Repository\BanRepository;
+use Ares\Framework\Exception\CacheException;
+use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Factory\DataObjectManagerFactory;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\Framework\Service\TokenService;
 use Ares\User\Entity\User;
 use Ares\User\Exception\LoginException;
 use Ares\User\Repository\UserRepository;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 use ReallySimpleJWT\Exception\ValidateException;
 
 /**
@@ -44,20 +43,28 @@ class LoginService
     private BanRepository $banRepository;
 
     /**
+     * @var DataObjectManagerFactory
+     */
+    private DataObjectManagerFactory $dataObjectManagerFactory;
+
+    /**
      * LoginService constructor.
      *
-     * @param   UserRepository  $userRepository
-     * @param   BanRepository   $banRepository
-     * @param   TokenService    $tokenService
+     * @param UserRepository           $userRepository
+     * @param BanRepository            $banRepository
+     * @param TokenService             $tokenService
+     * @param DataObjectManagerFactory $dataObjectManagerFactory
      */
     public function __construct(
         UserRepository $userRepository,
         BanRepository $banRepository,
-        TokenService $tokenService
+        TokenService $tokenService,
+        DataObjectManagerFactory $dataObjectManagerFactory
     ) {
         $this->userRepository = $userRepository;
         $this->banRepository  = $banRepository;
         $this->tokenService   = $tokenService;
+        $this->dataObjectManagerFactory = $dataObjectManagerFactory;
     }
 
     /**
@@ -67,40 +74,36 @@ class LoginService
      *
      * @return CustomResponseInterface
      * @throws BanException
-     * @throws InvalidArgumentException
      * @throws LoginException
-     * @throws PhpfastcacheSimpleCacheException
      * @throws ValidateException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws ValidateException
+     * @throws CacheException|DataObjectManagerException
      */
     public function login(array $data): CustomResponseInterface
     {
+        $searchCriteria = $this->userRepository
+            ->getDataObjectManager()
+            ->where('username', $data['username']);
+
         /** @var User $user */
-        $user = $this->userRepository->getOneBy([
-            'username' => $data['username']
-        ]);
+        $user = $this->userRepository
+            ->getList($searchCriteria)
+            ->first();
 
         if ($user === null || !password_verify($data['password'], $user->getPassword())) {
             throw new LoginException(__('general.failed'), 403);
         }
 
         /** @var Ban $isBanned */
-        $isBanned = $this->banRepository->getOneBy([
-            'user' => $user->getId()
-        ]);
+        $isBanned = $this->banRepository->get($user->getId());
 
         if ($isBanned && $isBanned->getBanExpire() > time()) {
             throw new BanException(__('general.banned', [$isBanned->getBanReason()]), 401);
         }
 
         $user->setLastLogin(time());
-        $user->setCurrentIP($data['ip_current']);
+        $user->setIpCurrent($data['ip_current']);
 
-        /** @var $user $this */
-        $this->userRepository->update($user);
+        $this->userRepository->save($user);
 
         /** @var TokenService $token */
         $token = $this->tokenService->execute($user->getId());

@@ -8,9 +8,11 @@
 namespace Ares\Vote\Controller;
 
 use Ares\Framework\Controller\BaseController;
+use Ares\Framework\Exception\CacheException;
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\ValidationException;
-use Ares\Framework\Model\Adapter\DoctrineSearchCriteria;
 use Ares\Framework\Service\ValidationService;
+use Ares\User\Entity\User;
 use Ares\User\Exception\UserException;
 use Ares\User\Repository\UserRepository;
 use Ares\Vote\Exception\VoteException;
@@ -19,11 +21,6 @@ use Ares\Vote\Service\CreateVoteService;
 use Ares\Vote\Service\DeleteVoteService;
 use Ares\Vote\Service\Votes\DecrementVoteService;
 use Ares\Vote\Service\Votes\IncrementVoteService;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -60,11 +57,6 @@ class VoteController extends BaseController
     private DeleteVoteService $deleteVoteService;
 
     /**
-     * @var DoctrineSearchCriteria
-     */
-    private DoctrineSearchCriteria $doctrineSearchCriteria;
-
-    /**
      * @var IncrementVoteService
      */
     private IncrementVoteService $incrementVoteService;
@@ -82,7 +74,6 @@ class VoteController extends BaseController
      * @param   ValidationService       $validationService
      * @param   CreateVoteService       $createVoteService
      * @param   DeleteVoteService       $deleteVoteService
-     * @param   DoctrineSearchCriteria  $doctrineSearchCriteria
      * @param   IncrementVoteService    $incrementVoteService
      * @param   DecrementVoteService    $decrementVoteService
      */
@@ -92,7 +83,6 @@ class VoteController extends BaseController
         ValidationService $validationService,
         CreateVoteService $createVoteService,
         DeleteVoteService $deleteVoteService,
-        DoctrineSearchCriteria $doctrineSearchCriteria,
         IncrementVoteService $incrementVoteService,
         DecrementVoteService $decrementVoteService
     ) {
@@ -101,7 +91,6 @@ class VoteController extends BaseController
         $this->validationService      = $validationService;
         $this->createVoteService      = $createVoteService;
         $this->deleteVoteService      = $deleteVoteService;
-        $this->doctrineSearchCriteria = $doctrineSearchCriteria;
         $this->incrementVoteService   = $incrementVoteService;
         $this->decrementVoteService   = $decrementVoteService;
     }
@@ -109,14 +98,12 @@ class VoteController extends BaseController
     /**
      * Create new vote.
      *
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request  $request
+     * @param Response $response
      *
      * @return Response
-     * @throws InvalidArgumentException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws CacheException
+     * @throws DataObjectManagerException
      * @throws UserException
      * @throws ValidationException
      * @throws VoteException
@@ -132,9 +119,9 @@ class VoteController extends BaseController
             'vote_type'   => 'required|numeric'
         ]);
 
-        $user = $this->getUser($this->userRepository, $request, false);
+        $user = $this->getUser($this->userRepository, $request);
 
-        $customResponse = $this->createVoteService->execute($user, $parsedData);
+        $customResponse = $this->createVoteService->execute($user->getId(), $parsedData);
 
         $result = $this->incrementVoteService
             ->execute(
@@ -144,7 +131,7 @@ class VoteController extends BaseController
             );
 
         if (!$result) {
-            $this->deleteVoteService->execute($user, $parsedData);
+            $this->deleteVoteService->execute($user->getId(), $parsedData);
             throw new VoteException(__('The entity could not be incremented.'), 500);
         }
 
@@ -161,24 +148,18 @@ class VoteController extends BaseController
      * @param   Response  $response
      *
      * @return Response
-     * @throws InvalidArgumentException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws UserException
+     * @throws UserException|CacheException
      */
     public function getTotalVotes(Request $request, Response $response)
     {
-        $this->doctrineSearchCriteria
-            ->addFilter(
-                'user',
-                $this->getUser(
-                    $this->userRepository,
-                    $request,
-                    false
-                )->getId()
-            );
+        /** @var User $user */
+        $user = $this->getUser($this->userRepository, $request)->getId();
 
-        /** @var ArrayCollection $votes */
-        $votes = $this->voteRepository->getList($this->doctrineSearchCriteria, false)->toArray();
+        $searchCriteria = $this->voteRepository
+            ->getDataObjectManager()
+            ->where('user_id', $user->getId());
+
+        $votes = $this->voteRepository->getList($searchCriteria);
 
         return $this->respond(
             $response,
@@ -190,14 +171,12 @@ class VoteController extends BaseController
     /**
      * Delete vote.
      *
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request  $request
+     * @param Response $response
      *
      * @return Response
-     * @throws InvalidArgumentException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws CacheException
+     * @throws DataObjectManagerException
      * @throws UserException
      * @throws ValidationException
      * @throws VoteException
@@ -213,9 +192,9 @@ class VoteController extends BaseController
             'vote_type'   => 'required|numeric'
         ]);
 
-        $user = $this->getUser($this->userRepository, $request, false);
+        $user = $this->getUser($this->userRepository, $request);
 
-        $customResponse = $this->deleteVoteService->execute($user, $parsedData);
+        $customResponse = $this->deleteVoteService->execute($user->getId(), $parsedData);
 
         if (!$customResponse->getData()) {
             throw new VoteException(__('Vote could not be deleted.'), 409);
@@ -229,7 +208,7 @@ class VoteController extends BaseController
             );
 
         if (!$result) {
-            $this->createVoteService->execute($user, $parsedData);
+            $this->createVoteService->execute($user->getId(), $parsedData);
             throw new VoteException(__('The entity could not be incremented.'), 500);
         }
 

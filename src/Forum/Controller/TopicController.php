@@ -13,14 +13,11 @@ use Ares\Forum\Repository\TopicRepository;
 use Ares\Forum\Service\Topic\CreateTopicService;
 use Ares\Forum\Service\Topic\EditTopicService;
 use Ares\Framework\Controller\BaseController;
+use Ares\Framework\Exception\CacheException;
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\ValidationException;
-use Ares\Framework\Model\Adapter\DoctrineSearchCriteria;
 use Ares\Framework\Service\ValidationService;
 use Ares\User\Repository\UserRepository;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -47,11 +44,6 @@ class TopicController extends BaseController
     private CreateTopicService $createTopicService;
 
     /**
-     * @var DoctrineSearchCriteria
-     */
-    private DoctrineSearchCriteria $searchCriteria;
-
-    /**
      * @var ValidationService
      */
     private ValidationService $validationService;
@@ -69,35 +61,30 @@ class TopicController extends BaseController
      * @param   CreateTopicService      $createTopicService
      * @param   EditTopicService        $editTopicService
      * @param   ValidationService       $validationService
-     * @param   DoctrineSearchCriteria  $searchCriteria
      */
     public function __construct(
         TopicRepository $topicRepository,
         UserRepository $userRepository,
         CreateTopicService $createTopicService,
         EditTopicService $editTopicService,
-        ValidationService $validationService,
-        DoctrineSearchCriteria $searchCriteria
+        ValidationService $validationService
     ) {
         $this->topicRepository    = $topicRepository;
         $this->userRepository     = $userRepository;
         $this->createTopicService = $createTopicService;
         $this->editTopicService   = $editTopicService;
         $this->validationService  = $validationService;
-        $this->searchCriteria     = $searchCriteria;
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request  $request
+     * @param Response $response
      *
      * @return Response
+     * @throws CacheException
+     * @throws DataObjectManagerException
      * @throws TopicException
      * @throws ValidationException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws InvalidArgumentException
      */
     public function create(Request $request, Response $response): Response
     {
@@ -118,16 +105,14 @@ class TopicController extends BaseController
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request  $request
+     * @param Response $response
      *
      * @return Response
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws CacheException
+     * @throws DataObjectManagerException
      * @throws TopicException
      * @throws ValidationException
-     * @throws InvalidArgumentException
      */
     public function edit(Request $request, Response $response): Response
     {
@@ -151,13 +136,12 @@ class TopicController extends BaseController
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request     $request
+     * @param Response    $response
      * @param             $args
      *
      * @return Response
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws InvalidArgumentException
+     * @throws CacheException
      */
     public function list(Request $request, Response $response, $args): Response
     {
@@ -167,32 +151,29 @@ class TopicController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        $this->searchCriteria->setPage((int) $page)
-            ->setLimit((int) $resultPerPage)
-            ->addOrder('id', 'DESC');
+        $searchCriteria = $this->topicRepository
+            ->getDataObjectManager()
+            ->orderBy('id', 'DESC');
 
-        $topic = $this->topicRepository->paginate($this->searchCriteria);
+        /** @var Topic $topic */
+        $topic = $this->topicRepository
+            ->getPaginatedList($searchCriteria, (int) $page, (int) $resultPerPage);
 
         return $this->respond(
             $response,
             response()
-                ->setData(
-                    $topic->toArray()
-                )
+                ->setData($topic)
         );
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request     $request
+     * @param Response    $response
      * @param             $args
      *
      * @return Response
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
      * @throws TopicException
-     * @throws InvalidArgumentException
+     * @throws DataObjectManagerException
      */
     public function delete(Request $request, Response $response, $args): Response
     {

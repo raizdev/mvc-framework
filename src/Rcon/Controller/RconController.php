@@ -8,8 +8,8 @@
 namespace Ares\Rcon\Controller;
 
 use Ares\Framework\Controller\BaseController;
+use Ares\Framework\Exception\CacheException;
 use Ares\Framework\Exception\ValidationException;
-use Ares\Framework\Model\Adapter\DoctrineSearchCriteria;
 use Ares\Framework\Service\ValidationService;
 use Ares\Rcon\Exception\RconException;
 use Ares\Rcon\Service\CreateRconCommandService;
@@ -18,10 +18,7 @@ use Ares\Rcon\Service\ExecuteRconCommandService;
 use Ares\Role\Exception\RoleException;
 use Ares\User\Exception\UserException;
 use Ares\User\Repository\UserRepository;
-use Doctrine\ORM\Query\QueryException;
 use JsonException;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -36,11 +33,6 @@ class RconController extends BaseController
      * @var ExecuteRconCommandService
      */
     private ExecuteRconCommandService $executeRconCommandService;
-
-    /**
-     * @var DoctrineSearchCriteria
-     */
-    private DoctrineSearchCriteria $searchCriteria;
 
     /**
      * @var DeleteRconCommandService
@@ -70,18 +62,15 @@ class RconController extends BaseController
      * @param CreateRconCommandService  $createRconCommandService
      * @param UserRepository            $userRepository
      * @param ValidationService         $validationService
-     * @param DoctrineSearchCriteria    $searchCriteria
      */
     public function __construct(
         ExecuteRconCommandService $executeRconCommandService,
         DeleteRconCommandService $deleteRconCommandService,
         CreateRconCommandService $createRconCommandService,
         UserRepository $userRepository,
-        ValidationService $validationService,
-        DoctrineSearchCriteria $searchCriteria
+        ValidationService $validationService
     ) {
         $this->executeRconCommandService = $executeRconCommandService;
-        $this->searchCriteria = $searchCriteria;
         $this->deleteRconCommandService = $deleteRconCommandService;
         $this->createRconCommandService = $createRconCommandService;
         $this->userRepository = $userRepository;
@@ -93,13 +82,12 @@ class RconController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws InvalidArgumentException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws JsonException
      * @throws RconException
+     * @throws RoleException
      * @throws UserException
      * @throws ValidationException
-     * @throws QueryException
-     * @throws JsonException|RoleException
+     * @throws CacheException
      */
     public function executeCommand(Request $request, Response $response): Response
     {

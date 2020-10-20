@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Ares (https://ares.to)
  *
@@ -12,16 +12,13 @@ use Ares\Framework\Controller\BaseController;
 use Ares\Article\Entity\Article;
 use Ares\Article\Exception\ArticleException;
 use Ares\Article\Repository\ArticleRepository;
+use Ares\Framework\Exception\CacheException;
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\ValidationException;
-use Ares\Framework\Model\Adapter\DoctrineSearchCriteria;
 use Ares\Framework\Service\ValidationService;
+use Ares\User\Entity\User;
 use Ares\User\Exception\UserException;
 use Ares\User\Repository\UserRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -36,11 +33,6 @@ class ArticleController extends BaseController
      * @var ArticleRepository
      */
     private ArticleRepository $articleRepository;
-
-    /**
-     * @var DoctrineSearchCriteria
-     */
-    private DoctrineSearchCriteria $searchCriteria;
 
     /**
      * @var CreateArticleService
@@ -62,20 +54,17 @@ class ArticleController extends BaseController
      *
      * @param   ArticleRepository       $articleRepository
      * @param   UserRepository          $userRepository
-     * @param   DoctrineSearchCriteria  $searchCriteria
      * @param   CreateArticleService    $createArticleService
      * @param   ValidationService       $validationService
      */
     public function __construct(
         ArticleRepository $articleRepository,
         UserRepository $userRepository,
-        DoctrineSearchCriteria $searchCriteria,
         CreateArticleService $createArticleService,
         ValidationService $validationService
     ) {
         $this->articleRepository    = $articleRepository;
         $this->userRepository       = $userRepository;
-        $this->searchCriteria       = $searchCriteria;
         $this->createArticleService = $createArticleService;
         $this->validationService    = $validationService;
     }
@@ -83,15 +72,13 @@ class ArticleController extends BaseController
     /**
      * Creates new article.
      *
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request  $request
+     * @param Response $response
      *
      * @return Response
      * @throws ArticleException
-     * @throws InvalidArgumentException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws CacheException
+     * @throws DataObjectManagerException
      * @throws UserException
      * @throws ValidationException
      */
@@ -109,9 +96,10 @@ class ArticleController extends BaseController
             'pinned'      => 'required|numeric'
         ]);
 
-        $user = $this->getUser($this->userRepository, $request, false);
+        /** @var User $user */
+        $user = $this->getUser($this->userRepository, $request);
 
-        $customResponse = $this->createArticleService->execute($user, $parsedData);
+        $customResponse = $this->createArticleService->execute($user->getId(), $parsedData);
 
         return $this->respond(
             $response,
@@ -120,24 +108,29 @@ class ArticleController extends BaseController
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request     $request
+     * @param Response    $response
      *
      * @param             $args
      *
      * @return Response
      * @throws ArticleException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws InvalidArgumentException
+     * @throws CacheException
      */
     public function article(Request $request, Response $response, $args): Response
     {
         $slug = (string) $args['slug'];
 
-        /** @var Article $article */
-        $article = $this->articleRepository->findBySlug($slug);
+        $searchCriteria = $this->articleRepository
+            ->getDataObjectManager()
+            ->where([
+                'slug' => $slug
+            ]);
 
-        if (is_null($article)) {
+        /** @var Article $article */
+        $article = $this->articleRepository->getList($searchCriteria)->first();
+
+        if (!$article) {
             throw new ArticleException(__('No specific Article found'), 404);
         }
 
@@ -149,40 +142,40 @@ class ArticleController extends BaseController
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request  $request
+     * @param Response $response
      *
      * @return Response
-     * @throws InvalidArgumentException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws CacheException
      */
     public function pinned(Request $request, Response $response): Response
     {
-        $this->searchCriteria
-            ->addFilter('pinned', Article::IS_PINNED)
-            ->addFilter('hidden', Article::IS_VISIBLE);
+        $searchCriteria = $this->articleRepository
+            ->getDataObjectManager()
+            ->where([
+                'pinned' => 1,
+                'hidden' => 0
+            ])
+            ->orderBy('id', 'DESC')
+            ->limit(3);
 
-        /** @var ArrayCollection $pinnedArticles */
-        $pinnedArticles = $this->articleRepository->getList($this->searchCriteria);
+        $pinnedArticles = $this->articleRepository->getList($searchCriteria);
 
         return $this->respond(
             $response,
             response()
-                ->setData(
-                    $pinnedArticles->toArray()
-                )
+                ->setData($pinnedArticles)
         );
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request     $request
+     * @param Response    $response
      *
      * @param             $args
      *
      * @return Response
-     * @throws InvalidArgumentException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws CacheException
      */
     public function list(Request $request, Response $response, $args): Response
     {
@@ -192,35 +185,30 @@ class ArticleController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        $this->searchCriteria
-            ->setPage((int) $page)
-            ->setLimit((int) $resultPerPage)
-            ->addOrder('id', 'DESC');
+        $searchCriteria = $this->articleRepository
+            ->getDataObjectManager()
+            ->orderBy('id', 'DESC');
 
-        $articles = $this->articleRepository->paginate($this->searchCriteria);
+        $articles = $this->articleRepository
+            ->getPaginatedList($searchCriteria, (int) $page, (int) $resultPerPage);
 
         return $this->respond(
             $response,
             response()
-                ->setData(
-                    $articles->toArray()
-                )
+                ->setData($articles)
         );
     }
 
     /**
      * Deletes specific article.
      *
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request     $request
+     * @param Response    $response
      * @param             $args
      *
      * @return Response
      * @throws ArticleException
-     * @throws InvalidArgumentException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws DataObjectManagerException
      */
     public function delete(Request $request, Response $response, $args): Response
     {

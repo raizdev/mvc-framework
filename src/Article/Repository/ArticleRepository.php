@@ -9,8 +9,6 @@ namespace Ares\Article\Repository;
 
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Article\Entity\Article;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 use Ares\Article\Entity\Comment;
 
 /**
@@ -28,31 +26,6 @@ class ArticleRepository extends BaseRepository
 
     /** @var string */
     protected string $entity = Article::class;
-
-    /**
-     * @param string $slug
-     * @param bool   $cachedEntity
-     *
-     * @return mixed|object|null
-     * @throws InvalidArgumentException
-     * @throws PhpfastcacheSimpleCacheException
-     */
-    public function findBySlug(string $slug, bool $cachedEntity = true)
-    {
-        $entity = $this->cacheService->get($this->cachePrefix . $slug);
-
-        if ($entity && $cachedEntity) {
-            return unserialize($entity);
-        }
-
-        $entity = $this->getOneBy([
-            'slug' => $slug
-        ]);
-
-        $this->cacheService->set($this->cachePrefix . $slug, serialize($entity));
-
-        return $entity;
-    }
 
     /**
      * Searchs articles by search term.

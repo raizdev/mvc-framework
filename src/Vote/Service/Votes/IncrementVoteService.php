@@ -7,12 +7,12 @@
 
 namespace Ares\Vote\Service\Votes;
 
+use Ares\Framework\Exception\CacheException;
+use Ares\Framework\Model\DataObject;
 use Ares\Vote\Exception\VoteException;
 use Ares\Vote\Interfaces\VoteTypeInterface;
 use Ares\Vote\Service\GetVoteEntityService;
 use Exception;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 
 /**
  * Class IncrementVoteService
@@ -46,8 +46,7 @@ class IncrementVoteService
      *
      * @return bool
      * @throws VoteException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws InvalidArgumentException
+     * @throws CacheException
      */
     public function execute(int $entityId, int $voteEntity, int $voteType): bool
     {
@@ -57,8 +56,8 @@ class IncrementVoteService
             throw new VoteException(__('Related EntityRepository could not be found'));
         }
 
-        /** @var Object $entity */
-        $entity = $entityRepository->get($entityId, false);
+        /** @var DataObject $entity */
+        $entity = $entityRepository->get($entityId);
 
         if (!$entity) {
             throw new VoteException(__('Related Entity could not be found'));
@@ -73,7 +72,7 @@ class IncrementVoteService
         }
 
         try {
-            $entityRepository->update($entity);
+            $entityRepository->save($entity);
             return true;
         } catch (Exception $exception) {
             return false;

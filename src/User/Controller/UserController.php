@@ -8,13 +8,11 @@
 namespace Ares\User\Controller;
 
 use Ares\Framework\Controller\BaseController;
+use Ares\Framework\Exception\CacheException;
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\User\Entity\User;
 use Ares\User\Exception\UserException;
 use Ares\User\Repository\UserRepository;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -44,18 +42,18 @@ class UserController extends BaseController
     /**
      * Retrieves the logged in User via JWT - Token
      *
-     * @param   Request   $request   The current incoming Request
-     * @param   Response  $response  The current Response
+     * @param Request  $request  The current incoming Request
+     * @param Response $response The current Response
      *
      * @return Response Returns a Response with the given Data
      * @throws UserException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws InvalidArgumentException
+     * @throws CacheException
      */
     public function user(Request $request, Response $response): Response
     {
         /** @var User $user */
-        $user = $this->getUser($this->userRepository, $request, false);
+        $user = $this->getUser($this->userRepository, $request);
+        $user->getRoles();
 
         return $this->respond(
             $response,
@@ -67,17 +65,22 @@ class UserController extends BaseController
     /**
      * Gets all current Online User and counts them
      *
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request  $request
+     * @param Response $response
      *
      * @return Response
+     * @throws CacheException
      */
     public function onlineUser(Request $request, Response $response): Response
     {
+        $searchCriteria = $this->userRepository
+            ->getDataObjectManager()
+            ->where('online', '1');
+
         /** @var User $onlineUser */
-        $onlineUser = $this->userRepository->count([
-            'online' => User::USER_EQUALS_ONLINE
-        ]);
+        $onlineUser = $this->userRepository
+            ->getList($searchCriteria, false)
+            ->count();
 
         return $this->respond(
             $response,
@@ -91,15 +94,13 @@ class UserController extends BaseController
     /**
      * Saves the given Language to the User
      *
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request  $request
+     * @param Response $response
      *
      * @return Response
-     * @throws InvalidArgumentException
-     * @throws ORMException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws CacheException
      * @throws UserException
-     * @throws OptimisticLockException
+     * @throws DataObjectManagerException
      */
     public function updateLocale(Request $request, Response $response): Response
     {
@@ -107,10 +108,10 @@ class UserController extends BaseController
         $body = $request->getParsedBody();
 
         /** @var User $user */
-        $user = $this->getUser($this->userRepository, $request, false);
+        $user = $user = $this->getUser($this->userRepository, $request);
         $user->setLocale($body['locale']);
 
-        $this->userRepository->update($user);
+        $this->userRepository->save($user);
 
         return $this->respond(
             $response,

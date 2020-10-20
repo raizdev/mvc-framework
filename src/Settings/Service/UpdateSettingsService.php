@@ -7,14 +7,12 @@
 
 namespace Ares\Settings\Service;
 
+use Ares\Framework\Exception\CacheException;
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\Settings\Entity\Setting;
 use Ares\Settings\Exception\SettingsException;
 use Ares\Settings\Repository\SettingsRepository;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 
 /**
  * Class UpdateSettingsService
@@ -44,10 +42,8 @@ class UpdateSettingsService
      *
      * @return CustomResponseInterface
      * @throws SettingsException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws InvalidArgumentException
+     * @throws CacheException
+     * @throws DataObjectManagerException
      */
     public function update($data): CustomResponseInterface
     {
@@ -57,21 +53,25 @@ class UpdateSettingsService
         /** @var string $value */
         $value = $data['value'];
 
+        $searchCriteria = $this->settingsRepository
+            ->getDataObjectManager()
+            ->where('key', $key);
+
         /** @var Setting $configData */
-        $configData = $this->settingsRepository->getOneBy([
-            'key' => $key
-        ]);
+        $configData = $this->settingsRepository
+            ->getList($searchCriteria)
+            ->first();
 
         if (!$configData) {
             throw new SettingsException(__('Key not found in Config'));
         }
 
         $configData->setValue($value);
-        $configData = $this->settingsRepository->update($configData);
+        $configData = $this->settingsRepository->save($configData);
 
         return response()
             ->setData(
-                $configData->toArray()
+                $configData
             );
     }
 }

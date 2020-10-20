@@ -8,6 +8,8 @@
 namespace Ares\Photo\Controller;
 
 use Ares\Framework\Controller\BaseController;
+use Ares\Framework\Exception\CacheException;
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Model\Adapter\DoctrineSearchCriteria;
 use Ares\Framework\Service\ValidationService;
@@ -16,11 +18,6 @@ use Ares\Photo\Exception\PhotoException;
 use Ares\Photo\Repository\PhotoRepository;
 use Ares\User\Entity\User;
 use Ares\User\Repository\UserRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -72,14 +69,13 @@ class PhotoController extends BaseController
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request     $request
+     * @param Response    $response
      * @param             $args
      *
      * @return Response
      * @throws PhotoException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws InvalidArgumentException
+     * @throws CacheException
      */
     public function photo(Request $request, Response $response, $args): Response
     {
@@ -101,11 +97,13 @@ class PhotoController extends BaseController
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request  $request
+     * @param Response $response
      *
      * @return Response
-     * @throws ValidationException|PhotoException
+     * @throws CacheException
+     * @throws PhotoException
+     * @throws ValidationException
      */
     public function search(Request $request, Response $response): Response
     {
@@ -119,41 +117,42 @@ class PhotoController extends BaseController
         /** @var string $username */
         $username = $parsedData['username'];
 
+        $searchCriteria = $this->userRepository
+            ->getDataObjectManager()
+            ->where('username', $username);
+
         /** @var User $user */
-        $user = $this->userRepository->getOneBy([
-            'username' => $username
-        ]);
+        $user = $this->userRepository
+            ->getList($searchCriteria)
+            ->first();
 
-        if (!$user) {
-            throw new PhotoException(__('No Photo was found'), 404);
-        }
+        $searchCriteria = $this->photoRepository
+            ->getDataObjectManager()
+            ->where('user_id', $user->getId());
 
-        /** @var ArrayCollection $photos */
-        $photos = $this->photoRepository->findBy([
-            'creator' => $user
-        ]);
+        /** @var Photo $photo */
+        $photo = $this->photoRepository
+            ->getList($searchCriteria)
+            ->first();
 
-        if ($photos === null) {
+        if (!$user || !$photo) {
             throw new PhotoException(__('No Photo was found'), 404);
         }
 
         return $this->respond(
             $response,
             response()
-                ->setData(
-                    $photos->toArray()
-                )
+                ->setData($photo)
         );
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request     $request
+     * @param Response    $response
      * @param             $args
      *
      * @return Response
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws InvalidArgumentException
+     * @throws CacheException
      */
     public function list(Request $request, Response $response, $args): Response
     {
@@ -163,33 +162,28 @@ class PhotoController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        $this->searchCriteria
-            ->setPage((int) $page)
-            ->setLimit((int) $resultPerPage)
-            ->addOrder('id', 'DESC');
+        $searchCriteria = $this->photoRepository
+            ->getDataObjectManager()
+            ->orderBy('id', 'DESC');
 
-        $photos = $this->photoRepository->paginate($this->searchCriteria);
+        $photos = $this->photoRepository
+            ->getPaginatedList($searchCriteria, (int) $page, (int) $resultPerPage);
 
         return $this->respond(
             $response,
             response()
-                ->setData(
-                    $photos->toArray()
-                )
+                ->setData($photos)
         );
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request     $request
+     * @param Response    $response
      * @param             $args
      *
      * @return Response
-     * @throws InvalidArgumentException
      * @throws PhotoException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @throws DataObjectManagerException
      */
     public function delete(Request $request, Response $response, $args): Response
     {

@@ -7,19 +7,17 @@
 
 namespace Ares\User\Service\Auth;
 
+use Ares\Framework\Exception\CacheException;
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\Framework\Service\TokenService;
-use Ares\Permission\Entity\Permission;
 use Ares\User\Entity\User;
 use Ares\User\Exception\RegisterException;
 use Ares\User\Interfaces\UserCurrencyTypeInterface;
 use Ares\User\Repository\UserRepository;
 use Ares\User\Service\Currency\CreateCurrencyService;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
+use Exception;
 use PHLAK\Config\Config;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 use ReallySimpleJWT\Exception\ValidateException;
 
 /**
@@ -83,27 +81,25 @@ class RegisterService
      * @param array $data
      *
      * @return CustomResponseInterface
-     * @throws ORMException
      * @throws RegisterException
      * @throws ValidateException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws InvalidArgumentException
-     * @throws \Exception
+     * @throws CacheException
+     * @throws DataObjectManagerException
+     * @throws Exception
      */
     public function register(array $data): CustomResponseInterface
     {
+        $searchCriteria = $this->userRepository
+            ->getDataObjectManager()
+            ->where('username', $data['username'])
+            ->orWhere('mail', $data['mail']);
+
         /** @var User $checkUser */
-        $checkUser = $this->userRepository->getOneBy([
-            'username' => $data['username']
-        ]);
+        $checkUser = $this->userRepository
+            ->getList($searchCriteria)
+            ->first();
 
-        /** @var User $checkMail */
-        $checkMail = $this->userRepository->getOneBy([
-            'mail' => $data['mail']
-        ]);
-
-        if ($checkUser || $checkMail) {
+        if ($checkUser) {
             throw new RegisterException(__('register.already.exists'), 422);
         }
 
@@ -114,24 +110,23 @@ class RegisterService
 
         /** @var User $user */
         $user = $this->userRepository->save($this->getNewUser($data));
-        $user = $this->userRepository->update($user->setRank(1));
 
         /** @var TokenService $token */
         $token = $this->tokenService->execute($user->getId());
 
         try {
             $this->createCurrencyService->execute(
-                $user,
+                $user->getId(),
                 UserCurrencyTypeInterface::CURRENCY_TYPE_POINTS,
-                (int)$this->config->get('hotel_settings.start_points')
+                (int) $this->config->get('hotel_settings.start_points')
             );
 
             $this->createCurrencyService->execute(
-                $user,
+                $user->getId(),
                 UserCurrencyTypeInterface::CURRENCY_TYPE_PIXELS,
-                (int)$this->config->get('hotel_settings.start_pixels')
+                (int) $this->config->get('hotel_settings.start_pixels')
             );
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             throw new RegisterException($exception->getMessage(), $exception->getCode());
         }
 
@@ -147,7 +142,7 @@ class RegisterService
      * @param array $data
      *
      * @return User
-     * @throws \Exception
+     * @throws Exception
      */
     private function getNewUser(array $data): User
     {
@@ -157,7 +152,9 @@ class RegisterService
             ->setUsername($data['username'])
             ->setPassword(password_hash(
                     $data['password'],
-                    PASSWORD_ARGON2ID)
+                    PASSWORD_ARGON2ID,
+                    ['memory_cost' => 8, 'time_cost' => 1, 'threads' => 1]
+                )
             )
             ->setMail($data['mail'])
             ->setLook($data['look'])
@@ -165,11 +162,11 @@ class RegisterService
             ->setCredits($this->config->get('hotel_settings.start_credits'))
             ->setMotto($this->config->get('hotel_settings.start_motto'))
             ->setIPRegister($data['ip_register'])
-            ->setCurrentIP($data['ip_current'])
+            ->setIpCurrent($data['ip_current'])
             ->setAccountCreated(time())
             ->setLastLogin(time())
-            ->setOnline(1)
-            ->setTicket($this->ticketService->hash($user));
+            ->setRank(1)
+            ->setAuthTicket($this->ticketService->hash($user));
     }
 
     /**
@@ -180,11 +177,13 @@ class RegisterService
      */
     private function isEligible($data): bool
     {
+        $dataObjectManager = $this->userRepository->getDataObjectManager();
+
         /** @var int $maxAccountsPerIp */
         $maxAccountsPerIp = $this->config->get('hotel_settings.register.max_accounts_per_ip');
-        $accountExistence = $this->userRepository->count([
-            'ip_register' => $data['ip_register']
-        ]);
+        $accountExistence = $dataObjectManager
+            ->where('ip_register', $data['ip_register'])
+            ->count();
 
         if ($accountExistence >= $maxAccountsPerIp) {
             throw new RegisterException(__('You can only have %s Accounts', [$maxAccountsPerIp]));

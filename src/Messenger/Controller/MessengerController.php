@@ -8,13 +8,10 @@
 namespace Ares\Messenger\Controller;
 
 use Ares\Framework\Controller\BaseController;
-use Ares\Framework\Model\Adapter\DoctrineSearchCriteria;
+use Ares\Framework\Exception\CacheException;
 use Ares\Messenger\Repository\MessengerRepository;
 use Ares\User\Exception\UserException;
 use Ares\User\Repository\UserRepository;
-use Doctrine\Common\Collections\Criteria;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -36,25 +33,17 @@ class MessengerController extends BaseController
     private UserRepository $userRepository;
 
     /**
-     * @var DoctrineSearchCriteria
-     */
-    private DoctrineSearchCriteria $searchCriteria;
-
-    /**
      * MessengerController constructor.
      *
      * @param MessengerRepository    $messengerRepository
      * @param UserRepository         $userRepository
-     * @param DoctrineSearchCriteria $searchCriteria
      */
     public function __construct(
         MessengerRepository $messengerRepository,
-        UserRepository $userRepository,
-        DoctrineSearchCriteria $searchCriteria
+        UserRepository $userRepository
     ) {
         $this->messengerRepository = $messengerRepository;
         $this->userRepository = $userRepository;
-        $this->searchCriteria = $searchCriteria;
     }
 
     /**
@@ -65,8 +54,7 @@ class MessengerController extends BaseController
      *
      * @return Response
      * @throws UserException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws InvalidArgumentException
+     * @throws CacheException
      */
     public function friends(Request $request, Response $response, $args): Response
     {
@@ -76,23 +64,17 @@ class MessengerController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        $this->searchCriteria->setPage((int) $page)
-            ->setLimit((int) $resultPerPage)
-            ->addFilter('user', $this->getUser($this->userRepository, $request)->getId())
-            ->addOrder('id', 'DESC');
+        $searchCriteria = $this->messengerRepository
+            ->getDataObjectManager()
+            ->where('user_id', $this->getUser($this->userRepository, $request)->getId())
+            ->orderBy('id', 'DESC');
 
-        $friends = $this->messengerRepository->paginate($this->searchCriteria);
+        $friends = $this->messengerRepository->getPaginatedList($searchCriteria, (int) $page, (int) $resultPerPage);
 
         return $this->respond(
             $response,
-            response()->setData([
-                'pagination' => [
-                    'totalPages' => $friends->getPages(),
-                    'prevPage' => $friends->getPrevPage(),
-                    'nextPage' => $friends->getNextPage()
-                ],
-                'friends' => $friends->toArray()
-            ])
+            response()
+                ->setData($friends)
         );
     }
 }

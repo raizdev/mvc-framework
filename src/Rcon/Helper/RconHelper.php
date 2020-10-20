@@ -35,11 +35,8 @@ class RconHelper
 
     /**
      * @param   resource     $socket
-     *
      * @param   string       $command
-     *
      * @param   string|null  $parameter
-     *
      * @param   string|null  $value
      *
      * @return array

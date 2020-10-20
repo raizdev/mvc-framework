@@ -51,61 +51,6 @@ class User extends DataObject implements UserInterface
     }
 
     /**
-     * @return Collection|null
-     */
-    public function getRoles(): ?Collection
-    {
-        $roles = $this->getData('roles');
-
-        if ($roles) {
-            return $roles;
-        }
-
-        $roleRepository = repository(RoleRepository::class);
-        $dataObjectManager = $roleRepository->getDataObjectManager();
-
-        $dataObjectManager
-            ->select(['ares_roles.*'])
-            ->join(
-                'ares_roles_user',
-                'ares_roles.id',
-                '=',
-                'ares_roles_user.role_id'
-            )
-            ->join(
-                'users',
-                'users.id',
-                '=',
-                'ares_roles_user.user_id'
-            )
-            ->where('users.id', $this->getId());
-
-        try {
-            $roles = $roleRepository->getList($dataObjectManager);
-        } catch (CacheException $e) {
-            return null;
-        }
-
-        if (!$roles->toArray()) {
-            return null;
-        }
-
-        $this->setRoles($roles);
-
-        return $roles;
-    }
-
-    /**
-     * @param Collection $roles
-     *
-     * @return User
-     */
-    public function setRoles(Collection $roles): User
-    {
-        return $this->setData('roles', $roles);
-    }
-
-    /**
      * @return string
      */
     public function getUsername(): string
@@ -462,5 +407,60 @@ class User extends DataObject implements UserInterface
     public function setUpdatedAt(\DateTime $updated_at): User
     {
         return $this->setData(UserInterface::COLUMN_UPDATED_AT, $updated_at);
+    }
+
+    /**
+     * @return Collection|null
+     */
+    public function getRoles(): ?Collection
+    {
+        $roles = $this->getData('roles');
+
+        if ($roles) {
+            return $roles;
+        }
+
+        $roleRepository = repository(RoleRepository::class);
+        $dataObjectManager = $roleRepository->getDataObjectManager();
+
+        $dataObjectManager
+            ->select(['ares_roles.*'])
+            ->join(
+                'ares_roles_user',
+                'ares_roles.id',
+                '=',
+                'ares_roles_user.role_id'
+            )
+            ->join(
+                'users',
+                'users.id',
+                '=',
+                'ares_roles_user.user_id'
+            )
+            ->where('users.id', $this->getId());
+
+        try {
+            $roles = $roleRepository->getList($dataObjectManager);
+        } catch (CacheException $e) {
+            return null;
+        }
+
+        if (!$roles->toArray()) {
+            return null;
+        }
+
+        $this->setRoles($roles);
+
+        return $roles;
+    }
+
+    /**
+     * @param Collection $roles
+     *
+     * @return User
+     */
+    public function setRoles(Collection $roles): User
+    {
+        return $this->setData('roles', $roles);
     }
 }

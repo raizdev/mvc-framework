@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Ares (https://ares.to)
  *
@@ -8,12 +8,10 @@
 namespace Ares\Room\Controller;
 
 use Ares\Framework\Controller\BaseController;
-use Ares\Framework\Model\Adapter\DoctrineSearchCriteria;
+use Ares\Framework\Exception\CacheException;
 use Ares\Room\Entity\Room;
 use Ares\Room\Exception\RoomException;
 use Ares\Room\Repository\RoomRepository;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -30,22 +28,14 @@ class RoomController extends BaseController
     private RoomRepository $roomRepository;
 
     /**
-     * @var DoctrineSearchCriteria
-     */
-    private DoctrineSearchCriteria $searchCriteria;
-
-    /**
      * RoomController constructor.
      *
-     * @param   RoomRepository          $roomRepository
-     * @param   DoctrineSearchCriteria  $searchCriteria
+     * @param RoomRepository $roomRepository
      */
     public function __construct(
-        RoomRepository $roomRepository,
-        DoctrineSearchCriteria $searchCriteria
+        RoomRepository $roomRepository
     ) {
         $this->roomRepository = $roomRepository;
-        $this->searchCriteria = $searchCriteria;
     }
 
     /**
@@ -55,8 +45,7 @@ class RoomController extends BaseController
      *
      * @return Response
      * @throws RoomException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws InvalidArgumentException
+     * @throws CacheException
      */
     public function room(Request $request, Response $response, $args): Response
     {
@@ -64,9 +53,9 @@ class RoomController extends BaseController
         $id = $args['id'];
 
         /** @var Room $room */
-        $room = $this->roomRepository->get((int) $id);
+        $room = $this->roomRepository->get((int)$id);
 
-        if (is_null($room)) {
+        if (!$room) {
             throw new RoomException(__('No specific Room found'), 404);
         }
 
@@ -84,8 +73,7 @@ class RoomController extends BaseController
      * @param          $args
      *
      * @return Response
-     * @throws InvalidArgumentException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws CacheException
      */
     public function list(Request $request, Response $response, $args): Response
     {
@@ -95,24 +83,16 @@ class RoomController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        $this->searchCriteria
-            ->setPage((int) $page)
-            ->setLimit((int) $resultPerPage)
-            ->addOrder('id', 'DESC');
+        $searchCriteria = $this->roomRepository
+            ->getDataObjectManager()
+            ->orderBy('id', 'DESC');
 
-        $rooms = $this->roomRepository->paginate($this->searchCriteria);
+        $rooms = $this->roomRepository->getPaginatedList($searchCriteria, (int)$page, (int)$resultPerPage);
 
         return $this->respond(
             $response,
             response()
-                ->setData([
-                    'pagination' => [
-                        'totalPages' => $rooms->getPages(),
-                        'prevPage' => $rooms->getPrevPage(),
-                        'nextPage' => $rooms->getNextPage()
-                    ],
-                    'rooms' => $rooms->toArray()
-                ])
+                ->setData($rooms)
         );
     }
 
@@ -121,14 +101,19 @@ class RoomController extends BaseController
      * @param Response $response
      *
      * @return Response
+     * @throws CacheException
      * @throws RoomException
      */
     public function mostVisited(Request $request, Response $response): Response
     {
+        $searchCriteria = $this->roomRepository
+            ->getDataObjectManager()
+            ->orderBy('users', 'DESC');
+
         /** @var Room $room */
-        $room = $this->roomRepository->getOneBy([], [
-            'users' => 'DESC'
-        ]);
+        $room = $this->roomRepository
+            ->getList($searchCriteria)
+            ->first();
 
         if (!$room) {
             throw new RoomException(__('No Room found'), 404);

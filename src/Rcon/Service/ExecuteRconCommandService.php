@@ -7,13 +7,13 @@
 
 namespace Ares\Rcon\Service;
 
+use Ares\Framework\Exception\CacheException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\Rcon\Exception\RconException;
 use Ares\Rcon\Model\Rcon;
 use Ares\Rcon\Repository\RconRepository;
 use Ares\Role\Exception\RoleException;
 use Ares\Role\Service\CheckAccessService;
-use Doctrine\ORM\Query\QueryException;
 use JsonException;
 
 /**
@@ -61,31 +61,32 @@ class ExecuteRconCommandService
      *
      * @return CustomResponseInterface
      * @throws JsonException
-     * @throws QueryException
      * @throws RconException
      * @throws RoleException
+     * @throws CacheException
      */
     public function execute(int $userId, array $data): CustomResponseInterface
     {
+        $searchCriteria = $this->rconRepository
+            ->getDataObjectManager()
+            ->where('command', $data['command']);
+
         /** @var \Ares\Rcon\Entity\Rcon $existingCommand */
-        $existingCommand = $this->rconRepository->getOneBy([
-            'command' => $data['command']
-        ]);
+        $existingCommand = $this->rconRepository
+            ->getList($searchCriteria)
+            ->first();
 
         if (!$existingCommand) {
             throw new RconException(__('Could not found the given command to execute'), 404);
         }
 
-        // @Todo Can be refactored dont hate me pls
-        if ($existingCommand->getPermission() === null) {
-            $permissionName = null;
-        } else {
+        if ($existingCommand->getPermission() !== null) {
             $permissionName = $existingCommand
                 ->getPermission()
                 ->getName();
         }
 
-        $hasAccess = $this->checkAccessService->execute($userId, $permissionName);
+        $hasAccess = $this->checkAccessService->execute($userId, $permissionName ?? null);
 
         if (!$hasAccess) {
             throw new RoleException(__('You dont have the special rights to execute that action'));

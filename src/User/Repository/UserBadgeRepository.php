@@ -25,22 +25,4 @@ class UserBadgeRepository extends BaseRepository
 
     /** @var string */
     protected string $entity = UserBadge::class;
-
-    /**
-     * @param $user
-     *
-     * @return int|mixed|string
-     */
-    public function getSlotBadges($user): array
-    {
-        return $this->getEntityManager()->createQueryBuilder()
-            ->select('b')
-            ->from(UserBadge::class, 'b')
-            ->andWhere('b.user = ?1')
-            ->andWhere('b.slot_id > 1')
-            ->orderBy('b.slot_id', 'ASC')
-            ->setParameter(1, $user)
-            ->getQuery()
-            ->getResult();
-    }
 }

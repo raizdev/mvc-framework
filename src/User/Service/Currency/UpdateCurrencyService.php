@@ -7,13 +7,11 @@
 
 namespace Ares\User\Service\Currency;
 
-
-use Ares\Framework\Model\Adapter\DoctrineSearchCriteria;
+use Ares\Framework\Exception\CacheException;
 use Ares\User\Entity\UserCurrency;
 use Ares\User\Exception\UserCurrencyException;
 use Ares\User\Repository\UserCurrencyRepository;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
+use Exception;
 
 /**
  * Class UpdateCurrencyService
@@ -23,11 +21,6 @@ use Psr\Cache\InvalidArgumentException;
 class UpdateCurrencyService
 {
     /**
-     * @var DoctrineSearchCriteria
-     */
-    private DoctrineSearchCriteria $searchCriteria;
-
-    /**
      * @var UserCurrencyRepository
      */
     private UserCurrencyRepository $userCurrencyRepository;
@@ -35,14 +28,11 @@ class UpdateCurrencyService
     /**
      * UpdateCurrencyService constructor.
      *
-     * @param DoctrineSearchCriteria $searchCriteria
      * @param UserCurrencyRepository $userCurrencyRepository
      */
     public function __construct(
-        DoctrineSearchCriteria $searchCriteria,
         UserCurrencyRepository $userCurrencyRepository
     ) {
-        $this->searchCriteria = $searchCriteria;
         $this->userCurrencyRepository = $userCurrencyRepository;
     }
 
@@ -54,18 +44,19 @@ class UpdateCurrencyService
      * @param int $amount
      *
      * @return void
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws UserCurrencyException|InvalidArgumentException
+     * @throws UserCurrencyException
+     * @throws CacheException
      */
     public function execute(int $userId, int $type, int $amount): void
     {
-        $searchCriteria = $this->searchCriteria
-            ->addFilter('user', $userId)
-            ->addFilter('type', $type);
+        $dataObjectManager = $this->userCurrencyRepository->getDataObjectManager();
+
+        $dataObjectManager
+            ->where('user_id', $userId)
+            ->where('type', $type);
 
         /** @var UserCurrency[] $currencies */
-        $currencies = $this->userCurrencyRepository->getList($searchCriteria)
-            ->toArray();
+        $currencies = $this->userCurrencyRepository->getList($dataObjectManager);
 
         if (!$currencies) {
             throw new UserCurrencyException(__('Currencies was not found.'), 404);
@@ -74,8 +65,8 @@ class UpdateCurrencyService
         foreach ($currencies as $currency) {
             $currency->setAmount($amount);
             try {
-                $this->userCurrencyRepository->update($currency);
-            } catch (\Exception $exception) {
+                $this->userCurrencyRepository->save($currency);
+            } catch (Exception $exception) {
                 throw new UserCurrencyException(__('Currency could not be updated.'), 422);
             }
         }
