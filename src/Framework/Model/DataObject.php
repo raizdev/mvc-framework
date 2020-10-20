@@ -17,6 +17,9 @@ class DataObject
     /** @var array */
     public const HIDDEN = [];
 
+    /** @var array */
+    public const RELATIONS = [];
+
     /**
      * DataObject constructor.
      *

@@ -144,7 +144,10 @@ class AuthController extends BaseController
 //        ]);
 
         $dataObjectManager = $this->dataObjectManagerFactory->create(User::class);
-        $result = $this->userRepository->getPaginatedList($dataObjectManager, 1, 5);
+        $result = $dataObjectManager
+            ->where('username', 'Dome')
+            ->addRelation('currencies')
+            ->paginate();
 
         return $this->respond(
             $response,

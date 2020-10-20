@@ -32,6 +32,11 @@ class User extends DataObject implements UserInterface
         UserInterface::COLUMN_IP_REGISTER
     ];
 
+    /** @var string[] */
+    public const RELATIONS = [
+        'roles' => 'getRoles'
+    ];
+
     /**
      * @return int
      */
