@@ -47,6 +47,7 @@ class UserController extends BaseController
      *
      * @return Response Returns a Response with the given Data
      * @throws UserException
+     * @throws DataObjectManagerException
      * @throws CacheException
      */
     public function user(Request $request, Response $response): Response
@@ -54,6 +55,7 @@ class UserController extends BaseController
         /** @var User $user */
         $user = $this->getUser($this->userRepository, $request);
         $user->getRoles();
+        $user->getCurrencies();
 
         return $this->respond(
             $response,
@@ -69,7 +71,6 @@ class UserController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws CacheException
      */
     public function onlineUser(Request $request, Response $response): Response
     {

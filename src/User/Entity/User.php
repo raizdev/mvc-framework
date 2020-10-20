@@ -7,11 +7,14 @@
 
 namespace Ares\User\Entity;
 
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Model\DataObject;
 use Ares\Permission\Entity\Permission;
 use Ares\Role\Repository\RoleRepository;
 use Ares\User\Entity\Contract\UserInterface;
+use Ares\User\Repository\UserCurrencyRepository;
 use Ares\User\Repository\UserRepository;
+use DateTime;
 use Illuminate\Support\Collection;
 
 /**
@@ -34,7 +37,8 @@ class User extends DataObject implements UserInterface
 
     /** @var string[] */
     public const RELATIONS = [
-        'roles' => 'getRoles'
+        'roles' => 'getRoles',
+        'currencies' => 'getCurrencies'
     ];
 
     /**
@@ -57,6 +61,7 @@ class User extends DataObject implements UserInterface
 
     /**
      * @return Collection|null
+     * @throws DataObjectManagerException
      */
     public function getRoles(): ?Collection
     {
@@ -94,6 +99,46 @@ class User extends DataObject implements UserInterface
     public function setRoles(Collection $roles): User
     {
         return $this->setData('roles', $roles);
+    }
+
+    /**
+     * @return Collection|null
+     * @throws DataObjectManagerException
+     */
+    public function getCurrencies(): ?Collection
+    {
+        $currencies = $this->getData('currencies');
+
+        if ($currencies) {
+            return $currencies;
+        }
+
+        $userRepository = repository(UserRepository::class);
+        $userCurrencyRepository = repository(UserCurrencyRepository::class);
+
+        $currencies = $userRepository->getOneToMany(
+            $userCurrencyRepository,
+            $this->getId(),
+            'user_id'
+        );
+
+        if (!$currencies->toArray()) {
+            return null;
+        }
+
+        $this->setCurrencies($currencies);
+
+        return $currencies;
+    }
+
+    /**
+     * @param Collection $currencies
+     *
+     * @return User
+     */
+    public function setCurrencies(Collection $currencies): User
+    {
+        return $this->setData('currencies', $currencies);
     }
 
     /**
@@ -421,36 +466,36 @@ class User extends DataObject implements UserInterface
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getCreatedAt(): \DateTime
+    public function getCreatedAt(): DateTime
     {
         return $this->getData(UserInterface::COLUMN_CREATED_AT);
     }
 
     /**
-     * @param \DateTime $created_at
+     * @param DateTime $created_at
      * @return User
      */
-    public function setCreatedAt(\DateTime $created_at): User
+    public function setCreatedAt(DateTime $created_at): User
     {
         return $this->setData(UserInterface::COLUMN_CREATED_AT, $created_at);
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getUpdatedAt(): \DateTime
+    public function getUpdatedAt(): DateTime
     {
         return $this->getData(UserInterface::COLUMN_UPDATED_AT);
     }
 
     /**
-     * @param \DateTime $updated_at
+     * @param DateTime $updated_at
      *
      * @return User
      */
-    public function setUpdatedAt(\DateTime $updated_at): User
+    public function setUpdatedAt(DateTime $updated_at): User
     {
         return $this->setData(UserInterface::COLUMN_UPDATED_AT, $updated_at);
     }
