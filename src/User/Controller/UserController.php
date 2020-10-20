@@ -48,7 +48,6 @@ class UserController extends BaseController
      * @return Response Returns a Response with the given Data
      * @throws UserException
      * @throws DataObjectManagerException
-     * @throws CacheException
      */
     public function user(Request $request, Response $response): Response
     {

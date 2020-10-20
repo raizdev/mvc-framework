@@ -45,7 +45,6 @@ abstract class BaseController
      *
      * @return object|User
      * @throws UserException
-     * @throws CacheException
      */
     protected function getUser(UserRepository $userRepository, Request $request): object
     {

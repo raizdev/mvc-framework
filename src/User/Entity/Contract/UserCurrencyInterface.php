@@ -14,7 +14,6 @@ namespace Ares\User\Entity\Contract;
  */
 interface UserCurrencyInterface
 {
-    public const COLUMN_ID = 'id';
     public const COLUMN_USER_ID = 'user_id';
     public const COLUMN_TYPE = 'type';
     public const COLUMN_AMOUNT = 'amount';

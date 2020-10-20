@@ -72,7 +72,7 @@ abstract class BaseRepository
      *
      * @return DataObject|null
      */
-    public function get($value, string $column = self::COLUMN_ID): DataObject
+    public function get($value, string $column = self::COLUMN_ID): ?DataObject
     {
         $entity = $this->cacheService->get($this->cachePrefix . $value);
 
@@ -221,7 +221,7 @@ abstract class BaseRepository
      */
     public function getOneToMany(BaseRepository $repository, int $id, string $column): Collection
     {
-        $dataObject = $repository->getDataObjectManager()->where($id, $column);
+        $dataObject = $repository->getDataObjectManager()->where($column, $id);
 
         return $repository->getList($dataObject);
     }
