@@ -107,15 +107,17 @@ if (!function_exists('repository')) {
      * Returns repository by given namespace.
      *
      * @param string $repository
-     *
-     * @return BaseRepository|null
+     * @return BaseRepository
      */
     function repository(string $repository): ?BaseRepository {
         $container = container();
         $repository = $container->get($repository);
 
         if (!$repository instanceof BaseRepository) {
-            return null;
+            throw new \Ares\Framework\Exception\DataObjectManagerException(
+                __('Tried to instantiating not existing repository "%s"', [$repository]),
+                500
+            );
         }
 
         return $repository;
