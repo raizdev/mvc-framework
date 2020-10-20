@@ -7,6 +7,7 @@
 
 namespace Ares\Framework\Model\Query;
 
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Model\DataObject;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
@@ -25,6 +26,11 @@ class DataObjectManager extends Builder
     private string $entity;
 
     /**
+     * @var array
+     */
+    private array $relations = [];
+
+    /**
      * Returns models as collection.
      *
      * @param string[] $columns
@@ -38,7 +44,19 @@ class DataObjectManager extends Builder
             foreach ($this->entity::HIDDEN as $column) {
                 unset($item->$column);
             }
-            $items[] = new $this->entity($item);
+
+            if(isset($item->aggregate)) {
+                $items[] = $item;
+                continue;
+            }
+
+            $entity = new $this->entity($item);
+
+            foreach ($this->relations as $relation) {
+                $entity->{$relation}();
+            }
+
+            $items[] = $entity;
         }
 
         return collect($items);
@@ -53,6 +71,28 @@ class DataObjectManager extends Builder
     public function first($columns = ['*']): ?DataObject
     {
         return $this->take(1)->get($columns)->first();
+    }
+
+    /**
+     * Add relation by key to collection call.
+     *
+     * @param string $relation
+     * @return DataObject
+     */
+    public function addRelation(string $relation): DataObjectManager
+    {
+        $relations = $this->entity::RELATIONS;
+
+        if (!isset($relations[$relation])) {
+            throw new DataObjectManagerException(
+                __('Tried to use undefined relation: "%s"', [$relation]),
+                500
+            );
+        }
+
+        $this->relations[] = $relations[$relation];
+
+        return $this;
     }
 
     /**
@@ -104,7 +144,12 @@ class DataObjectManager extends Builder
         try {
             $reflectionClass = new ReflectionClass($this->entity);
             $constants = $reflectionClass->getConstants();
-            unset($constants['TABLE'], $constants['HIDDEN']);
+
+            unset(
+                $constants['TABLE'],
+                $constants['HIDDEN'],
+                $constants['RELATIONS']
+            );
 
             return array_values($constants);
         } catch (\ReflectionException $e) {

@@ -66,26 +66,26 @@ abstract class BaseRepository
     }
 
     /**
-     * Get DataObject by id.
+     * Get DataObject by id or by given field value pair.
      *
-     * @param int    $id
+     * @param mixed $value
      * @param string $column
      *
      * @return DataObject|null
      * @throws CacheException
      */
-    public function get(int $id, string $column = self::COLUMN_ID): ?DataObject
+    public function get($value, string $column = self::COLUMN_ID): DataObject
     {
-        $entity = $this->cacheService->get($this->cachePrefix . $id);
+        $entity = $this->cacheService->get($this->cachePrefix . $value);
 
         if ($entity) {
             return unserialize($entity);
         }
 
-        $dataObjectManager = $this->getDataObjectManager();
-        $entity = $dataObjectManager->where($column, $id)->first();
+        $dataObjectManager = $this->dataObjectManagerFactory->create($this->entity);
+        $entity = $dataObjectManager->where($column, $value)->first();
 
-        $this->cacheService->set($this->cachePrefix . $id, serialize($entity));
+        $this->cacheService->set($this->cachePrefix . $value, serialize($entity));
 
         return $entity;
     }
