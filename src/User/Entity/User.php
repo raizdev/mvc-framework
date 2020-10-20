@@ -7,11 +7,11 @@
 
 namespace Ares\User\Entity;
 
-use Ares\Framework\Exception\CacheException;
 use Ares\Framework\Model\DataObject;
 use Ares\Permission\Entity\Permission;
 use Ares\Role\Repository\RoleRepository;
 use Ares\User\Entity\Contract\UserInterface;
+use Ares\User\Repository\UserRepository;
 use Illuminate\Support\Collection;
 
 /**
@@ -66,30 +66,16 @@ class User extends DataObject implements UserInterface
             return $roles;
         }
 
+        $userRepository = repository(UserRepository::class);
         $roleRepository = repository(RoleRepository::class);
-        $dataObjectManager = $roleRepository->getDataObjectManager();
 
-        $dataObjectManager
-            ->select(['ares_roles.*'])
-            ->join(
-                'ares_roles_user',
-                'ares_roles.id',
-                '=',
-                'ares_roles_user.role_id'
-            )
-            ->join(
-                'users',
-                'users.id',
-                '=',
-                'ares_roles_user.user_id'
-            )
-            ->where('users.id', $this->getId());
-
-        try {
-            $roles = $roleRepository->getList($dataObjectManager);
-        } catch (CacheException $e) {
-            return null;
-        }
+        $roles = $userRepository->getManyToMany(
+            $roleRepository,
+            $this->getId(),
+            'ares_roles_user',
+            'user_id',
+            'role_id'
+        );
 
         if (!$roles->toArray()) {
             return null;

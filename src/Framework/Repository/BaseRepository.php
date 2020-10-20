@@ -7,7 +7,6 @@
 
 namespace Ares\Framework\Repository;
 
-use Ares\Framework\Exception\CacheException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Factory\DataObjectManagerFactory;
 use Ares\Framework\Model\DataObject;
@@ -71,7 +70,6 @@ abstract class BaseRepository
      * @param mixed $value
      * @param string $column
      * @return DataObject|null
-     * @throws CacheException
      */
     public function get($value, string $column = self::COLUMN_ID): DataObject
     {
@@ -94,7 +92,6 @@ abstract class BaseRepository
      *
      * @param DataObjectManager $dataObjectManager
      * @return Collection
-     * @throws CacheException
      */
     public function getList(DataObjectManager $dataObjectManager): Collection
     {
@@ -120,7 +117,6 @@ abstract class BaseRepository
      * @param int $pageNumber
      * @param int $limit
      * @return LengthAwarePaginator
-     * @throws CacheException
      */
     public function getPaginatedList(
         DataObjectManager $dataObjectManager,
@@ -199,10 +195,78 @@ abstract class BaseRepository
     }
 
     /**
+     * Returns one to one relation.
+     *
+     * @param BaseRepository $repository
+     * @param int $id
+     * @param string $column
+     * @return DataObject|null
+     */
+    public function getOneToOne(BaseRepository $repository, int $id, string $column): ?DataObject
+    {
+        return $repository->get($id, $column);
+    }
+
+    /**
+     * Returns one to many relation.
+     *
+     * @param BaseRepository $repository
+     * @param int $id
+     * @param string $column
+     * @return Collection
+     */
+    public function getOneToMany(BaseRepository $repository, int $id, string $column): Collection
+    {
+        $dataObject = $repository->getDataObjectManager()->where($id, $column);
+
+        return $repository->getList($dataObject);
+    }
+
+    /**
+     * Returns many to many relation.
+     *
+     * @param BaseRepository $repository
+     * @param int $id
+     * @param string $pivotTable
+     * @param string $primaryPivotColumn
+     * @param string $foreignPivotColumn
+     * @return Collection
+     */
+    public function getManyToMany(
+        BaseRepository $repository,
+        int $id,
+        string $pivotTable,
+        string $primaryPivotColumn,
+        string $foreignPivotColumn
+    ): Collection {
+        $primaryTable = $this->entity::TABLE;
+        $primaryTableColumn = $this->entity::PRIMARY_KEY;
+        $foreignTable = $repository->getEntity()::TABLE;
+        $foreignTableColumn = $repository->getEntity()::PRIMARY_KEY;
+
+        $dataObject = $repository->getDataObjectManager()
+            ->select([$foreignTable . '.*'])
+            ->join(
+                $pivotTable,
+                $foreignTable . '.' . $foreignTableColumn,
+                '=',
+                $pivotTable . '.' . $foreignPivotColumn
+            )
+            ->join(
+                $primaryTable,
+                $primaryTable . '.' . $primaryTableColumn,
+                '=',
+                $pivotTable . '.' . $primaryPivotColumn
+            )
+            ->where($primaryTable . '.' . $primaryTableColumn, $id);
+
+        return $repository->getList($dataObject);
+    }
+
+    /**
      * Generates cache key.
      *
      * @param DataObjectManager $dataObjectManager
-     *
      * @param string ...$postfix
      * @return string
      */
@@ -224,5 +288,15 @@ abstract class BaseRepository
     public function getDataObjectManager(): DataObjectManager
     {
         return $this->dataObjectManagerFactory->create($this->entity);
+    }
+
+    /**
+     * Returns entity of repository.
+     *
+     * @return string
+     */
+    public function getEntity(): string
+    {
+        return $this->entity;
     }
 }

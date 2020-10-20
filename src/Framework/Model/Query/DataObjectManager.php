@@ -148,7 +148,8 @@ class DataObjectManager extends Builder
             unset(
                 $constants['TABLE'],
                 $constants['HIDDEN'],
-                $constants['RELATIONS']
+                $constants['RELATIONS'],
+                $constants['PRIMARY_KEY']
             );
 
             return array_values($constants);

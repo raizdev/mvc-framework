@@ -146,7 +146,7 @@ class AuthController extends BaseController
         $dataObjectManager = $this->dataObjectManagerFactory->create(User::class);
         $result = $dataObjectManager
             ->where('username', 'Dome')
-//            ->addRelation('roles')
+            ->addRelation('roles')
             ->get();
 
         return $this->respond(
