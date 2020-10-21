@@ -7,7 +7,6 @@
 
 namespace Ares\Settings\Service;
 
-use Ares\Framework\Exception\CacheException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\Settings\Entity\Setting;
@@ -41,9 +40,8 @@ class UpdateSettingsService
      * @param $data
      *
      * @return CustomResponseInterface
-     * @throws SettingsException
-     * @throws CacheException
      * @throws DataObjectManagerException
+     * @throws SettingsException
      */
     public function update($data): CustomResponseInterface
     {
