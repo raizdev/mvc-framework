@@ -7,15 +7,12 @@
 
 namespace Ares\User\Service\Settings;
 
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\User\Entity\User;
 use Ares\User\Entity\UserSetting;
 use Ares\User\Exception\UserSettingsException;
 use Ares\User\Repository\UserSettingRepository;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 
 /**
  * Class ChangeGeneralSettingsService
@@ -43,27 +40,24 @@ class ChangeGeneralSettingsService
     /**
      * Changes user general settings by given user.
      *
-     * @param User $user
+     * @param User  $user
      * @param array $data
+     *
      * @return CustomResponseInterface
-     * @throws InvalidArgumentException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
      * @throws UserSettingsException
+     * @throws DataObjectManagerException
      */
     public function execute(User $user, array $data): CustomResponseInterface
     {
         /** @var UserSetting $userSetting */
-        $userSetting = $this->userSettingRepository->getOneBy([
-            'user' => $user->getId()
-        ]);
+        $userSetting = $this->userSettingRepository->get($user->getId(), 'user_id');
 
         if (!$userSetting) {
             throw new UserSettingsException(__('Settings for given user does not exist.'));
         }
 
-        $userSetting = $this->userSettingRepository->update($this->getUpdatedUserSettings($userSetting, $data));
+        /** @var UserSetting $userSetting */
+        $userSetting = $this->userSettingRepository->save($this->getUpdatedUserSettings($userSetting, $data));
 
         return response()
             ->setData($userSetting);

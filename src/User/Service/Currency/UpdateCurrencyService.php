@@ -7,7 +7,6 @@
 
 namespace Ares\User\Service\Currency;
 
-use Ares\Framework\Exception\CacheException;
 use Ares\User\Entity\UserCurrency;
 use Ares\User\Exception\UserCurrencyException;
 use Ares\User\Repository\UserCurrencyRepository;
@@ -45,18 +44,16 @@ class UpdateCurrencyService
      *
      * @return void
      * @throws UserCurrencyException
-     * @throws CacheException
      */
     public function execute(int $userId, int $type, int $amount): void
     {
-        $dataObjectManager = $this->userCurrencyRepository->getDataObjectManager();
-
-        $dataObjectManager
+        $searchCriteria = $this->userCurrencyRepository
+            ->getDataObjectManager()
             ->where('user_id', $userId)
             ->where('type', $type);
 
         /** @var UserCurrency[] $currencies */
-        $currencies = $this->userCurrencyRepository->getList($dataObjectManager);
+        $currencies = $this->userCurrencyRepository->getList($searchCriteria);
 
         if (!$currencies) {
             throw new UserCurrencyException(__('Currencies was not found.'), 404);

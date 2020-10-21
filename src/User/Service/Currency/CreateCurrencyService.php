@@ -47,6 +47,7 @@ class CreateCurrencyService
      */
     public function execute(int $user_id, int $type, int $amount): CustomResponseInterface
     {
+        /** @var UserCurrency $userCurrency */
         $userCurrency = $this->userCurrencyRepository
             ->save(
                 $this->getNewUserCurrency(

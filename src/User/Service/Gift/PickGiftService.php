@@ -7,7 +7,6 @@
 
 namespace Ares\User\Service\Gift;
 
-use Ares\Framework\Exception\CacheException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\User\Entity\Gift\DailyGift;
@@ -54,20 +53,13 @@ class PickGiftService
      * @param User $user
      *
      * @return CustomResponseInterface
-     * @throws CacheException
      * @throws DailyGiftException
      * @throws DataObjectManagerException
      */
     public function execute(User $user): CustomResponseInterface
     {
-        $searchCriteria = $this->dailyGiftRepository
-            ->getDataObjectManager()
-            ->where('user_id', $user->getId());
-
         /** @var DailyGift $dailyGift */
-        $dailyGift = $this->dailyGiftRepository
-            ->getList($searchCriteria)
-            ->first();
+        $dailyGift = $this->dailyGiftRepository->get($user->getId(), 'user_id');
 
         if (!$dailyGift) {
             $dailyGift = $this->getNewDailyGift($user);
