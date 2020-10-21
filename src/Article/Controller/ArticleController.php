@@ -114,7 +114,7 @@ class ArticleController extends BaseController
      * @param             $args
      *
      * @return Response
-     * @throws ArticleException
+     * @throws ArticleException|DataObjectManagerException
      */
     public function article(Request $request, Response $response, $args): Response
     {
@@ -122,6 +122,7 @@ class ArticleController extends BaseController
 
         /** @var Article $article */
         $article = $this->articleRepository->get($slug, 'slug');
+        $article->getUser();
 
         if (!$article) {
             throw new ArticleException(__('No specific Article found'), 404);
@@ -139,6 +140,7 @@ class ArticleController extends BaseController
      * @param Response $response
      *
      * @return Response
+     * @throws DataObjectManagerException
      */
     public function pinned(Request $request, Response $response): Response
     {
@@ -148,6 +150,7 @@ class ArticleController extends BaseController
                 'pinned' => 1,
                 'hidden' => 0
             ])
+            ->addRelation('user')
             ->orderBy('id', 'DESC')
             ->limit(3);
 
@@ -167,6 +170,7 @@ class ArticleController extends BaseController
      * @param             $args
      *
      * @return Response
+     * @throws DataObjectManagerException
      */
     public function list(Request $request, Response $response, $args): Response
     {
@@ -178,6 +182,7 @@ class ArticleController extends BaseController
 
         $searchCriteria = $this->articleRepository
             ->getDataObjectManager()
+            ->addRelation('user')
             ->orderBy('id', 'DESC');
 
         $articles = $this->articleRepository

@@ -8,6 +8,7 @@
 namespace Ares\Messenger\Controller;
 
 use Ares\Framework\Controller\BaseController;
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Messenger\Repository\MessengerRepository;
 use Ares\User\Exception\UserException;
 use Ares\User\Repository\UserRepository;
@@ -53,6 +54,7 @@ class MessengerController extends BaseController
      *
      * @return Response
      * @throws UserException
+     * @throws DataObjectManagerException
      */
     public function friends(Request $request, Response $response, $args): Response
     {
@@ -64,7 +66,8 @@ class MessengerController extends BaseController
 
         $searchCriteria = $this->messengerRepository
             ->getDataObjectManager()
-            ->where('user_id', $this->getUser($this->userRepository, $request)->getId())
+            ->where('user_one_id', $this->getUser($this->userRepository, $request)->getId())
+            ->addRelation('user')
             ->orderBy('id', 'DESC');
 
         $friends = $this->messengerRepository

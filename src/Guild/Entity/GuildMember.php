@@ -7,8 +7,12 @@
 
 namespace Ares\Guild\Entity;
 
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Model\DataObject;
 use Ares\Guild\Entity\Contract\GuildMemberInterface;
+use Ares\Guild\Repository\GuildMemberRepository;
+use Ares\User\Entity\User;
+use Ares\User\Repository\UserRepository;
 
 /**
  * Class GuildMember
@@ -19,6 +23,11 @@ class GuildMember extends DataObject implements GuildMemberInterface
 {
     /** @var string */
     public const TABLE = 'guilds_members';
+
+    /*** @var array */
+    public const RELATIONS = [
+      'user' => 'getUser'
+    ];
 
     /**
      * @return int
@@ -108,5 +117,51 @@ class GuildMember extends DataObject implements GuildMemberInterface
     public function setMemberSince(int $member_since): GuildMember
     {
         return $this->setData(GuildMemberInterface::COLUMN_MEMBER_SINCE, $member_since);
+    }
+
+    /**
+     * @return User|null
+     *
+     * @throws DataObjectManagerException
+     */
+    public function getUser(): ?User
+    {
+        /** @var User $user */
+        $user = $this->getData('user');
+
+        if ($user) {
+            return $user;
+        }
+
+        /** @var GuildMemberRepository $guildMemberRepository */
+        $guildMemberRepository = repository(GuildMemberRepository::class);
+
+        /** @var UserRepository $userRepository */
+        $userRepository = repository(UserRepository::class);
+
+        /** @var User $user */
+        $user = $guildMemberRepository->getOneToOne(
+            $userRepository,
+            $this->getUserId(),
+            'id'
+        );
+
+        if (!$user) {
+            return null;
+        }
+
+        $this->setUser($user);
+
+        return $user;
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return GuildMember
+     */
+    public function setUser(User $user): GuildMember
+    {
+        return $this->setData('user', $user);
     }
 }

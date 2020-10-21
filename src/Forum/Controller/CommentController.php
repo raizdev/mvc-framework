@@ -13,7 +13,6 @@ use Ares\Forum\Repository\CommentRepository;
 use Ares\Forum\Service\Comment\CreateCommentService;
 use Ares\Forum\Service\Comment\EditCommentService;
 use Ares\Framework\Controller\BaseController;
-use Ares\Framework\Exception\CacheException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
@@ -83,7 +82,6 @@ class CommentController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws CacheException
      * @throws CommentException
      * @throws DataObjectManagerException
      * @throws UserException
@@ -115,7 +113,6 @@ class CommentController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws CacheException
      * @throws CommentException
      * @throws DataObjectManagerException
      * @throws ValidationException
@@ -146,6 +143,7 @@ class CommentController extends BaseController
      * @param             $args
      *
      * @return Response
+     * @throws DataObjectManagerException
      */
     public function list(Request $request, Response $response, $args): Response
     {
@@ -160,6 +158,7 @@ class CommentController extends BaseController
 
         $searchCriteria = $this->commentRepository
             ->getDataObjectManager()
+            ->addRelation('user')
             ->where('thread_id', (int) $threadId)
             ->orderBy('id', 'DESC');
 

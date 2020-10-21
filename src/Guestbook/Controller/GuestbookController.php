@@ -134,6 +134,7 @@ class GuestbookController extends BaseController
      * @param             $args
      *
      * @return Response
+     * @throws DataObjectManagerException
      */
     public function profileList(Request $request, Response $response, $args): Response
     {
@@ -148,6 +149,7 @@ class GuestbookController extends BaseController
 
         $searchCriteria = $this->guestbookRepository
             ->getDataObjectManager()
+            ->addRelation('user')
             ->where('profile_id', (int) $profileId)
             ->orderBy('id', 'DESC');
 
@@ -167,6 +169,7 @@ class GuestbookController extends BaseController
      * @param             $args
      *
      * @return Response
+     * @throws DataObjectManagerException
      */
     public function guildList(Request $request, Response $response, $args): Response
     {
@@ -181,6 +184,7 @@ class GuestbookController extends BaseController
 
         $searchCriteria = $this->guestbookRepository
             ->getDataObjectManager()
+            ->addRelation('user')
             ->where('guild_id', (int) $guildId)
             ->orderBy('id', 'DESC');
 

@@ -74,27 +74,21 @@ class LoginService
      *
      * @return CustomResponseInterface
      * @throws BanException
+     * @throws DataObjectManagerException
      * @throws LoginException
      * @throws ValidateException
-     * @throws CacheException|DataObjectManagerException
      */
     public function login(array $data): CustomResponseInterface
     {
-        $searchCriteria = $this->userRepository
-            ->getDataObjectManager()
-            ->where('username', $data['username']);
-
         /** @var User $user */
-        $user = $this->userRepository
-            ->getList($searchCriteria)
-            ->first();
+        $user = $this->userRepository->get($data['username'], 'username');
 
         if ($user === null || !password_verify($data['password'], $user->getPassword())) {
             throw new LoginException(__('general.failed'), 403);
         }
 
         /** @var Ban $isBanned */
-        $isBanned = $this->banRepository->get($user->getId());
+        $isBanned = $this->banRepository->get($user->getId(), 'user_id');
 
         if ($isBanned && $isBanned->getBanExpire() > time()) {
             throw new BanException(__('general.banned', [$isBanned->getBanReason()]), 401);

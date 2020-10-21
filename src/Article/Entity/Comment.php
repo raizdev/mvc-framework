@@ -8,7 +8,11 @@
 namespace Ares\Article\Entity;
 
 use Ares\Article\Entity\Contract\CommentInterface;
+use Ares\Article\Repository\CommentRepository;
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Model\DataObject;
+use Ares\User\Entity\User;
+use Ares\User\Repository\UserRepository;
 
 /**
  * Class Article
@@ -19,6 +23,11 @@ class Comment extends DataObject implements CommentInterface
 {
     /** @var string */
     public const TABLE = 'ares_articles_comments';
+
+    /*** @var array */
+    public const RELATIONS = [
+      'user' => 'getUser'
+    ];
 
     /**
      * @return int
@@ -180,5 +189,51 @@ class Comment extends DataObject implements CommentInterface
     public function setUpdatedAt(\DateTime $updated_at): Comment
     {
         return $this->setData(CommentInterface::COLUMN_UPDATED_AT, $updated_at);
+    }
+
+    /**
+     * @return User|null
+     *
+     * @throws DataObjectManagerException
+     */
+    public function getUser(): ?User
+    {
+        /** @var User $user */
+        $user = $this->getData('user');
+
+        if ($user) {
+            return $user;
+        }
+
+        /** @var CommentRepository $commentRepository */
+        $commentRepository = repository(CommentRepository::class);
+
+        /** @var UserRepository $userRepository */
+        $userRepository = repository(UserRepository::class);
+
+        /** @var User $user */
+        $user = $commentRepository->getOneToOne(
+            $userRepository,
+            $this->getUserId(),
+            'id'
+        );
+
+        if (!$user) {
+            return null;
+        }
+
+        $this->setUser($user);
+
+        return $user;
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return Comment
+     */
+    public function setUser(User $user): Comment
+    {
+        return $this->setData('user', $user);
     }
 }

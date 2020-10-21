@@ -8,6 +8,7 @@
 namespace Ares\Room\Controller;
 
 use Ares\Framework\Controller\BaseController;
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Room\Entity\Room;
 use Ares\Room\Exception\RoomException;
 use Ares\Room\Repository\RoomRepository;
@@ -44,6 +45,7 @@ class RoomController extends BaseController
      *
      * @return Response
      * @throws RoomException
+     * @throws DataObjectManagerException
      */
     public function room(Request $request, Response $response, $args): Response
     {
@@ -52,6 +54,8 @@ class RoomController extends BaseController
 
         /** @var Room $room */
         $room = $this->roomRepository->get((int) $id);
+        $room->getGuild();
+        $room->getUser();
 
         if (!$room) {
             throw new RoomException(__('No specific Room found'), 404);
@@ -71,7 +75,7 @@ class RoomController extends BaseController
      * @param          $args
      *
      * @return Response
-     * @throws CacheException
+     * @throws DataObjectManagerException
      */
     public function list(Request $request, Response $response, $args): Response
     {
@@ -83,9 +87,12 @@ class RoomController extends BaseController
 
         $searchCriteria = $this->roomRepository
             ->getDataObjectManager()
+            ->addRelation('guild')
+            ->addRelation('user')
             ->orderBy('id', 'DESC');
 
-        $rooms = $this->roomRepository->getPaginatedList($searchCriteria, (int)$page, (int)$resultPerPage);
+        $rooms = $this->roomRepository
+            ->getPaginatedList($searchCriteria, (int)$page, (int)$resultPerPage);
 
         return $this->respond(
             $response,

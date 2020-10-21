@@ -7,7 +7,6 @@
 
 namespace Ares\User\Service\Auth;
 
-use Ares\Framework\Exception\CacheException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\Framework\Service\TokenService;
@@ -83,7 +82,6 @@ class RegisterService
      * @return CustomResponseInterface
      * @throws RegisterException
      * @throws ValidateException
-     * @throws CacheException
      * @throws DataObjectManagerException
      * @throws Exception
      */

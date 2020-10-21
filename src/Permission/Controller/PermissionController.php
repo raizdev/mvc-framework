@@ -8,6 +8,7 @@
 namespace Ares\Permission\Controller;
 
 use Ares\Framework\Controller\BaseController;
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Permission\Repository\PermissionRepository;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -42,12 +43,14 @@ class PermissionController extends BaseController
      * @param             $args
      *
      * @return Response
+     * @throws DataObjectManagerException
      */
     public function listUserWithRank(Request $request, Response $response, $args): Response
     {
         $searchCriteria = $this->permissionRepository
             ->getDataObjectManager()
             ->where('id', '>', 3)
+            ->addRelation('users')
             ->orderBy('id', 'DESC');
 
         $users = $this->permissionRepository->getList($searchCriteria);

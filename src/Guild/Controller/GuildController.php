@@ -8,6 +8,7 @@
 namespace Ares\Guild\Controller;
 
 use Ares\Framework\Controller\BaseController;
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Guild\Entity\Guild;
 use Ares\Guild\Exception\GuildException;
 use Ares\Guild\Repository\GuildMemberRepository;
@@ -52,7 +53,7 @@ class GuildController extends BaseController
      * @param             $args
      *
      * @return Response
-     * @throws GuildException
+     * @throws GuildException|DataObjectManagerException
      */
     public function guild(Request $request, Response $response, $args): Response
     {
@@ -61,6 +62,8 @@ class GuildController extends BaseController
 
         /** @var Guild $guild */
         $guild = $this->guildRepository->get((int) $id);
+        $guild->getUser();
+        $guild->getRoom();
 
         if (!$guild) {
             throw new GuildException(__('No specific Guild found'));
@@ -91,6 +94,7 @@ class GuildController extends BaseController
      * @param             $args
      *
      * @return Response
+     * @throws DataObjectManagerException
      */
     public function list(Request $request, Response $response, $args): Response
     {
@@ -102,6 +106,8 @@ class GuildController extends BaseController
 
         $searchCriteria = $this->guildRepository
             ->getDataObjectManager()
+            ->addRelation('user')
+            ->addRelation('room')
             ->orderBy('id', 'DESC');
 
         $guilds = $this->guildRepository
@@ -154,7 +160,7 @@ class GuildController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws GuildException
+     * @throws GuildException|DataObjectManagerException
      */
     public function mostMembers(Request $request, Response $response): Response
     {
@@ -168,6 +174,8 @@ class GuildController extends BaseController
 
         /** @var Guild $guild */
         $guild = $this->guildRepository->get($getMaxMemberGuild['id']);
+        $guild->getUser();
+        $guild->getRoom();
 
         return $this->respond(
             $response,

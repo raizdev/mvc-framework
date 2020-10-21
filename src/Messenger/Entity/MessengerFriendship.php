@@ -7,8 +7,12 @@
 
 namespace Ares\Messenger\Entity;
 
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Model\DataObject;
 use Ares\Messenger\Entity\Contract\MessengerFriendshipInterface;
+use Ares\Messenger\Repository\MessengerRepository;
+use Ares\User\Entity\User;
+use Ares\User\Repository\UserRepository;
 
 /**
  * Class MessengerFriendship
@@ -19,6 +23,11 @@ class MessengerFriendship extends DataObject implements MessengerFriendshipInter
 {
     /** @var string */
     public const TABLE = 'messenger_friendships';
+
+    /** @var array */
+    public const RELATIONS = [
+        'user' => 'getUser'
+    ];
 
     /**
      * @return int
@@ -108,5 +117,44 @@ class MessengerFriendship extends DataObject implements MessengerFriendshipInter
     public function setFriendsSince(int $friends_since): MessengerFriendship
     {
         return $this->setData(MessengerFriendshipInterface::COLUMN_FRIENDS_SINCE, $friends_since);
+    }
+
+    /**
+     * @return User|null
+     * @throws DataObjectManagerException
+     */
+    public function getUser(): ?User
+    {
+        $user = $this->getData('user');
+
+        if ($user) {
+            return $user;
+        }
+
+        /** @var MessengerRepository $messengerRepository */
+        $messengerRepository = repository(MessengerRepository::class);
+
+        /** @var UserRepository $userRepository */
+        $userRepository = repository(UserRepository::class);
+
+        /** @var User $user */
+        $user = $messengerRepository->getOneToOne(
+            $userRepository,
+            $this->getUserOneId(),
+            'id'
+        );
+
+        if (!$user) {
+            return null;
+        }
+
+        $this->setUser($user);
+
+        return $user;
+    }
+
+    public function setUser(User $user): MessengerFriendship
+    {
+        return $this->setData('user', $user);
     }
 }

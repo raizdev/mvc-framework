@@ -133,7 +133,6 @@ class ProfileController extends BaseController
      * @param             $args
      *
      * @return Response
-     * @throws CacheException
      * @throws ProfileException
      */
     public function badgeList(Request $request, Response $response, $args): Response
@@ -174,7 +173,6 @@ class ProfileController extends BaseController
      * @param             $args
      *
      * @return Response
-     * @throws CacheException
      * @throws ProfileException
      */
     public function friendList(Request $request, Response $response, $args): Response
@@ -216,7 +214,6 @@ class ProfileController extends BaseController
      * @param             $args
      *
      * @return Response
-     * @throws CacheException
      * @throws ProfileException
      */
     public function roomList(Request $request, Response $response, $args): Response
@@ -258,7 +255,6 @@ class ProfileController extends BaseController
      * @param             $args
      *
      * @return Response
-     * @throws CacheException
      * @throws ProfileException
      */
     public function guildList(Request $request, Response $response, $args): Response
@@ -302,7 +298,6 @@ class ProfileController extends BaseController
      * @param             $args
      *
      * @return Response
-     * @throws CacheException
      * @throws ProfileException
      */
     public function photoList(Request $request, Response $response, $args): Response

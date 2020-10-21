@@ -7,8 +7,14 @@
 
 namespace Ares\Room\Entity;
 
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Model\DataObject;
+use Ares\Guild\Entity\Guild;
+use Ares\Guild\Repository\GuildRepository;
 use Ares\Room\Entity\Contract\RoomInterface;
+use Ares\Room\Repository\RoomRepository;
+use Ares\User\Entity\User;
+use Ares\User\Repository\UserRepository;
 
 /**
  * Class Room
@@ -19,6 +25,12 @@ class Room extends DataObject implements RoomInterface
 {
     /** @var string */
     public const TABLE = 'rooms';
+
+    /** @var array **/
+    public const RELATIONS = [
+        'guild' => 'getGuild',
+        'user' => 'getUser'
+    ];
 
     /**
      * @return int
@@ -180,5 +192,91 @@ class Room extends DataObject implements RoomInterface
     public function setScore(int $score): Room
     {
         return $this->setData(RoomInterface::COLUMN_SCORE, $score);
+    }
+
+    /**
+     * @return User|null
+     *
+     * @throws DataObjectManagerException
+     */
+    public function getUser(): ?User
+    {
+        /** @var User $user */
+        $user = $this->getData('user');
+
+        if ($user) {
+            return $user;
+        }
+
+        /** @var RoomRepository $roomRepository */
+        $roomRepository = repository(RoomRepository::class);
+
+        /** @var UserRepository $userRepository */
+        $userRepository = repository(UserRepository::class);
+
+        /** @var User $user */
+        $user = $roomRepository->getOneToOne(
+            $userRepository,
+            $this->getOwnerId(),
+            'id'
+        );
+
+        if (!$user) {
+            return null;
+        }
+
+        $this->setUser($user);
+
+        return $user;
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return Room
+     */
+    public function setUser(User $user): Room
+    {
+        return $this->setData('user', $user);
+    }
+
+    /**
+     * @return Guild|null
+     *
+     * @throws DataObjectManagerException
+     */
+    public function getGuild(): ?Guild
+    {
+        $guild = $this->getData('guild');
+
+        if ($guild) {
+            return $guild;
+        }
+
+        /** @var RoomRepository $roomRepository */
+        $roomRepository = repository(RoomRepository::class);
+
+        /** @var GuildRepository $guildRepository */
+        $guildRepository = repository(GuildRepository::class);
+
+        /** @var Guild $guild */
+        $guild = $roomRepository->getOneToOne(
+            $guildRepository,
+            $this->getGuildId(),
+            'id'
+        );
+
+        if (!$guild) {
+            return null;
+        }
+
+        $this->setGuild($guild);
+
+        return $guild;
+    }
+
+    public function setGuild(Guild $guild): Room
+    {
+        return $this->setData('guild', $guild);
     }
 }

@@ -7,8 +7,12 @@
 
 namespace Ares\Permission\Entity;
 
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Model\DataObject;
 use Ares\Permission\Entity\Contract\PermissionInterface;
+use Ares\Permission\Repository\PermissionRepository;
+use Ares\User\Repository\UserRepository;
+use Illuminate\Support\Collection;
 
 /**
  * Class Permission
@@ -19,6 +23,11 @@ class Permission extends DataObject implements PermissionInterface
 {
     /** @var string */
     public const TABLE = 'permissions';
+
+    /** @var array **/
+    public const RELATIONS = [
+      'users' => 'getUsers'
+    ];
 
     /**
      * @return int
@@ -126,5 +135,50 @@ class Permission extends DataObject implements PermissionInterface
     public function setPrefixColor(string $prefix_color): Permission
     {
         return $this->setData(PermissionInterface::COLUMN_PREFIX_COLOR, $prefix_color);
+    }
+
+    /**
+     * @return Collection|null
+     *
+     * @throws DataObjectManagerException
+     */
+    public function getUsers(): ?Collection
+    {
+        $users = $this->getData('users');
+
+        if ($users) {
+            return $users;
+        }
+
+        /** @var PermissionRepository $permissionRepository */
+        $permissionRepository = repository(PermissionRepository::class);
+
+        /** @var UserRepository $userRepository */
+        $userRepository = repository(UserRepository::class);
+
+        $users = $permissionRepository->getOneToMany(
+            $userRepository,
+            $this->getId(),
+            'rank'
+        );
+
+        if (!$users->toArray()) {
+            return null;
+        }
+
+        $this->setUsers($users);
+
+        return $users;
+
+    }
+
+    /**
+     * @param Collection $users
+     *
+     * @return Permission
+     */
+    public function setUsers(Collection $users): Permission
+    {
+        return $this->setData('users', $users);
     }
 }

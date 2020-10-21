@@ -133,6 +133,7 @@ class PaymentController extends BaseController
      * @param             $args
      *
      * @return Response
+     * @throws DataObjectManagerException
      */
     public function list(Request $request, Response $response, $args): Response
     {
@@ -144,6 +145,7 @@ class PaymentController extends BaseController
 
         $searchCriteria = $this->paymentRepository
             ->getDataObjectManager()
+            ->addRelation('user')
             ->orderBy('id', 'DESC');
 
         $payments = $this->paymentRepository

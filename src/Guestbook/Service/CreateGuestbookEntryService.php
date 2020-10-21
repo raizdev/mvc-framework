@@ -48,6 +48,7 @@ class CreateGuestbookEntryService
 
         /** @var Guestbook $entry */
         $entry = $this->guestbookRepository->save($entry);
+        $entry->getUser();
 
         return response()
             ->setData($entry);

@@ -7,8 +7,14 @@
 
 namespace Ares\Guild\Entity;
 
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Model\DataObject;
 use Ares\Guild\Entity\Contract\GuildInterface;
+use Ares\Guild\Repository\GuildRepository;
+use Ares\Room\Entity\Room;
+use Ares\Room\Repository\RoomRepository;
+use Ares\User\Entity\User;
+use Ares\User\Repository\UserRepository;
 
 /**
  * Class Guild
@@ -18,7 +24,13 @@ use Ares\Guild\Entity\Contract\GuildInterface;
 class Guild extends DataObject implements GuildInterface
 {
     /** @var string */
-    public const TABLE = 'ares_guilds';
+    public const TABLE = 'guilds';
+
+    /*** @var array */
+    public const RELATIONS = [
+        'user' => 'getUser',
+        'room' => 'getRoom'
+    ];
 
     /**
      * @return int
@@ -162,5 +174,97 @@ class Guild extends DataObject implements GuildInterface
     public function setDateCreated(int $date_created): Guild
     {
         return $this->setData(GuildInterface::COLUMN_DATE_CREATED, $date_created);
+    }
+
+    /**
+     * @return User|null
+     *
+     * @throws DataObjectManagerException
+     */
+    public function getUser(): ?User
+    {
+        /** @var User $user */
+        $user = $this->getData('user');
+
+        if ($user) {
+            return $user;
+        }
+
+        /** @var GuildRepository $guildRepository */
+        $guildRepository = repository(GuildRepository::class);
+
+        /** @var UserRepository $userRepository */
+        $userRepository = repository(UserRepository::class);
+
+        /** @var User $user */
+        $user = $guildRepository->getOneToOne(
+            $userRepository,
+            $this->getUserId(),
+            'id'
+        );
+
+        if (!$user) {
+            return null;
+        }
+
+        $this->setUser($user);
+
+        return $user;
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return Guild
+     */
+    public function setUser(User $user): Guild
+    {
+        return $this->setData('user', $user);
+    }
+
+    /**
+     * @return Room|null
+     *
+     * @throws DataObjectManagerException
+     */
+    public function getRoom(): ?Room
+    {
+        /** @var Room $room */
+        $room = $this->getData('room');
+
+        if ($room) {
+            return $room;
+        }
+
+        /** @var GuildRepository $guildRepository */
+        $guildRepository = repository(GuildRepository::class);
+
+        /** @var RoomRepository $roomRepository */
+        $roomRepository = repository(RoomRepository::class);
+
+        /** @var Room $room */
+        $room = $guildRepository->getOneToOne(
+            $roomRepository,
+            $this->getRoomId(),
+            'id'
+        );
+
+        if (!$room) {
+            return null;
+        }
+
+        $this->setRoom($room);
+
+        return $room;
+    }
+
+    /**
+     * @param Room $room
+     *
+     * @return Guild
+     */
+    public function setRoom(Room $room): Guild
+    {
+        return $this->setData('room', $room);
     }
 }

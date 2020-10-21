@@ -8,7 +8,11 @@
 namespace Ares\Article\Entity;
 
 use Ares\Article\Entity\Contract\ArticleInterface;
+use Ares\Article\Repository\ArticleRepository;
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Model\DataObject;
+use Ares\User\Entity\User;
+use Ares\User\Repository\UserRepository;
 
 /**
  * Class Article
@@ -19,6 +23,11 @@ class Article extends DataObject implements ArticleInterface
 {
     /** @var string */
     public const TABLE = 'ares_articles';
+
+    /** @var array **/
+    public const RELATIONS = [
+      'user' => 'getUser'
+    ];
 
     /**
      * @return int
@@ -252,5 +261,51 @@ class Article extends DataObject implements ArticleInterface
     public function setUpdatedAt(\DateTime $updated_at): Article
     {
         return $this->setData(ArticleInterface::COLUMN_UPDATED_AT, $updated_at);
+    }
+
+    /**
+     * @return User|null
+     *
+     * @throws DataObjectManagerException
+     */
+    public function getUser(): ?User
+    {
+        /** @var User $user */
+        $user = $this->getData('user');
+
+        if ($user) {
+            return $user;
+        }
+
+        /** @var ArticleRepository $articleRepository */
+        $articleRepository = repository(ArticleRepository::class);
+
+        /** @var UserRepository $userRepository */
+        $userRepository = repository(UserRepository::class);
+
+        /** @var User $user */
+        $user = $articleRepository->getOneToOne(
+            $userRepository,
+            $this->getAuthorId(),
+            'id'
+        );
+
+        if (!$user) {
+            return null;
+        }
+
+        $this->setUser($user);
+
+        return $user;
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return Article
+     */
+    public function setUser(User $user): Article
+    {
+        return $this->setData('user', $user);
     }
 }

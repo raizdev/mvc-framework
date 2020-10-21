@@ -35,7 +35,7 @@ class User extends DataObject implements UserInterface
         UserInterface::COLUMN_IP_REGISTER
     ];
 
-    /** @var string[] */
+    /** @var array */
     public const RELATIONS = [
         'roles' => 'getRoles',
         'currencies' => 'getCurrencies'
@@ -430,7 +430,10 @@ class User extends DataObject implements UserInterface
             return $roles;
         }
 
+        /** @var UserRepository $userRepository */
         $userRepository = repository(UserRepository::class);
+
+        /** @var RoleRepository $roleRepository */
         $roleRepository = repository(RoleRepository::class);
 
         $roles = $userRepository->getManyToMany(
@@ -462,6 +465,7 @@ class User extends DataObject implements UserInterface
 
     /**
      * @return Collection|null
+     *
      * @throws DataObjectManagerException
      */
     public function getCurrencies(): ?Collection
@@ -472,7 +476,10 @@ class User extends DataObject implements UserInterface
             return $currencies;
         }
 
+        /** @var UserRepository $userRepository */
         $userRepository = repository(UserRepository::class);
+
+        /** @var UserCurrencyRepository $userCurrencyRepository */
         $userCurrencyRepository = repository(UserCurrencyRepository::class);
 
         $currencies = $userRepository->getOneToMany(

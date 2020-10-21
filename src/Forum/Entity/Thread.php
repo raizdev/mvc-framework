@@ -8,7 +8,11 @@
 namespace Ares\Forum\Entity;
 
 use Ares\Forum\Entity\Contract\ThreadInterface;
+use Ares\Forum\Repository\ThreadRepository;
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Model\DataObject;
+use Ares\User\Entity\User;
+use Ares\User\Repository\UserRepository;
 
 /**
  * Class Thread
@@ -216,5 +220,51 @@ class Thread extends DataObject implements ThreadInterface
     public function setUpdatedAt(\DateTime $updated_at): Thread
     {
         return $this->setData(ThreadInterface::COLUMN_UPDATED_AT, $updated_at);
+    }
+
+    /**
+     * @return User|null
+     *
+     * @throws DataObjectManagerException
+     */
+    public function getUser(): ?User
+    {
+        /** @var User $user */
+        $user = $this->getData('user');
+
+        if ($user) {
+            return $user;
+        }
+
+        /** @var ThreadRepository $threadRepository */
+        $threadRepository = repository(ThreadRepository::class);
+
+        /** @var UserRepository $userRepository */
+        $userRepository = repository(UserRepository::class);
+
+        /** @var User $user */
+        $user = $threadRepository->getOneToOne(
+            $userRepository,
+            $this->getUserId(),
+            'id'
+        );
+
+        if (!$user) {
+            return null;
+        }
+
+        $this->setUser($user);
+
+        return $user;
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return Thread
+     */
+    public function setUser(User $user): Thread
+    {
+        return $this->setData('user', $user);
     }
 }

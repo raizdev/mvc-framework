@@ -154,7 +154,7 @@ class VoteController extends BaseController
     public function getTotalVotes(Request $request, Response $response)
     {
         /** @var User $user */
-        $user = $this->getUser($this->userRepository, $request)->getId();
+        $user = $this->getUser($this->userRepository, $request);
 
         $searchCriteria = $this->voteRepository
             ->getDataObjectManager()
@@ -176,7 +176,6 @@ class VoteController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws CacheException
      * @throws DataObjectManagerException
      * @throws UserException
      * @throws ValidationException

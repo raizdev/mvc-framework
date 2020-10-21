@@ -143,6 +143,7 @@ class CommentController extends BaseController
      * @param             $args
      *
      * @return Response
+     * @throws DataObjectManagerException
      */
     public function list(Request $request, Response $response, $args): Response
     {
@@ -158,6 +159,7 @@ class CommentController extends BaseController
         $searchCriteria = $this->commentRepository
             ->getDataObjectManager()
             ->where('article_id', (int) $articleId)
+            ->addRelation('user')
             ->orderBy('id', 'DESC');
 
         $comments = $this->commentRepository

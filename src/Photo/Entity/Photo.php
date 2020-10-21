@@ -7,8 +7,12 @@
 
 namespace Ares\Photo\Entity;
 
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Model\DataObject;
 use Ares\Photo\Entity\Contract\PhotoInterface;
+use Ares\Photo\Repository\PhotoRepository;
+use Ares\User\Entity\User;
+use Ares\User\Repository\UserRepository;
 
 /**
  * Class Photo
@@ -19,6 +23,11 @@ class Photo extends DataObject implements PhotoInterface
 {
     /** @var string */
     public const TABLE = 'camera_web';
+
+    /** @var array **/
+    public const RELATIONS = [
+      'user' => 'getUser'
+    ];
 
     /**
      * @return int
@@ -108,5 +117,51 @@ class Photo extends DataObject implements PhotoInterface
     public function setUrl(string $url): Photo
     {
         return $this->setData(PhotoInterface::COLUMN_URL, $url);
+    }
+
+    /**
+     * @return User|null
+     *
+     * @throws DataObjectManagerException
+     */
+    public function getUser(): ?User
+    {
+        /** @var User $user */
+        $user = $this->getData('user');
+
+        if ($user) {
+            return $user;
+        }
+
+        /** @var PhotoRepository $photoRepository */
+        $photoRepository = repository(PhotoRepository::class);
+
+        /** @var UserRepository $userRepository */
+        $userRepository = repository(UserRepository::class);
+
+        /** @var User $user */
+        $user = $photoRepository->getOneToOne(
+            $userRepository,
+            $this->getId(),
+            'id'
+        );
+
+        if (!$user) {
+            return null;
+        }
+
+        $this->setUser($user);
+
+        return $user;
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return Photo
+     */
+    public function setUser(User $user): Photo
+    {
+        return $this->setData('user', $user);
     }
 }

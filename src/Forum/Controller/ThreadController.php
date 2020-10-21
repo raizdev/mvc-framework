@@ -13,7 +13,6 @@ use Ares\Forum\Repository\ThreadRepository;
 use Ares\Forum\Service\Thread\CreateThreadService;
 use Ares\Forum\Service\Thread\EditThreadService;
 use Ares\Framework\Controller\BaseController;
-use Ares\Framework\Exception\CacheException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
@@ -78,7 +77,6 @@ class ThreadController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws CacheException
      * @throws DataObjectManagerException
      * @throws ThreadException
      * @throws UserException
@@ -113,7 +111,7 @@ class ThreadController extends BaseController
      * @param             $args
      *
      * @return Response
-     * @throws ThreadException
+     * @throws ThreadException|DataObjectManagerException
      */
     public function thread(Request $request, Response $response, $args): Response
     {
@@ -125,6 +123,7 @@ class ThreadController extends BaseController
 
         $searchCriteria = $this->threadRepository
             ->getDataObjectManager()
+            ->addRelation('user')
             ->where([
                 'topic_id' => $topicId,
                 'slug' => $slug
@@ -152,6 +151,7 @@ class ThreadController extends BaseController
      * @param             $args
      *
      * @return Response
+     * @throws DataObjectManagerException
      */
     public function list(Request $request, Response $response, $args): Response
     {
@@ -166,6 +166,7 @@ class ThreadController extends BaseController
 
         $searchCriteria = $this->threadRepository
             ->getDataObjectManager()
+            ->addRelation('user')
             ->where('topic_id', (int) $topicId)
             ->orderBy('id', 'DESC');
 

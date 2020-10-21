@@ -7,8 +7,12 @@
 
 namespace Ares\Guestbook\Entity;
 
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Model\DataObject;
 use Ares\Guestbook\Entity\Contract\GuestbookInterface;
+use Ares\Guestbook\Repository\GuestbookRepository;
+use Ares\User\Entity\User;
+use Ares\User\Repository\UserRepository;
 
 /**
  * Class Guestbook
@@ -19,6 +23,11 @@ class Guestbook extends DataObject implements GuestbookInterface
 {
     /** @var string */
     public const TABLE = 'ares_guestbook';
+
+    /** @var array **/
+    public const RELATIONS = [
+      'user' => 'getUser'
+    ];
 
     /**
      * @return int
@@ -180,5 +189,51 @@ class Guestbook extends DataObject implements GuestbookInterface
     public function setUpdatedAt(\DateTime $updated_at): Guestbook
     {
         return $this->setData(GuestbookInterface::COLUMN_UPDATED_AT, $updated_at);
+    }
+
+    /**
+     * @return User|null
+     *
+     * @throws DataObjectManagerException
+     */
+    public function getUser(): ?User
+    {
+        /** @var User $user */
+        $user = $this->getData('user');
+
+        if ($user) {
+            return $user;
+        }
+
+        /** @var GuestbookRepository $guestBookRepository */
+        $guestBookRepository = repository(GuestbookRepository::class);
+
+        /** @var UserRepository $userRepository */
+        $userRepository = repository(UserRepository::class);
+
+        /** @var User $user */
+        $user = $guestBookRepository->getOneToOne(
+            $userRepository,
+            $this->getUserId(),
+            'id'
+        );
+
+        if (!$user) {
+            return null;
+        }
+
+        $this->setUser($user);
+
+        return $user;
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return Guestbook
+     */
+    public function setUser(User $user): Guestbook
+    {
+        return $this->setData('user', $user);
     }
 }

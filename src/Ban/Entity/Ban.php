@@ -8,7 +8,11 @@
 namespace Ares\Ban\Entity;
 
 use Ares\Ban\Entity\Contract\BanInterface;
+use Ares\Ban\Repository\BanRepository;
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Model\DataObject;
+use Ares\User\Entity\User;
+use Ares\User\Repository\UserRepository;
 
 /**
  * Class Ban
@@ -19,6 +23,11 @@ class Ban extends DataObject implements BanInterface
 {
     /** @var string */
     public const TABLE = 'bans';
+
+    /*** @var array */
+    public const RELATIONS = [
+      'user' => 'getUser'
+    ];
 
     /**
      * @return int
@@ -198,5 +207,51 @@ class Ban extends DataObject implements BanInterface
     public function setCfhTopic(int $cfh_topic): Ban
     {
         return $this->setData(BanInterface::COLUMN_CFH_TOPIC, $cfh_topic);
+    }
+
+    /**
+     * @return User|null
+     *
+     * @throws DataObjectManagerException
+     */
+    public function getUser(): ?User
+    {
+        /** @var User $user */
+        $user = $this->getData('user');
+
+        if ($user) {
+            return $user;
+        }
+
+        /** @var BanRepository $banRepository */
+        $banRepository = repository(BanRepository::class);
+
+        /** @var UserRepository $userRepository */
+        $userRepository = repository(UserRepository::class);
+
+        /** @var User $user */
+        $user = $banRepository->getOneToOne(
+            $userRepository,
+            $this->getUserStaffId(),
+            'id'
+        );
+
+        if (!$user) {
+            return null;
+        }
+
+        $this->setUser($user);
+
+        return $user;
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return Ban
+     */
+    public function setUser(User $user): Ban
+    {
+        return $this->setData('user', $user);
     }
 }

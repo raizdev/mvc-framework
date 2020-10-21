@@ -62,6 +62,7 @@ class CreateCommentService
 
         /** @var Comment $comment */
         $comment = $this->commentRepository->save($comment);
+        $comment->getUser();
 
         return response()
             ->setData($comment);
