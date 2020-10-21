@@ -10,7 +10,6 @@ namespace Ares\User\Service\Auth;
 use Ares\Ban\Entity\Ban;
 use Ares\Ban\Exception\BanException;
 use Ares\Ban\Repository\BanRepository;
-use Ares\Framework\Exception\CacheException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Factory\DataObjectManagerFactory;
 use Ares\Framework\Interfaces\CustomResponseInterface;
