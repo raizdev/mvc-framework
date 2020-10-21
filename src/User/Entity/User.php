@@ -60,88 +60,6 @@ class User extends DataObject implements UserInterface
     }
 
     /**
-     * @return Collection|null
-     * @throws DataObjectManagerException
-     */
-    public function getRoles(): ?Collection
-    {
-        $roles = $this->getData('roles');
-
-        if ($roles) {
-            return $roles;
-        }
-
-        $userRepository = repository(UserRepository::class);
-        $roleRepository = repository(RoleRepository::class);
-
-        $roles = $userRepository->getManyToMany(
-            $roleRepository,
-            $this->getId(),
-            'ares_roles_user',
-            'user_id',
-            'role_id'
-        );
-
-        if (!$roles->toArray()) {
-            return null;
-        }
-
-        $this->setRoles($roles);
-
-        return $roles;
-    }
-
-    /**
-     * @param Collection $roles
-     *
-     * @return User
-     */
-    public function setRoles(Collection $roles): User
-    {
-        return $this->setData('roles', $roles);
-    }
-
-    /**
-     * @return Collection|null
-     * @throws DataObjectManagerException
-     */
-    public function getCurrencies(): ?Collection
-    {
-        $currencies = $this->getData('currencies');
-
-        if ($currencies) {
-            return $currencies;
-        }
-
-        $userRepository = repository(UserRepository::class);
-        $userCurrencyRepository = repository(UserCurrencyRepository::class);
-
-        $currencies = $userRepository->getOneToMany(
-            $userCurrencyRepository,
-            $this->getId(),
-            'user_id'
-        );
-
-        if (!$currencies->toArray()) {
-            return null;
-        }
-
-        $this->setCurrencies($currencies);
-
-        return $currencies;
-    }
-
-    /**
-     * @param Collection $currencies
-     *
-     * @return User
-     */
-    public function setCurrencies(Collection $currencies): User
-    {
-        return $this->setData('currencies', $currencies);
-    }
-
-    /**
      * @return string
      */
     public function getUsername(): string
@@ -498,5 +416,87 @@ class User extends DataObject implements UserInterface
     public function setUpdatedAt(DateTime $updated_at): User
     {
         return $this->setData(UserInterface::COLUMN_UPDATED_AT, $updated_at);
+    }
+
+    /**
+     * @return Collection|null
+     * @throws DataObjectManagerException
+     */
+    public function getRoles(): ?Collection
+    {
+        $roles = $this->getData('roles');
+
+        if ($roles) {
+            return $roles;
+        }
+
+        $userRepository = repository(UserRepository::class);
+        $roleRepository = repository(RoleRepository::class);
+
+        $roles = $userRepository->getManyToMany(
+            $roleRepository,
+            $this->getId(),
+            'ares_roles_user',
+            'user_id',
+            'role_id'
+        );
+
+        if (!$roles->toArray()) {
+            return null;
+        }
+
+        $this->setRoles($roles);
+
+        return $roles;
+    }
+
+    /**
+     * @param Collection $roles
+     *
+     * @return User
+     */
+    public function setRoles(Collection $roles): User
+    {
+        return $this->setData('roles', $roles);
+    }
+
+    /**
+     * @return Collection|null
+     * @throws DataObjectManagerException
+     */
+    public function getCurrencies(): ?Collection
+    {
+        $currencies = $this->getData('currencies');
+
+        if ($currencies) {
+            return $currencies;
+        }
+
+        $userRepository = repository(UserRepository::class);
+        $userCurrencyRepository = repository(UserCurrencyRepository::class);
+
+        $currencies = $userRepository->getOneToMany(
+            $userCurrencyRepository,
+            $this->getId(),
+            'user_id'
+        );
+
+        if (!$currencies->toArray()) {
+            return null;
+        }
+
+        $this->setCurrencies($currencies);
+
+        return $currencies;
+    }
+
+    /**
+     * @param Collection $currencies
+     *
+     * @return User
+     */
+    public function setCurrencies(Collection $currencies): User
+    {
+        return $this->setData('currencies', $currencies);
     }
 }

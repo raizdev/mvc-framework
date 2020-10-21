@@ -8,7 +8,6 @@
 namespace Ares\Room\Controller;
 
 use Ares\Framework\Controller\BaseController;
-use Ares\Framework\Exception\CacheException;
 use Ares\Room\Entity\Room;
 use Ares\Room\Exception\RoomException;
 use Ares\Room\Repository\RoomRepository;
@@ -45,7 +44,6 @@ class RoomController extends BaseController
      *
      * @return Response
      * @throws RoomException
-     * @throws CacheException
      */
     public function room(Request $request, Response $response, $args): Response
     {
@@ -53,7 +51,7 @@ class RoomController extends BaseController
         $id = $args['id'];
 
         /** @var Room $room */
-        $room = $this->roomRepository->get((int)$id);
+        $room = $this->roomRepository->get((int) $id);
 
         if (!$room) {
             throw new RoomException(__('No specific Room found'), 404);

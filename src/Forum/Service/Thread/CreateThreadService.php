@@ -12,7 +12,6 @@ use Ares\Forum\Entity\Topic;
 use Ares\Forum\Exception\ThreadException;
 use Ares\Forum\Repository\ThreadRepository;
 use Ares\Forum\Repository\TopicRepository;
-use Ares\Framework\Exception\CacheException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Cocur\Slugify\Slugify;
@@ -81,7 +80,6 @@ class CreateThreadService
      * @param array $data
      *
      * @return Thread
-     * @throws CacheException
      * @throws ThreadException
      */
     public function getNewThread(int $userId, array $data): Thread
@@ -91,14 +89,8 @@ class CreateThreadService
         /** @var Topic $topic */
         $topic = $this->topicRepository->get($data['topic_id']);
 
-        $searchCriteria = $this->threadRepository
-            ->getDataObjectManager()
-            ->where('title', $data['title']);
-
         /** @var Thread $existingThread */
-        $existingThread = $this->threadRepository
-            ->getList($searchCriteria)
-            ->first();
+        $existingThread = $this->threadRepository->get($data['title'], 'title');
 
         if (!$topic || $existingThread) {
             throw new ThreadException(__('There is already an existing Thread or the Topic could not be found'));

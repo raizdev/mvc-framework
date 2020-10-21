@@ -12,7 +12,6 @@ use Ares\Article\Repository\CommentRepository;
 use Ares\Article\Service\CreateCommentService;
 use Ares\Article\Service\EditCommentService;
 use Ares\Framework\Controller\BaseController;
-use Ares\Framework\Exception\CacheException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
@@ -144,7 +143,6 @@ class CommentController extends BaseController
      * @param             $args
      *
      * @return Response
-     * @throws CacheException
      */
     public function list(Request $request, Response $response, $args): Response
     {

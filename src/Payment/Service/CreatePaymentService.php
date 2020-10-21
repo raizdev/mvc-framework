@@ -7,7 +7,6 @@
 
 namespace Ares\Payment\Service;
 
-use Ares\Framework\Exception\CacheException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\Payment\Entity\Payment;
@@ -45,7 +44,6 @@ class CreatePaymentService
      * @return CustomResponseInterface
      * @throws DataObjectManagerException
      * @throws PaymentException
-     * @throws CacheException
      */
     public function execute(int $userId, array $data): CustomResponseInterface
     {

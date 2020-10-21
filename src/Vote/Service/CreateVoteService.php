@@ -7,7 +7,6 @@
 
 namespace Ares\Vote\Service;
 
-use Ares\Framework\Exception\CacheException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\Framework\Model\DataObject;
@@ -54,7 +53,6 @@ class CreateVoteService
      *
      * @return CustomResponseInterface
      * @throws VoteException
-     * @throws CacheException
      * @throws DataObjectManagerException
      */
     public function execute(int $user_id, array $data): CustomResponseInterface

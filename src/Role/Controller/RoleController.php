@@ -8,7 +8,6 @@
 namespace Ares\Role\Controller;
 
 use Ares\Framework\Controller\BaseController;
-use Ares\Framework\Exception\CacheException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
@@ -81,7 +80,6 @@ class RoleController extends BaseController
      * @param array    $args
      *
      * @return Response
-     * @throws CacheException
      */
     public function list(Request $request, Response $response, array $args): Response
     {

@@ -72,7 +72,6 @@ class SettingsController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws CacheException
      * @throws SettingsException
      * @throws ValidationException
      */
@@ -88,14 +87,8 @@ class SettingsController extends BaseController
         /** @var string $key */
         $key = $parsedData['key'];
 
-        $searchCriteria = $this->settingsRepository
-            ->getDataObjectManager()
-            ->where('key', $key);
-
         /** @var Setting $configData */
-        $configData = $this->settingsRepository
-            ->getList($searchCriteria)
-            ->first();
+        $configData = $this->settingsRepository->get($key, 'key');
 
         if (!$configData) {
             throw new SettingsException(__('Key not found in Config'));
@@ -115,7 +108,6 @@ class SettingsController extends BaseController
      * @param             $args
      *
      * @return Response
-     * @throws CacheException
      */
     public function list(Request $request, Response $response, $args): Response
     {

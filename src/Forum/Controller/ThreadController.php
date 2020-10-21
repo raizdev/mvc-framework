@@ -113,7 +113,6 @@ class ThreadController extends BaseController
      * @param             $args
      *
      * @return Response
-     * @throws CacheException
      * @throws ThreadException
      */
     public function thread(Request $request, Response $response, $args): Response
@@ -153,7 +152,6 @@ class ThreadController extends BaseController
      * @param             $args
      *
      * @return Response
-     * @throws CacheException
      */
     public function list(Request $request, Response $response, $args): Response
     {
@@ -171,7 +169,8 @@ class ThreadController extends BaseController
             ->where('topic_id', (int) $topicId)
             ->orderBy('id', 'DESC');
 
-        $thread = $this->threadRepository->getPaginatedList($searchCriteria, (int) $page, (int) $resultPerPage);
+        $thread = $this->threadRepository
+            ->getPaginatedList($searchCriteria, (int) $page, (int) $resultPerPage);
 
         return $this->respond(
             $response,

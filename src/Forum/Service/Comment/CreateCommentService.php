@@ -12,7 +12,6 @@ use Ares\Forum\Entity\Thread;
 use Ares\Forum\Exception\CommentException;
 use Ares\Forum\Repository\CommentRepository;
 use Ares\Forum\Repository\ThreadRepository;
-use Ares\Framework\Exception\CacheException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 
@@ -52,7 +51,6 @@ class CreateCommentService
      * @param array $data
      *
      * @return CustomResponseInterface
-     * @throws CacheException
      * @throws CommentException
      * @throws DataObjectManagerException
      */
@@ -72,7 +70,6 @@ class CreateCommentService
      *
      * @return Comment
      * @throws CommentException
-     * @throws CacheException
      */
     public function getNewComment(int $userId, array $data): Comment
     {

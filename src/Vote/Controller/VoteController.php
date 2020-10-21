@@ -119,6 +119,7 @@ class VoteController extends BaseController
             'vote_type'   => 'required|numeric'
         ]);
 
+        /** @var User $user */
         $user = $this->getUser($this->userRepository, $request);
 
         $customResponse = $this->createVoteService->execute($user->getId(), $parsedData);
@@ -148,7 +149,7 @@ class VoteController extends BaseController
      * @param   Response  $response
      *
      * @return Response
-     * @throws UserException|CacheException
+     * @throws UserException
      */
     public function getTotalVotes(Request $request, Response $response)
     {
@@ -192,6 +193,7 @@ class VoteController extends BaseController
             'vote_type'   => 'required|numeric'
         ]);
 
+        /** @var User $user */
         $user = $this->getUser($this->userRepository, $request);
 
         $customResponse = $this->deleteVoteService->execute($user->getId(), $parsedData);

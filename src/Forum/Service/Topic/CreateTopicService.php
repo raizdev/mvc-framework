@@ -10,7 +10,6 @@ namespace Ares\Forum\Service\Topic;
 use Ares\Forum\Entity\Topic;
 use Ares\Forum\Exception\TopicException;
 use Ares\Forum\Repository\TopicRepository;
-use Ares\Framework\Exception\CacheException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Cocur\Slugify\Slugify;
@@ -58,12 +57,8 @@ class CreateTopicService
     {
         $topic = $this->getNewTopic($data);
 
-        $searchCriteria = $this->topicRepository
-            ->getDataObjectManager()
-            ->where('title', $topic->getTitle());
-
         /** @var Topic $existingTopic */
-        $existingTopic = $this->topicRepository->getList($searchCriteria)->first();
+        $existingTopic = $this->topicRepository->get($topic->getTitle(), 'title');
 
         if ($existingTopic) {
             throw new TopicException(__('There is already a Topic with that title'));

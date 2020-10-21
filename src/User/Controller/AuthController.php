@@ -9,7 +9,6 @@ namespace Ares\User\Controller;
 
 use Ares\Ban\Exception\BanException;
 use Ares\Framework\Controller\BaseController;
-use Ares\Framework\Exception\CacheException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Factory\SearchBuilderFactory;

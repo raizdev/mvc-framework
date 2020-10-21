@@ -8,7 +8,6 @@
 namespace Ares\Rcon\Controller;
 
 use Ares\Framework\Controller\BaseController;
-use Ares\Framework\Exception\CacheException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
 use Ares\Rcon\Exception\RconException;
@@ -16,6 +15,7 @@ use Ares\Rcon\Service\CreateRconCommandService;
 use Ares\Rcon\Service\DeleteRconCommandService;
 use Ares\Rcon\Service\ExecuteRconCommandService;
 use Ares\Role\Exception\RoleException;
+use Ares\User\Entity\User;
 use Ares\User\Exception\UserException;
 use Ares\User\Repository\UserRepository;
 use JsonException;
@@ -87,7 +87,6 @@ class RconController extends BaseController
      * @throws RoleException
      * @throws UserException
      * @throws ValidationException
-     * @throws CacheException
      */
     public function executeCommand(Request $request, Response $response): Response
     {
@@ -98,9 +97,10 @@ class RconController extends BaseController
             'command' => 'required'
         ]);
 
-        $userId = $this->getUser($this->userRepository, $request)->getId();
+        /** @var User $user */
+        $user = $this->getUser($this->userRepository, $request);
 
-        $customResponse = $this->executeRconCommandService->execute($userId, $parsedData);
+        $customResponse = $this->executeRconCommandService->execute($user->getId(), $parsedData);
 
         return $this->respond(
             $response,

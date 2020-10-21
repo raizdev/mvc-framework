@@ -115,20 +115,13 @@ class ArticleController extends BaseController
      *
      * @return Response
      * @throws ArticleException
-     * @throws CacheException
      */
     public function article(Request $request, Response $response, $args): Response
     {
         $slug = (string) $args['slug'];
 
-        $searchCriteria = $this->articleRepository
-            ->getDataObjectManager()
-            ->where([
-                'slug' => $slug
-            ]);
-
         /** @var Article $article */
-        $article = $this->articleRepository->getList($searchCriteria)->first();
+        $article = $this->articleRepository->get($slug, 'slug');
 
         if (!$article) {
             throw new ArticleException(__('No specific Article found'), 404);
@@ -146,7 +139,6 @@ class ArticleController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws CacheException
      */
     public function pinned(Request $request, Response $response): Response
     {
@@ -175,7 +167,6 @@ class ArticleController extends BaseController
      * @param             $args
      *
      * @return Response
-     * @throws CacheException
      */
     public function list(Request $request, Response $response, $args): Response
     {

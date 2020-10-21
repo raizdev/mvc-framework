@@ -7,7 +7,6 @@
 
 namespace Ares\Rcon\Service;
 
-use Ares\Framework\Exception\CacheException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\Rcon\Entity\Rcon;
@@ -42,19 +41,12 @@ class CreateRconCommandService
      *
      * @return CustomResponseInterface
      * @throws RconException
-     * @throws CacheException
      * @throws DataObjectManagerException
      */
     public function execute(array $data): CustomResponseInterface
     {
-        $searchCriteria = $this->rconRepository
-            ->getDataObjectManager()
-            ->where('command', $data['command']);
-
         /** @var Rcon $existingCommand */
-        $existingCommand = $this->rconRepository
-            ->getList($searchCriteria)
-            ->first();
+        $existingCommand = $this->rconRepository->get($data['command'], 'command');
 
         if ($existingCommand) {
             throw new RconException(__('There is already an existing Command'));

@@ -7,7 +7,6 @@
 
 namespace Ares\Rcon\Service;
 
-use Ares\Framework\Exception\CacheException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\Rcon\Exception\RconException;
 use Ares\Rcon\Model\Rcon;
@@ -63,18 +62,11 @@ class ExecuteRconCommandService
      * @throws JsonException
      * @throws RconException
      * @throws RoleException
-     * @throws CacheException
      */
     public function execute(int $userId, array $data): CustomResponseInterface
     {
-        $searchCriteria = $this->rconRepository
-            ->getDataObjectManager()
-            ->where('command', $data['command']);
-
         /** @var \Ares\Rcon\Entity\Rcon $existingCommand */
-        $existingCommand = $this->rconRepository
-            ->getList($searchCriteria)
-            ->first();
+        $existingCommand = $this->rconRepository->get($data['command'], 'command');
 
         if (!$existingCommand) {
             throw new RconException(__('Could not found the given command to execute'), 404);

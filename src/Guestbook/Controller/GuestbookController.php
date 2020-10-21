@@ -8,7 +8,6 @@
 namespace Ares\Guestbook\Controller;
 
 use Ares\Framework\Controller\BaseController;
-use Ares\Framework\Exception\CacheException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
@@ -83,7 +82,6 @@ class GuestbookController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws CacheException
      * @throws DataObjectManagerException
      * @throws GuestbookException
      * @throws UserException
@@ -136,7 +134,6 @@ class GuestbookController extends BaseController
      * @param             $args
      *
      * @return Response
-     * @throws CacheException
      */
     public function profileList(Request $request, Response $response, $args): Response
     {
@@ -170,7 +167,6 @@ class GuestbookController extends BaseController
      * @param             $args
      *
      * @return Response
-     * @throws CacheException
      */
     public function guildList(Request $request, Response $response, $args): Response
     {

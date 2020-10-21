@@ -8,7 +8,6 @@
 namespace Ares\User\Controller;
 
 use Ares\Framework\Controller\BaseController;
-use Ares\Framework\Exception\CacheException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
 use Ares\User\Exception\UserCurrencyException;
@@ -56,7 +55,6 @@ class UserCurrencyController extends BaseController
      * @return Response
      * @throws UserCurrencyException
      * @throws ValidationException
-     * @throws CacheException
      */
     public function update(Request $request, Response $response)
     {

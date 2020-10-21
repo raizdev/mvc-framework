@@ -10,7 +10,6 @@ namespace Ares\Article\Service;
 use Ares\Article\Entity\Comment;
 use Ares\Article\Exception\CommentException;
 use Ares\Article\Repository\CommentRepository;
-use Ares\Framework\Exception\CacheException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 
@@ -42,7 +41,6 @@ class EditCommentService
      *
      * @return CustomResponseInterface
      * @throws CommentException
-     * @throws CacheException
      * @throws DataObjectManagerException
      */
     public function execute(array $data): CustomResponseInterface

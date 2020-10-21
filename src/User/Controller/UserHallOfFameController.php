@@ -8,7 +8,6 @@
 namespace Ares\User\Controller;
 
 use Ares\Framework\Controller\BaseController;
-use Ares\Framework\Exception\CacheException;
 use Ares\User\Repository\UserRepository;
 use Ares\User\Repository\UserSettingRepository;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -52,7 +51,6 @@ class UserHallOfFameController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws CacheException
      */
     public function topCredits(Request $request, Response $response): Response
     {
@@ -75,7 +73,6 @@ class UserHallOfFameController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws CacheException
      */
     public function topDiamonds(Request $request, Response $response): Response
     {
@@ -98,7 +95,6 @@ class UserHallOfFameController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws CacheException
      */
     public function topPixels(Request $request, Response $response): Response
     {
@@ -121,7 +117,6 @@ class UserHallOfFameController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws CacheException
      */
     public function topAchievement(Request $request, Response $response): Response
     {
@@ -144,7 +139,6 @@ class UserHallOfFameController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws CacheException
      */
     public function topOnlineTime(Request $request, Response $response): Response
     {

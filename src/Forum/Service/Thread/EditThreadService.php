@@ -11,7 +11,6 @@ use Ares\Forum\Entity\Thread;
 use Ares\Forum\Entity\Topic;
 use Ares\Forum\Exception\ThreadException;
 use Ares\Forum\Repository\ThreadRepository;
-use Ares\Framework\Exception\CacheException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\User\Entity\User;
@@ -46,7 +45,6 @@ class EditThreadService
      *
      * @return CustomResponseInterface
      * @throws ThreadException
-     * @throws CacheException
      * @throws DataObjectManagerException
      */
     public function execute(Topic $topic, User $user, array $data): CustomResponseInterface

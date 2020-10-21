@@ -10,7 +10,6 @@ namespace Ares\Article\Service;
 use Ares\Article\Entity\Article;
 use Ares\Article\Exception\ArticleException;
 use Ares\Article\Repository\ArticleRepository;
-use Ares\Framework\Exception\CacheException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Cocur\Slugify\Slugify;
@@ -54,19 +53,14 @@ class CreateArticleService
      *
      * @return CustomResponseInterface
      * @throws ArticleException
-     * @throws CacheException
      * @throws DataObjectManagerException
      */
     public function execute(int $userId, array $data): CustomResponseInterface
     {
         $article = $this->getNewArticle($userId, $data);
 
-        $searchCriteria = $this->articleRepository
-            ->getDataObjectManager()
-            ->where('title', $article->getTitle());
-
         /** @var Article $existingArticle */
-        $existingArticle = $this->articleRepository->getList($searchCriteria)->first();
+        $existingArticle = $this->articleRepository->get($article->getTitle(), 'title');
 
         if ($existingArticle) {
             throw new ArticleException(__('Article with given Title already exists.'), 422);

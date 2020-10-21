@@ -8,7 +8,6 @@
 namespace Ares\Messenger\Controller;
 
 use Ares\Framework\Controller\BaseController;
-use Ares\Framework\Exception\CacheException;
 use Ares\Messenger\Repository\MessengerRepository;
 use Ares\User\Exception\UserException;
 use Ares\User\Repository\UserRepository;
@@ -54,7 +53,6 @@ class MessengerController extends BaseController
      *
      * @return Response
      * @throws UserException
-     * @throws CacheException
      */
     public function friends(Request $request, Response $response, $args): Response
     {
@@ -69,7 +67,8 @@ class MessengerController extends BaseController
             ->where('user_id', $this->getUser($this->userRepository, $request)->getId())
             ->orderBy('id', 'DESC');
 
-        $friends = $this->messengerRepository->getPaginatedList($searchCriteria, (int) $page, (int) $resultPerPage);
+        $friends = $this->messengerRepository
+            ->getPaginatedList($searchCriteria, (int) $page, (int) $resultPerPage);
 
         return $this->respond(
             $response,

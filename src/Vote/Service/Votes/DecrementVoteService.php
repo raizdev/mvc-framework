@@ -46,7 +46,6 @@ class DecrementVoteService
      *
      * @return bool
      * @throws VoteException
-     * @throws CacheException
      */
     public function execute(int $entityId, int $voteEntity, int $voteType): bool
     {

@@ -7,7 +7,6 @@
 
 namespace Ares\Vote\Service;
 
-use Ares\Framework\Exception\CacheException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\Vote\Entity\Vote;
@@ -44,7 +43,6 @@ class DeleteVoteService
      * @param array $data
      *
      * @return CustomResponseInterface
-     * @throws CacheException
      * @throws DataObjectManagerException
      * @throws VoteException
      */
@@ -53,7 +51,7 @@ class DeleteVoteService
         $searchCriteria = $this->voteRepository
             ->getDataObjectManager()
             ->where($data)
-            ->where('user', $user_id);
+            ->where('user_id', $user_id);
 
         /** @var Vote $vote */
         $vote = $this->voteRepository

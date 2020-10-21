@@ -12,7 +12,6 @@ use Ares\Article\Entity\Comment;
 use Ares\Article\Exception\CommentException;
 use Ares\Article\Repository\ArticleRepository;
 use Ares\Article\Repository\CommentRepository;
-use Ares\Framework\Exception\CacheException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 
@@ -54,7 +53,6 @@ class CreateCommentService
      * @param array $data
      *
      * @return CustomResponseInterface
-     * @throws CacheException
      * @throws CommentException
      * @throws DataObjectManagerException
      */
@@ -77,7 +75,6 @@ class CreateCommentService
      *
      * @return Comment
      * @throws CommentException
-     * @throws CacheException
      */
     private function getNewComment(int $userId, array $data): Comment
     {

@@ -164,7 +164,9 @@ abstract class BaseRepository
             }
 
             $polyMorphedId = $dataObjectManager->insertGetId($entity->getData());
-            $entity->setId($polyMorphedId);
+            if (method_exists($entity, 'setId')) {
+                $entity->setId($polyMorphedId);
+            }
 
             return $entity;
         } catch (\Exception $exception) {

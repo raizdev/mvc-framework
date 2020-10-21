@@ -146,7 +146,6 @@ class CommentController extends BaseController
      * @param             $args
      *
      * @return Response
-     * @throws CacheException
      */
     public function list(Request $request, Response $response, $args): Response
     {

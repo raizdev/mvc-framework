@@ -77,7 +77,6 @@ class PaymentController extends BaseController
      * @throws PaymentException
      * @throws UserException
      * @throws ValidationException
-     * @throws CacheException
      * @throws DataObjectManagerException
      */
     public function create(Request $request, Response $response): Response
@@ -107,7 +106,6 @@ class PaymentController extends BaseController
      * @param             $args
      *
      * @return Response
-     * @throws CacheException
      * @throws PaymentException
      */
     public function payment(Request $request, Response $response, $args): Response
@@ -135,7 +133,6 @@ class PaymentController extends BaseController
      * @param             $args
      *
      * @return Response
-     * @throws CacheException
      */
     public function list(Request $request, Response $response, $args): Response
     {
@@ -149,7 +146,8 @@ class PaymentController extends BaseController
             ->getDataObjectManager()
             ->orderBy('id', 'DESC');
 
-        $payments = $this->paymentRepository->getPaginatedList($searchCriteria, (int) $page, (int) $resultPerPage);
+        $payments = $this->paymentRepository
+            ->getPaginatedList($searchCriteria, (int) $page, (int) $resultPerPage);
 
         return $this->respond(
             $response,

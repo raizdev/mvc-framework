@@ -10,7 +10,6 @@ namespace Ares\Forum\Service\Topic;
 use Ares\Forum\Entity\Topic;
 use Ares\Forum\Exception\TopicException;
 use Ares\Forum\Repository\TopicRepository;
-use Ares\Framework\Exception\CacheException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 
@@ -42,7 +41,6 @@ class EditTopicService
      *
      * @return CustomResponseInterface
      * @throws TopicException
-     * @throws CacheException
      * @throws DataObjectManagerException
      */
     public function execute(array $data): CustomResponseInterface

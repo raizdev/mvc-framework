@@ -8,7 +8,6 @@
 namespace Ares\Permission\Controller;
 
 use Ares\Framework\Controller\BaseController;
-use Ares\Framework\Exception\CacheException;
 use Ares\Permission\Repository\PermissionRepository;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -43,7 +42,6 @@ class PermissionController extends BaseController
      * @param             $args
      *
      * @return Response
-     * @throws CacheException
      */
     public function listUserWithRank(Request $request, Response $response, $args): Response
     {

@@ -7,7 +7,6 @@
 
 namespace Ares\Role\Service;
 
-use Ares\Framework\Exception\CacheException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\Role\Entity\Role;
@@ -42,7 +41,6 @@ class CreateRoleService
      *
      * @return CustomResponseInterface
      * @throws RoleException
-     * @throws CacheException
      * @throws DataObjectManagerException
      */
     public function execute(array $data): CustomResponseInterface

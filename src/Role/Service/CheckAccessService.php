@@ -7,7 +7,6 @@
 
 namespace Ares\Role\Service;
 
-use Ares\Framework\Exception\CacheException;
 use Ares\Role\Entity\Permission;
 use Ares\Role\Repository\PermissionRepository;
 use Ares\Role\Repository\RoleHierarchyRepository;
@@ -66,18 +65,11 @@ class CheckAccessService
      * @param string|null $permissionName
      *
      * @return bool
-     * @throws CacheException
      */
     public function execute(int $userId, ?string $permissionName): bool
     {
-        $searchCriteria = $this->permissionRepository
-            ->getDataObjectManager()
-            ->where('name', $permissionName);
-
         /** @var Permission $permission */
-        $permission = $this->permissionRepository
-            ->getList($searchCriteria)
-            ->first();
+        $permission = $this->permissionRepository->get($permissionName, 'name');
 
         // When there's no permission set, set anonymous(logged in) access
         if (!$permission) {
