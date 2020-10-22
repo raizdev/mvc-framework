@@ -177,7 +177,7 @@ class CommentController extends BaseController
      * @throws CommentException
      * @throws DataObjectManagerException
      */
-    public function delete(Request $request, Response $response, $args): Response
+    public function delete(Request $request, Response $response, array $args): Response
     {
         /** @var int $id */
         $id = $args['id'];

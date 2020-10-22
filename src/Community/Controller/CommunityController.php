@@ -62,7 +62,7 @@ class CommunityController extends BaseController
      *
      * @return Response
      */
-    public function search(Request $request, Response $response, $args): Response
+    public function search(Request $request, Response $response, array $args): Response
     {
         /** @var string $id */
         $term    = (string) $args['term'];

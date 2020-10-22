@@ -165,7 +165,7 @@ class GuestbookController extends BaseController
      * @return Response
      * @throws DataObjectManagerException
      */
-    public function guildList(Request $request, Response $response, $args): Response
+    public function guildList(Request $request, Response $response, array $args): Response
     {
         /** @var int $page */
         $page = $args['page'];
@@ -195,7 +195,7 @@ class GuestbookController extends BaseController
      * @throws GuestbookException
      * @throws DataObjectManagerException
      */
-    public function delete(Request $request, Response $response, $args): Response
+    public function delete(Request $request, Response $response, array $args): Response
     {
         /** @var int $id */
         $id = $args['id'];

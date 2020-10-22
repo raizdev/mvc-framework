@@ -8,7 +8,6 @@
 namespace Ares\Settings\Controller;
 
 use Ares\Framework\Controller\BaseController;
-use Ares\Framework\Exception\CacheException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Model\Adapter\DoctrineSearchCriteria;

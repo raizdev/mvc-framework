@@ -173,7 +173,7 @@ class ThreadController extends BaseController
      * @throws ThreadException
      * @throws DataObjectManagerException
      */
-    public function delete(Request $request, Response $response, $args): Response
+    public function delete(Request $request, Response $response, array $args): Response
     {
         /** @var int $id */
         $id = $args['id'];

@@ -8,6 +8,7 @@
 namespace Ares\User\Controller\Settings;
 
 use Ares\Framework\Controller\BaseController;
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
 use Ares\User\Entity\User;
@@ -91,12 +92,10 @@ class UserSettingsController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws CacheException
-     * @throws InvalidArgumentException
-     * @throws PhpfastcacheSimpleCacheException
      * @throws UserException
      * @throws UserSettingsException
      * @throws ValidationException
+     * @throws DataObjectManagerException
      */
     public function changeGeneralSettings(Request $request, Response $response): Response
     {
@@ -129,14 +128,10 @@ class UserSettingsController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws InvalidArgumentException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws DataObjectManagerException
      * @throws UserException
      * @throws UserSettingsException
      * @throws ValidationException
-     * @throws CacheException
      */
     public function changePassword(Request $request, Response $response): Response
     {
@@ -168,9 +163,7 @@ class UserSettingsController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws CacheException
-     * @throws InvalidArgumentException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws DataObjectManagerException
      * @throws UserException
      * @throws UserSettingsException
      * @throws ValidationException
@@ -205,9 +198,7 @@ class UserSettingsController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws CacheException
-     * @throws InvalidArgumentException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws DataObjectManagerException
      * @throws UserException
      * @throws UserSettingsException
      * @throws ValidationException

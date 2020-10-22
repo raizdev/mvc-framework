@@ -57,7 +57,7 @@ class MessengerController extends BaseController
      * @throws UserException
      * @throws DataObjectManagerException
      */
-    public function friends(Request $request, Response $response, $args): Response
+    public function friends(Request $request, Response $response, array $args): Response
     {
         /** @var int $page */
         $page = $args['page'];

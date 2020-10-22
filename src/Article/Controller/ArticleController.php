@@ -146,7 +146,6 @@ class ArticleController extends BaseController
      */
     public function pinned(Request $request, Response $response): Response
     {
-        /** @var Collection $pinnedArticles */
         $pinnedArticles = $this->articleRepository->getPinnedArticles();
 
         return $this->respond(
