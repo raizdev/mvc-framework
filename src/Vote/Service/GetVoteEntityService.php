@@ -83,12 +83,12 @@ class GetVoteEntityService
     /**
      * Takes id and entity and loads specific entity.
      *
-     * @param int $id
      * @param int $entity
+     *
      * @return BaseRepository|null
      * @throws VoteException
      */
-    public function execute(int $id, int $entity): BaseRepository
+    public function execute(int $entity): BaseRepository
     {
         switch (true) {
             case $entity === VoteEntityInterface::ARTICLE_VOTE_ENTITY:
