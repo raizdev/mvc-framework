@@ -109,7 +109,7 @@ class SettingsController extends BaseController
      *
      * @return Response
      */
-    public function list(Request $request, Response $response, $args): Response
+    public function list(Request $request, Response $response, array $args): Response
     {
         /** @var int $page */
         $page = $args['page'];
@@ -117,12 +117,9 @@ class SettingsController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        $searchCriteria = $this->settingsRepository
-            ->getDataObjectManager();
-
         $settings = $this->settingsRepository
             ->getPaginatedList(
-                $searchCriteria,
+                $this->settingsRepository->getDataObjectManager(),
                 (int) $page,
                 (int) $resultPerPage
             );
@@ -139,10 +136,9 @@ class SettingsController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws CacheException
+     * @throws DataObjectManagerException
      * @throws SettingsException
      * @throws ValidationException
-     * @throws DataObjectManagerException
      */
     public function set(Request $request, Response $response): Response
     {

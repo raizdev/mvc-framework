@@ -7,8 +7,10 @@
 
 namespace Ares\Room\Repository;
 
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Room\Entity\Room;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 /**
  * Class RoomRepository
@@ -42,5 +44,50 @@ class RoomRepository extends BaseRepository
             ->setParameter('term', '%'.$term.'%')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @param int $page
+     * @param int $resultPerPage
+     *
+     * @return LengthAwarePaginator
+     * @throws DataObjectManagerException
+     */
+    public function getPaginatedRoomList(int $page, int $resultPerPage): LengthAwarePaginator
+    {
+        $searchCriteria = $this->getDataObjectManager()
+            ->addRelation('guild')
+            ->addRelation('user')
+            ->orderBy('id', 'DESC');
+
+        return $this->getPaginatedList($searchCriteria, $page, $resultPerPage);
+    }
+
+    /**
+     * @param int $ownerId
+     * @param int $page
+     * @param int $resultPerPage
+     *
+     * @return LengthAwarePaginator
+     */
+    public function getUserRoomsPaginatedList(int $ownerId, int $page, int $resultPerPage): LengthAwarePaginator
+    {
+        $searchCriteria = $this->getDataObjectManager()
+            ->where('owner_id', $ownerId)
+            ->orderBy('id', 'DESC');
+
+        return $this->getPaginatedList($searchCriteria, $page, $resultPerPage);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMostVisitedRoom(): ?Room
+    {
+        $searchCriteria = $this->getDataObjectManager()
+            ->orderBy('users', 'DESC');
+
+        /** @var Room $room */
+        return $this->getList($searchCriteria)->first();
     }
 }

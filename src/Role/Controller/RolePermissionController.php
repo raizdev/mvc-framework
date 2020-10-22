@@ -82,12 +82,7 @@ class RolePermissionController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        $searchCriteria = $this->permissionRepository
-            ->getDataObjectManager()
-            ->orderBy('id', 'DESC');
-
-        $permissions = $this->permissionRepository
-            ->getPaginatedList($searchCriteria, (int) $page, (int) $resultPerPage);
+        $permissions = $this->permissionRepository->getPaginatedPermissionList((int) $page, (int) $resultPerPage);
 
         return $this->respond(
             $response,

@@ -67,8 +67,8 @@ class CreateGuestbookEntryService
         return $entry
             ->setContent($data['content'])
             ->setUserId($userId)
-            ->setProfileId($data['profile'])
-            ->setGuildId($data['guild'])
+            ->setProfileId($data['profile_id'])
+            ->setGuildId($data['guild_id'])
             ->setLikes(0)
             ->setDislikes(0);
     }

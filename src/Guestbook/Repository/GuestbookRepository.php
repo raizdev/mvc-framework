@@ -7,8 +7,10 @@
 
 namespace Ares\Guestbook\Repository;
 
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Guestbook\Entity\Guestbook;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 /**
  * Class GuestbookRepository
@@ -25,4 +27,40 @@ class GuestbookRepository extends BaseRepository
 
     /** @var string */
     protected string $entity = Guestbook::class;
+
+    /**
+     * @param int $profileId
+     * @param int $page
+     * @param int $resultPerPage
+     *
+     * @return LengthAwarePaginator
+     * @throws DataObjectManagerException
+     */
+    public function getPaginatedProfileEntries(int $profileId, int $page, int $resultPerPage): LengthAwarePaginator
+    {
+        $searchCriteria = $this->getDataObjectManager()
+            ->addRelation('user')
+            ->where('profile_id', $profileId)
+            ->orderBy('id', 'DESC');
+
+        return $this->getPaginatedList($searchCriteria, $page, $resultPerPage);
+    }
+
+    /**
+     * @param int $guildId
+     * @param int $page
+     * @param int $resultPerPage
+     *
+     * @return LengthAwarePaginator
+     * @throws DataObjectManagerException
+     */
+    public function getPaginatedGuildEntries(int $guildId, int $page, int $resultPerPage): LengthAwarePaginator
+    {
+        $searchCriteria = $this->getDataObjectManager()
+            ->addRelation('user')
+            ->where('guild_id', $guildId)
+            ->orderBy('id', 'DESC');
+
+        return $this->getPaginatedList($searchCriteria, $page, $resultPerPage);
+    }
 }

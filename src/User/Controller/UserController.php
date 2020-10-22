@@ -72,14 +72,7 @@ class UserController extends BaseController
      */
     public function onlineUser(Request $request, Response $response): Response
     {
-        $searchCriteria = $this->userRepository
-            ->getDataObjectManager()
-            ->where('online', '1');
-
-        /** @var User $onlineUser */
-        $onlineUser = $this->userRepository
-            ->getList($searchCriteria, false)
-            ->count();
+        $onlineUser = $this->userRepository->getUserOnlineCount();
 
         return $this->respond(
             $response,

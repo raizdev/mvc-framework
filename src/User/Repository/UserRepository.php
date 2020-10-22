@@ -25,4 +25,15 @@ class UserRepository extends BaseRepository
 
     /** @var string */
     protected string $cacheCollectionPrefix = 'ARES_USER_COLLECTION_';
+
+    /**
+     * @return int
+     */
+    public function getUserOnlineCount(): int
+    {
+        $searchCriteria = $this->getDataObjectManager()
+            ->where('online', '1');
+
+        return $this->getList($searchCriteria, false)->count();
+    }
 }

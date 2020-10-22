@@ -18,6 +18,7 @@ use Ares\Framework\Service\ValidationService;
 use Ares\User\Entity\User;
 use Ares\User\Exception\UserException;
 use Ares\User\Repository\UserRepository;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -79,7 +80,6 @@ class CommentController extends BaseController
     /**
      * @param Request     $request
      * @param Response    $response
-     * @param             $args
      *
      * @return Response
      * @throws CacheException
@@ -88,7 +88,7 @@ class CommentController extends BaseController
      * @throws UserException
      * @throws ValidationException
      */
-    public function create(Request $request, Response $response, $args): Response
+    public function create(Request $request, Response $response): Response
     {
         /** @var array $parsedData */
         $parsedData = $request->getParsedBody();
@@ -145,7 +145,7 @@ class CommentController extends BaseController
      * @return Response
      * @throws DataObjectManagerException
      */
-    public function list(Request $request, Response $response, $args): Response
+    public function list(Request $request, Response $response, array $args): Response
     {
         /** @var int $articleId */
         $articleId = $args['article_id'];
@@ -156,14 +156,9 @@ class CommentController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        $searchCriteria = $this->commentRepository
-            ->getDataObjectManager()
-            ->where('article_id', (int) $articleId)
-            ->addRelation('user')
-            ->orderBy('id', 'DESC');
-
+        /** @var LengthAwarePaginator $comments */
         $comments = $this->commentRepository
-            ->getPaginatedList($searchCriteria, (int) $page, (int) $resultPerPage);
+            ->getPaginatedCommentList((int) $articleId, (int) $page, (int) $resultPerPage);
 
         return $this->respond(
             $response,
@@ -181,7 +176,7 @@ class CommentController extends BaseController
      * @throws CommentException
      * @throws DataObjectManagerException
      */
-    public function delete(Request $request, Response $response, $args): Response
+    public function delete(Request $request, Response $response, array $args): Response
     {
         /** @var int $id */
         $id = $args['id'];

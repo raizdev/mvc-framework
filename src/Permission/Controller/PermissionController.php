@@ -40,20 +40,12 @@ class PermissionController extends BaseController
      * @param Request     $request
      * @param Response    $response
      *
-     * @param             $args
-     *
      * @return Response
      * @throws DataObjectManagerException
      */
-    public function listUserWithRank(Request $request, Response $response, $args): Response
+    public function listUserWithRank(Request $request, Response $response): Response
     {
-        $searchCriteria = $this->permissionRepository
-            ->getDataObjectManager()
-            ->where('id', '>', 3)
-            ->addRelation('users')
-            ->orderBy('id', 'DESC');
-
-        $users = $this->permissionRepository->getList($searchCriteria);
+        $users = $this->permissionRepository->getListOfUserWithRanks();
 
         return $this->respond(
             $response,

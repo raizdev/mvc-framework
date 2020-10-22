@@ -89,12 +89,7 @@ class RoleController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        $searchCriteria = $this->roleRepository
-            ->getDataObjectManager()
-            ->orderBy('id', 'DESC');
-
-        $roles = $this->roleRepository
-            ->getPaginatedList($searchCriteria, (int) $page, (int) $resultPerPage);
+        $roles = $this->roleRepository->getPaginatedRoles((int) $page, (int) $resultPerPage);
 
         return $this->respond(
             $response,
@@ -138,7 +133,6 @@ class RoleController extends BaseController
      * @throws DataObjectManagerException
      * @throws RoleException
      * @throws ValidationException
-     * @throws CacheException
      */
     public function createChildRole(Request $request, Response $response): Response
     {
@@ -195,7 +189,7 @@ class RoleController extends BaseController
      * @throws RoleException
      * @throws DataObjectManagerException
      */
-    public function deleteRole(Request $request, Response $response, $args): Response
+    public function deleteRole(Request $request, Response $response, array $args): Response
     {
         /** @var int $id */
         $id = $args['id'];

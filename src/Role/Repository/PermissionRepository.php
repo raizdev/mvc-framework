@@ -9,6 +9,7 @@ namespace Ares\Role\Repository;
 
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Role\Entity\Permission;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 /**
  * Class PermissionRepository
@@ -25,4 +26,18 @@ class PermissionRepository extends BaseRepository
 
     /** @var string */
     protected string $entity = Permission::class;
+
+    /**
+     * @param int $page
+     * @param int $resultPerPage
+     *
+     * @return LengthAwarePaginator
+     */
+    public function getPaginatedPermissionList(int $page, int $resultPerPage): LengthAwarePaginator
+    {
+        $searchCriteria = $this->getDataObjectManager()
+            ->orderBy('id', 'DESC');
+
+        return $this->getPaginatedList($searchCriteria, $page, $resultPerPage);
+    }
 }

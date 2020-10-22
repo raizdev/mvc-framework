@@ -8,7 +8,6 @@
 namespace Ares\Payment\Controller;
 
 use Ares\Framework\Controller\BaseController;
-use Ares\Framework\Exception\CacheException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
@@ -108,7 +107,7 @@ class PaymentController extends BaseController
      * @return Response
      * @throws PaymentException
      */
-    public function payment(Request $request, Response $response, $args): Response
+    public function payment(Request $request, Response $response, array $args): Response
     {
         /** @var int $id */
         $id = $args['id'];
@@ -135,7 +134,7 @@ class PaymentController extends BaseController
      * @return Response
      * @throws DataObjectManagerException
      */
-    public function list(Request $request, Response $response, $args): Response
+    public function list(Request $request, Response $response, array $args): Response
     {
         /** @var int $page */
         $page = $args['page'];
@@ -143,13 +142,7 @@ class PaymentController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        $searchCriteria = $this->paymentRepository
-            ->getDataObjectManager()
-            ->addRelation('user')
-            ->orderBy('id', 'DESC');
-
-        $payments = $this->paymentRepository
-            ->getPaginatedList($searchCriteria, (int) $page, (int) $resultPerPage);
+        $payments = $this->paymentRepository->getPaginatedPayments((int) $page, (int) $resultPerPage);
 
         return $this->respond(
             $response,
@@ -167,7 +160,7 @@ class PaymentController extends BaseController
      * @throws DataObjectManagerException
      * @throws PaymentException
      */
-    public function delete(Request $request, Response $response, $args): Response
+    public function delete(Request $request, Response $response, array $args): Response
     {
         /** @var int $id */
         $id = $args['id'];

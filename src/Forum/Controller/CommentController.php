@@ -19,6 +19,7 @@ use Ares\Framework\Service\ValidationService;
 use Ares\User\Entity\User;
 use Ares\User\Exception\UserException;
 use Ares\User\Repository\UserRepository;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -145,7 +146,7 @@ class CommentController extends BaseController
      * @return Response
      * @throws DataObjectManagerException
      */
-    public function list(Request $request, Response $response, $args): Response
+    public function list(Request $request, Response $response, array $args): Response
     {
         /** @var int $page */
         $page = $args['page'];
@@ -153,17 +154,12 @@ class CommentController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        /** @var int $thread */
-        $threadId = $args['thread'];
+        /** @var int $threadId */
+        $threadId = $args['thread_id'];
 
-        $searchCriteria = $this->commentRepository
-            ->getDataObjectManager()
-            ->addRelation('user')
-            ->where('thread_id', (int) $threadId)
-            ->orderBy('id', 'DESC');
-
+        /** @var LengthAwarePaginator $comments */
         $comments = $this->commentRepository
-            ->getPaginatedList($searchCriteria, (int) $page, (int) $resultPerPage);
+            ->getPaginatedThreadCommentList((int) $threadId, (int) $page, (int) $resultPerPage);
 
         return $this->respond(
             $response,

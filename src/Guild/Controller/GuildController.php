@@ -55,7 +55,7 @@ class GuildController extends BaseController
      * @return Response
      * @throws GuildException|DataObjectManagerException
      */
-    public function guild(Request $request, Response $response, $args): Response
+    public function guild(Request $request, Response $response, array $args): Response
     {
         /** @var int $id */
         $id = $args['id'];
@@ -69,13 +69,7 @@ class GuildController extends BaseController
             throw new GuildException(__('No specific Guild found'));
         }
 
-        $searchCriteria = $this->guildMemberRepository
-            ->getDataObjectManager()
-            ->where('guild_id', $guild->getId());
-
-        $memberCount = $this->guildMemberRepository
-            ->getList($searchCriteria)
-            ->count();
+        $memberCount = $this->guildMemberRepository->getGuildMemberCount($guild->getId());
 
         return $this->respond(
             $response,
@@ -96,7 +90,7 @@ class GuildController extends BaseController
      * @return Response
      * @throws DataObjectManagerException
      */
-    public function list(Request $request, Response $response, $args): Response
+    public function list(Request $request, Response $response, array $args): Response
     {
         /** @var int $page */
         $page = $args['page'];
@@ -104,14 +98,7 @@ class GuildController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        $searchCriteria = $this->guildRepository
-            ->getDataObjectManager()
-            ->addRelation('user')
-            ->addRelation('room')
-            ->orderBy('id', 'DESC');
-
-        $guilds = $this->guildRepository
-            ->getPaginatedList($searchCriteria, (int) $page, (int) $resultPerPage);
+        $guilds = $this->guildRepository->getPaginatedGuildList((int) $page, (int) $resultPerPage);
 
         return $this->respond(
             $response,
@@ -139,13 +126,8 @@ class GuildController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        $searchCriteria = $this->guildMemberRepository
-            ->getDataObjectManager()
-            ->where('guild_id', (int) $guildId)
-            ->orderBy('level_id', 'ASC');
-
         $members = $this->guildMemberRepository
-            ->getPaginatedList($searchCriteria, (int) $page, (int) $resultPerPage);
+            ->getPaginatedGuildMembers((int) $guildId, (int) $page, (int) $resultPerPage);
 
         return $this->respond(
             $response,

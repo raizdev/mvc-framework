@@ -75,9 +75,8 @@ class PhotoController extends BaseController
      *
      * @return Response
      * @throws PhotoException
-     * @throws CacheException
      */
-    public function photo(Request $request, Response $response, $args): Response
+    public function photo(Request $request, Response $response, array $args): Response
     {
         /** @var int $id */
         $id = $args['id'];
@@ -101,7 +100,6 @@ class PhotoController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws CacheException
      * @throws PhotoException
      * @throws ValidationException
      */
@@ -117,25 +115,13 @@ class PhotoController extends BaseController
         /** @var string $username */
         $username = $parsedData['username'];
 
-        $searchCriteria = $this->userRepository
-            ->getDataObjectManager()
-            ->where('username', $username);
-
         /** @var User $user */
-        $user = $this->userRepository
-            ->getList($searchCriteria)
-            ->first();
-
-        $searchCriteria = $this->photoRepository
-            ->getDataObjectManager()
-            ->where('user_id', $user->getId());
+        $user = $this->userRepository->get((string) $username, 'username');
 
         /** @var Photo $photo */
-        $photo = $this->photoRepository
-            ->getList($searchCriteria)
-            ->first();
+        $photo = $this->photoRepository->get($user->getId(), 'user_id');
 
-        if (!$user || !$photo) {
+        if (!$photo || !$user) {
             throw new PhotoException(__('No Photo was found'), 404);
         }
 
@@ -152,9 +138,8 @@ class PhotoController extends BaseController
      * @param             $args
      *
      * @return Response
-     * @throws CacheException
      */
-    public function list(Request $request, Response $response, $args): Response
+    public function list(Request $request, Response $response, array $args): Response
     {
         /** @var int $page */
         $page = $args['page'];
@@ -162,12 +147,7 @@ class PhotoController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        $searchCriteria = $this->photoRepository
-            ->getDataObjectManager()
-            ->orderBy('id', 'DESC');
-
-        $photos = $this->photoRepository
-            ->getPaginatedList($searchCriteria, (int) $page, (int) $resultPerPage);
+        $photos = $this->photoRepository->getPaginatedPhotoList((int) $page, (int) $resultPerPage);
 
         return $this->respond(
             $response,
@@ -185,7 +165,7 @@ class PhotoController extends BaseController
      * @throws PhotoException
      * @throws DataObjectManagerException
      */
-    public function delete(Request $request, Response $response, $args): Response
+    public function delete(Request $request, Response $response, array $args): Response
     {
         /** @var int $id */
         $id = $args['id'];

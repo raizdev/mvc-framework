@@ -13,7 +13,6 @@ use Ares\Forum\Repository\TopicRepository;
 use Ares\Forum\Service\Topic\CreateTopicService;
 use Ares\Forum\Service\Topic\EditTopicService;
 use Ares\Framework\Controller\BaseController;
-use Ares\Framework\Exception\CacheException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
@@ -81,7 +80,6 @@ class TopicController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws CacheException
      * @throws DataObjectManagerException
      * @throws TopicException
      * @throws ValidationException
@@ -109,7 +107,6 @@ class TopicController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws CacheException
      * @throws DataObjectManagerException
      * @throws TopicException
      * @throws ValidationException
@@ -142,7 +139,7 @@ class TopicController extends BaseController
      *
      * @return Response
      */
-    public function list(Request $request, Response $response, $args): Response
+    public function list(Request $request, Response $response, array $args): Response
     {
         /** @var int $page */
         $page = $args['page'];
@@ -150,18 +147,13 @@ class TopicController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        $searchCriteria = $this->topicRepository
-            ->getDataObjectManager()
-            ->orderBy('id', 'DESC');
-
-        /** @var Topic $topic */
-        $topic = $this->topicRepository
-            ->getPaginatedList($searchCriteria, (int) $page, (int) $resultPerPage);
+        $topics = $this->topicRepository
+            ->getPaginatedTopicList((int) $page, (int) $resultPerPage);
 
         return $this->respond(
             $response,
             response()
-                ->setData($topic)
+                ->setData($topics)
         );
     }
 
@@ -174,7 +166,7 @@ class TopicController extends BaseController
      * @throws TopicException
      * @throws DataObjectManagerException
      */
-    public function delete(Request $request, Response $response, $args): Response
+    public function delete(Request $request, Response $response, array $args): Response
     {
         /** @var int $id */
         $id = $args['id'];

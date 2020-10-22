@@ -113,7 +113,7 @@ class ThreadController extends BaseController
      * @return Response
      * @throws ThreadException|DataObjectManagerException
      */
-    public function thread(Request $request, Response $response, $args): Response
+    public function thread(Request $request, Response $response, array $args): Response
     {
         /** @var string $slug */
         $slug = $args['slug'];
@@ -121,18 +121,8 @@ class ThreadController extends BaseController
         /** @var int $topicId */
         $topicId = $args['topic_id'];
 
-        $searchCriteria = $this->threadRepository
-            ->getDataObjectManager()
-            ->addRelation('user')
-            ->where([
-                'topic_id' => $topicId,
-                'slug' => $slug
-            ]);
-
         /** @var Thread $thread */
-        $thread = $this->threadRepository
-            ->getList($searchCriteria)
-            ->first();
+        $thread = $this->threadRepository->getSingleThread((int) $topicId, (string) $slug);
 
         if (!$thread) {
             throw new ThreadException(__('No specific Thread found'), 404);
@@ -153,7 +143,7 @@ class ThreadController extends BaseController
      * @return Response
      * @throws DataObjectManagerException
      */
-    public function list(Request $request, Response $response, $args): Response
+    public function list(Request $request, Response $response, array $args): Response
     {
         /** @var int $page */
         $page = $args['page'];
@@ -161,22 +151,16 @@ class ThreadController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        /** @var int $topic */
+        /** @var int $topicId */
         $topicId = $args['topic_id'];
 
-        $searchCriteria = $this->threadRepository
-            ->getDataObjectManager()
-            ->addRelation('user')
-            ->where('topic_id', (int) $topicId)
-            ->orderBy('id', 'DESC');
-
-        $thread = $this->threadRepository
-            ->getPaginatedList($searchCriteria, (int) $page, (int) $resultPerPage);
+        $threads = $this->threadRepository
+            ->getPaginatedThreadList((int) $topicId, (int) $page, (int) $resultPerPage);
 
         return $this->respond(
             $response,
             response()
-                ->setData($thread)
+                ->setData($threads)
         );
     }
 

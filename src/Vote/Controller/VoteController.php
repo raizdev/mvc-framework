@@ -156,11 +156,7 @@ class VoteController extends BaseController
         /** @var User $user */
         $user = $this->getUser($this->userRepository, $request);
 
-        $searchCriteria = $this->voteRepository
-            ->getDataObjectManager()
-            ->where('user_id', $user->getId());
-
-        $votes = $this->voteRepository->getList($searchCriteria);
+        $votes = $this->voteRepository->getUserVoteList($user->getId());
 
         return $this->respond(
             $response,

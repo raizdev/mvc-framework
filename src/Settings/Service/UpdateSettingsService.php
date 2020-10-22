@@ -51,14 +51,8 @@ class UpdateSettingsService
         /** @var string $value */
         $value = $data['value'];
 
-        $searchCriteria = $this->settingsRepository
-            ->getDataObjectManager()
-            ->where('key', $key);
-
         /** @var Setting $configData */
-        $configData = $this->settingsRepository
-            ->getList($searchCriteria)
-            ->first();
+        $configData = $this->settingsRepository->get($key, 'key');
 
         if (!$configData) {
             throw new SettingsException(__('Key not found in Config'));

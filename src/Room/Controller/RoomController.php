@@ -47,7 +47,7 @@ class RoomController extends BaseController
      * @throws RoomException
      * @throws DataObjectManagerException
      */
-    public function room(Request $request, Response $response, $args): Response
+    public function room(Request $request, Response $response, array $args): Response
     {
         /** @var int $id */
         $id = $args['id'];
@@ -77,7 +77,7 @@ class RoomController extends BaseController
      * @return Response
      * @throws DataObjectManagerException
      */
-    public function list(Request $request, Response $response, $args): Response
+    public function list(Request $request, Response $response, array $args): Response
     {
         /** @var int $page */
         $page = $args['page'];
@@ -85,14 +85,7 @@ class RoomController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        $searchCriteria = $this->roomRepository
-            ->getDataObjectManager()
-            ->addRelation('guild')
-            ->addRelation('user')
-            ->orderBy('id', 'DESC');
-
-        $rooms = $this->roomRepository
-            ->getPaginatedList($searchCriteria, (int)$page, (int)$resultPerPage);
+        $rooms = $this->roomRepository->getPaginatedRoomList((int) $page, (int) $resultPerPage);
 
         return $this->respond(
             $response,
@@ -106,19 +99,12 @@ class RoomController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws CacheException
      * @throws RoomException
      */
     public function mostVisited(Request $request, Response $response): Response
     {
-        $searchCriteria = $this->roomRepository
-            ->getDataObjectManager()
-            ->orderBy('users', 'DESC');
-
         /** @var Room $room */
-        $room = $this->roomRepository
-            ->getList($searchCriteria)
-            ->first();
+        $room = $this->roomRepository->getMostVisitedRoom();
 
         if (!$room) {
             throw new RoomException(__('No Room found'), 404);

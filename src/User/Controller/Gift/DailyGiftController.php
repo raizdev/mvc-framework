@@ -8,7 +8,6 @@
 namespace Ares\User\Controller\Gift;
 
 use Ares\Framework\Controller\BaseController;
-use Ares\Framework\Exception\CacheException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\User\Entity\User;
 use Ares\User\Exception\Gift\DailyGiftException;
@@ -57,7 +56,6 @@ class DailyGiftController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws CacheException
      * @throws DailyGiftException
      * @throws DataObjectManagerException
      * @throws UserException

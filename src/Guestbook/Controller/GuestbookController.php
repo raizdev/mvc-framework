@@ -94,31 +94,31 @@ class GuestbookController extends BaseController
 
         $this->validationService->validate($parsedData, [
             'content' => 'required',
-            'profile' => 'numeric',
+            'profile_id' => 'numeric',
             'guild' => 'numeric'
         ]);
 
-        /** @var int $profile_id */
-        $profile_id = $parsedData['profile'] ?? 0;
+        /** @var int $profileId */
+        $profileId = $parsedData['profile_id'] ?? 0;
 
-        /** @var int $guild_id */
-        $guild_id = $parsedData['guild'] ?? 0;
+        /** @var int $guildId */
+        $guildId = $parsedData['guild_id'] ?? 0;
 
         /** @var User $user */
         $user = $this->getUser($this->userRepository, $request);
 
         /** @var User $profile */
-        $profile = $this->userRepository->get((int) $profile_id);
+        $profile = $this->userRepository->get((int) $profileId);
 
         /** @var Guild $guild */
-        $guild = $this->guildRepository->get((int) $guild_id);
+        $guild = $this->guildRepository->get((int) $guildId);
 
         if (!$profile && !$guild) {
             throw new GuestbookException(__('The associated Entities could not be found'));
         }
 
-        $parsedData['profile'] = $profile;
-        $parsedData['guild'] = $guild;
+        $parsedData['profile_id'] = $profile->getId();
+        $parsedData['guild_id'] = $guild->getId();
 
         $customResponse = $this->createGuestbookEntryService->execute($user->getId(), $parsedData);
 
@@ -136,7 +136,7 @@ class GuestbookController extends BaseController
      * @return Response
      * @throws DataObjectManagerException
      */
-    public function profileList(Request $request, Response $response, $args): Response
+    public function profileList(Request $request, Response $response, array $args): Response
     {
         /** @var int $page */
         $page = $args['page'];
@@ -147,14 +147,8 @@ class GuestbookController extends BaseController
         /** @var int $profileId */
         $profileId = $args['profile_id'];
 
-        $searchCriteria = $this->guestbookRepository
-            ->getDataObjectManager()
-            ->addRelation('user')
-            ->where('profile_id', (int) $profileId)
-            ->orderBy('id', 'DESC');
-
         $entries = $this->guestbookRepository
-            ->getPaginatedList($searchCriteria, (int) $page, (int) $resultPerPage);
+            ->getPaginatedProfileEntries((int) $profileId, (int) $page, (int) $resultPerPage);
 
         return $this->respond(
             $response,
@@ -182,14 +176,8 @@ class GuestbookController extends BaseController
         /** @var int $guildId */
         $guildId = $args['guild_id'];
 
-        $searchCriteria = $this->guestbookRepository
-            ->getDataObjectManager()
-            ->addRelation('user')
-            ->where('guild_id', (int) $guildId)
-            ->orderBy('id', 'DESC');
-
         $entries = $this->guestbookRepository
-            ->getPaginatedList($searchCriteria, (int) $page, (int) $resultPerPage);
+            ->getPaginatedGuildEntries((int) $guildId, (int) $page, (int) $resultPerPage);
 
         return $this->respond(
             $response,

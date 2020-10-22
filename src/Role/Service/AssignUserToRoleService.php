@@ -61,9 +61,8 @@ class AssignUserToRoleService
      * @param array $data
      *
      * @return CustomResponseInterface
-     * @throws RoleException
-     * @throws CacheException
      * @throws DataObjectManagerException
+     * @throws RoleException
      */
     public function execute(array $data): CustomResponseInterface
     {

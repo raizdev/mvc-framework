@@ -10,6 +10,7 @@ namespace Ares\Messenger\Controller;
 use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Messenger\Repository\MessengerRepository;
+use Ares\User\Entity\User;
 use Ares\User\Exception\UserException;
 use Ares\User\Repository\UserRepository;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -64,14 +65,11 @@ class MessengerController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        $searchCriteria = $this->messengerRepository
-            ->getDataObjectManager()
-            ->where('user_one_id', $this->getUser($this->userRepository, $request)->getId())
-            ->addRelation('user')
-            ->orderBy('id', 'DESC');
+        /** @var User $user */
+        $user = $this->getUser($this->userRepository, $request);
 
         $friends = $this->messengerRepository
-            ->getPaginatedList($searchCriteria, (int) $page, (int) $resultPerPage);
+            ->getPaginatedMessengerFriends($user->getId(), (int) $page, (int) $resultPerPage);
 
         return $this->respond(
             $response,

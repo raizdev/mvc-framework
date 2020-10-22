@@ -9,6 +9,7 @@ namespace Ares\Role\Repository;
 
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Role\Entity\Role;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 /**
  * Class RoleRepository
@@ -25,4 +26,18 @@ class RoleRepository extends BaseRepository
 
     /** @var string */
     protected string $entity = Role::class;
+
+    /**
+     * @param int $page
+     * @param int $resultPerPage
+     *
+     * @return LengthAwarePaginator
+     */
+    public function getPaginatedRoles(int $page, int $resultPerPage): LengthAwarePaginator
+    {
+        $searchCriteria = $this->getDataObjectManager()
+            ->orderBy('id', 'DESC');
+
+        return $this->getPaginatedList($searchCriteria, $page, $resultPerPage);
+    }
 }

@@ -11,6 +11,7 @@ use Ares\Framework\Repository\BaseRepository;
 use Ares\Guild\Entity\GuildMember;
 use Ares\Guild\Entity\Guild;
 use Doctrine\ORM\Query\Expr\Join;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 /**
  * Class GuildMemberRepository
@@ -47,5 +48,34 @@ class GuildMemberRepository extends BaseRepository
             ->setMaxResults(1)
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @param int $guildId
+     *
+     * @return int
+     */
+    public function getGuildMemberCount(int $guildId): int
+    {
+        $searchCriteria = $this->getDataObjectManager()
+            ->where('guild_id', $guildId);
+
+        return $this->getList($searchCriteria)->count();
+    }
+
+    /**
+     * @param int $guildId
+     * @param int $page
+     * @param int $resultPerPage
+     *
+     * @return LengthAwarePaginator
+     */
+    public function getPaginatedGuildMembers(int $guildId, int $page, int $resultPerPage): LengthAwarePaginator
+    {
+        $searchCriteria = $this->getDataObjectManager()
+            ->where('guild_id', $guildId)
+            ->orderBy('level_id', 'ASC');
+
+        return $this->getPaginatedList($searchCriteria, $page, $resultPerPage);
     }
 }

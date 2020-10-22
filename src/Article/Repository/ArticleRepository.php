@@ -7,9 +7,12 @@
 
 namespace Ares\Article\Repository;
 
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Article\Entity\Article;
 use Ares\Article\Entity\Comment;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 /**
  * Class ArticleRepository
@@ -41,7 +44,7 @@ class ArticleRepository extends BaseRepository
             ->leftJoin(
                 Comment::class,
                 'c',
-                \Doctrine\ORM\Query\Expr\Join::WITH,
+                Join::WITH,
                 'a.id = c.article'
             )
             ->where('a.title LIKE :term')
@@ -50,5 +53,39 @@ class ArticleRepository extends BaseRepository
             ->setParameter('term', '%'.$term.'%')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @return Collection
+     * @throws DataObjectManagerException
+     */
+    public function getPinnedArticles(): Collection
+    {
+        $searchCriteria = $this->getDataObjectManager()
+            ->where([
+                'pinned' => 1,
+                'hidden' => 0
+            ])
+            ->addRelation('user')
+            ->orderBy('id', 'DESC')
+            ->limit(3);
+
+        return $this->getList($searchCriteria);
+    }
+
+    /**
+     * @param int $page
+     * @param int $resultPerPage
+     *
+     * @return LengthAwarePaginator
+     * @throws DataObjectManagerException
+     */
+    public function getPaginatedArticleList(int $page, int $resultPerPage): LengthAwarePaginator
+    {
+        $searchCriteria = $this->getDataObjectManager()
+            ->addRelation('user')
+            ->orderBy('id', 'DESC');
+
+        return $this->getPaginatedList($searchCriteria, $page, $resultPerPage);
     }
 }

@@ -7,11 +7,13 @@
 
 namespace Ares\Guild\Repository;
 
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\SearchCriteriaInterface;
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Guild\Entity\Guild;
 use Ares\Guild\Entity\GuildMember;
 use Doctrine\ORM\Query\Expr\Join;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 /**
  * Class GuildRepository
@@ -72,5 +74,22 @@ class GuildRepository extends BaseRepository
             ->setParameter('term', '%'.$term.'%')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @param int $page
+     * @param int $resultPerPage
+     *
+     * @return LengthAwarePaginator
+     * @throws DataObjectManagerException
+     */
+    public function getPaginatedGuildList(int $page, int $resultPerPage): LengthAwarePaginator
+    {
+        $searchCriteria = $this->getDataObjectManager()
+            ->addRelation('user')
+            ->addRelation('room')
+            ->orderBy('id', 'DESC');
+
+        return $this->getPaginatedList($searchCriteria, $page, $resultPerPage);
     }
 }
