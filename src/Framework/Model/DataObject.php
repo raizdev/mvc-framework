@@ -7,12 +7,14 @@
 
 namespace Ares\Framework\Model;
 
+use JsonSerializable;
+
 /**
  * Class DataObject
  *
  * @package Ares\Framework\Model
  */
-class DataObject
+class DataObject implements JsonSerializable
 {
     /** @var string */
     public const PRIMARY_KEY = 'id';
@@ -67,6 +69,18 @@ class DataObject
     public function setData(string $key, $value)
     {
         $this->{$key} = $value;
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function jsonSerialize(): DataObject
+    {
+        foreach ($this::HIDDEN as &$hidden) {
+            unset($this->{$hidden});
+        }
+
         return $this;
     }
 }

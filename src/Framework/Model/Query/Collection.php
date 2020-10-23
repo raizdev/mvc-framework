@@ -7,7 +7,6 @@
 
 namespace Ares\Framework\Model\Query;
 
-
 use Illuminate\Support\Collection as IlluminateCollection;
 
 /**
@@ -17,5 +16,4 @@ use Illuminate\Support\Collection as IlluminateCollection;
  */
 class Collection extends IlluminateCollection
 {
-
 }

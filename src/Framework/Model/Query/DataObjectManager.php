@@ -40,10 +40,6 @@ class DataObjectManager extends Builder
         $items = [];
 
         foreach (parent::get($this->getColumns($columns)) as $item) {
-            foreach ($this->entity::HIDDEN as $column) {
-                unset($item->$column);
-            }
-
             if(isset($item->aggregate)) {
                 $items[] = $item;
                 continue;
@@ -109,7 +105,14 @@ class DataObjectManager extends Builder
             foreach ($columns as $column) {
                 unset($item->$column);
             }
-            $items[] = new $this->entity($item);
+
+            $entity = new $this->entity($item);
+
+            foreach ($this->relations as $relation) {
+                $entity->{$relation}();
+            }
+
+            $items[] = $entity;
         }
 
         return accumulate($items);
