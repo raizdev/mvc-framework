@@ -160,15 +160,11 @@ abstract class BaseRepository
                     ->where(self::COLUMN_ID, $id)
                     ->update($entity->getData());
 
-                return $entity;
+                return $this->get($entity->getId(), $entity::PRIMARY_KEY) ?? $entity;
             }
 
-            $polyMorphedId = $dataObjectManager->insertGetId($entity->getData());
-            if (method_exists($entity, 'setId')) {
-                $entity->setId($polyMorphedId);
-            }
-
-            return $entity;
+            $newId = $dataObjectManager->insertGetId($entity->getData());
+            return $this->get($newId, $entity::PRIMARY_KEY) ?? $entity;
         } catch (\Exception $exception) {
             throw new DataObjectManagerException(
                 $exception->getMessage(),
