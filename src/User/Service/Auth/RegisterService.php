@@ -94,7 +94,7 @@ class RegisterService
 
         /** @var User $checkUser */
         $checkUser = $this->userRepository
-            ->getList($searchCriteria)
+            ->getList($searchCriteria, false)
             ->first();
 
         if ($checkUser) {

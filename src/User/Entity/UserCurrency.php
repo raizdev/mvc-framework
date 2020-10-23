@@ -20,6 +20,9 @@ class UserCurrency extends DataObject implements UserCurrencyInterface
     /** @var string */
     public const TABLE = 'users_currency';
 
+    /** @var string */
+    public const PRIMARY_KEY = 'user_id';
+
     /**
      * @return int
      */

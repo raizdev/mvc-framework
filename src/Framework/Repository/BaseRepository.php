@@ -70,13 +70,14 @@ abstract class BaseRepository
      * @param mixed $value
      * @param string $column
      *
+     * @param bool $isCached
      * @return DataObject|null
      */
-    public function get($value, string $column = self::COLUMN_ID): ?DataObject
+    public function get($value, string $column = self::COLUMN_ID, bool $isCached = true): ?DataObject
     {
         $entity = $this->cacheService->get($this->cachePrefix . $value);
 
-        if ($entity) {
+        if ($entity && $isCached) {
             return unserialize($entity);
         }
 
@@ -92,17 +93,17 @@ abstract class BaseRepository
      * Get list of data objects by build search.
      *
      * @param DataObjectManager $dataObjectManager
-     * @param bool              $cachedList
+     * @param bool              $isCached
      *
      * @return Collection
      */
-    public function getList(DataObjectManager $dataObjectManager, bool $cachedList = true): Collection
+    public function getList(DataObjectManager $dataObjectManager, bool $isCached = true): Collection
     {
         $cacheKey = $this->getCacheKey($dataObjectManager);
 
         $collection = $this->cacheService->get($this->cacheCollectionPrefix . $cacheKey);
 
-        if ($collection && $cachedList) {
+        if ($collection && $isCached) {
             return unserialize($collection);
         }
 
@@ -163,7 +164,7 @@ abstract class BaseRepository
                 return $this->get($entity->getId(), $entity::PRIMARY_KEY) ?? $entity;
             }
 
-            $newId = $dataObjectManager->insertGetId($entity->getData());
+            $newId = $dataObjectManager->insertGetId($entity->getData(), $entity::PRIMARY_KEY);
             return $this->get($newId, $entity::PRIMARY_KEY) ?? $entity;
         } catch (\Exception $exception) {
             throw new DataObjectManagerException(
