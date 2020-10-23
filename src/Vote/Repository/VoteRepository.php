@@ -9,7 +9,7 @@ namespace Ares\Vote\Repository;
 
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Vote\Entity\Vote;
-use Illuminate\Support\Collection;
+use Ares\Framework\Model\Query\Collection;
 
 /**
  * Class VoteRepository

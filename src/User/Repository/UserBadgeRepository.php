@@ -10,7 +10,7 @@ namespace Ares\User\Repository;
 use Ares\Framework\Repository\BaseRepository;
 use Ares\User\Entity\UserBadge;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
+use Ares\Framework\Model\Query\Collection;
 
 /**
  * Class UserBadgeRepository

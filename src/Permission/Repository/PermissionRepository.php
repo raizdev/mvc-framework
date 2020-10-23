@@ -10,7 +10,7 @@ namespace Ares\Permission\Repository;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Permission\Entity\Permission;
-use Illuminate\Support\Collection;
+use Ares\Framework\Model\Query\Collection;
 
 /**
  * Class PermissionRepository

@@ -13,7 +13,7 @@ use Ares\Framework\Model\DataObject;
 use Ares\Framework\Model\Query\DataObjectManager;
 use Ares\Framework\Service\CacheService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
+use Ares\Framework\Model\Query\Collection;
 
 /**
  * Class BaseRepository

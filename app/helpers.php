@@ -5,6 +5,8 @@
  * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
  */
 
+use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Model\Query\Collection;
 use Ares\Framework\Repository\BaseRepository;
 use League\Container\Container;
 
@@ -114,12 +116,24 @@ if (!function_exists('repository')) {
         $repository = $container->get($repository);
 
         if (!$repository instanceof BaseRepository) {
-            throw new \Ares\Framework\Exception\DataObjectManagerException(
+            throw new DataObjectManagerException(
                 __('Tried to instantiating not existing repository "%s"', [$repository]),
                 500
             );
         }
 
         return $repository;
+    }
+}
+
+if (!function_exists('accumulate')) {
+    /**
+     * Returns data as new collection.
+     *
+     * @param mixed $items
+     * @return Collection
+     */
+    function accumulate($items = null): Collection {
+        return new Collection($items);
     }
 }

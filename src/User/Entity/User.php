@@ -15,7 +15,7 @@ use Ares\User\Entity\Contract\UserInterface;
 use Ares\User\Repository\UserCurrencyRepository;
 use Ares\User\Repository\UserRepository;
 use DateTime;
-use Illuminate\Support\Collection;
+use Ares\Framework\Model\Query\Collection;
 
 /**
  * Class User

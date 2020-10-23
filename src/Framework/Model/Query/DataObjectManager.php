@@ -10,7 +10,6 @@ namespace Ares\Framework\Model\Query;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Model\DataObject;
 use Illuminate\Database\Query\Builder;
-use Illuminate\Support\Collection;
 use ReflectionClass;
 
 /**
@@ -59,7 +58,7 @@ class DataObjectManager extends Builder
             $items[] = $entity;
         }
 
-        return collect($items);
+        return accumulate($items);
     }
 
     /**
@@ -113,7 +112,7 @@ class DataObjectManager extends Builder
             $items[] = new $this->entity($item);
         }
 
-        return collect($items);
+        return accumulate($items);
     }
 
     /**

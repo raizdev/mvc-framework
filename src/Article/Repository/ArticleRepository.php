@@ -12,7 +12,7 @@ use Ares\Framework\Repository\BaseRepository;
 use Ares\Article\Entity\Article;
 use Ares\Article\Entity\Comment;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
+use Ares\Framework\Model\Query\Collection;
 
 /**
  * Class ArticleRepository

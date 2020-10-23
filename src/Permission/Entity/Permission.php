@@ -12,7 +12,7 @@ use Ares\Framework\Model\DataObject;
 use Ares\Permission\Entity\Contract\PermissionInterface;
 use Ares\Permission\Repository\PermissionRepository;
 use Ares\User\Repository\UserRepository;
-use Illuminate\Support\Collection;
+use Ares\Framework\Model\Query\Collection;
 
 /**
  * Class Permission
