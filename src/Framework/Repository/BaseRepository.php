@@ -14,6 +14,7 @@ use Ares\Framework\Model\Query\DataObjectManager;
 use Ares\Framework\Service\CacheService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Ares\Framework\Model\Query\Collection;
+use Illuminate\Contracts\Support\Arrayable;
 
 /**
  * Class BaseRepository
@@ -111,6 +112,7 @@ abstract class BaseRepository
 
         $this->cacheService->set($this->cacheCollectionPrefix . $cacheKey, serialize($collection));
 
+        $this->addSingleCache($collection);
         return $collection;
     }
 
@@ -139,6 +141,7 @@ abstract class BaseRepository
 
         $this->cacheService->set($this->cacheCollectionPrefix . $cacheKey, serialize($collection));
 
+        $this->addSingleCache($collection);
         return $collection;
     }
 
@@ -281,6 +284,20 @@ abstract class BaseRepository
         $cacheKey = vsprintf(str_replace("?", "%s", $sql), $bindings) . implode($postfix);
 
         return hash('tiger192,3', $cacheKey);
+    }
+
+    /**
+     * Iterates collection and adds single cache for each entity.
+     *
+     * @param Collection|LengthAwarePaginator $collection
+     * @return void
+     */
+    private function addSingleCache($collection): void
+    {
+        /** @var DataObject $item */
+        foreach ($collection as &$item) {
+            $this->cacheService->set($this->cachePrefix . $item->getData($item::PRIMARY_KEY), $item);
+        }
     }
 
     /**
