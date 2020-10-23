@@ -97,7 +97,6 @@ class AuthController extends BaseController
      *
      * @return Response Returns a Response with the given Data
      * @throws BanException
-     * @throws CacheException
      * @throws DataObjectManagerException
      * @throws ValidationException
      * @throws LoginException
@@ -117,12 +116,9 @@ class AuthController extends BaseController
 
         $customResponse = $this->loginService->login($parsedData);
 
-        $result = repository(UserRepository::class)->getDataObjectManager()->where('username', 'like', 'Do%')->limit(10);
-        $result = repository(UserRepository::class)->getList($result);
-
         return $this->respond(
             $response,
-            response()->setData($result)
+            $customResponse
         );
     }
 
@@ -210,6 +206,7 @@ class AuthController extends BaseController
      * @param Response $response
      *
      * @return Response
+     * @throws CacheException
      * @throws DataObjectManagerException
      * @throws UserException
      */
