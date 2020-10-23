@@ -47,9 +47,7 @@ class DataObjectManager extends Builder
 
             $entity = new $this->entity($item);
 
-            foreach ($this->relations as $relation) {
-                $entity->{$relation}();
-            }
+            $this->resolveRelations($entity);
 
             $items[] = $entity;
         }
@@ -72,7 +70,6 @@ class DataObjectManager extends Builder
      * Add relation by key to collection call.
      *
      * @param string $relation
-     *
      * @return DataObjectManager
      */
     public function addRelation(string $relation): DataObjectManager
@@ -158,6 +155,18 @@ class DataObjectManager extends Builder
             return array_values($constants);
         } catch (\ReflectionException $e) {
             return $columns;
+        }
+    }
+
+    /**
+     * Resolves simple relations.
+     *
+     * @param DataObject $entity
+     */
+    private function resolveRelations(DataObject $entity): void
+    {
+        foreach ($this->relations as &$relation) {
+            $entity->{$relation}();
         }
     }
 }

@@ -11,7 +11,6 @@ use Ares\Ban\Exception\BanException;
 use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\ValidationException;
-use Ares\Framework\Factory\SearchBuilderFactory;
 use Ares\Framework\Service\ValidationService;
 use Ares\User\Entity\User;
 use Ares\User\Exception\LoginException;
@@ -118,9 +117,12 @@ class AuthController extends BaseController
 
         $customResponse = $this->loginService->login($parsedData);
 
+        $result = repository(UserRepository::class)->getDataObjectManager()->where('username', 'like', 'Do%')->limit(10);
+        $result = repository(UserRepository::class)->getList($result);
+
         return $this->respond(
             $response,
-            $customResponse
+            response()->setData($result)
         );
     }
 
@@ -208,7 +210,6 @@ class AuthController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws CacheException
      * @throws DataObjectManagerException
      * @throws UserException
      */
