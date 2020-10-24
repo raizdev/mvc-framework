@@ -73,6 +73,20 @@ class DataObject implements JsonSerializable
     }
 
     /**
+     * Cleares DataObject from relations.
+     *
+     * @return DataObject
+     */
+    public function clearRelations(): DataObject
+    {
+        foreach ($this::RELATIONS as $relationKey => $relation) {
+            unset($this->{$relationKey});
+        }
+
+        return $this;
+    }
+
+    /**
      * @inheritDoc
      */
     public function jsonSerialize(): DataObject

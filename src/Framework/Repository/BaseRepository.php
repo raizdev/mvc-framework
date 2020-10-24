@@ -109,10 +109,20 @@ abstract class BaseRepository
         }
 
         $collection = $dataObjectManager->get();
+        $cacheTags = [];
 
-        $this->cacheService->set($this->cacheCollectionPrefix . $cacheKey, serialize($collection));
+        /** @var DataObject $item */
+        foreach ($collection as &$item) {
+            $cacheTags[] = $this->cacheCollectionPrefix . $item->getData($item::PRIMARY_KEY);
+            $this->cacheService->set($this->cachePrefix . $item->getData($item::PRIMARY_KEY), serialize($item));
+        }
 
-        $this->addSingleCache($collection);
+        $this->cacheService->setWithTags(
+            $this->cacheCollectionPrefix . $cacheKey,
+            serialize($item->clearRelations()),
+            $cacheTags
+        );
+
         return $collection;
     }
 
@@ -138,10 +148,23 @@ abstract class BaseRepository
         }
 
         $collection = $dataObjectManager->paginate($limit, ['*'], 'page', $pageNumber);
+        $cacheTags = [];
 
-        $this->cacheService->set($this->cacheCollectionPrefix . $cacheKey, serialize($collection));
+        /** @var DataObject $item */
+        foreach ($collection as &$item) {
+            $cacheTags[] = (string) $item->getData($item::PRIMARY_KEY);
+            $this->cacheService->set(
+                $this->cachePrefix . $item->getData($item::PRIMARY_KEY),
+                serialize($item->clearRelations())
+            );
+        }
 
-        $this->addSingleCache($collection);
+        $this->cacheService->setWithTags(
+            $this->cacheCollectionPrefix . $cacheKey,
+            serialize($collection),
+            $cacheTags
+        );
+
         return $collection;
     }
 
@@ -164,11 +187,13 @@ abstract class BaseRepository
                     ->where(self::COLUMN_ID, $id)
                     ->update($entity->getData());
 
-                return $this->get($entity->getId(), $entity::PRIMARY_KEY) ?? $entity;
+                $this->cacheService->deleteByTag($id);
+
+                return $this->get($entity->getId(), $entity::PRIMARY_KEY, false) ?? $entity;
             }
 
             $newId = $dataObjectManager->insertGetId($entity->getData(), $entity::PRIMARY_KEY);
-            return $this->get($newId, $entity::PRIMARY_KEY) ?? $entity;
+            return $this->get($newId, $entity::PRIMARY_KEY, false) ?? $entity;
         } catch (\Exception $exception) {
             throw new DataObjectManagerException(
                 $exception->getMessage(),
@@ -190,7 +215,15 @@ abstract class BaseRepository
         $dataObjectManager = $this->dataObjectManagerFactory->create($this->entity);
 
         try {
-            return (bool) $dataObjectManager->delete($id);
+            $deleted = (bool) $dataObjectManager->delete($id);
+
+            if (!$deleted) {
+                return false;
+            }
+
+            $this->cacheService->deleteByTag($id);
+
+            return true;
         } catch (\Exception $exception) {
             throw new DataObjectManagerException(
                 $exception->getMessage(),
@@ -284,20 +317,6 @@ abstract class BaseRepository
         $cacheKey = vsprintf(str_replace("?", "%s", $sql), $bindings) . implode($postfix);
 
         return hash('tiger192,3', $cacheKey);
-    }
-
-    /**
-     * Iterates collection and adds single cache for each entity.
-     *
-     * @param Collection|LengthAwarePaginator $collection
-     * @return void
-     */
-    private function addSingleCache($collection): void
-    {
-        /** @var DataObject $item */
-        foreach ($collection as &$item) {
-            $this->cacheService->set($this->cachePrefix . $item->getData($item::PRIMARY_KEY), $item);
-        }
     }
 
     /**

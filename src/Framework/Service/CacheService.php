@@ -7,6 +7,11 @@
 
 namespace Ares\Framework\Service;
 
+use DateInterval;
+use DateTime;
+use Exception;
+use InvalidArgumentException;
+use Phpfastcache\Exceptions\PhpfastcacheInvalidArgumentException;
 use Phpfastcache\Helper\Psr16Adapter as FastCache;
 use Psr\Log\LoggerInterface;
 
@@ -55,7 +60,7 @@ class CacheService
             }
 
             return $this->fastCache->has($key);
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             $this->logger->error(
                 $exception->getMessage()
             );
@@ -76,31 +81,12 @@ class CacheService
             }
 
             return $this->fastCache->get($key);
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             $this->logger->error(
                 $exception->getMessage()
             );
 
             return null;
-        }
-    }
-
-    /**
-     * Get multiple cache entries by keys.
-     *
-     * @param array $keys
-     * @return array
-     */
-    public function getMultiple(array $keys): array
-    {
-        try {
-            return $this->fastCache->getMultiple($keys);
-        } catch (\Exception $exception) {
-            $this->logger->error(
-                $exception->getMessage()
-            );
-
-            return [];
         }
     }
 
@@ -120,31 +106,7 @@ class CacheService
             }
 
             return $this->fastCache->set($key, $value, $this->getTTL($ttl));
-        } catch (\Exception $exception) {
-            $this->logger->error(
-                $exception->getMessage()
-            );
-
-            return false;
-        }
-    }
-
-    /**
-     * Sets multiple cache entries.
-     *
-     * @param array $values
-     * @param int $ttl
-     * @return bool
-     */
-    public function setMultiple(array $values, int $ttl = 0): bool
-    {
-        try {
-            if (!$this->isCacheEnabled()) {
-                return false;
-            }
-
-            return $this->fastCache->setMultiple($values, $this->getTTL($ttl));
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             $this->logger->error(
                 $exception->getMessage()
             );
@@ -167,33 +129,10 @@ class CacheService
             }
 
             return $this->fastCache->delete($key);
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             $this->logger->error(
                 $exception->getMessage()
             );
-        }
-    }
-
-    /**
-     * Cleares multiple cache entries by keys.
-     *
-     * @param array $keys
-     * @return bool
-     */
-    public function deleteMultiple(array $keys): bool
-    {
-        try {
-            if (!$this->isCacheEnabled()) {
-                return false;
-            }
-
-            return $this->fastCache->deleteMultiple($keys);
-        } catch (\Exception $exception) {
-            $this->logger->error(
-                $exception->getMessage()
-            );
-
-            return false;
         }
     }
 
@@ -210,7 +149,68 @@ class CacheService
             }
 
             return $this->fastCache->clear();
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
+            $this->logger->error(
+                $exception->getMessage()
+            );
+
+            return false;
+        }
+    }
+
+    /**
+     * Sets new cache item with tags.
+     *
+     * @param string $key
+     * @param $value
+     * @param array $tags
+     * @param int $ttl
+     * @return bool
+     */
+    public function setWithTags(string $key, $value, array $tags, int $ttl = 0): bool
+    {
+        try {
+            if (!$this->isCacheEnabled()) {
+                return false;
+            }
+
+            $cacheManager = $this->fastCache->getInternalCacheInstance();
+            $ttl = $this->getTTL($ttl);
+
+            $cacheItem = $cacheManager
+                ->getItem($key)
+                ->set($value)
+                ->addTags($tags);
+
+            if (is_int($ttl) && $ttl <= 0) {
+                $cacheItem->expiresAt((new DateTime('@0')));
+            } elseif (is_int($ttl) || $ttl instanceof DateInterval) {
+                $cacheItem->expiresAfter($ttl);
+            }
+
+            return $cacheManager->save($cacheItem);
+        } catch (PhpfastcacheInvalidArgumentException $exception) {
+            $this->logger->error(
+                $exception->getMessage()
+            );
+
+            return false;
+        }
+    }
+
+    /**
+     * Deletes cache items by given tag.
+     *
+     * @param string $tag
+     * @return bool
+     */
+    public function deleteByTag(string $tag): bool
+    {
+        try {
+            $cacheManager = $this->fastCache->getInternalCacheInstance();
+
+            return $cacheManager->deleteItemsByTag($tag);
+        } catch (InvalidArgumentException $exception) {
             $this->logger->error(
                 $exception->getMessage()
             );
