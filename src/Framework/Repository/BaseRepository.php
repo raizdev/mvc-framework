@@ -109,22 +109,8 @@ abstract class BaseRepository
         }
 
         $collection = $dataObjectManager->get();
-        $cacheTags = [];
 
-        /** @var DataObject $item */
-        foreach ($collection as &$item) {
-            $cacheTags[] = $this->cacheCollectionPrefix . $item->getData($item::PRIMARY_KEY);
-            $this->cacheService->set(
-                $this->cachePrefix . $item->getData($item::PRIMARY_KEY),
-                serialize($item->clearRelations())
-            );
-        }
-
-        $this->cacheService->setWithTags(
-            $this->cacheCollectionPrefix . $cacheKey,
-            serialize($collection),
-            $cacheTags
-        );
+        $this->cacheCollection($cacheKey, $collection);
 
         return $collection;
     }
@@ -151,22 +137,8 @@ abstract class BaseRepository
         }
 
         $collection = $dataObjectManager->paginate($limit, ['*'], 'page', $pageNumber);
-        $cacheTags = [];
 
-        /** @var DataObject $item */
-        foreach ($collection as &$item) {
-            $cacheTags[] = (string) $item->getData($item::PRIMARY_KEY);
-            $this->cacheService->set(
-                $this->cachePrefix . $item->getData($item::PRIMARY_KEY),
-                serialize($item->clearRelations())
-            );
-        }
-
-        $this->cacheService->setWithTags(
-            $this->cacheCollectionPrefix . $cacheKey,
-            serialize($collection),
-            $cacheTags
-        );
+        $this->cacheCollection($cacheKey, $collection);
 
         return $collection;
     }
@@ -320,6 +292,33 @@ abstract class BaseRepository
         $cacheKey = vsprintf(str_replace("?", "%s", $sql), $bindings) . implode($postfix);
 
         return hash('tiger192,3', $cacheKey);
+    }
+
+    /**
+     * Caches collection and it items.
+     *
+     * @param string $cacheKey
+     * @param Collection|LengthAwarePaginator $collection
+     * @return void
+     */
+    private function cacheCollection(string $cacheKey, $collection): void
+    {
+        $cacheTags = [];
+
+        /** @var DataObject $item */
+        foreach ($collection as &$item) {
+            $cacheTags[] = (string) $item->getData($item::PRIMARY_KEY);
+            $this->cacheService->set(
+                $this->cachePrefix . $item->getData($item::PRIMARY_KEY),
+                serialize($item->clearRelations())
+            );
+        }
+
+        $this->cacheService->setWithTags(
+            $this->cacheCollectionPrefix . $cacheKey,
+            serialize($collection),
+            $cacheTags
+        );
     }
 
     /**
