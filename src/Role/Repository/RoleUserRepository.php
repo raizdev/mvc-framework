@@ -9,7 +9,6 @@ namespace Ares\Role\Repository;
 
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Role\Entity\RoleUser;
-use Doctrine\ORM\Query\QueryException;
 
 /**
  * Class RoleUserRepository
@@ -39,9 +38,9 @@ class RoleUserRepository extends BaseRepository
             ->select('role_id')
             ->where('user_id', $userId);
 
-        $roleIds = $this->getList($searchCriteria)->toArray();
+        $roleIds = $this->getList($searchCriteria)->get('role_id');
 
-        return array_keys($roleIds, 'role_id');
+        return array_keys($roleIds);
     }
 
     /**
