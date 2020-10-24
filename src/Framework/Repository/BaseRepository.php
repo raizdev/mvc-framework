@@ -307,10 +307,12 @@ abstract class BaseRepository
 
         /** @var DataObject $item */
         foreach ($collection as &$item) {
+            $cacheItem = clone $item;
+
             $cacheTags[] = (string) $item->getData($item::PRIMARY_KEY);
             $this->cacheService->set(
                 $this->cachePrefix . $item->getData($item::PRIMARY_KEY),
-                serialize($item->clearRelations())
+                serialize($cacheItem->clearRelations())
             );
         }
 
