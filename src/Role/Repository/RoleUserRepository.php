@@ -38,9 +38,7 @@ class RoleUserRepository extends BaseRepository
             ->select('role_id')
             ->where('user_id', $userId);
 
-        $roleIds = $this->getList($searchCriteria)->get('role_id');
-
-        return array_keys($roleIds);
+        return $this->getList($searchCriteria)->get('role_id');
     }
 
     /**
