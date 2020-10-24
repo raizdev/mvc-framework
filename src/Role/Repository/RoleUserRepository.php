@@ -35,18 +35,29 @@ class RoleUserRepository extends BaseRepository
      */
     public function getUserRoleIds($userId): array
     {
-        $qb = $this->createQueryBuilder('ur');
+        $searchCriteria = $this->getDataObjectManager()
+            ->select('role_id')
+            ->where('user_id', $userId);
 
-        $qb->select('ur.roleId')
-            ->where(
-                $qb->expr()
-                ->eq('ur.user', $userId)
-            )
-            ->indexBy('ur', 'ur.roleId');
+        $roleIds = $this->getList($searchCriteria)->toArray();
 
-        $roleIds = $qb->getQuery()
-            ->getArrayResult();
+        return array_keys($roleIds, 'role_id');
+    }
 
-        return array_keys($roleIds);
+    /**
+     * @param int $roleId
+     * @param int $userId
+     *
+     * @return RoleUser|null
+     */
+    public function getUserAssignedRole(int $roleId, int $userId): ?RoleUser
+    {
+        $searchCriteria = $this->getDataObjectManager()
+            ->where([
+                'role_id' => $roleId,
+                'user_id' => $userId
+            ]);
+
+        return $this->getList($searchCriteria)->first();
     }
 }

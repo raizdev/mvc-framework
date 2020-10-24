@@ -7,9 +7,10 @@
 
 namespace Ares\Rcon\Entity;
 
-use Ares\Framework\Exception\CacheException;
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Model\DataObject;
 use Ares\Rcon\Entity\Contract\RconInterface;
+use Ares\Rcon\Repository\RconRepository;
 use Ares\Role\Entity\Permission;
 use Ares\Role\Repository\PermissionRepository;
 
@@ -115,24 +116,29 @@ class Rcon extends DataObject implements RconInterface
 
     /**
      * @return Permission|null
+     * @throws DataObjectManagerException
      */
     public function getPermission(): ?Permission
     {
+        /** @var Permission $permission */
         $permission = $this->getData('permission');
 
         if ($permission) {
             return $permission;
         }
 
-        $permissionRepository = repository(PermissionRepository::class);
-        $searchCriteria = $permissionRepository->getDataObjectManager()
-            ->where('id', $this->getPermissionId());
+        /** @var RconRepository $rconRepository */
+        $rconRepository = repository(RconRepository::class);
 
-        try {
-            $permission = $permissionRepository->getList($searchCriteria)->first();
-        } catch (CacheException $e) {
-            return null;
-        }
+        /** @var PermissionRepository $permissionRepository */
+        $permissionRepository = repository(PermissionRepository::class);
+
+        /** @var Permission $permission */
+        $permission = $rconRepository->getOneToOne(
+            $permissionRepository,
+            $this->getPermissionId(),
+            'permission_id'
+        );
 
         if (!$permission) {
             return null;

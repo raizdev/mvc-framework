@@ -19,7 +19,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 class PermissionRepository extends BaseRepository
 {
     /** @var string */
-    protected string $cachePrefix = 'ARES_ROLE_PERMISSION';
+    protected string $cachePrefix = 'ARES_ROLE_PERMISSION_';
 
     /** @var string */
     protected string $cacheCollectionPrefix = 'ARES_ROLE_PERMISSION_COLLECTION_';

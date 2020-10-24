@@ -7,7 +7,6 @@
 
 namespace Ares\Role\Service;
 
-use Ares\Framework\Exception\CacheException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\Role\Entity\Role;
@@ -82,17 +81,8 @@ class AssignUserToRoleService
             throw new RoleException(__('Could not find called Role or User'));
         }
 
-        $searchCriteria = $this->roleRepository
-            ->getDataObjectManager()
-            ->where([
-                'role_id' => $role->getId(),
-                'user_id' => $user->getId()
-            ]);
-
         /** @var RoleUser $isRoleAlreadyAssigned */
-        $isRoleAlreadyAssigned = $this->roleUserRepository
-            ->getList($searchCriteria)
-            ->first();
+        $isRoleAlreadyAssigned = $this->roleUserRepository->getUserAssignedRole($role->getId(), $user->getId());
 
         if ($isRoleAlreadyAssigned) {
             throw new RoleException(__('There is already a Role assigned to that User'));

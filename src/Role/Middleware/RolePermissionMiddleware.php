@@ -40,8 +40,6 @@ class RolePermissionMiddleware implements MiddlewareInterface
     }
 
     /**
-     * @TODO Implement Caching
-     *
      * @param ServerRequestInterface  $request
      * @param RequestHandlerInterface $handler
      *

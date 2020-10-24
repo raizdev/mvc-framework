@@ -9,7 +9,6 @@ namespace Ares\Role\Repository;
 
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Role\Entity\RoleHierarchy;
-use Doctrine\ORM\Query\QueryException;
 
 /**
  * Class RoleHierarchyRepository
@@ -35,14 +34,11 @@ class RoleHierarchyRepository extends BaseRepository
      */
     private function getChildIds(array $parentIds): array
     {
-        $qb = $this->createQueryBuilder('rh');
+        $searchCriteria = $this
+            ->getDataObjectManager()
+            ->whereIn('parent_role_id', $parentIds);
 
-        $qb->select('rh.childRoleId')
-            ->where($qb->expr()->in( 'rh.parentRoleId', $parentIds))
-            ->indexBy('rh', 'rh.childRoleId');
-
-        $childRoleIds =  $qb->getQuery()
-            ->getArrayResult();
+        $childRoleIds = $this->getList($searchCriteria)->toArray();
 
         return array_keys($childRoleIds);
     }
@@ -78,8 +74,9 @@ class RoleHierarchyRepository extends BaseRepository
 
         if (count($childIds) > 0) {
 
-            if (in_array($findingChildId, $childIds))
+            if (in_array($findingChildId, $childIds)) {
                 return true;
+            }
 
             foreach ($childIds as $childId) {
                 if ($this->hasChildRoleId($childId, $findingChildId) == true) {
