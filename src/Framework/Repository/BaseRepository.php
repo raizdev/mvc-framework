@@ -114,12 +114,15 @@ abstract class BaseRepository
         /** @var DataObject $item */
         foreach ($collection as &$item) {
             $cacheTags[] = $this->cacheCollectionPrefix . $item->getData($item::PRIMARY_KEY);
-            $this->cacheService->set($this->cachePrefix . $item->getData($item::PRIMARY_KEY), serialize($item));
+            $this->cacheService->set(
+                $this->cachePrefix . $item->getData($item::PRIMARY_KEY),
+                serialize($item->clearRelations())
+            );
         }
 
         $this->cacheService->setWithTags(
             $this->cacheCollectionPrefix . $cacheKey,
-            serialize($item->clearRelations()),
+            serialize($collection),
             $cacheTags
         );
 
