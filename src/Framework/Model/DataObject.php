@@ -73,7 +73,7 @@ class DataObject implements JsonSerializable
     }
 
     /**
-     * Cleares DataObject from relations.
+     * Clears DataObject from relations.
      *
      * @return DataObject
      */

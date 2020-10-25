@@ -98,7 +98,11 @@ class GuildController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        $guilds = $this->guildRepository->getPaginatedGuildList((int) $page, (int) $resultPerPage);
+        $guilds = $this->guildRepository
+            ->getPaginatedGuildList(
+                (int) $page,
+                (int) $resultPerPage
+            );
 
         return $this->respond(
             $response,
@@ -108,12 +112,13 @@ class GuildController extends BaseController
     }
 
     /**
-     * @param Request     $request
-     * @param Response    $response
+     * @param Request  $request
+     * @param Response $response
      *
-     * @param             $args
+     * @param array    $args
      *
      * @return Response
+     * @throws DataObjectManagerException
      */
     public function members(Request $request, Response $response, array $args): Response
     {
@@ -127,7 +132,11 @@ class GuildController extends BaseController
         $resultPerPage = $args['rpp'];
 
         $members = $this->guildMemberRepository
-            ->getPaginatedGuildMembers((int) $guildId, (int) $page, (int) $resultPerPage);
+            ->getPaginatedGuildMembers(
+                (int) $guildId,
+                (int) $page,
+                (int) $resultPerPage
+            );
 
         return $this->respond(
             $response,
@@ -142,30 +151,16 @@ class GuildController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws GuildException|DataObjectManagerException
      */
     public function mostMembers(Request $request, Response $response): Response
     {
-        $results = $this->guildMemberRepository->getMemberCountByGuild();
-
-        if (!$results) {
-            throw new GuildException(__('No Guild were found'), 404);
-        }
-
-        $getMaxMemberGuild = array_shift($results);
-
         /** @var Guild $guild */
-        $guild = $this->guildRepository->get($getMaxMemberGuild['id']);
-        $guild->getUser();
-        $guild->getRoom();
+        $guild = $this->guildRepository->getMostMemberGuild();
 
         return $this->respond(
             $response,
             response()
-                ->setData([
-                    'guild'        => $guild,
-                    'member_count' => $getMaxMemberGuild['member']
-                ])
+                ->setData($guild)
         );
     }
 }

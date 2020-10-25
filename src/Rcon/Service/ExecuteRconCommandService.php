@@ -7,6 +7,7 @@
 
 namespace Ares\Rcon\Service;
 
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\Rcon\Exception\RconException;
 use Ares\Rcon\Model\Rcon;
@@ -62,6 +63,7 @@ class ExecuteRconCommandService
      * @throws JsonException
      * @throws RconException
      * @throws RoleException
+     * @throws DataObjectManagerException
      */
     public function execute(int $userId, array $data): CustomResponseInterface
     {

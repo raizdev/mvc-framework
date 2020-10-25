@@ -10,7 +10,6 @@ namespace Ares\Photo\Controller;
 use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\ValidationException;
-use Ares\Framework\Model\Adapter\DoctrineSearchCriteria;
 use Ares\Framework\Service\ValidationService;
 use Ares\Photo\Entity\Photo;
 use Ares\Photo\Exception\PhotoException;
@@ -58,11 +57,9 @@ class PhotoController extends BaseController
     public function __construct(
         PhotoRepository $photoRepository,
         UserRepository $userRepository,
-        DoctrineSearchCriteria $searchCriteria,
         ValidationService $validationService
     ) {
         $this->photoRepository   = $photoRepository;
-        $this->searchCriteria    = $searchCriteria;
         $this->validationService = $validationService;
         $this->userRepository    = $userRepository;
     }

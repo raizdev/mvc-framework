@@ -7,6 +7,7 @@
 
 namespace Ares\User\Repository;
 
+use Ares\Framework\Model\Query\Collection;
 use Ares\User\Entity\User;
 use Ares\Framework\Repository\BaseRepository;
 
@@ -35,5 +36,17 @@ class UserRepository extends BaseRepository
             ->where('online', '1');
 
         return $this->getList($searchCriteria, false)->count();
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getTopCredits(): Collection
+    {
+        $searchCriteria = $this->getDataObjectManager()
+            ->orderBy('credits', 'DESC')
+            ->limit(3);
+
+        return $this->getList($searchCriteria);
     }
 }

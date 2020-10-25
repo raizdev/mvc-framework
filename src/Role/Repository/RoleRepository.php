@@ -7,6 +7,7 @@
 
 namespace Ares\Role\Repository;
 
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Role\Entity\Role;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -32,6 +33,7 @@ class RoleRepository extends BaseRepository
      * @param int $resultPerPage
      *
      * @return LengthAwarePaginator
+     * @throws DataObjectManagerException
      */
     public function getPaginatedRoles(int $page, int $resultPerPage): LengthAwarePaginator
     {

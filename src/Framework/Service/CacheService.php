@@ -116,7 +116,7 @@ class CacheService
     }
 
     /**
-     * Cleares specific cache entry by key.
+     * Clears specific cache entry by key.
      *
      * @param string $key
      * @return bool

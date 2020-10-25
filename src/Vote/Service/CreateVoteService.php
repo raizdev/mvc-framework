@@ -75,7 +75,7 @@ class CreateVoteService
             throw new VoteException(__('User already voted for this entity.'), 422);
         }
 
-        $entityRepository = $this->getVoteEntityService->execute($vote->getEntityId(), $vote->getVoteEntity());
+        $entityRepository = $this->getVoteEntityService->execute($vote->getVoteEntity());
 
         if (!$entityRepository) {
             throw new VoteException(__('Related EntityRepository could not be found'));

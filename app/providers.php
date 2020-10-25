@@ -37,10 +37,6 @@ return [
     $container->addServiceProvider(
         new \Ares\Framework\Provider\CacheServiceProvider()
     ),
-    // Adds our SearchCriteriaServiceProvider
-    $container->addServiceProvider(
-        new \Ares\Framework\Provider\SearchCriteriaServiceProvider()
-    ),
     // Adds our SlugServiceProvider
     $container->addServiceProvider(
         new \Ares\Framework\Provider\SlugServiceProvider()

@@ -9,7 +9,7 @@ namespace Ares\Profile\Controller;
 
 use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\DataObjectManagerException;
-use Ares\Guild\Repository\GuildRepository;
+use Ares\Guild\Repository\GuildMemberRepository;
 use Ares\Messenger\Repository\MessengerRepository;
 use Ares\Photo\Repository\PhotoRepository;
 use Ares\Profile\Exception\ProfileException;
@@ -38,9 +38,9 @@ class ProfileController extends BaseController
     private RoomRepository $roomRepository;
 
     /**
-     * @var GuildRepository
+     * @var GuildMemberRepository
      */
-    private GuildRepository $guildRepository;
+    private GuildMemberRepository $guildMemberRepository;
 
     /**
      * @var MessengerRepository
@@ -60,26 +60,26 @@ class ProfileController extends BaseController
     /**
      * ProfileController constructor.
      *
-     * @param   UserRepository          $userRepository
-     * @param   RoomRepository          $roomRepository
-     * @param   GuildRepository         $guildRepository
-     * @param   MessengerRepository     $messengerRepository
-     * @param   PhotoRepository         $photoRepository
-     * @param   UserBadgeRepository     $userBadgeRepository
+     * @param UserRepository        $userRepository
+     * @param RoomRepository        $roomRepository
+     * @param GuildMemberRepository $guildMemberRepository
+     * @param MessengerRepository   $messengerRepository
+     * @param PhotoRepository       $photoRepository
+     * @param UserBadgeRepository   $userBadgeRepository
      */
     public function __construct(
         UserRepository $userRepository,
         RoomRepository $roomRepository,
-        GuildRepository $guildRepository,
+        GuildMemberRepository $guildMemberRepository,
         MessengerRepository $messengerRepository,
         PhotoRepository $photoRepository,
         UserBadgeRepository $userBadgeRepository
     ) {
-        $this->userRepository      = $userRepository;
-        $this->roomRepository      = $roomRepository;
-        $this->guildRepository     = $guildRepository;
+        $this->userRepository = $userRepository;
+        $this->roomRepository = $roomRepository;
+        $this->guildMemberRepository = $guildMemberRepository;
         $this->messengerRepository = $messengerRepository;
-        $this->photoRepository     = $photoRepository;
+        $this->photoRepository = $photoRepository;
         $this->userBadgeRepository = $userBadgeRepository;
     }
 
@@ -103,7 +103,10 @@ class ProfileController extends BaseController
             throw new ProfileException(__('No associated Profile was found'), 404);
         }
 
-        $badges = $this->userBadgeRepository->getListOfSlottedUserBadges($profile->getId());
+        $badges = $this->userBadgeRepository
+            ->getListOfSlottedUserBadges(
+                $profile->getId()
+            );
 
         return $this->respond(
             $response,
@@ -113,11 +116,12 @@ class ProfileController extends BaseController
     }
 
     /**
-     * @param Request     $request
-     * @param Response    $response
-     * @param             $args
+     * @param Request  $request
+     * @param Response $response
+     * @param array    $args
      *
      * @return Response
+     * @throws DataObjectManagerException
      * @throws ProfileException
      */
     public function badgeList(Request $request, Response $response, array $args): Response
@@ -132,13 +136,17 @@ class ProfileController extends BaseController
         $resultPerPage = $args['rpp'];
 
         /** @var User $profile */
-        $profile = $this->userRepository->get((int) $profile_id);
+        $profile = $this->userRepository->get((int)$profile_id);
 
         if (!$profile) {
             throw new ProfileException(__('No associated Profile was found'), 404);
         }
 
-        $badges = $this->userBadgeRepository->getPaginatedBadgeList((int) $page, (int) $resultPerPage);
+        $badges = $this->userBadgeRepository
+            ->getPaginatedBadgeList(
+                (int) $page,
+                (int) $resultPerPage
+            );
 
         return $this->respond(
             $response,
@@ -168,14 +176,18 @@ class ProfileController extends BaseController
         $resultPerPage = $args['rpp'];
 
         /** @var User $profile */
-        $profile = $this->userRepository->get((int) $profile_id);
+        $profile = $this->userRepository->get((int)$profile_id);
 
         if (!$profile) {
             throw new ProfileException(__('No associated Profile was found'), 404);
         }
 
         $friends = $this->messengerRepository
-            ->getPaginatedMessengerFriends($profile->getId(), (int) $page, (int) $resultPerPage);
+            ->getPaginatedMessengerFriends(
+                $profile->getId(),
+                (int) $page,
+                (int) $resultPerPage
+            );
 
         return $this->respond(
             $response,
@@ -185,11 +197,12 @@ class ProfileController extends BaseController
     }
 
     /**
-     * @param Request     $request
-     * @param Response    $response
-     * @param             $args
+     * @param Request  $request
+     * @param Response $response
+     * @param array    $args
      *
      * @return Response
+     * @throws DataObjectManagerException
      * @throws ProfileException
      */
     public function roomList(Request $request, Response $response, array $args): Response
@@ -204,14 +217,18 @@ class ProfileController extends BaseController
         $resultPerPage = $args['rpp'];
 
         /** @var User $profile */
-        $profile = $this->userRepository->get((int) $profileId);
+        $profile = $this->userRepository->get((int)$profileId);
 
         if (!$profile) {
             throw new ProfileException(__('No associated Profile was found'), 404);
         }
 
         $rooms = $this->roomRepository
-            ->getUserRoomsPaginatedList($profile->getId(), (int) $page, (int) $resultPerPage);
+            ->getUserRoomsPaginatedList(
+                $profile->getId(),
+                (int) $page,
+                (int) $resultPerPage
+            );
 
         return $this->respond(
             $response,
@@ -221,11 +238,12 @@ class ProfileController extends BaseController
     }
 
     /**
-     * @param Request     $request
-     * @param Response    $response
-     * @param             $args
+     * @param Request  $request
+     * @param Response $response
+     * @param array    $args
      *
      * @return Response
+     * @throws DataObjectManagerException
      * @throws ProfileException
      */
     public function guildList(Request $request, Response $response, array $args): Response
@@ -246,15 +264,12 @@ class ProfileController extends BaseController
             throw new ProfileException(__('No associated Profile was found'), 404);
         }
 
-        $searchCriteria = $this->guildRepository
-            ->getDataObjectManager()
-            ->where('user_id', (int) $profileId)
-            ->orderBy('id', 'DESC');
-
-        /**
-         * @TODO Refactor this and get all Guilds associated to the Profile
-         */
-        $guilds = $this->guildRepository->profileGuilds($searchCriteria);
+        $guilds = $this->guildMemberRepository
+            ->getPaginatedProfileGuilds(
+                (int) $profile->getId(),
+                (int) $page,
+                (int) $resultPerPage
+            );
 
         return $this->respond(
             $response,
@@ -264,11 +279,12 @@ class ProfileController extends BaseController
     }
 
     /**
-     * @param Request     $request
-     * @param Response    $response
-     * @param             $args
+     * @param Request  $request
+     * @param Response $response
+     * @param array    $args
      *
      * @return Response
+     * @throws DataObjectManagerException
      * @throws ProfileException
      */
     public function photoList(Request $request, Response $response, array $args): Response
@@ -290,7 +306,11 @@ class ProfileController extends BaseController
         }
 
         $photos = $this->photoRepository
-            ->getPaginatedUserPhotoList($profile->getId(), (int) $page, (int) $resultPerPage);
+            ->getPaginatedUserPhotoList(
+                $profile->getId(),
+                (int) $page,
+                (int) $resultPerPage
+            );
 
         return $this->respond(
             $response,

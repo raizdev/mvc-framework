@@ -7,6 +7,7 @@
 
 namespace Ares\Photo\Repository;
 
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Photo\Entity\Photo;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -32,6 +33,7 @@ class PhotoRepository extends BaseRepository
      * @param int $resultPerPage
      *
      * @return LengthAwarePaginator
+     * @throws DataObjectManagerException
      */
     public function getPaginatedPhotoList(int $page, int $resultPerPage): LengthAwarePaginator
     {
@@ -47,6 +49,7 @@ class PhotoRepository extends BaseRepository
      * @param int $resultPerPage
      *
      * @return LengthAwarePaginator
+     * @throws DataObjectManagerException
      */
     public function getPaginatedUserPhotoList(int $userId, int $page, int $resultPerPage): LengthAwarePaginator
     {

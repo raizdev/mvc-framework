@@ -82,33 +82,4 @@ class UserController extends BaseController
                 ])
         );
     }
-
-    /**
-     * Saves the given Language to the User
-     *
-     * @param Request  $request
-     * @param Response $response
-     *
-     * @return Response
-     * @throws CacheException
-     * @throws UserException
-     * @throws DataObjectManagerException
-     */
-    public function updateLocale(Request $request, Response $response): Response
-    {
-        /** @var array $body */
-        $body = $request->getParsedBody();
-
-        /** @var User $user */
-        $user = $user = $this->getUser($this->userRepository, $request);
-        $user->setLocale($body['locale']);
-
-        $this->userRepository->save($user);
-
-        return $this->respond(
-            $response,
-            response()
-                ->setData($user)
-        );
-    }
 }

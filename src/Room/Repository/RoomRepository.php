@@ -29,21 +29,22 @@ class RoomRepository extends BaseRepository
     protected string $entity = Room::class;
 
     /**
-     * Searchs rooms by search term.
+     * Searches rooms by search term.
      *
      * @param string $term
-     * @return int|mixed|string
+     * @param int    $page
+     * @param int    $resultPerPage
+     *
+     * @return LengthAwarePaginator
+     * @throws DataObjectManagerException
      */
-    public function searchRooms(string $term): array
+    public function searchRooms(string $term, int $page, int $resultPerPage): LengthAwarePaginator
     {
-        return $this->getEntityManager()->createQueryBuilder()
-            ->select('r.id, r.name, r.description, r.users as members')
-            ->from(Room::class, 'r')
-            ->where('r.name LIKE :term')
-            ->orderBy('members', 'DESC')
-            ->setParameter('term', '%'.$term.'%')
-            ->getQuery()
-            ->getResult();
+        $searchCriteria = $this->getDataObjectManager()
+            ->where('name', 'LIKE', '%'.$term.'%')
+            ->orderBy('users', 'DESC');
+
+        return $this->getPaginatedList($searchCriteria, $page, $resultPerPage);
     }
 
     /**
@@ -69,6 +70,7 @@ class RoomRepository extends BaseRepository
      * @param int $resultPerPage
      *
      * @return LengthAwarePaginator
+     * @throws DataObjectManagerException
      */
     public function getUserRoomsPaginatedList(int $ownerId, int $page, int $resultPerPage): LengthAwarePaginator
     {
@@ -80,14 +82,13 @@ class RoomRepository extends BaseRepository
     }
 
     /**
-     * @return mixed
+     * @return Room|null
      */
     public function getMostVisitedRoom(): ?Room
     {
         $searchCriteria = $this->getDataObjectManager()
             ->orderBy('users', 'DESC');
 
-        /** @var Room $room */
         return $this->getList($searchCriteria)->first();
     }
 }

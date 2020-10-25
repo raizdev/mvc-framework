@@ -177,15 +177,11 @@ class AuthController extends BaseController
             throw new RegisterException(__('There are no viable Looks available'));
         }
 
-        $boyList = [];
-        foreach ($boyLooks as $look) {
-            $boyList[] = $look;
-        }
+        /** @var array $boyList */
+        $boyList = array_map(null, $boyLooks);
 
-        $girlList = [];
-        foreach ($girlLooks as $look) {
-            $girlList[] = $look;
-        }
+        /** @var array $girlList */
+        $girlList = array_map(null, $girlLooks);
 
         return $this->respond(
             $response,

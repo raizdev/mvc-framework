@@ -26,6 +26,9 @@ abstract class BaseRepository
     /** @var string */
     private const COLUMN_ID = 'id';
 
+    /** @var int */
+    private const PAGINATION_DATA_LIMIT = 50;
+
     /**
      * @var string
      */
@@ -128,6 +131,12 @@ abstract class BaseRepository
         int $pageNumber,
         int $limit
     ): LengthAwarePaginator {
+        if ($limit > self::PAGINATION_DATA_LIMIT) {
+            throw new DataObjectManagerException(
+                __('You cant exceed the Limit of %s', [self::PAGINATION_DATA_LIMIT])
+            );
+        }
+
         $cacheKey = $this->getCacheKey($dataObjectManager, (string) $pageNumber, (string) $limit);
 
         $collection = $this->cacheService->get($this->cacheCollectionPrefix . $cacheKey);
@@ -295,7 +304,7 @@ abstract class BaseRepository
     }
 
     /**
-     * Caches collection and it items.
+     * Caches collection and its items.
      *
      * @param string $cacheKey
      * @param Collection|LengthAwarePaginator $collection

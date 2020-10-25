@@ -8,14 +8,14 @@
 namespace Ares\User\Controller;
 
 use Ares\Framework\Controller\BaseController;
+use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\User\Repository\UserCurrencyRepository;
 use Ares\User\Repository\UserRepository;
 use Ares\User\Repository\UserSettingRepository;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 /**
- * @TODO    needs refactoring
- *
  * Class UserHallOfFameController
  *
  * @package Ares\User\Controller
@@ -33,17 +33,25 @@ class UserHallOfFameController extends BaseController
     private UserSettingRepository $userSettingRepository;
 
     /**
+     * @var UserCurrencyRepository
+     */
+    private UserCurrencyRepository $userCurrencyRepository;
+
+    /**
      * UserHallOfFameController constructor.
      *
-     * @param UserRepository        $userRepository
-     * @param UserSettingRepository $userSettingRepository
+     * @param UserRepository         $userRepository
+     * @param UserSettingRepository  $userSettingRepository
+     * @param UserCurrencyRepository $userCurrencyRepository
      */
     public function __construct(
         UserRepository $userRepository,
-        UserSettingRepository $userSettingRepository
+        UserSettingRepository $userSettingRepository,
+        UserCurrencyRepository $userCurrencyRepository
     ) {
         $this->userRepository = $userRepository;
         $this->userSettingRepository = $userSettingRepository;
+        $this->userCurrencyRepository = $userCurrencyRepository;
     }
 
     /**
@@ -54,12 +62,7 @@ class UserHallOfFameController extends BaseController
      */
     public function topCredits(Request $request, Response $response): Response
     {
-        $searchCriteria = $this->userRepository
-            ->getDataObjectManager()
-            ->orderBy('credits', 'DESC')
-            ->limit(3);
-
-        $users = $this->userRepository->getList($searchCriteria);
+        $users = $this->userRepository->getTopCredits();
 
         return $this->respond(
             $response,
@@ -73,15 +76,11 @@ class UserHallOfFameController extends BaseController
      * @param Response $response
      *
      * @return Response
+     * @throws DataObjectManagerException
      */
     public function topDiamonds(Request $request, Response $response): Response
     {
-        $searchCriteria = $this->userRepository
-            ->getDataObjectManager()
-            ->orderBy('points', 'DESC')
-            ->limit(3);
-
-        $users = $this->userRepository->getList($searchCriteria);
+        $users = $this->userCurrencyRepository->getTopDiamonds();
 
         return $this->respond(
             $response,
@@ -95,15 +94,11 @@ class UserHallOfFameController extends BaseController
      * @param Response $response
      *
      * @return Response
+     * @throws DataObjectManagerException
      */
-    public function topPixels(Request $request, Response $response): Response
+    public function topDuckets(Request $request, Response $response): Response
     {
-        $searchCriteria = $this->userRepository
-            ->getDataObjectManager()
-            ->orderBy('pixels', 'DESC')
-            ->limit(3);
-
-        $users = $this->userRepository->getList($searchCriteria);
+        $users = $this->userCurrencyRepository->getTopDuckets();
 
         return $this->respond(
             $response,
@@ -117,15 +112,11 @@ class UserHallOfFameController extends BaseController
      * @param Response $response
      *
      * @return Response
+     * @throws DataObjectManagerException
      */
     public function topAchievement(Request $request, Response $response): Response
     {
-        $searchCriteria = $this->userSettingRepository
-            ->getDataObjectManager()
-            ->orderBy('achievement_score', 'DESC')
-            ->limit(3);
-
-        $users = $this->userSettingRepository->getList($searchCriteria);
+        $users = $this->userSettingRepository->getTopAchievements();
 
         return $this->respond(
             $response,
@@ -139,15 +130,11 @@ class UserHallOfFameController extends BaseController
      * @param Response $response
      *
      * @return Response
+     * @throws DataObjectManagerException
      */
     public function topOnlineTime(Request $request, Response $response): Response
     {
-        $searchCriteria = $this->userSettingRepository
-            ->getDataObjectManager()
-            ->orderBy('online_time', 'DESC')
-            ->limit(3);
-
-        $users = $this->userSettingRepository->getList($searchCriteria);
+        $users = $this->userSettingRepository->getTopOnlineTime();
 
         return $this->respond(
             $response,

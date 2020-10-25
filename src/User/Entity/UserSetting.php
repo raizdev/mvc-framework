@@ -7,8 +7,11 @@
 
 namespace Ares\User\Entity;
 
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Model\DataObject;
 use Ares\User\Entity\Contract\UserSettingInterface;
+use Ares\User\Repository\UserRepository;
+use Ares\User\Repository\UserSettingRepository;
 
 /**
  * Class UserSetting
@@ -19,6 +22,11 @@ class UserSetting extends DataObject implements UserSettingInterface
 {
     /** @var string */
     public const TABLE = 'users_settings';
+
+    /** @var array */
+    public const RELATIONS = [
+        'user' => 'getUser'
+    ];
 
     /**
      * @return int
@@ -234,5 +242,44 @@ class UserSetting extends DataObject implements UserSettingInterface
     public function setIgnorePets(int $ignore_pets): UserSetting
     {
         return $this->setData(UserSettingInterface::COLUMN_IGNORE_PETS, $ignore_pets);
+    }
+
+    /**
+     * @return User|null
+     * @throws DataObjectManagerException
+     */
+    public function getUser(): ?User
+    {
+        /** @var User $user */
+        $user = $this->getData('user');
+
+        if ($user) {
+            return $user;
+        }
+
+        /** @var UserSettingRepository $userSettingRepository */
+        $userSettingRepository = repository(UserSettingRepository::class);
+
+        /** @var UserRepository $userRepository */
+        $userRepository = repository(UserRepository::class);
+
+        $user = $userSettingRepository->getOneToOne(
+            $userRepository,
+            $this->getUserId(),
+            'id'
+        );
+
+        if (!$user) {
+            return null;
+        }
+
+        $this->setUser($user);
+
+        return $user;
+    }
+
+    public function setUser(User $user): UserSetting
+    {
+        return $this->setData('user', $user);
     }
 }

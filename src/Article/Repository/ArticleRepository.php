@@ -10,7 +10,6 @@ namespace Ares\Article\Repository;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Article\Entity\Article;
-use Ares\Article\Entity\Comment;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Ares\Framework\Model\Query\Collection;
 
@@ -31,28 +30,31 @@ class ArticleRepository extends BaseRepository
     protected string $entity = Article::class;
 
     /**
-     * Searchs articles by search term.
-     *
      * @param string $term
-     * @return int|mixed|string
+     * @param int    $page
+     * @param int    $resultPerPage
+     *
+     * @return LengthAwarePaginator
+     * @throws DataObjectManagerException
      */
-    public function searchArticles(string $term): array
+    public function searchArticles(string $term, int $page, int $resultPerPage): LengthAwarePaginator
     {
-        return $this->getEntityManager()->createQueryBuilder()
-            ->select('a.id, a.title, a.description, count(c.article) as comments')
-            ->from(Article::class, 'a')
+        $searchCriteria = $this->getDataObjectManager()
+            ->selectRaw('ares_articles.id, ares_articles.author_id, ares_articles.title, ares_articles.slug,
+             ares_articles.image, ares_articles.likes, ares_articles.dislikes,
+             count(ares_articles_comments.article_id) as comment_count')
             ->leftJoin(
-                Comment::class,
-                'c',
-                Join::WITH,
-                'a.id = c.article'
+                'ares_articles_comments',
+                'ares_articles.id',
+                '=',
+                'ares_articles_comments.article_id'
             )
-            ->where('a.title LIKE :term')
-            ->orderBy('comments', 'DESC')
-            ->groupBy('a.id')
-            ->setParameter('term', '%'.$term.'%')
-            ->getQuery()
-            ->getResult();
+            ->where('title', 'LIKE', '%'.$term.'%')
+            ->where('hidden', 0)
+            ->orderBy('comment_count', 'DESC')
+            ->addRelation('user');
+
+        return $this->getPaginatedList($searchCriteria, $page, $resultPerPage);
     }
 
     /**

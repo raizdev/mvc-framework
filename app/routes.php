@@ -68,7 +68,12 @@ return function (App $app) {
 
             // Community
             $group->group('/community', function ($group) {
-                $group->get('/search/{term}', \Ares\Community\Controller\CommunityController::class . ':search');
+                $group->get('/search/rooms/{term}/{page:[0-9]+}/{rpp:[0-9]+}',
+                    \Ares\Community\Controller\CommunityController::class . ':searchRooms');
+                $group->get('/search/guilds/{term}/{page:[0-9]+}/{rpp:[0-9]+}',
+                    \Ares\Community\Controller\CommunityController::class . ':searchGuilds');
+                $group->get('/search/articles/{term}/{page:[0-9]+}/{rpp:[0-9]+}',
+                    \Ares\Community\Controller\CommunityController::class . ':searchArticles');
             });
 
             // Guilds
@@ -213,8 +218,8 @@ return function (App $app) {
             });
 
             $group->group('/rcon', function ($group) {
-               $group->post('/execute', \Ares\Rcon\Controller\RconController::class . ':executeCommand')
-                   ->setName('execute-rcon-command');
+                $group->post('/execute', \Ares\Rcon\Controller\RconController::class . ':executeCommand')
+                    ->setName('execute-rcon-command');
             });
 
             // De-Authentication

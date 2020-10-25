@@ -9,8 +9,10 @@ namespace Ares\Guild\Entity;
 
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Model\DataObject;
+use Ares\Framework\Model\Query\Collection;
 use Ares\Guild\Entity\Contract\GuildMemberInterface;
 use Ares\Guild\Repository\GuildMemberRepository;
+use Ares\Guild\Repository\GuildRepository;
 use Ares\User\Entity\User;
 use Ares\User\Repository\UserRepository;
 
@@ -26,7 +28,8 @@ class GuildMember extends DataObject implements GuildMemberInterface
 
     /*** @var array */
     public const RELATIONS = [
-      'user' => 'getUser'
+        'user' => 'getUser',
+        'guilds' => 'getGuilds'
     ];
 
     /**
@@ -163,5 +166,48 @@ class GuildMember extends DataObject implements GuildMemberInterface
     public function setUser(User $user): GuildMember
     {
         return $this->setData('user', $user);
+    }
+
+    /**
+     * @return Collection|array|mixed|null
+     * @throws DataObjectManagerException
+     */
+    public function getGuilds(): ?Collection
+    {
+        $guilds = $this->getData('guilds');
+
+        if ($guilds) {
+            return $guilds;
+        }
+
+        /** @var GuildMemberRepository $guildMemberRepository */
+        $guildMemberRepository = repository(GuildMemberRepository::class);
+
+        /** @var GuildRepository $guildRepository */
+        $guildRepository = repository(GuildRepository::class);
+
+        $guilds = $guildMemberRepository->getOneToMany(
+            $guildRepository,
+            $this->getGuildId(),
+            'id'
+        );
+
+        if (!$guilds->toArray()) {
+            return null;
+        }
+
+        $this->setGuilds($guilds);
+
+        return $guilds;
+    }
+
+    /**
+     * @param Collection $guild
+     *
+     * @return GuildMember
+     */
+    public function setGuilds(Collection $guild): GuildMember
+    {
+        return $this->setData('guild', $guild);
     }
 }

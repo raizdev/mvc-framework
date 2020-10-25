@@ -9,6 +9,7 @@ namespace Ares\Community\Controller;
 
 use Ares\Article\Repository\ArticleRepository;
 use Ares\Framework\Controller\BaseController;
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Guild\Repository\GuildRepository;
 use Ares\Room\Repository\RoomRepository;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -56,26 +57,105 @@ class CommunityController extends BaseController
     /**
      * Searches with term in groups, rooms and news.
      *
-     * @param   Request   $request
-     * @param   Response  $response
-     * @param             $args
+     * @param Request  $request
+     * @param Response $response
+     * @param array    $args
      *
      * @return Response
+     * @throws DataObjectManagerException
      */
-    public function search(Request $request, Response $response, array $args): Response
+    public function searchRooms(Request $request, Response $response, array $args): Response
     {
-        /** @var string $id */
-        $term    = (string) $args['term'];
-        $results = [];
+        /** @var string $term */
+        $term = $args['term'];
 
-        $results['guilds']   = $this->guildRepository->searchGuilds($term);
-        $results['rooms']    = $this->roomRepository->searchRooms($term);
-        $results['articles'] = $this->articleRepository->searchArticles($term);
+        /** @var int $page */
+        $page = $args['page'];
+
+        /** @var int $resultPerPage */
+        $resultPerPage = $args['rpp'];
+
+        $rooms = $this->roomRepository
+            ->searchRooms(
+                $term,
+                (int) $page,
+                (int) $resultPerPage
+            );
 
         return $this->respond(
             $response,
             response()
-                ->setData($results)
+                ->setData($rooms)
+        );
+    }
+
+    /**
+     * Searches with term in groups, rooms and news.
+     *
+     * @param Request  $request
+     * @param Response $response
+     * @param array    $args
+     *
+     * @return Response
+     * @throws DataObjectManagerException
+     */
+    public function searchGuilds(Request $request, Response $response, array $args): Response
+    {
+        /** @var string $term */
+        $term = $args['term'];
+
+        /** @var int $page */
+        $page = $args['page'];
+
+        /** @var int $resultPerPage */
+        $resultPerPage = $args['rpp'];
+
+        $guilds = $this->guildRepository
+            ->searchGuilds(
+                $term,
+                (int) $page,
+                (int) $resultPerPage
+            );
+
+        return $this->respond(
+            $response,
+            response()
+                ->setData($guilds)
+        );
+    }
+
+    /**
+     * Searches with term in groups, rooms and news.
+     *
+     * @param Request     $request
+     * @param Response    $response
+     * @param             $args
+     *
+     * @return Response
+     * @throws DataObjectManagerException
+     */
+    public function searchArticles(Request $request, Response $response, array $args): Response
+    {
+        /** @var string $term */
+        $term = $args['term'];
+
+        /** @var int $page */
+        $page = $args['page'];
+
+        /** @var int $resultPerPage */
+        $resultPerPage = $args['rpp'];
+
+        $articles = $this->articleRepository
+            ->searchArticles(
+                $term,
+                (int) $page,
+                (int) $resultPerPage
+            );
+
+        return $this->respond(
+            $response,
+            response()
+                ->setData($articles)
         );
     }
 }
