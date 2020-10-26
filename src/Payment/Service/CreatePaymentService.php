@@ -49,17 +49,8 @@ class CreatePaymentService
     {
         $payment = $this->getNewPayment($userId, $data);
 
-        $searchCriteria = $this->paymentRepository
-            ->getDataObjectManager()
-            ->where([
-                'user_id' => $payment->getUserId(),
-                'processed' => 0
-            ]);
-
         /** @var Payment $existingPayment */
-        $existingPayment = $this->paymentRepository
-            ->getList($searchCriteria)
-            ->first();
+        $existingPayment = $this->paymentRepository->getExistingPayment($payment->getUserId());
 
         if ($existingPayment) {
             throw new PaymentException(__('You already have an ongoing payment, wait till its processed'));

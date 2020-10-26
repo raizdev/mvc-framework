@@ -80,6 +80,7 @@ class RoleController extends BaseController
      * @param array    $args
      *
      * @return Response
+     * @throws DataObjectManagerException
      */
     public function list(Request $request, Response $response, array $args): Response
     {
@@ -89,7 +90,11 @@ class RoleController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        $roles = $this->roleRepository->getPaginatedRoles((int) $page, (int) $resultPerPage);
+        $roles = $this->roleRepository
+            ->getPaginatedRoles(
+                (int) $page,
+                (int) $resultPerPage
+            );
 
         return $this->respond(
             $response,

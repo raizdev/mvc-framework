@@ -10,7 +10,6 @@ namespace Ares\Settings\Controller;
 use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\ValidationException;
-use Ares\Framework\Model\Adapter\DoctrineSearchCriteria;
 use Ares\Framework\Service\ValidationService;
 use Ares\Settings\Entity\Setting;
 use Ares\Settings\Exception\SettingsException;
@@ -42,28 +41,20 @@ class SettingsController extends BaseController
     private UpdateSettingsService $updateSettingsService;
 
     /**
-     * @var DoctrineSearchCriteria
-     */
-    private DoctrineSearchCriteria $searchCriteria;
-
-    /**
      * SettingsController constructor.
      *
      * @param   ValidationService       $validationService
      * @param   SettingsRepository      $settingsRepository
      * @param   UpdateSettingsService   $updateSettingsService
-     * @param   DoctrineSearchCriteria  $searchCriteria
      */
     public function __construct(
         ValidationService $validationService,
         SettingsRepository $settingsRepository,
-        UpdateSettingsService $updateSettingsService,
-        DoctrineSearchCriteria $searchCriteria
+        UpdateSettingsService $updateSettingsService
     ) {
         $this->validationService     = $validationService;
         $this->settingsRepository    = $settingsRepository;
         $this->updateSettingsService = $updateSettingsService;
-        $this->searchCriteria        = $searchCriteria;
     }
 
     /**
@@ -101,12 +92,13 @@ class SettingsController extends BaseController
     }
 
     /**
-     * @param Request     $request
-     * @param Response    $response
+     * @param Request  $request
+     * @param Response $response
      *
-     * @param             $args
+     * @param array    $args
      *
      * @return Response
+     * @throws DataObjectManagerException
      */
     public function list(Request $request, Response $response, array $args): Response
     {

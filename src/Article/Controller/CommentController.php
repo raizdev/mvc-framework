@@ -158,7 +158,11 @@ class CommentController extends BaseController
 
         /** @var LengthAwarePaginator $comments */
         $comments = $this->commentRepository
-            ->getPaginatedCommentList((int) $articleId, (int) $page, (int) $resultPerPage);
+            ->getPaginatedCommentList(
+                (int) $articleId,
+                (int) $page,
+                (int) $resultPerPage
+            );
 
         return $this->respond(
             $response,

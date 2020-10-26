@@ -32,11 +32,6 @@ class PhotoController extends BaseController
     private PhotoRepository $photoRepository;
 
     /**
-     * @var DoctrineSearchCriteria
-     */
-    private DoctrineSearchCriteria $searchCriteria;
-
-    /**
      * @var ValidationService
      */
     private ValidationService $validationService;
@@ -51,7 +46,6 @@ class PhotoController extends BaseController
      *
      * @param   PhotoRepository         $photoRepository
      * @param   UserRepository          $userRepository
-     * @param   DoctrineSearchCriteria  $searchCriteria
      * @param   ValidationService       $validationService
      */
     public function __construct(
@@ -129,11 +123,12 @@ class PhotoController extends BaseController
     }
 
     /**
-     * @param Request     $request
-     * @param Response    $response
-     * @param             $args
+     * @param Request  $request
+     * @param Response $response
+     * @param array    $args
      *
      * @return Response
+     * @throws DataObjectManagerException
      */
     public function list(Request $request, Response $response, array $args): Response
     {
@@ -143,7 +138,11 @@ class PhotoController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        $photos = $this->photoRepository->getPaginatedPhotoList((int) $page, (int) $resultPerPage);
+        $photos = $this->photoRepository
+            ->getPaginatedPhotoList(
+                (int) $page,
+                (int) $resultPerPage
+            );
 
         return $this->respond(
             $response,

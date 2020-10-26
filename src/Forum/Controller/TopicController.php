@@ -148,7 +148,10 @@ class TopicController extends BaseController
         $resultPerPage = $args['rpp'];
 
         $topics = $this->topicRepository
-            ->getPaginatedTopicList((int) $page, (int) $resultPerPage);
+            ->getPaginatedTopicList(
+                (int) $page,
+                (int) $resultPerPage
+            );
 
         return $this->respond(
             $response,

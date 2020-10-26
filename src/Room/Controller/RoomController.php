@@ -85,7 +85,11 @@ class RoomController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        $rooms = $this->roomRepository->getPaginatedRoomList((int) $page, (int) $resultPerPage);
+        $rooms = $this->roomRepository
+            ->getPaginatedRoomList(
+                (int) $page,
+                (int) $resultPerPage
+            );
 
         return $this->respond(
             $response,

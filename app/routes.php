@@ -114,7 +114,7 @@ return function (App $app) {
             $group->group('/hall-of-fame', function ($group) {
                 $group->get('/top-credits', \Ares\User\Controller\UserHallOfFameController::class . ':topCredits');
                 $group->get('/top-diamonds', \Ares\User\Controller\UserHallOfFameController::class . ':topDiamonds');
-                $group->get('/top-pixels', \Ares\User\Controller\UserHallOfFameController::class . ':topPixels');
+                $group->get('/top-duckets', \Ares\User\Controller\UserHallOfFameController::class . ':topDuckets');
                 $group->get('/top-online-time',
                     \Ares\User\Controller\UserHallOfFameController::class . ':topOnlineTime');
                 $group->get('/top-achievement',
@@ -221,6 +221,11 @@ return function (App $app) {
                 $group->post('/execute', \Ares\Rcon\Controller\RconController::class . ':executeCommand')
                     ->setName('execute-rcon-command');
             });
+
+            // Gets updated UserOfTheHotel
+            $group->get('/user-of-the-hotel',
+                \Ares\User\Controller\UserOfTheHotelController::class . ':getUserOfTheHotel'
+            );
 
             // De-Authentication
             $group->post('/logout', \Ares\User\Controller\AuthController::class . ':logout');

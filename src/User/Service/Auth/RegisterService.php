@@ -87,17 +87,14 @@ class RegisterService
      */
     public function register(array $data): CustomResponseInterface
     {
-        $searchCriteria = $this->userRepository
-            ->getDataObjectManager()
-            ->where('username', $data['username'])
-            ->orWhere('mail', $data['mail']);
+        /** @var User $isAlreadyRegistered */
+        $isAlreadyRegistered = $this->userRepository
+            ->getRegisteredUser(
+                (string) $data['username'],
+                (string) $data['mail']
+            );
 
-        /** @var User $checkUser */
-        $checkUser = $this->userRepository
-            ->getList($searchCriteria, false)
-            ->first();
-
-        if ($checkUser) {
+        if ($isAlreadyRegistered) {
             throw new RegisterException(__('register.already.exists'), 422);
         }
 

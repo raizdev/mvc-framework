@@ -19,8 +19,6 @@ use Ares\User\Service\Settings\ChangeEmailService;
 use Ares\User\Service\Settings\ChangeGeneralSettingsService;
 use Ares\User\Service\Settings\ChangePasswordService;
 use Ares\User\Service\Settings\ChangeUsernameService;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -64,12 +62,12 @@ class UserSettingsController extends BaseController
     /**
      * UserSettingsController constructor.
      *
-     * @param ValidationService $validationService
+     * @param ValidationService            $validationService
      * @param ChangeGeneralSettingsService $changeGeneralSettingsService
-     * @param ChangePasswordService $changePasswordService
-     * @param ChangeEmailService $changeEmailService
-     * @param ChangeUsernameService $changeUsernameService
-     * @param UserRepository $userRepository
+     * @param ChangePasswordService        $changePasswordService
+     * @param ChangeEmailService           $changeEmailService
+     * @param ChangeUsernameService        $changeUsernameService
+     * @param UserRepository               $userRepository
      */
     public function __construct(
         ValidationService $validationService,
@@ -115,7 +113,11 @@ class UserSettingsController extends BaseController
         /** @var User $user */
         $user = $this->getUser($this->userRepository, $request);
 
-        $customResponse = $this->changeGeneralSettingsService->execute($user, $parsedData);
+        $customResponse = $this->changeGeneralSettingsService
+            ->execute(
+                $user,
+                $parsedData
+            );
 
         return $this->respond(
             $response,
@@ -146,11 +148,12 @@ class UserSettingsController extends BaseController
         /** @var User $user */
         $user = $this->getUser($this->userRepository, $request);
 
-        $customResponse = $this->changePasswordService->execute(
-            $user,
-            $parsedData['new_password'],
-            $parsedData['password']
-        );
+        $customResponse = $this->changePasswordService
+            ->execute(
+                $user,
+                $parsedData['new_password'],
+                $parsedData['password']
+            );
 
         return $this->respond(
             $response,

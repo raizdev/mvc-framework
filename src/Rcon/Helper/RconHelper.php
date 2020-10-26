@@ -34,23 +34,20 @@ class RconHelper
     }
 
     /**
-     * @param   resource     $socket
-     * @param   string       $command
-     * @param   string|null  $parameter
-     * @param   string|null  $value
+     * @param resource $socket
+     * @param string   $command
+     * @param array    $parameter
      *
      * @return array
      * @throws RconException
      * @throws \JsonException
      */
-    public function sendCommand($socket, string $command, string $parameter = null, string $value = null): array
+    public function sendCommand($socket, string $command, array $parameter = null): array
     {
         /** @var string $encodedData */
         $encodedData = json_encode([
             'key'  => $command,
-            'data' => [
-                $parameter => $value
-            ]
+            'data' => $parameter
         ], JSON_THROW_ON_ERROR);
 
         $executor = socket_write($socket, $encodedData, strlen($encodedData));

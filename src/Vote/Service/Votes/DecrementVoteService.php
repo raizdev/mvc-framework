@@ -49,7 +49,7 @@ class DecrementVoteService
      */
     public function execute(int $entityId, int $voteEntity, int $voteType): bool
     {
-        $entityRepository = $this->getVoteEntityService->execute($entityId, $voteEntity);
+        $entityRepository = $this->getVoteEntityService->execute($voteEntity);
 
         if (!$entityRepository) {
             throw new VoteException(__('Related EntityRepository could not be found'));

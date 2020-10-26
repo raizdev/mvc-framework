@@ -59,4 +59,19 @@ class UserSettingRepository extends BaseRepository
 
         return $this->getList($searchCriteria);
     }
+
+    /**
+     * @return UserSetting|null
+     *
+     * @throws DataObjectManagerException
+     */
+    public function getUserWithMostRespects(): ?UserSetting
+    {
+        $searchCriteria = $this->getDataObjectManager()
+            ->select(['user_id', 'respects_received'])
+            ->orderBy('respects_received', 'DESC')
+            ->addRelation('user');
+
+        return $this->getList($searchCriteria)->first();
+    }
 }

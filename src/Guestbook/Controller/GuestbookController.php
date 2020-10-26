@@ -120,7 +120,11 @@ class GuestbookController extends BaseController
         $parsedData['profile_id'] = $profile->getId();
         $parsedData['guild_id'] = $guild->getId();
 
-        $customResponse = $this->createGuestbookEntryService->execute($user->getId(), $parsedData);
+        $customResponse = $this->createGuestbookEntryService
+            ->execute(
+                $user->getId(),
+                $parsedData
+            );
 
         return $this->respond(
             $response,
@@ -148,7 +152,11 @@ class GuestbookController extends BaseController
         $profileId = $args['profile_id'];
 
         $entries = $this->guestbookRepository
-            ->getPaginatedProfileEntries((int) $profileId, (int) $page, (int) $resultPerPage);
+            ->getPaginatedProfileEntries(
+                (int) $profileId,
+                (int) $page,
+                (int) $resultPerPage
+            );
 
         return $this->respond(
             $response,
@@ -177,7 +185,11 @@ class GuestbookController extends BaseController
         $guildId = $args['guild_id'];
 
         $entries = $this->guestbookRepository
-            ->getPaginatedGuildEntries((int) $guildId, (int) $page, (int) $resultPerPage);
+            ->getPaginatedGuildEntries(
+                (int) $guildId,
+                (int) $page,
+                (int) $resultPerPage
+            );
 
         return $this->respond(
             $response,

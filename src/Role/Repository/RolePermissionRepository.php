@@ -44,4 +44,21 @@ class RolePermissionRepository extends BaseRepository
 
         return count($result) > 0;
     }
+
+    /**
+     * @param int $roleId
+     * @param int $permissionId
+     *
+     * @return RolePermission|null
+     */
+    public function getExistingRolePermission(int $roleId, int $permissionId): ?RolePermission
+    {
+        $searchCriteria = $this->getDataObjectManager()
+            ->where([
+                'role_id' => $roleId,
+                'permission_id' => $permissionId
+            ]);
+
+        return $this->getList($searchCriteria)->first();
+    }
 }

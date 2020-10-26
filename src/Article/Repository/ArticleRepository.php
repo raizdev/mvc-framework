@@ -86,6 +86,7 @@ class ArticleRepository extends BaseRepository
     {
         $searchCriteria = $this->getDataObjectManager()
             ->addRelation('user')
+            ->where('hidden', 0)
             ->orderBy('id', 'DESC');
 
         return $this->getPaginatedList($searchCriteria, $page, $resultPerPage);

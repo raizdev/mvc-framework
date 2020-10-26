@@ -5,7 +5,7 @@
     "start_pixels": 4000,
     "start_motto": "Ares is cool!",
     "register": {
-      "max_accounts_per_ip": 33,
+      "max_accounts_per_ip": 3,
       "looks": {
         "fallback_look": "hd-180-1.ch-255-66.lg-280-110.sh-305-62.ha-1012-110.hr-828-61",
         "boy": {
@@ -21,6 +21,10 @@
           "8": "hr-3811-1394.ch-660-1331.he-1604-63.hd-625-4.lg-3216-1328"
         }
       }
+    },
+    "gift": {
+      "minAmount": 3000,
+      "maxAmount": 5000
     },
     "client": {
       "rcon_host": "127.0.0.1",

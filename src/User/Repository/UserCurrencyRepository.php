@@ -59,4 +59,21 @@ class UserCurrencyRepository extends BaseRepository
 
         return $this->getList($searchCriteria);
     }
+
+    /**
+     * @param int $userId
+     * @param int $type
+     *
+     * @return Collection|null
+     */
+    public function getUserCurrency(int $userId, int $type): ?Collection
+    {
+        $searchCriteria = $this->getDataObjectManager()
+            ->where([
+                'user_id' => $userId,
+                'type' => $type
+            ]);
+
+        return $this->getList($searchCriteria);
+    }
 }

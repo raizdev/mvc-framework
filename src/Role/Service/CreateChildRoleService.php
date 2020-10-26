@@ -77,7 +77,10 @@ class CreateChildRoleService
             throw new RoleException(__('Could not found given Roles'));
         }
 
-        $newChildRole = $this->getNewChildRole($parentRole->getId(), $childRole->getId());
+        $newChildRole = $this->getNewChildRole(
+            $parentRole->getId(),
+            $childRole->getId()
+        );
 
         /** @var RoleHierarchy $newChildRole */
         $newChildRole = $this->roleHierarchyRepository->save($newChildRole);

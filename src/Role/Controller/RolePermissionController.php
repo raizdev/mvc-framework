@@ -72,7 +72,7 @@ class RolePermissionController extends BaseController
      * @param array    $args
      *
      * @return Response
-     * @throws CacheException
+     * @throws DataObjectManagerException
      */
     public function list(Request $request, Response $response, array $args): Response
     {
@@ -82,7 +82,11 @@ class RolePermissionController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        $permissions = $this->permissionRepository->getPaginatedPermissionList((int) $page, (int) $resultPerPage);
+        $permissions = $this->permissionRepository
+            ->getPaginatedPermissionList(
+                (int) $page,
+                (int) $resultPerPage
+            );
 
         return $this->respond(
             $response,

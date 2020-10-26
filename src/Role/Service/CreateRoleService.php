@@ -45,14 +45,8 @@ class CreateRoleService
      */
     public function execute(array $data): CustomResponseInterface
     {
-        $searchCriteria = $this->roleRepository
-            ->getDataObjectManager()
-            ->where('name', $data['name']);
-
         /** @var Role $existingRole */
-        $existingRole = $this->roleRepository
-            ->getList($searchCriteria)
-            ->first();
+        $existingRole = $this->roleRepository->get($data['name'], 'name');
 
         if ($existingRole) {
             throw new RoleException(__('There is already a Role with that name'));

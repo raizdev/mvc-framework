@@ -82,7 +82,11 @@ class AssignUserToRoleService
         }
 
         /** @var RoleUser $isRoleAlreadyAssigned */
-        $isRoleAlreadyAssigned = $this->roleUserRepository->getUserAssignedRole($role->getId(), $user->getId());
+        $isRoleAlreadyAssigned = $this->roleUserRepository
+            ->getUserAssignedRole(
+                $role->getId(),
+                $user->getId()
+            );
 
         if ($isRoleAlreadyAssigned) {
             throw new RoleException(__('There is already a Role assigned to that User'));

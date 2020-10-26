@@ -32,6 +32,4 @@ interface UserInterface
     public const COLUMN_IP_CURRENT = 'ip_current';
     public const COLUMN_CREATED_AT = 'created_at';
     public const COLUMN_UPDATED_AT = 'updated_at';
-    public const COLUMN_LOCALE = 'locale';
-    public const COLUMN_PICKED_DAILY_GIFT = 'picked_daily_gift';
 }

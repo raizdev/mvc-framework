@@ -43,4 +43,20 @@ class PaymentRepository extends BaseRepository
 
         return $this->getPaginatedList($searchCriteria, $page, $resultPerPage);
     }
+
+    /**
+     * @param int $userId
+     *
+     * @return Payment|null
+     */
+    public function getExistingPayment(?int $userId): ?Payment
+    {
+        $searchCriteria = $this->getDataObjectManager()
+            ->where([
+                'user_id' => $userId,
+                'processed' => 0
+            ]);
+
+        return $this->getList($searchCriteria)->first();
+    }
 }

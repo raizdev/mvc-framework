@@ -91,7 +91,11 @@ class PaymentController extends BaseController
         /** @var User $user */
         $user = $this->getUser($this->userRepository, $request);
 
-        $customResponse = $this->createPaymentService->execute($user->getId(), $parsedData);
+        $customResponse = $this->createPaymentService
+            ->execute(
+                $user->getId(),
+                $parsedData
+            );
 
         return $this->respond(
             $response,
@@ -142,7 +146,11 @@ class PaymentController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        $payments = $this->paymentRepository->getPaginatedPayments((int) $page, (int) $resultPerPage);
+        $payments = $this->paymentRepository
+            ->getPaginatedPayments(
+                (int) $page,
+                (int) $resultPerPage
+            );
 
         return $this->respond(
             $response,

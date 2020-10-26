@@ -49,4 +49,19 @@ class UserRepository extends BaseRepository
 
         return $this->getList($searchCriteria);
     }
+
+    /**
+     * @param string|null $username
+     * @param string|null $mail
+     *
+     * @return User|null
+     */
+    public function getRegisteredUser(?string $username, ?string $mail): ?User
+    {
+        $searchCriteria = $this->getDataObjectManager()
+            ->where('username', $username)
+            ->orWhere('mail', $mail);
+
+        return $this->getList($searchCriteria, false)->first();
+    }
 }

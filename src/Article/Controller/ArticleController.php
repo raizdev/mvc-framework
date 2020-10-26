@@ -117,10 +117,11 @@ class ArticleController extends BaseController
      */
     public function article(Request $request, Response $response, array $args): Response
     {
-        $slug = (string) $args['slug'];
+        /** @var string $slug */
+        $slug = $args['slug'];
 
         /** @var Article $article */
-        $article = $this->articleRepository->get($slug, 'slug');
+        $article = $this->articleRepository->get((string) $slug, 'slug');
         $article->getUser();
 
         if (!$article) {
@@ -172,7 +173,11 @@ class ArticleController extends BaseController
         $resultPerPage = $args['rpp'];
 
         /** @var LengthAwarePaginator $articles */
-        $articles = $this->articleRepository->getPaginatedArticleList((int) $page, (int) $resultPerPage);
+        $articles = $this->articleRepository
+            ->getPaginatedArticleList(
+                (int) $page,
+                (int) $resultPerPage
+            );
 
         return $this->respond(
             $response,

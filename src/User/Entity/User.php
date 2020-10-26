@@ -313,24 +313,6 @@ class User extends DataObject implements UserInterface
     }
 
     /**
-     * @return string|null
-     */
-    public function getLocale(): ?string
-    {
-        return $this->getData(UserInterface::COLUMN_LOCALE);
-    }
-
-    /**
-     * @param string|null $locale
-     *
-     * @return User
-     */
-    public function setLocale(?string $locale): User
-    {
-        return $this->setData(UserInterface::COLUMN_LOCALE, $locale);
-    }
-
-    /**
      * @return int
      */
     public function getLastLogin(): int
@@ -366,23 +348,6 @@ class User extends DataObject implements UserInterface
         return $this->setData(UserInterface::COLUMN_LAST_ONLINE, $last_online);
     }
 
-    /**
-     * @return int
-     */
-    public function getPickedDailyGift(): int
-    {
-        return $this->getData(UserInterface::COLUMN_PICKED_DAILY_GIFT);
-    }
-
-    /**
-     * @param int $picked_daily_gift
-     *
-     * @return User
-     */
-    public function setPickedDailyGift(int $picked_daily_gift): User
-    {
-        return $this->setData(UserInterface::COLUMN_PICKED_DAILY_GIFT, $picked_daily_gift);
-    }
 
     /**
      * @return DateTime

@@ -9,12 +9,16 @@ namespace Ares\User\Service\Gift;
 
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
+use Ares\Rcon\Exception\RconException;
+use Ares\Rcon\Service\ExecuteRconCommandService;
+use Ares\Role\Exception\RoleException;
 use Ares\User\Entity\Gift\DailyGift;
 use Ares\User\Entity\User;
 use Ares\User\Exception\Gift\DailyGiftException;
 use Ares\User\Repository\Gift\DailyGiftRepository;
-use Ares\User\Repository\UserRepository;
 use Exception;
+use JsonException;
+use PHLAK\Config\Config;
 
 /**
  * Class PickGiftService
@@ -29,22 +33,30 @@ class PickGiftService
     private DailyGiftRepository $dailyGiftRepository;
 
     /**
-     * @var UserRepository
+     * @var ExecuteRconCommandService
      */
-    private UserRepository $userRepository;
+    private ExecuteRconCommandService $executeRconCommandService;
+
+    /**
+     * @var Config
+     */
+    private Config $config;
 
     /**
      * PickGiftService constructor.
      *
-     * @param DailyGiftRepository $dailyGiftRepository
-     * @param UserRepository $userRepository
+     * @param DailyGiftRepository       $dailyGiftRepository
+     * @param ExecuteRconCommandService $executeRconCommandService
+     * @param Config                    $config
      */
     public function __construct(
         DailyGiftRepository $dailyGiftRepository,
-        UserRepository $userRepository
+        ExecuteRconCommandService $executeRconCommandService,
+        Config $config
     ) {
         $this->dailyGiftRepository = $dailyGiftRepository;
-        $this->userRepository = $userRepository;
+        $this->executeRconCommandService = $executeRconCommandService;
+        $this->config = $config;
     }
 
     /**
@@ -55,6 +67,9 @@ class PickGiftService
      * @return CustomResponseInterface
      * @throws DailyGiftException
      * @throws DataObjectManagerException
+     * @throws JsonException
+     * @throws RconException
+     * @throws RoleException
      */
     public function execute(User $user): CustomResponseInterface
     {
@@ -88,7 +103,10 @@ class PickGiftService
      */
     private function getRandomGiftAmount(): int
     {
-        return random_int(3000, 5000);
+        return random_int(
+            $this->config->get('hotel_settings.gift.minAmount'),
+            $this->config->get('hotel_settings.gift.maxAmount')
+        );
     }
 
     /**
@@ -99,16 +117,26 @@ class PickGiftService
      * @param int       $amount
      *
      * @throws DataObjectManagerException
+     * @throws JsonException
+     * @throws RconException
+     * @throws RoleException
      */
     private function applyGift(DailyGift $dailyGift, User $user, int $amount): void
     {
-        $credits = $user->getCredits();
-        $credits += $amount;
-
-        $user->setCredits($credits);
         $dailyGift->setPickTime(strtotime('+1 day'));
 
-        $this->userRepository->save($user);
+        $this->executeRconCommandService->execute(
+            $user->getId(),
+            [
+                'command' => 'givecredits',
+                'params' => [
+                    'user_id' => $user->getId(),
+                    'credits' => $amount
+                ]
+            ],
+            true
+        );
+
         $this->dailyGiftRepository->save($dailyGift);
     }
 
@@ -117,11 +145,14 @@ class PickGiftService
      *
      * @param User $user
      *
-     * @return DailyGift
+     * @return DailyGift|null
      * @throws DataObjectManagerException
+     * @throws JsonException
+     * @throws RconException
+     * @throws RoleException
      * @throws Exception
      */
-    private function getNewDailyGift(User $user): DailyGift
+    private function getNewDailyGift(User $user): ?DailyGift
     {
         $dailyGift = new DailyGift();
 
@@ -130,13 +161,19 @@ class PickGiftService
             ->setPickTime(strtotime('+1 day'))
             ->setAmount($this->getRandomGiftAmount());
 
-        $credits = $user->getCredits();
-        $credits += $this->getRandomGiftAmount();
-
-        $user->setCredits($credits);
+        $this->executeRconCommandService->execute(
+            $user->getId(),
+            [
+                'command' => 'givecredits',
+                'params' => [
+                    'user_id' => $user->getId(),
+                    'credits' => $this->getRandomGiftAmount()
+                ]
+            ],
+            true
+        );
 
         $this->dailyGiftRepository->save($dailyGift);
-        $this->userRepository->save($user);
 
         return $dailyGift;
     }

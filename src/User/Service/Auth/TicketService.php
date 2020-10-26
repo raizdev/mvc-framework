@@ -64,6 +64,10 @@ class TicketService
      */
     public function hash(object $user): string
     {
-        return hash('sha256', $user->getUsername() . random_int(1337, 2337) . '-' . $_ENV["WEB_NAME"], false);
+        return hash(
+            'sha256',
+            $user->getId() . random_int(1337, 2337) . '-' . $_ENV["WEB_NAME"],
+            false
+        );
     }
 }

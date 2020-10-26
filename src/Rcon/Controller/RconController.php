@@ -8,6 +8,7 @@
 namespace Ares\Rcon\Controller;
 
 use Ares\Framework\Controller\BaseController;
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
 use Ares\Rcon\Exception\RconException;
@@ -87,6 +88,7 @@ class RconController extends BaseController
      * @throws RoleException
      * @throws UserException
      * @throws ValidationException
+     * @throws DataObjectManagerException
      */
     public function executeCommand(Request $request, Response $response): Response
     {

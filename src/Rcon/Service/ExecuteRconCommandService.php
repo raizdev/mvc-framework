@@ -59,13 +59,15 @@ class ExecuteRconCommandService
      * @param int   $userId
      * @param array $data
      *
+     * @param bool  $fromSystem
+     *
      * @return CustomResponseInterface
+     * @throws DataObjectManagerException
      * @throws JsonException
      * @throws RconException
      * @throws RoleException
-     * @throws DataObjectManagerException
      */
-    public function execute(int $userId, array $data): CustomResponseInterface
+    public function execute(int $userId, array $data, bool $fromSystem = false): CustomResponseInterface
     {
         /** @var \Ares\Rcon\Entity\Rcon $existingCommand */
         $existingCommand = $this->rconRepository->get($data['command'], 'command');
@@ -74,13 +76,17 @@ class ExecuteRconCommandService
             throw new RconException(__('Could not found the given command to execute'), 404);
         }
 
-        if ($existingCommand->getPermission() !== null) {
+        if (!$fromSystem && $existingCommand->getPermission() !== null) {
             $permissionName = $existingCommand
                 ->getPermission()
                 ->getName();
         }
 
-        $hasAccess = $this->checkAccessService->execute($userId, $permissionName ?? null);
+        $hasAccess = $this->checkAccessService
+            ->execute(
+                $userId,
+                $permissionName ?? null
+            );
 
         if (!$hasAccess) {
             throw new RoleException(__('You dont have the special rights to execute that action'));
@@ -91,8 +97,7 @@ class ExecuteRconCommandService
             ->sendCommand(
                 $this->rcon->getSocket(),
                 $data['command'],
-                $data['param'] ?? null,
-                $data['value'] ?? null
+                $data['params'] ?? null
             );
 
         return response()

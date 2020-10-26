@@ -122,7 +122,11 @@ class ThreadController extends BaseController
         $topicId = $args['topic_id'];
 
         /** @var Thread $thread */
-        $thread = $this->threadRepository->getSingleThread((int) $topicId, (string) $slug);
+        $thread = $this->threadRepository
+            ->getSingleThread(
+                (int) $topicId,
+                (string) $slug
+            );
 
         if (!$thread) {
             throw new ThreadException(__('No specific Thread found'), 404);
@@ -155,7 +159,11 @@ class ThreadController extends BaseController
         $topicId = $args['topic_id'];
 
         $threads = $this->threadRepository
-            ->getPaginatedThreadList((int) $topicId, (int) $page, (int) $resultPerPage);
+            ->getPaginatedThreadList(
+                (int) $topicId,
+                (int) $page,
+                (int) $resultPerPage
+            );
 
         return $this->respond(
             $response,

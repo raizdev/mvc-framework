@@ -81,17 +81,12 @@ class CreateRolePermissionService
             throw new RoleException(__('Could not found given Role or Permission'));
         }
 
-        $searchCriteria = $this->rolePermissionRepository
-            ->getDataObjectManager()
-            ->where([
-                'role_id' => $role->getId(),
-                'permission_id' => $permission->getId()
-            ]);
-
         /** @var RolePermission $existingRolePermission */
         $existingRolePermission = $this->rolePermissionRepository
-            ->getList($searchCriteria)
-            ->first();
+            ->getExistingRolePermission(
+                $role->getId(),
+                $permission->getId()
+            );
 
         if ($existingRolePermission) {
             throw new RoleException(__('There is already a Permission assigned to that Role'));
