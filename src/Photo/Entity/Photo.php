@@ -7,85 +7,80 @@
 
 namespace Ares\Photo\Entity;
 
-use Ares\Framework\Entity\Entity;
+use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Model\DataObject;
+use Ares\Photo\Entity\Contract\PhotoInterface;
+use Ares\Photo\Repository\PhotoRepository;
 use Ares\User\Entity\User;
-use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\JoinColumn;
-use Doctrine\ORM\Mapping\OneToOne;
+use Ares\User\Repository\UserRepository;
 
 /**
  * Class Photo
  *
- * @package Ares\Room\Entity
- *
- * @ORM\Entity
- * @ORM\Table(name="camera_web")
- * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
- * @ORM\HasLifecycleCallbacks
+ * @package Ares\Photo\Entity
  */
-class Photo extends Entity
+class Photo extends DataObject implements PhotoInterface
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private int $id;
+    /** @var string */
+    public const TABLE = 'camera_web';
 
-    /**
-     * @OneToOne(targetEntity="\Ares\User\Entity\User", fetch="EAGER")
-     * @JoinColumn(name="user_id", referencedColumnName="id")
-     */
-    private ?User $creator;
-
-    /**
-     * @ORM\Column(type="integer", length=11)
-     */
-    private int $timestamp;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private string $url;
+    /** @var array **/
+    public const RELATIONS = [
+      'user' => 'getUser'
+    ];
 
     /**
      * @return int
      */
     public function getId(): int
     {
-        return $this->id;
+        return $this->getData(PhotoInterface::COLUMN_ID);
     }
 
     /**
-     * @param   int  $id
+     * @param int $id
      *
      * @return Photo
      */
-    public function setId(int $id): self
+    public function setId(int $id): Photo
     {
-        $this->id = $id;
-
-        return $this;
+        return $this->setData(PhotoInterface::COLUMN_ID, $id);
     }
 
     /**
-     * @return User|null
+     * @return int
      */
-    public function getCreator(): ?User
+    public function getUserId(): int
     {
-        return $this->creator;
+        return $this->getData(PhotoInterface::COLUMN_USER_ID);
     }
 
     /**
-     * @param   User|null  $creator
+     * @param int $user_id
      *
      * @return Photo
      */
-    public function setCreator(?User $creator): self
+    public function setUserId(int $user_id): Photo
     {
-        $this->creator = $creator;
+        return $this->setData(PhotoInterface::COLUMN_USER_ID, $user_id);
+    }
 
-        return $this;
+    /**
+     * @return int
+     */
+    public function getRoomId(): int
+    {
+        return $this->getData(PhotoInterface::COLUMN_ROOM_ID);
+    }
+
+    /**
+     * @param int $room_id
+     *
+     * @return Photo
+     */
+    public function setRoomId(int $room_id): Photo
+    {
+        return $this->setData(PhotoInterface::COLUMN_ROOM_ID, $room_id);
     }
 
     /**
@@ -93,19 +88,17 @@ class Photo extends Entity
      */
     public function getTimestamp(): int
     {
-        return $this->timestamp;
+        return $this->getData(PhotoInterface::COLUMN_TIMESTAMP);
     }
 
     /**
-     * @param   int  $timestamp
+     * @param int $timestamp
      *
      * @return Photo
      */
-    public function setTimestamp(int $timestamp): self
+    public function setTimestamp(int $timestamp): Photo
     {
-        $this->timestamp = $timestamp;
-
-        return $this;
+        return $this->setData(PhotoInterface::COLUMN_TIMESTAMP, $timestamp);
     }
 
     /**
@@ -113,51 +106,62 @@ class Photo extends Entity
      */
     public function getUrl(): string
     {
-        return $this->url;
+        return $this->getData(PhotoInterface::COLUMN_URL);
     }
 
     /**
-     * @param   string  $url
+     * @param string $url
      *
      * @return Photo
      */
-    public function setUrl(string $url): self
+    public function setUrl(string $url): Photo
     {
-        $this->url = $url;
-
-        return $this;
+        return $this->setData(PhotoInterface::COLUMN_URL, $url);
     }
 
     /**
-     * @return array
+     * @return User|null
+     *
+     * @throws DataObjectManagerException
      */
-    public function jsonSerialize(): array
+    public function getUser(): ?User
     {
-        return [
-          'id' => $this->getId(),
-          'creator' => $this->getCreator(),
-          'timestamp' => $this->getTimestamp(),
-          'url' => $this->getUrl()
-        ];
-    }
+        /** @var User $user */
+        $user = $this->getData('user');
 
-    /**
-     * @return string
-     */
-    public function serialize(): string
-    {
-        return serialize(get_object_vars($this));
-    }
-
-    /**
-     * @param string $data
-     */
-    public function unserialize($data): void
-    {
-        $values = unserialize($data);
-
-        foreach ($values as $key => $value) {
-            $this->$key = $value;
+        if ($user) {
+            return $user;
         }
+
+        /** @var PhotoRepository $photoRepository */
+        $photoRepository = repository(PhotoRepository::class);
+
+        /** @var UserRepository $userRepository */
+        $userRepository = repository(UserRepository::class);
+
+        /** @var User $user */
+        $user = $photoRepository->getOneToOne(
+            $userRepository,
+            $this->getId(),
+            'id'
+        );
+
+        if (!$user) {
+            return null;
+        }
+
+        $this->setUser($user);
+
+        return $user;
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return Photo
+     */
+    public function setUser(User $user): Photo
+    {
+        return $this->setData('user', $user);
     }
 }

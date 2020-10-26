@@ -8,14 +8,12 @@
 namespace Ares\User\Controller\Gift;
 
 use Ares\Framework\Controller\BaseController;
+use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\User\Entity\User;
 use Ares\User\Exception\Gift\DailyGiftException;
 use Ares\User\Exception\UserException;
 use Ares\User\Repository\UserRepository;
 use Ares\User\Service\Gift\PickGiftService;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -54,20 +52,18 @@ class DailyGiftController extends BaseController
     /**
      * Pick daily gift route.
      *
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request  $request
+     * @param Response $response
      *
      * @return Response
      * @throws DailyGiftException
+     * @throws DataObjectManagerException
      * @throws UserException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws InvalidArgumentException
      */
     public function pick(Request $request, Response $response): ResponseInterface
     {
-        $user = $this->getUser($this->userRepository, $request, false);
+        /** @var User $user */
+        $user = $this->getUser($this->userRepository, $request);
 
         $customResponse = $this->pickGiftService->execute($user);
 

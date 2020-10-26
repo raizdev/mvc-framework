@@ -7,15 +7,11 @@
 
 namespace Ares\Vote\Service;
 
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
-use Ares\User\Entity\User;
 use Ares\Vote\Entity\Vote;
 use Ares\Vote\Exception\VoteException;
 use Ares\Vote\Repository\VoteRepository;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 
 /**
  * Class DeleteVoteService
@@ -43,25 +39,24 @@ class DeleteVoteService
     /**
      * Deletes vote by given data.
      *
-     * @param User  $user
+     * @param int   $user_id
      * @param array $data
      *
      * @return CustomResponseInterface
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws DataObjectManagerException
      * @throws VoteException
-     * @throws InvalidArgumentException
      */
-    public function execute(User $user, array $data): CustomResponseInterface
+    public function execute(int $user_id, array $data): CustomResponseInterface
     {
+        $searchCriteria = $this->voteRepository
+            ->getDataObjectManager()
+            ->where($data)
+            ->where('user_id', $user_id);
+
         /** @var Vote $vote */
-        $vote = $this->voteRepository->getOneBy([
-            'entity_id' => $data['entity_id'],
-            'vote_entity' => $data['vote_entity'],
-            'vote_type' => $data['vote_type'],
-            'user' => $user->getId()
-        ]);
+        $vote = $this->voteRepository
+            ->getList($searchCriteria)
+            ->first();
 
         if (!$vote) {
             throw new VoteException(__('Vote could not be found by given data.'), 404);

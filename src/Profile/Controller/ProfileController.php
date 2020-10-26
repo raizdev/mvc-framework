@@ -8,19 +8,15 @@
 namespace Ares\Profile\Controller;
 
 use Ares\Framework\Controller\BaseController;
-use Ares\Framework\Model\Adapter\DoctrineSearchCriteria;
-use Ares\Guild\Repository\GuildRepository;
+use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Guild\Repository\GuildMemberRepository;
 use Ares\Messenger\Repository\MessengerRepository;
 use Ares\Photo\Repository\PhotoRepository;
 use Ares\Profile\Exception\ProfileException;
 use Ares\Room\Repository\RoomRepository;
 use Ares\User\Entity\User;
-use Ares\User\Entity\UserBadge;
 use Ares\User\Repository\UserBadgeRepository;
 use Ares\User\Repository\UserRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -42,9 +38,9 @@ class ProfileController extends BaseController
     private RoomRepository $roomRepository;
 
     /**
-     * @var GuildRepository
+     * @var GuildMemberRepository
      */
-    private GuildRepository $guildRepository;
+    private GuildMemberRepository $guildMemberRepository;
 
     /**
      * @var MessengerRepository
@@ -62,50 +58,40 @@ class ProfileController extends BaseController
     private UserBadgeRepository $userBadgeRepository;
 
     /**
-     * @var DoctrineSearchCriteria
-     */
-    private DoctrineSearchCriteria $searchCriteria;
-
-    /**
      * ProfileController constructor.
      *
-     * @param   UserRepository          $userRepository
-     * @param   RoomRepository          $roomRepository
-     * @param   GuildRepository         $guildRepository
-     * @param   MessengerRepository     $messengerRepository
-     * @param   PhotoRepository         $photoRepository
-     * @param   UserBadgeRepository     $userBadgeRepository
-     * @param   DoctrineSearchCriteria  $searchCriteria
+     * @param UserRepository        $userRepository
+     * @param RoomRepository        $roomRepository
+     * @param GuildMemberRepository $guildMemberRepository
+     * @param MessengerRepository   $messengerRepository
+     * @param PhotoRepository       $photoRepository
+     * @param UserBadgeRepository   $userBadgeRepository
      */
     public function __construct(
         UserRepository $userRepository,
         RoomRepository $roomRepository,
-        GuildRepository $guildRepository,
+        GuildMemberRepository $guildMemberRepository,
         MessengerRepository $messengerRepository,
         PhotoRepository $photoRepository,
-        UserBadgeRepository $userBadgeRepository,
-        DoctrineSearchCriteria $searchCriteria
+        UserBadgeRepository $userBadgeRepository
     ) {
-        $this->userRepository      = $userRepository;
-        $this->roomRepository      = $roomRepository;
-        $this->guildRepository     = $guildRepository;
+        $this->userRepository = $userRepository;
+        $this->roomRepository = $roomRepository;
+        $this->guildMemberRepository = $guildMemberRepository;
         $this->messengerRepository = $messengerRepository;
-        $this->photoRepository     = $photoRepository;
+        $this->photoRepository = $photoRepository;
         $this->userBadgeRepository = $userBadgeRepository;
-        $this->searchCriteria      = $searchCriteria;
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request     $request
+     * @param Response    $response
      * @param             $args
      *
      * @return Response
      * @throws ProfileException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws InvalidArgumentException
      */
-    public function slotBadges(Request $request, Response $response, $args): Response
+    public function slotBadges(Request $request, Response $response, array $args): Response
     {
         /** @var int $profile_id */
         $profile_id = $args['profile_id'];
@@ -117,12 +103,10 @@ class ProfileController extends BaseController
             throw new ProfileException(__('No associated Profile was found'), 404);
         }
 
-        /** @var UserBadge $badges */
-        $badges = $this->userBadgeRepository->getSlotBadges($profile);
-
-        if (!$badges) {
-            throw new ProfileException(__('Profile has no slotted Badges'), 404);
-        }
+        $badges = $this->userBadgeRepository
+            ->getListOfSlottedUserBadges(
+                $profile->getId()
+            );
 
         return $this->respond(
             $response,
@@ -132,16 +116,15 @@ class ProfileController extends BaseController
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
-     * @param             $args
+     * @param Request  $request
+     * @param Response $response
+     * @param array    $args
      *
      * @return Response
-     * @throws InvalidArgumentException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws DataObjectManagerException
      * @throws ProfileException
      */
-    public function badgeList(Request $request, Response $response, $args): Response
+    public function badgeList(Request $request, Response $response, array $args): Response
     {
         /** @var int $profile_id */
         $profile_id = $args['profile_id'];
@@ -153,39 +136,35 @@ class ProfileController extends BaseController
         $resultPerPage = $args['rpp'];
 
         /** @var User $profile */
-        $profile = $this->userRepository->get((int) $profile_id);
+        $profile = $this->userRepository->get((int)$profile_id);
 
         if (!$profile) {
             throw new ProfileException(__('No associated Profile was found'), 404);
         }
 
-        $this->searchCriteria->setPage((int) $page)
-            ->setLimit((int) $resultPerPage)
-            ->addOrder('id', 'DESC');
-
-        /** @var ArrayCollection $pinnedArticles */
-        $badges = $this->userBadgeRepository->paginate($this->searchCriteria);
+        $badges = $this->userBadgeRepository
+            ->getPaginatedBadgeList(
+                (int) $page,
+                (int) $resultPerPage
+            );
 
         return $this->respond(
             $response,
             response()
-                ->setData(
-                    $badges->toArray()
-                )
+                ->setData($badges)
         );
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request     $request
+     * @param Response    $response
      * @param             $args
      *
      * @return Response
-     * @throws InvalidArgumentException
-     * @throws PhpfastcacheSimpleCacheException
      * @throws ProfileException
+     * @throws DataObjectManagerException
      */
-    public function friendList(Request $request, Response $response, $args): Response
+    public function friendList(Request $request, Response $response, array $args): Response
     {
         /** @var int $profile_id */
         $profile_id = $args['profile_id'];
@@ -197,44 +176,39 @@ class ProfileController extends BaseController
         $resultPerPage = $args['rpp'];
 
         /** @var User $profile */
-        $profile = $this->userRepository->get((int) $profile_id);
+        $profile = $this->userRepository->get((int)$profile_id);
 
         if (!$profile) {
             throw new ProfileException(__('No associated Profile was found'), 404);
         }
 
-        $this->searchCriteria
-            ->setPage((int) $page)
-            ->setLimit((int) $resultPerPage)
-            ->addFilter('user', (int) $profile_id)
-            ->addOrder('id', 'DESC');
-
-        /** @var ArrayCollection $pinnedArticles */
-        $friends = $this->messengerRepository->paginate($this->searchCriteria);
+        $friends = $this->messengerRepository
+            ->getPaginatedMessengerFriends(
+                $profile->getId(),
+                (int) $page,
+                (int) $resultPerPage
+            );
 
         return $this->respond(
             $response,
             response()
-                ->setData(
-                    $friends->toArray()
-                )
+                ->setData($friends)
         );
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
-     * @param             $args
+     * @param Request  $request
+     * @param Response $response
+     * @param array    $args
      *
      * @return Response
-     * @throws InvalidArgumentException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws DataObjectManagerException
      * @throws ProfileException
      */
-    public function roomList(Request $request, Response $response, $args): Response
+    public function roomList(Request $request, Response $response, array $args): Response
     {
-        /** @var int $profile_id */
-        $profile_id = $args['profile_id'];
+        /** @var int $profileId */
+        $profileId = $args['profile_id'];
 
         /** @var int $page */
         $page = $args['page'];
@@ -243,43 +217,39 @@ class ProfileController extends BaseController
         $resultPerPage = $args['rpp'];
 
         /** @var User $profile */
-        $profile = $this->userRepository->get((int) $profile_id);
+        $profile = $this->userRepository->get((int)$profileId);
 
         if (!$profile) {
             throw new ProfileException(__('No associated Profile was found'), 404);
         }
 
-        $this->searchCriteria
-            ->setPage((int) $page)
-            ->setLimit((int) $resultPerPage)
-            ->addFilter('owner', (int) $profile_id)
-            ->addOrder('id', 'DESC');
-
-        $rooms = $this->roomRepository->paginate($this->searchCriteria);
+        $rooms = $this->roomRepository
+            ->getUserRoomsPaginatedList(
+                $profile->getId(),
+                (int) $page,
+                (int) $resultPerPage
+            );
 
         return $this->respond(
             $response,
             response()
-                ->setData(
-                    $rooms->toArray()
-                )
+                ->setData($rooms)
         );
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
-     * @param             $args
+     * @param Request  $request
+     * @param Response $response
+     * @param array    $args
      *
      * @return Response
-     * @throws InvalidArgumentException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws DataObjectManagerException
      * @throws ProfileException
      */
-    public function guildList(Request $request, Response $response, $args): Response
+    public function guildList(Request $request, Response $response, array $args): Response
     {
-        /** @var int $profile_id */
-        $profile_id = $args['profile_id'];
+        /** @var int $profileId */
+        $profileId = $args['profile_id'];
 
         /** @var int $page */
         $page = $args['page'];
@@ -288,43 +258,39 @@ class ProfileController extends BaseController
         $resultPerPage = $args['rpp'];
 
         /** @var User $profile */
-        $profile = $this->userRepository->get((int) $profile_id);
+        $profile = $this->userRepository->get((int) $profileId);
 
         if (!$profile) {
             throw new ProfileException(__('No associated Profile was found'), 404);
         }
 
-        $this->searchCriteria
-            ->setPage((int) $page)
-            ->setLimit((int) $resultPerPage)
-            ->addFilter('creator', (int) $profile_id)
-            ->addOrder('id', 'DESC');
-
-        $guilds = $this->guildRepository->profileGuilds($this->searchCriteria);
+        $guilds = $this->guildMemberRepository
+            ->getPaginatedProfileGuilds(
+                (int) $profile->getId(),
+                (int) $page,
+                (int) $resultPerPage
+            );
 
         return $this->respond(
             $response,
             response()
-                ->setData(
-                    $guilds->toArray()
-                )
+                ->setData($guilds)
         );
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
-     * @param             $args
+     * @param Request  $request
+     * @param Response $response
+     * @param array    $args
      *
      * @return Response
-     * @throws InvalidArgumentException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws DataObjectManagerException
      * @throws ProfileException
      */
-    public function photoList(Request $request, Response $response, $args): Response
+    public function photoList(Request $request, Response $response, array $args): Response
     {
-        /** @var int $profile_id */
-        $profile_id = $args['profile_id'];
+        /** @var int $profileId */
+        $profileId = $args['profile_id'];
 
         /** @var int $page */
         $page = $args['page'];
@@ -333,26 +299,23 @@ class ProfileController extends BaseController
         $resultPerPage = $args['rpp'];
 
         /** @var User $profile */
-        $profile = $this->userRepository->get((int) $profile_id);
+        $profile = $this->userRepository->get((int) $profileId);
 
         if (!$profile) {
             throw new ProfileException(__('No associated Profile was found'), 404);
         }
 
-        $this->searchCriteria
-            ->setPage((int) $page)
-            ->setLimit((int) $resultPerPage)
-            ->addFilter('creator', (int) $profile_id)
-            ->addOrder('id', 'DESC');
-
-        $photos = $this->photoRepository->paginate($this->searchCriteria);
+        $photos = $this->photoRepository
+            ->getPaginatedUserPhotoList(
+                $profile->getId(),
+                (int) $page,
+                (int) $resultPerPage
+            );
 
         return $this->respond(
             $response,
             response()
-                ->setData(
-                    $photos->toArray()
-                )
+                ->setData($photos)
         );
     }
 }

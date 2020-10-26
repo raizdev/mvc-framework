@@ -12,13 +12,9 @@ use Ares\Forum\Entity\Topic;
 use Ares\Forum\Exception\ThreadException;
 use Ares\Forum\Repository\ThreadRepository;
 use Ares\Forum\Repository\TopicRepository;
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
-use Ares\User\Entity\User;
 use Cocur\Slugify\Slugify;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 
 /**
  * Class CreateThreadService
@@ -60,58 +56,49 @@ class CreateThreadService
     }
 
     /**
-     * @param   User   $user
-     * @param   array  $data
+     * @param int   $userId
+     * @param array $data
      *
      * @return CustomResponseInterface
+     * @throws CacheException
+     * @throws DataObjectManagerException
      * @throws ThreadException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws InvalidArgumentException
-     * @throws \Psr\SimpleCache\InvalidArgumentException
      */
-    public function execute(User $user, array $data): CustomResponseInterface
+    public function execute(int $userId, array $data): CustomResponseInterface
     {
-        $topic = $this->getNewThread($user, $data);
+        $topic = $this->getNewThread($userId, $data);
 
+        /** @var Topic $topic */
         $topic = $this->threadRepository->save($topic);
 
-        return response()->setData($topic);
+        return response()
+            ->setData($topic);
     }
 
     /**
-     * @param   User   $user
-     * @param   array  $data
+     * @param int   $userId
+     * @param array $data
      *
      * @return Thread
      * @throws ThreadException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws InvalidArgumentException
      */
-    public function getNewThread(User $user, array $data): Thread
+    public function getNewThread(int $userId, array $data): Thread
     {
         $thread = new Thread();
 
         /** @var Topic $topic */
-        $topic = $this->topicRepository->get($data['topic_id'], false);
+        $topic = $this->topicRepository->get($data['topic_id']);
 
         /** @var Thread $existingThread */
-        $existingThread = $this->threadRepository->getOneBy([
-            'title' => $data['title']
-        ]);
+        $existingThread = $this->threadRepository->get($data['title'], 'title');
 
-        if (!$topic) {
-            throw new ThreadException(__('Related Topic was not found'));
-        }
-
-        if ($existingThread) {
-            throw new ThreadException(__('There is already an existing Thread with this Title'));
+        if (!$topic || $existingThread) {
+            throw new ThreadException(__('There is already an existing Thread or the Topic could not be found'));
         }
 
         return $thread
-            ->setUser($user)
-            ->setTopic($topic)
+            ->setUserId($userId)
+            ->setTopicId($topic->getId())
             ->setSlug($this->slug->slugify($data['title']))
             ->setTitle($data['title'])
             ->setDescription($data['description'])

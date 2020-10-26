@@ -9,7 +9,6 @@ namespace Ares\Role\Repository;
 
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Role\Entity\RoleUser;
-use Doctrine\ORM\Query\QueryException;
 
 /**
  * Class RoleUserRepository
@@ -35,18 +34,27 @@ class RoleUserRepository extends BaseRepository
      */
     public function getUserRoleIds($userId): array
     {
-        $qb = $this->createQueryBuilder('ur');
+        $searchCriteria = $this->getDataObjectManager()
+            ->select('role_id')
+            ->where('user_id', $userId);
 
-        $qb->select('ur.roleId')
-            ->where(
-                $qb->expr()
-                ->eq('ur.user', $userId)
-            )
-            ->indexBy('ur', 'ur.roleId');
+        return $this->getList($searchCriteria)->get('role_id');
+    }
 
-        $roleIds = $qb->getQuery()
-            ->getArrayResult();
+    /**
+     * @param int $roleId
+     * @param int $userId
+     *
+     * @return RoleUser|null
+     */
+    public function getUserAssignedRole(int $roleId, int $userId): ?RoleUser
+    {
+        $searchCriteria = $this->getDataObjectManager()
+            ->where([
+                'role_id' => $roleId,
+                'user_id' => $userId
+            ]);
 
-        return array_keys($roleIds);
+        return $this->getList($searchCriteria)->first();
     }
 }

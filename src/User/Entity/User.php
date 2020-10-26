@@ -7,203 +7,101 @@
 
 namespace Ares\User\Entity;
 
-use Ares\Framework\Entity\Entity;
+use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Model\DataObject;
 use Ares\Permission\Entity\Permission;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\JoinColumn;
-use Doctrine\ORM\Mapping\ManyToOne;
+use Ares\Role\Repository\RoleRepository;
+use Ares\User\Entity\Contract\UserInterface;
+use Ares\User\Repository\UserCurrencyRepository;
+use Ares\User\Repository\UserRepository;
+use DateTime;
+use Ares\Framework\Model\Query\Collection;
 
 /**
  * Class User
  *
  * @package Ares\User\Entity
- *
- * @ORM\Entity
- * @ORM\Table(name="users", uniqueConstraints={@ORM\UniqueConstraint(name="username", columns={"username"})}))
- * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
- * @ORM\HasLifecycleCallbacks
  */
-class User extends Entity
+class User extends DataObject implements UserInterface
 {
-    /**
-     * @var int
-     */
-    public const USER_EQUALS_ONLINE = 2;
+    /** @var string */
+    public const TABLE = 'users';
 
-    /**
-     * @ORM\Id
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private int $id;
+    /** @var array */
+    public const HIDDEN = [
+        UserInterface::COLUMN_PASSWORD,
+        UserInterface::COLUMN_MAIL,
+        UserInterface::COLUMN_AUTH_TICKET,
+        UserInterface::COLUMN_IP_CURRENT,
+        UserInterface::COLUMN_IP_REGISTER
+    ];
 
-    /**
-     * @ORM\Column(type="string", length=20)
-     */
-    private string $username;
-
-    /**
-     * @ORM\Column(type="string", length=150)
-     */
-    private string $password;
-
-    /**
-     * @ORM\Column(type="string", length=150)
-     */
-    private string $mail;
-
-    /**
-     * @ORM\Column(type="string", length=200)
-     */
-    private string $look;
-
-    /**
-     * @ORM\Column(type="string", length=10)
-     */
-    private string $gender;
-
-    /**
-     * @ORM\Column(type="string", length=35)
-     */
-    private ?string $motto;
-
-    /**
-     * @ORM\Column(type="integer", length=11)
-     */
-    private int $credits;
-
-    /**
-     * @ORM\Column(type="integer", length=11)
-     */
-    private ?int $rank;
-
-    /**
-     * @ORM\OneToMany(targetEntity="\Ares\Role\Entity\RoleUser", mappedBy="user", fetch="EXTRA_LAZY")
-     */
-    private ?Collection $roles;
-
-    /**
-     * @ManyToOne(targetEntity="\Ares\Permission\Entity\Permission", inversedBy="user_with_rank")
-     * @JoinColumn(name="rank")
-     */
-    private ?Permission $rank_data;
-
-    /**
-     * @ORM\Column(type="string", length=150)
-     */
-    private ?string $auth_ticket;
-
-    /**
-     * @ORM\Column(type="integer", length=15)
-     */
-    private int $account_created;
-
-    /**
-     * @ORM\Column(type="string", length=150)
-     */
-    private string $ip_register;
-
-    /**
-     * @ORM\Column(type="string", length=150)
-     */
-    private ?string $ip_current;
-
-    /**
-     * @ORM\Column(type="integer", columnDefinition="ENUM('0',1','2')")
-     */
-    private int $online;
-
-    /**
-     * @ORM\Column(type="string", length=10)
-     */
-    private ?string $locale;
-
-    /**
-     * @ORM\Column(type="integer", length=11)
-     */
-    private int $last_login;
-
-    /**
-     * @ORM\Column(type="integer", length=11, nullable=true)
-     */
-    private ?int $last_online = 0;
-
-    /**
-     * @ORM\OneToMany(targetEntity="\Ares\User\Entity\UserCurrency", mappedBy="user", fetch="EAGER")
-     */
-    private Collection $currencies;
-
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    protected \DateTime $created_at;
-
-    /**
-     * @ORM\Column(type="datetime", nullable = true)
-     */
-    protected \DateTime $updated_at;
-
-    /**
-     * Get User id
-     *
-     * @return integer
-     */
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    /**
-     * Gets Username of User
-     *
-     * @return string
-     */
-    public function getUsername(): ?string
-    {
-        return $this->username;
-    }
+    /** @var array */
+    public const RELATIONS = [
+        'roles' => 'getRoles',
+        'currencies' => 'getCurrencies'
+    ];
 
     /**
      * @return int
      */
-    public function getOnline(): int
+    public function getId(): int
     {
-        return $this->online;
+        return $this->getData(UserInterface::COLUMN_ID);
     }
 
     /**
-     * @param int $online
+     * @param int $id
      *
      * @return User
      */
-    public function setOnline(int $online): self
+    public function setId(int $id): User
     {
-        $this->online = $online;
-
-        return $this;
+        return $this->setData(UserInterface::COLUMN_ID, $id);
     }
 
     /**
-     * @param $username
-     *
-     * @return User
-     */
-    public function setUsername(string $username): self
-    {
-        $this->username = $username;
-
-        return $this;
-    }
-
-    /**
-     * Gets Mail of User
-     *
      * @return string
      */
-    public function getMail(): ?string
+    public function getUsername(): string
     {
-        return $this->mail;
+        return $this->getData(UserInterface::COLUMN_USERNAME);
+    }
+
+    /**
+     * @param string $username
+     *
+     * @return User
+     */
+    public function setUsername(string $username): User
+    {
+        return $this->setData(UserInterface::COLUMN_USERNAME, $username);
+    }
+
+    /**
+     * @return string
+     */
+    public function getPassword(): string
+    {
+        return $this->getData(UserInterface::COLUMN_PASSWORD);
+    }
+
+    /**
+     * @param string $password
+     *
+     * @return User
+     */
+    public function setPassword(string $password): User
+    {
+        return $this->setData(UserInterface::COLUMN_PASSWORD, $password);
+    }
+
+    /**
+     * @return string
+     */
+    public function getMail(): string
+    {
+        return $this->getData(UserInterface::COLUMN_MAIL);
     }
 
     /**
@@ -211,19 +109,17 @@ class User extends Entity
      *
      * @return User
      */
-    public function setMail(string $mail): self
+    public function setMail(string $mail): User
     {
-        $this->mail = $mail;
-
-        return $this;
+        return $this->setData(UserInterface::COLUMN_MAIL, $mail);
     }
 
     /**
      * @return string
      */
-    public function getLook(): ?string
+    public function getLook(): string
     {
-        return $this->look;
+        return $this->getData(UserInterface::COLUMN_LOOK);
     }
 
     /**
@@ -231,11 +127,9 @@ class User extends Entity
      *
      * @return User
      */
-    public function setLook(string $look): self
+    public function setLook(string $look): User
     {
-        $this->look = $look;
-
-        return $this;
+        return $this->setData(UserInterface::COLUMN_LOOK, $look);
     }
 
     /**
@@ -243,7 +137,7 @@ class User extends Entity
      */
     public function getGender(): string
     {
-        return $this->gender;
+        return $this->getData(UserInterface::COLUMN_GENDER);
     }
 
     /**
@@ -251,39 +145,35 @@ class User extends Entity
      *
      * @return User
      */
-    public function setGender(string $gender): self
+    public function setGender(string $gender): User
     {
-        $this->gender = $gender;
-
-        return $this;
+        return $this->setData(UserInterface::COLUMN_GENDER, $gender);
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getMotto(): ?string
     {
-        return $this->motto;
+        return $this->getData(UserInterface::COLUMN_MOTTO);
     }
 
     /**
-     * @param string $motto
+     * @param string|null $motto
      *
      * @return User
      */
-    public function setMotto(string $motto): self
+    public function setMotto(?string $motto): User
     {
-        $this->motto = $motto;
-
-        return $this;
+        return $this->setData(UserInterface::COLUMN_MOTTO, $motto);
     }
 
     /**
      * @return int
      */
-    public function getCredits(): ?int
+    public function getCredits(): int
     {
-        return $this->credits;
+        return $this->getData(UserInterface::COLUMN_CREDITS);
     }
 
     /**
@@ -291,155 +181,135 @@ class User extends Entity
      *
      * @return User
      */
-    public function setCredits(int $credits): self
+    public function setCredits(int $credits): User
     {
-        $this->credits = $credits;
-
-        return $this;
+        return $this->setData(UserInterface::COLUMN_CREDITS, $credits);
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getRank(): ?int
     {
-        return $this->rank;
+        return $this->getData(UserInterface::COLUMN_RANK);
     }
 
     /**
-     * @param int $rank
+     * @param int|null $rank
      *
      * @return User
      */
-    public function setRank(?int $rank): self
+    public function setRank(?int $rank): User
     {
-        $this->rank = $rank;
-
-        return $this;
+        return $this->setData(UserInterface::COLUMN_RANK, $rank);
     }
 
     /**
-     * Gets Auth_ticket of User
-     *
-     * @return string
+     * @return Permission|null
      */
-    public function getTicket(): ?string
+    public function getRankData(): ?Permission
     {
-        return $this->auth_ticket;
+        return $this->getData(UserInterface::COLUMN_RANK);
     }
 
     /**
-     * @param $ticket
+     * @param Permission|null $rank_data
      *
      * @return User
      */
-    public function setTicket(string $ticket): self
+    public function setRankData(?Permission $rank_data): User
     {
-        $this->auth_ticket = $ticket;
-
-        return $this;
-    }
-
-    /**
-     * Gets Password of User
-     *
-     * @return string
-     */
-    public function getPassword(): ?string
-    {
-        return $this->password;
-    }
-
-    /**
-     * @param $password
-     *
-     * @return User
-     */
-    public function setPassword(string $password): self
-    {
-        $this->password = $password;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getAccountCreated(): ?int
-    {
-        return $this->account_created;
-    }
-
-    /**
-     * @param int $timestamp
-     *
-     * @return User
-     */
-    public function setAccountCreated(int $timestamp): self
-    {
-        $this->account_created = $timestamp;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getIPRegister(): string
-    {
-        return $this->ip_register;
-    }
-
-    /**
-     * @param string $ip
-     *
-     * @return User
-     */
-    public function setIPRegister(string $ip): self
-    {
-        $this->ip_register = $ip;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCurrentIP(): string
-    {
-        return $this->ip_current;
-    }
-
-    /**
-     * @param string $ip
-     *
-     * @return User
-     */
-    public function setCurrentIP(string $ip): self
-    {
-        $this->ip_current = $ip;
-
-        return $this;
+        return $this->setData(UserInterface::COLUMN_RANK, $rank_data);
     }
 
     /**
      * @return string|null
      */
-    public function getLocale(): ?string
+    public function getAuthTicket(): ?string
     {
-        return $this->locale;
+        return $this->getData(UserInterface::COLUMN_AUTH_TICKET);
     }
 
     /**
-     * @param string|null $locale
+     * @param string|null $auth_ticket
      *
      * @return User
      */
-    public function setLocale(string $locale): self
+    public function setAuthTicket(?string $auth_ticket): User
     {
-        $this->locale = $locale;
+        return $this->setData(UserInterface::COLUMN_AUTH_TICKET, $auth_ticket);
+    }
 
-        return $this;
+    /**
+     * @return int
+     */
+    public function getAccountCreated(): int
+    {
+        return $this->getData(UserInterface::COLUMN_ACCOUNT_CREATED);
+    }
+
+    /**
+     * @param int $account_created
+     *
+     * @return User
+     */
+    public function setAccountCreated(int $account_created): User
+    {
+        return $this->setData(UserInterface::COLUMN_ACCOUNT_CREATED, $account_created);
+    }
+
+    /**
+     * @return string
+     */
+    public function getIpRegister(): string
+    {
+        return $this->getData(UserInterface::COLUMN_IP_REGISTER);
+    }
+
+    /**
+     * @param string $ip_register
+     *
+     * @return User
+     */
+    public function setIpRegister(string $ip_register): User
+    {
+        return $this->setData(UserInterface::COLUMN_IP_REGISTER, $ip_register);
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getIpCurrent(): ?string
+    {
+        return $this->getData(UserInterface::COLUMN_IP_CURRENT);
+    }
+
+    /**
+     * @param string|null $ip_current
+     *
+     * @return User
+     */
+    public function setIpCurrent(?string $ip_current): User
+    {
+        return $this->setData(UserInterface::COLUMN_IP_CURRENT, $ip_current);
+    }
+
+    /**
+     * @return int
+     */
+    public function getOnline(): int
+    {
+        return $this->getData(UserInterface::COLUMN_ONLINE);
+    }
+
+    /**
+     * @param int $online
+     *
+     * @return User
+     */
+    public function setOnline(int $online): User
+    {
+        return $this->setData(UserInterface::COLUMN_ONLINE, $online);
     }
 
     /**
@@ -447,7 +317,7 @@ class User extends Entity
      */
     public function getLastLogin(): int
     {
-        return $this->last_login;
+        return $this->getData(UserInterface::COLUMN_LAST_LOGIN);
     }
 
     /**
@@ -455,19 +325,17 @@ class User extends Entity
      *
      * @return User
      */
-    public function setLastLogin(int $last_login): self
+    public function setLastLogin(int $last_login): User
     {
-        $this->last_login = $last_login;
-
-        return $this;
+        return $this->setData(UserInterface::COLUMN_LAST_LOGIN, $last_login);
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getLastOnline(): int
+    public function getLastOnline(): ?int
     {
-        return $this->last_online;
+        return $this->getData(UserInterface::COLUMN_LAST_ONLINE);
     }
 
     /**
@@ -475,19 +343,124 @@ class User extends Entity
      *
      * @return User
      */
-    public function setLastOnline(?int $last_online): self
+    public function setLastOnline(?int $last_online): User
     {
-        $this->last_online = $last_online;
+        return $this->setData(UserInterface::COLUMN_LAST_ONLINE, $last_online);
+    }
 
-        return $this;
+
+    /**
+     * @return DateTime
+     */
+    public function getCreatedAt(): DateTime
+    {
+        return $this->getData(UserInterface::COLUMN_CREATED_AT);
     }
 
     /**
-     * @return Collection
+     * @param DateTime $created_at
+     * @return User
      */
-    public function getCurrencies(): Collection
+    public function setCreatedAt(DateTime $created_at): User
     {
-        return $this->currencies;
+        return $this->setData(UserInterface::COLUMN_CREATED_AT, $created_at);
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getUpdatedAt(): DateTime
+    {
+        return $this->getData(UserInterface::COLUMN_UPDATED_AT);
+    }
+
+    /**
+     * @param DateTime $updated_at
+     *
+     * @return User
+     */
+    public function setUpdatedAt(DateTime $updated_at): User
+    {
+        return $this->setData(UserInterface::COLUMN_UPDATED_AT, $updated_at);
+    }
+
+    /**
+     * @return Collection|null
+     * @throws DataObjectManagerException
+     */
+    public function getRoles(): ?Collection
+    {
+        $roles = $this->getData('roles');
+
+        if ($roles) {
+            return $roles;
+        }
+
+        /** @var UserRepository $userRepository */
+        $userRepository = repository(UserRepository::class);
+
+        /** @var RoleRepository $roleRepository */
+        $roleRepository = repository(RoleRepository::class);
+
+        $roles = $userRepository->getManyToMany(
+            $roleRepository,
+            $this->getId(),
+            'ares_roles_user',
+            'user_id',
+            'role_id'
+        );
+
+        if (!$roles->toArray()) {
+            return null;
+        }
+
+        $this->setRoles($roles);
+
+        return $roles;
+    }
+
+    /**
+     * @param Collection $roles
+     *
+     * @return User
+     */
+    public function setRoles(Collection $roles): User
+    {
+        return $this->setData('roles', $roles);
+    }
+
+    /**
+     * @return Collection|null
+     *
+     * @throws DataObjectManagerException
+     */
+    public function getCurrencies(): ?Collection
+    {
+        $currencies = $this->getData('currencies');
+
+        if ($currencies) {
+            return $currencies;
+        }
+
+        /** @var UserRepository $userRepository */
+        $userRepository = repository(UserRepository::class);
+
+        /** @var UserCurrencyRepository $userCurrencyRepository */
+        $userCurrencyRepository = repository(UserCurrencyRepository::class);
+
+        $currencies = $userRepository->getOneToMany(
+            $userCurrencyRepository,
+            $this->getId(),
+            'user_id'
+        );
+
+        if (!$currencies->toArray()) {
+            return null;
+        }
+
+        $this->setCurrencies($currencies);
+
+        return $currencies;
     }
 
     /**
@@ -495,113 +468,8 @@ class User extends Entity
      *
      * @return User
      */
-    public function setCurrencies(Collection $currencies): self
+    public function setCurrencies(Collection $currencies): User
     {
-        $this->currencies = $currencies;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|null
-     */
-    public function getRoles(): ?Collection
-    {
-        return $this->roles;
-    }
-
-    /**
-     * @param Collection|null $roles
-     *
-     * @return User
-     */
-    public function setRoles(?Collection $roles): self
-    {
-        $this->roles = $roles;
-
-        return $this;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getCreatedAt(): \DateTime
-    {
-        return $this->created_at;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getUpdatedAt(): \DateTime
-    {
-        return $this->updated_at;
-    }
-
-    /**
-     * Gets triggered only on insert
-     *
-     * @ORM\PrePersist
-     */
-    public function onPrePersist(): void
-    {
-        $this->created_at = new \DateTime("now");
-        $this->updated_at = new \DateTime("now");
-    }
-
-    /**
-     * Gets triggered every time on update
-     *
-     * @ORM\PreUpdate
-     */
-    public function onPreUpdate(): void
-    {
-        $this->updated_at = new \DateTime("now");
-    }
-
-    /**
-     * Returns a copy of the current Entity safely
-     *
-     * @return array
-     */
-    public function jsonSerialize(): array
-    {
-        return [
-            'id' => $this->getId(),
-            'username' => $this->getUsername(),
-            'look' => $this->getLook(),
-            'motto' => $this->getMotto(),
-            'credits' => $this->getCredits(),
-            'rank' => $this->getRank(),
-            'account_created' => $this->getAccountCreated(),
-            'online' => $this->getOnline(),
-            'locale' => $this->getLocale(),
-            'last_login' => $this->getLastLogin(),
-            'last_online' => $this->getLastOnline(),
-            'roles' => $this->getRoles()->toArray(),
-            'currencies' => $this->getCurrencies()->toArray(),
-            'created_at' => $this->getCreatedAt(),
-            'updated_at' => $this->getUpdatedAt()
-        ];
-    }
-
-    /**
-     * @return string
-     */
-    public function serialize(): string
-    {
-        return serialize(get_object_vars($this));
-    }
-
-    /**
-     * @param   string  $data
-     */
-    public function unserialize($data): void
-    {
-        $values = unserialize($data);
-
-        foreach ($values as $key => $value) {
-            $this->$key = $value;
-        }
+        return $this->setData('currencies', $currencies);
     }
 }

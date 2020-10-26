@@ -8,18 +8,14 @@
 namespace Ares\Role\Controller;
 
 use Ares\Framework\Controller\BaseController;
-use Ares\Framework\Exception\ValidationException;
-use Ares\Framework\Model\Adapter\DoctrineSearchCriteria;
+use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\ValidationException as ValidationExceptionAlias;
 use Ares\Framework\Service\ValidationService;
 use Ares\Role\Exception\RoleException;
 use Ares\Role\Repository\PermissionRepository;
 use Ares\Role\Service\CreateChildPermission;
 use Ares\Role\Service\CreateRolePermissionService;
 use Ares\Role\Service\CreatePermissionService;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -51,31 +47,23 @@ class RolePermissionController extends BaseController
     private CreateRolePermissionService $createRolePermissionService;
 
     /**
-     * @var DoctrineSearchCriteria
-     */
-    private DoctrineSearchCriteria $searchCriteria;
-
-    /**
      * RolePermissionController constructor.
      *
      * @param PermissionRepository        $permissionRepository
      * @param CreatePermissionService     $createPermissionService
      * @param CreateRolePermissionService $createRolePermissionService
      * @param ValidationService           $validationService
-     * @param DoctrineSearchCriteria      $searchCriteria
      */
     public function __construct(
         PermissionRepository $permissionRepository,
         CreatePermissionService $createPermissionService,
         CreateRolePermissionService $createRolePermissionService,
-        ValidationService $validationService,
-        DoctrineSearchCriteria $searchCriteria
+        ValidationService $validationService
     ) {
         $this->permissionRepository = $permissionRepository;
         $this->createPermissionService = $createPermissionService;
         $this->createRolePermissionService = $createRolePermissionService;
         $this->validationService = $validationService;
-        $this->searchCriteria = $searchCriteria;
     }
 
     /**
@@ -84,8 +72,7 @@ class RolePermissionController extends BaseController
      * @param array    $args
      *
      * @return Response
-     * @throws InvalidArgumentException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws DataObjectManagerException
      */
     public function list(Request $request, Response $response, array $args): Response
     {
@@ -95,19 +82,16 @@ class RolePermissionController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        $this->searchCriteria
-            ->setPage((int) $page)
-            ->setLimit((int) $resultPerPage)
-            ->addOrder('id', 'DESC');
-
-        $permissions = $this->permissionRepository->paginate($this->searchCriteria);
+        $permissions = $this->permissionRepository
+            ->getPaginatedPermissionList(
+                (int) $page,
+                (int) $resultPerPage
+            );
 
         return $this->respond(
             $response,
             response()
-                ->setData(
-                    $permissions->toArray()
-                )
+                ->setData($permissions)
         );
     }
 
@@ -116,12 +100,10 @@ class RolePermissionController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws ValidationException
+     * @throws CacheException
+     * @throws DataObjectManagerException
      * @throws RoleException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws InvalidArgumentException
+     * @throws ValidationExceptionAlias
      */
     public function createPermission(Request $request, Response $response): Response
     {
@@ -145,12 +127,10 @@ class RolePermissionController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws InvalidArgumentException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws CacheException
+     * @throws DataObjectManagerException
      * @throws RoleException
-     * @throws ValidationException
+     * @throws ValidationExceptionAlias
      */
     public function createRolePermission(Request $request, Response $response): Response
     {
@@ -175,18 +155,15 @@ class RolePermissionController extends BaseController
      * @param array    $args
      *
      * @return Response
-     * @throws InvalidArgumentException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
      * @throws RoleException
+     * @throws DataObjectManagerException
      */
     public function deleteRolePermission(Request $request, Response $response, array $args): Response
     {
         /** @var int $id */
         $id = $args['id'];
 
-        $deleted = $this->permissionRepository->delete((int)$id);
+        $deleted = $this->permissionRepository->delete((int) $id);
 
         if (!$deleted) {
             throw new RoleException(__('Permission could not be deleted.'), 409);

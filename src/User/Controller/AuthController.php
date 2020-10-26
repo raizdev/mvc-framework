@@ -9,22 +9,19 @@ namespace Ares\User\Controller;
 
 use Ares\Ban\Exception\BanException;
 use Ares\Framework\Controller\BaseController;
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\ValidationException;
+use Ares\Framework\Service\ValidationService;
 use Ares\User\Entity\User;
 use Ares\User\Exception\LoginException;
 use Ares\User\Exception\RegisterException;
 use Ares\User\Exception\UserException;
 use Ares\User\Repository\UserRepository;
-use Ares\Framework\Service\ValidationService;
 use Ares\User\Service\Auth\LoginService;
 use Ares\User\Service\Auth\RegisterService;
 use Ares\User\Service\Auth\TicketService;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 use Exception;
 use PHLAK\Config\Config;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use ReallySimpleJWT\Exception\ValidateException;
@@ -95,18 +92,15 @@ class AuthController extends BaseController
     /**
      * Logs the User in and parses a generated Token into response
      *
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request  $request
+     * @param Response $response
      *
      * @return Response Returns a Response with the given Data
      * @throws BanException
-     * @throws InvalidArgumentException
-     * @throws LoginException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws ValidateException
+     * @throws DataObjectManagerException
      * @throws ValidationException
+     * @throws LoginException
+     * @throws ValidateException
      */
     public function login(Request $request, Response $response): Response
     {
@@ -119,6 +113,7 @@ class AuthController extends BaseController
         ]);
 
         $parsedData['ip_current'] = $this->determineIp();
+
         $customResponse = $this->loginService->login($parsedData);
 
         return $this->respond(
@@ -134,7 +129,7 @@ class AuthController extends BaseController
      * @param   Response  $response
      *
      * @return Response Returns a Response with the given Data
-     * @throws Exception|InvalidArgumentException
+     * @throws Exception
      */
     public function register(Request $request, Response $response): Response
     {
@@ -182,15 +177,11 @@ class AuthController extends BaseController
             throw new RegisterException(__('There are no viable Looks available'));
         }
 
-        $boyList = [];
-        foreach ($boyLooks as $look) {
-            $boyList[] = $look;
-        }
+        /** @var array $boyList */
+        $boyList = array_map(null, $boyLooks);
 
-        $girlList = [];
-        foreach ($girlLooks as $look) {
-            $girlList[] = $look;
-        }
+        /** @var array $girlList */
+        $girlList = array_map(null, $girlLooks);
 
         return $this->respond(
             $response,
@@ -207,20 +198,18 @@ class AuthController extends BaseController
     /**
      * Gets a new Ticket for the current User
      *
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request  $request
+     * @param Response $response
      *
      * @return Response
-     * @throws InvalidArgumentException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws CacheException
+     * @throws DataObjectManagerException
      * @throws UserException
-     * @throws ORMException
-     * @throws OptimisticLockException
      */
     public function ticket(Request $request, Response $response): Response
     {
         /** @var User $user */
-        $user = $this->getUser($this->userRepository, $request, false);
+        $user = $this->getUser($this->userRepository, $request);
 
         /** @var TicketService $ticket */
         $ticket = $this->ticketService->generate($user);

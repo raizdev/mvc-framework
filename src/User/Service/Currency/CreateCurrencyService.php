@@ -7,14 +7,10 @@
 
 namespace Ares\User\Service\Currency;
 
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
-use Ares\User\Entity\User;
 use Ares\User\Entity\UserCurrency;
 use Ares\User\Repository\UserCurrencyRepository;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 
 /**
  * Class CreateCurrencyService
@@ -42,22 +38,20 @@ class CreateCurrencyService
     /**
      * Creates new user currency by given data.
      *
-     * @param User $user
-     * @param int  $type
-     * @param int  $amount
+     * @param int $user_id
+     * @param int $type
+     * @param int $amount
      *
      * @return CustomResponseInterface
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws InvalidArgumentException
+     * @throws DataObjectManagerException
      */
-    public function execute(User $user, int $type, int $amount): CustomResponseInterface
+    public function execute(int $user_id, int $type, int $amount): CustomResponseInterface
     {
+        /** @var UserCurrency $userCurrency */
         $userCurrency = $this->userCurrencyRepository
             ->save(
                 $this->getNewUserCurrency(
-                    $user,
+                    $user_id,
                     $type,
                     $amount
                 )
@@ -70,18 +64,18 @@ class CreateCurrencyService
     /**
      * Returns new user currency object.
      *
-     * @param   User  $user
-     * @param   int   $type
-     * @param   int   $amount
+     * @param int $user_id
+     * @param int $type
+     * @param int $amount
      *
      * @return UserCurrency
      */
-    private function getNewUserCurrency(User $user, int $type, int $amount): UserCurrency
+    private function getNewUserCurrency(int $user_id, int $type, int $amount): UserCurrency
     {
         $userCurrency = new UserCurrency();
 
         return $userCurrency
-            ->setUser($user)
+            ->setUserId($user_id)
             ->setType($type)
             ->setAmount($amount);
     }

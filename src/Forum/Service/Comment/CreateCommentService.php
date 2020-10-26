@@ -12,12 +12,8 @@ use Ares\Forum\Entity\Thread;
 use Ares\Forum\Exception\CommentException;
 use Ares\Forum\Repository\CommentRepository;
 use Ares\Forum\Repository\ThreadRepository;
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
-use Ares\User\Entity\User;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 
 /**
  * Class CreateCommentService
@@ -51,35 +47,32 @@ class CreateCommentService
     }
 
     /**
-     * @param   User   $user
-     * @param   array  $data
+     * @param int   $userId
+     * @param array $data
      *
      * @return CustomResponseInterface
      * @throws CommentException
-     * @throws InvalidArgumentException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws DataObjectManagerException
      */
-    public function execute(User $user, array $data): CustomResponseInterface
+    public function execute(int $userId, array $data): CustomResponseInterface
     {
-        $comment = $this->getNewComment($user, $data);
+        $comment = $this->getNewComment($userId, $data);
 
+        /** @var Comment $comment */
         $comment = $this->commentRepository->save($comment);
+        $comment->getUser();
 
         return response()->setData($comment);
     }
 
     /**
-     * @param   User   $user
-     * @param   array  $data
+     * @param int   $userId
+     * @param array $data
      *
      * @return Comment
      * @throws CommentException
-     * @throws InvalidArgumentException
-     * @throws PhpfastcacheSimpleCacheException
      */
-    public function getNewComment(User $user, array $data): Comment
+    public function getNewComment(int $userId, array $data): Comment
     {
         $comment = new Comment();
 
@@ -91,8 +84,8 @@ class CreateCommentService
         }
 
         return $comment
-            ->setThread($thread)
-            ->setUser($user)
+            ->setThreadId($thread->getId())
+            ->setUserId($userId)
             ->setContent($data['content'])
             ->setIsEdited(0)
             ->setLikes(0)

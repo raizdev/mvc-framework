@@ -7,11 +7,10 @@
 
 namespace Ares\User\Service\Auth;
 
+use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\User\Entity\User;
 use Ares\User\Repository\UserRepository;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
+use Exception;
 
 /**
  * Class TicketService
@@ -39,21 +38,18 @@ class TicketService
     /**
      * Generates us a new Ticket for the User to authenticate him to the Server
      *
-     * @param $user
+     * @param User $user
      *
      * @return string
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws InvalidArgumentException
-     * @throws \Exception
+     * @throws DataObjectManagerException
+     * @throws Exception
      */
-    public function generate(object $user): string
+    public function generate(User $user): string
     {
         $ticket = $this->hash($user);
-        $user->setTicket($ticket);
+        $user->setAuthTicket($ticket);
 
-        $this->userRepository->update($user);
+        $this->userRepository->save($user);
 
         return $ticket;
     }
@@ -64,10 +60,14 @@ class TicketService
      * @param   object  $user
      *
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
     public function hash(object $user): string
     {
-        return hash('sha256', $user->getUsername() . random_int(1337, 2337) . '-' . $_ENV["WEB_NAME"], false);
+        return hash(
+            'sha256',
+            $user->getId() . random_int(1337, 2337) . '-' . $_ENV["WEB_NAME"],
+            false
+        );
     }
 }

@@ -68,7 +68,12 @@ return function (App $app) {
 
             // Community
             $group->group('/community', function ($group) {
-                $group->get('/search/{term}', \Ares\Community\Controller\CommunityController::class . ':search');
+                $group->get('/search/rooms/{term}/{page:[0-9]+}/{rpp:[0-9]+}',
+                    \Ares\Community\Controller\CommunityController::class . ':searchRooms');
+                $group->get('/search/guilds/{term}/{page:[0-9]+}/{rpp:[0-9]+}',
+                    \Ares\Community\Controller\CommunityController::class . ':searchGuilds');
+                $group->get('/search/articles/{term}/{page:[0-9]+}/{rpp:[0-9]+}',
+                    \Ares\Community\Controller\CommunityController::class . ':searchArticles');
             });
 
             // Guilds
@@ -109,7 +114,7 @@ return function (App $app) {
             $group->group('/hall-of-fame', function ($group) {
                 $group->get('/top-credits', \Ares\User\Controller\UserHallOfFameController::class . ':topCredits');
                 $group->get('/top-diamonds', \Ares\User\Controller\UserHallOfFameController::class . ':topDiamonds');
-                $group->get('/top-pixels', \Ares\User\Controller\UserHallOfFameController::class . ':topPixels');
+                $group->get('/top-duckets', \Ares\User\Controller\UserHallOfFameController::class . ':topDuckets');
                 $group->get('/top-online-time',
                     \Ares\User\Controller\UserHallOfFameController::class . ':topOnlineTime');
                 $group->get('/top-achievement',
@@ -213,9 +218,14 @@ return function (App $app) {
             });
 
             $group->group('/rcon', function ($group) {
-               $group->post('/execute', \Ares\Rcon\Controller\RconController::class . ':executeCommand')
-                   ->setName('execute-rcon-command');
+                $group->post('/execute', \Ares\Rcon\Controller\RconController::class . ':executeCommand')
+                    ->setName('execute-rcon-command');
             });
+
+            // Gets updated UserOfTheHotel
+            $group->get('/user-of-the-hotel',
+                \Ares\User\Controller\UserOfTheHotelController::class . ':getUserOfTheHotel'
+            );
 
             // De-Authentication
             $group->post('/logout', \Ares\User\Controller\AuthController::class . ':logout');

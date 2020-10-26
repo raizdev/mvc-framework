@@ -9,6 +9,7 @@ namespace Ares\Vote\Repository;
 
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Vote\Entity\Vote;
+use Ares\Framework\Model\Query\Collection;
 
 /**
  * Class VoteRepository
@@ -25,4 +26,17 @@ class VoteRepository extends BaseRepository
 
     /** @var string */
     protected string $entity = Vote::class;
+
+    /**
+     * @param int $userId
+     *
+     * @return Collection
+     */
+    public function getUserVoteList(int $userId): Collection
+    {
+        $searchCriteria = $this->getDataObjectManager()
+            ->where('user_id', $userId);
+
+        return $this->getList($searchCriteria);
+    }
 }

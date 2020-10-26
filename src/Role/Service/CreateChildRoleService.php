@@ -7,17 +7,13 @@
 
 namespace Ares\Role\Service;
 
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\Role\Entity\Role;
 use Ares\Role\Entity\RoleHierarchy;
 use Ares\Role\Exception\RoleException;
 use Ares\Role\Repository\RoleHierarchyRepository;
 use Ares\Role\Repository\RoleRepository;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
-use Doctrine\ORM\Query\QueryException;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 
 /**
  * Class CreateChildRoleService
@@ -54,10 +50,7 @@ class CreateChildRoleService
      * @param array $data
      *
      * @return CustomResponseInterface
-     * @throws InvalidArgumentException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws DataObjectManagerException
      * @throws RoleException
      */
     public function execute(array $data): CustomResponseInterface
@@ -84,7 +77,10 @@ class CreateChildRoleService
             throw new RoleException(__('Could not found given Roles'));
         }
 
-        $newChildRole = $this->getNewChildRole($parentRole, $childRole);
+        $newChildRole = $this->getNewChildRole(
+            $parentRole->getId(),
+            $childRole->getId()
+        );
 
         /** @var RoleHierarchy $newChildRole */
         $newChildRole = $this->roleHierarchyRepository->save($newChildRole);
@@ -94,18 +90,18 @@ class CreateChildRoleService
     }
 
     /**
-     * @param Role $parentRole
-     * @param Role $childRole
+     * @param int $parentRoleId
+     * @param int $childRoleId
      *
      * @return RoleHierarchy
      */
-    private function getNewChildRole(Role $parentRole, Role $childRole): RoleHierarchy
+    private function getNewChildRole(int $parentRoleId, int $childRoleId): RoleHierarchy
     {
         $roleHierarchy = new RoleHierarchy();
 
         $roleHierarchy
-            ->setParentRole($parentRole)
-            ->setChildRole($childRole);
+            ->setParentRoleId($parentRoleId)
+            ->setChildRoleId($childRoleId);
 
         return $roleHierarchy;
     }

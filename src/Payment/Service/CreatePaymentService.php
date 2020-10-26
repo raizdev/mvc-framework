@@ -7,15 +7,11 @@
 
 namespace Ares\Payment\Service;
 
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\Payment\Entity\Payment;
 use Ares\Payment\Exception\PaymentException;
 use Ares\Payment\Repository\PaymentRepository;
-use Ares\User\Entity\User;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 
 /**
  * Class CreatePaymentService
@@ -42,25 +38,19 @@ class CreatePaymentService
     }
 
     /**
-     * @param   User   $user
-     * @param   array  $data
+     * @param int   $userId
+     * @param array $data
      *
      * @return CustomResponseInterface
+     * @throws DataObjectManagerException
      * @throws PaymentException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws InvalidArgumentException
      */
-    public function execute(User $user, array $data): CustomResponseInterface
+    public function execute(int $userId, array $data): CustomResponseInterface
     {
-        $payment = $this->getNewPayment($user, $data);
+        $payment = $this->getNewPayment($userId, $data);
 
         /** @var Payment $existingPayment */
-        $existingPayment = $this->paymentRepository->getOneBy([
-            'user' => $payment->getUser(),
-            'processed' => 0
-        ]);
+        $existingPayment = $this->paymentRepository->getExistingPayment($payment->getUserId());
 
         if ($existingPayment) {
             throw new PaymentException(__('You already have an ongoing payment, wait till its processed'));
@@ -74,18 +64,18 @@ class CreatePaymentService
     }
 
     /**
-     * @param   User   $user
-     * @param   array  $data
+     * @param int   $userId
+     * @param array $data
      *
      * @return Payment
      */
-    public function getNewPayment(User $user, array $data): Payment
+    public function getNewPayment(int $userId, array $data): Payment
     {
         $payment = new Payment();
 
         return $payment
             ->setCode($data['code'])
-            ->setUser($user)
+            ->setUserId($userId)
             ->setProcessed(0)
             ->setType(0);
     }

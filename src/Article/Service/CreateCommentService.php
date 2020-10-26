@@ -12,12 +12,8 @@ use Ares\Article\Entity\Comment;
 use Ares\Article\Exception\CommentException;
 use Ares\Article\Repository\ArticleRepository;
 use Ares\Article\Repository\CommentRepository;
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
-use Ares\User\Entity\User;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 
 /**
  * Class CreateCommentService
@@ -53,20 +49,20 @@ class CreateCommentService
     /**
      * Creates new comment.
      *
-     * @param User $user
+     * @param int   $userId
      * @param array $data
+     *
      * @return CustomResponseInterface
      * @throws CommentException
-     * @throws InvalidArgumentException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @throws DataObjectManagerException
      */
-    public function execute(User $user, array $data): CustomResponseInterface
+    public function execute(int $userId, array $data): CustomResponseInterface
     {
-        $comment = $this->getNewComment($user, $data);
+        $comment = $this->getNewComment($userId, $data);
 
+        /** @var Comment $comment */
         $comment = $this->commentRepository->save($comment);
+        $comment->getUser();
 
         return response()
             ->setData($comment);
@@ -75,19 +71,18 @@ class CreateCommentService
     /**
      * Returns new comment object with data.
      *
-     * @param User $user
+     * @param int   $userId
      * @param array $data
+     *
      * @return Comment
      * @throws CommentException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws InvalidArgumentException
      */
-    private function getNewComment(User $user, array $data): Comment
+    private function getNewComment(int $userId, array $data): Comment
     {
         $comment = new Comment();
 
         /** @var Article $article */
-        $article = $this->articleRepository->get($data['article_id'], false);
+        $article = $this->articleRepository->get($data['article_id']);
 
         if (!$article) {
             throw new CommentException(__('Related article was not found.'), 404);
@@ -96,10 +91,10 @@ class CreateCommentService
         return $comment
             ->setContent($data['content'])
             ->setIsEdited(0)
-            ->setUser($user)
+            ->setUserId($userId)
             ->setLikes(0)
             ->setDislikes(0)
-            ->setArticle($article)
+            ->setArticleId($article->getId())
             ->setLikes(0)
             ->setDislikes(0);
     }

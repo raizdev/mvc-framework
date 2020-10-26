@@ -8,7 +8,9 @@
 namespace Ares\Article\Repository;
 
 use Ares\Article\Entity\Comment;
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Repository\BaseRepository;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 /**
  * Class CommentRepository
@@ -25,4 +27,22 @@ class CommentRepository extends BaseRepository
 
     /** @var string */
     protected string $entity = Comment::class;
+
+    /**
+     * @param int $articleId
+     * @param int $page
+     * @param int $resultPerPage
+     *
+     * @return LengthAwarePaginator
+     * @throws DataObjectManagerException
+     */
+    public function getPaginatedCommentList(int $articleId, int $page, int $resultPerPage): LengthAwarePaginator
+    {
+        $searchCriteria = $this->getDataObjectManager()
+            ->where('article_id', $articleId)
+            ->addRelation('user')
+            ->orderBy('id', 'DESC');
+
+        return $this->getPaginatedList($searchCriteria, $page, $resultPerPage);
+    }
 }

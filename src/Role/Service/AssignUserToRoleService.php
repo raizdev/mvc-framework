@@ -7,6 +7,7 @@
 
 namespace Ares\Role\Service;
 
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\Role\Entity\Role;
 use Ares\Role\Entity\RoleUser;
@@ -15,10 +16,6 @@ use Ares\Role\Repository\RoleRepository;
 use Ares\Role\Repository\RoleUserRepository;
 use Ares\User\Entity\User;
 use Ares\User\Repository\UserRepository;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 
 /**
  * Class AssignUserToRoleService
@@ -63,10 +60,7 @@ class AssignUserToRoleService
      * @param array $data
      *
      * @return CustomResponseInterface
-     * @throws InvalidArgumentException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws DataObjectManagerException
      * @throws RoleException
      */
     public function execute(array $data): CustomResponseInterface
@@ -87,16 +81,18 @@ class AssignUserToRoleService
             throw new RoleException(__('Could not find called Role or User'));
         }
 
-        $isRoleAlreadyAssigned = $this->roleUserRepository->getOneBy([
-            'roleId' => $roleId,
-            'userId' => $userId
-        ]);
+        /** @var RoleUser $isRoleAlreadyAssigned */
+        $isRoleAlreadyAssigned = $this->roleUserRepository
+            ->getUserAssignedRole(
+                $role->getId(),
+                $user->getId()
+            );
 
         if ($isRoleAlreadyAssigned) {
             throw new RoleException(__('There is already a Role assigned to that User'));
         }
 
-        $roleUser = $this->getNewRoleUser($role, $user);
+        $roleUser = $this->getNewRoleUser($role->getId(), $user->getId());
 
         $this->roleUserRepository->save($roleUser);
 
@@ -105,18 +101,18 @@ class AssignUserToRoleService
     }
 
     /**
-     * @param Role $role
-     * @param User $user
+     * @param int $roleId
+     * @param int $userId
      *
      * @return RoleUser
      */
-    private function getNewRoleUser(Role $role, User $user): RoleUser
+    private function getNewRoleUser(int $roleId, int $userId): RoleUser
     {
         $roleUser = new RoleUser();
 
         $roleUser
-            ->setUser($user)
-            ->setRole($role);
+            ->setUserId($userId)
+            ->setRoleId($roleId);
 
         return $roleUser;
     }

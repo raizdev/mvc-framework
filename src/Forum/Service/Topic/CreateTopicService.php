@@ -10,12 +10,9 @@ namespace Ares\Forum\Service\Topic;
 use Ares\Forum\Entity\Topic;
 use Ares\Forum\Exception\TopicException;
 use Ares\Forum\Repository\TopicRepository;
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Cocur\Slugify\Slugify;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\SimpleCache\InvalidArgumentException;
 
 /**
  * Class CreateTopicService
@@ -49,23 +46,19 @@ class CreateTopicService
     }
 
     /**
-     * @param   array  $data
+     * @param array $data
      *
      * @return CustomResponseInterface
      * @throws TopicException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws \Psr\Cache\InvalidArgumentException
+     * @throws CacheException
+     * @throws DataObjectManagerException
      */
     public function execute(array $data)
     {
         $topic = $this->getNewTopic($data);
 
         /** @var Topic $existingTopic */
-        $existingTopic = $this->topicRepository->getOneBy([
-           'title' => $topic->getTitle()
-        ]);
+        $existingTopic = $this->topicRepository->get($topic->getTitle(), 'title');
 
         if ($existingTopic) {
             throw new TopicException(__('There is already a Topic with that title'));

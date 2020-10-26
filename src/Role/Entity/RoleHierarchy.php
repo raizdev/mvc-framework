@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Ares (https://ares.to)
  *
@@ -7,177 +7,88 @@
 
 namespace Ares\Role\Entity;
 
-use Ares\Framework\Entity\Entity;
-use DateTime;
-use Doctrine\ORM\Mapping as ORM;
+use Ares\Framework\Model\DataObject;
+use Ares\Role\Entity\Contract\RoleHierarchyInterface;
 
 /**
- * Class Permission
+ * Class RoleHierarchy
  *
  * @package Ares\Role\Entity
- *
- * @ORM\Table(name="ares_roles_hierarchy",
- *      uniqueConstraints={@ORM\UniqueConstraint(name="ares_role_hierarchy_unique",
- *      columns={"parent_role_id", "child_role_id"})}
- *     )
- * @ORM\Entity
- * @ORM\HasLifecycleCallbacks
  */
-class RoleHierarchy extends Entity
+class RoleHierarchy extends DataObject implements RoleHierarchyInterface
 {
-    /**
-     * @ORM\Column(name="id", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private int $id;
-
-    /**
-     * @ORM\Column(name="parent_role_id", type="integer", nullable=false)
-     */
-    private int $parentRoleId;
-
-    /**
-     * @ORM\Column(name="child_role_id", type="integer", nullable=false)
-     */
-    private int $childRoleId;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Ares\Role\Entity\Role")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="child_role_id", referencedColumnName="id")
-     * })
-     */
-    private Role $childRole;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Ares\Role\Entity\Role")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="parent_role_id", referencedColumnName="id")
-     * })
-     */
-    private Role $parentRole;
-
-    /**
-     * @ORM\Column(name="created_at", type="datetime", nullable=false)
-     */
-    private DateTime $createdAt;
+    /** @var string */
+    public const TABLE = 'ares_roles_hierarchy';
 
     /**
      * @return int
      */
     public function getId(): int
     {
-        return $this->id;
+        return $this->getData(RoleHierarchyInterface::COLUMN_ID);
     }
 
     /**
      * @param int $id
      *
      * @return RoleHierarchy
-     */#
-    public function setId($id): self
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * @return Role
      */
-    public function getChildRole(): Role
+    public function setId(int $id): RoleHierarchy
     {
-        return $this->childRole;
+        return $this->setData(RoleHierarchyInterface::COLUMN_ID, $id);
     }
 
     /**
-     * @param   Role  $childRole
+     * @return int
+     */
+    public function getParentRoleId(): int
+    {
+        return $this->getData(RoleHierarchyInterface::COLUMN_PARENT_ROLE_ID);
+    }
+
+    /**
+     * @param int $parent_role_id
      *
      * @return RoleHierarchy
      */
-    public function setChildRole($childRole): self
+    public function setParentRoleId(int $parent_role_id): RoleHierarchy
     {
-        $this->childRole = $childRole;
-
-        return $this;
+        return $this->setData(RoleHierarchyInterface::COLUMN_PARENT_ROLE_ID, $parent_role_id);
     }
 
     /**
-     * @return Role
+     * @return int
      */
-    public function getParentRole(): Role
+    public function getChildRoleId(): int
     {
-        return $this->parentRole;
+        return $this->getData(RoleHierarchyInterface::COLUMN_CHILD_ROLE_ID);
     }
 
     /**
-     * @param   Role  $parentRole
+     * @param int $child_role_id
      *
      * @return RoleHierarchy
      */
-    public function setParentRole($parentRole): self
+    public function setChildRoleId(int $child_role_id): RoleHierarchy
     {
-        $this->parentRole = $parentRole;
-
-        return $this;
+        return $this->setData(RoleHierarchyInterface::COLUMN_CHILD_ROLE_ID, $child_role_id);
     }
 
     /**
-     * @return DateTime
+     * @return \DateTime
      */
-    public function getCreatedAt(): DateTime
+    public function getCreatedAt(): \DateTime
     {
-        return $this->createdAt;
+        return $this->getData(RoleHierarchyInterface::COLUMN_CREATED_AT);
     }
 
     /**
-     * @param   DateTime  $createdAt
+     * @param \DateTime $created_at
      *
      * @return RoleHierarchy
      */
-    public function setCreatedAt($createdAt): self
+    public function setCreatedAt(\DateTime $created_at): RoleHierarchy
     {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    /**
-     * @ORM\PrePersist
-     *
-     * @throws \Exception
-     */
-    public function prePersist(): void
-    {
-        $this->createdAt = new DateTime();
-    }
-
-    /**
-     * @return array
-     */
-    public function jsonSerialize(): array
-    {
-        return [];
-    }
-
-    /**
-     * @return string
-     */
-    public function serialize(): string
-    {
-        return serialize(get_object_vars($this));
-    }
-
-    /**
-     * @param   string  $data
-     */
-    public function unserialize($data): void
-    {
-        $values = unserialize($data);
-
-        foreach ($values as $key => $value) {
-            $this->$key = $value;
-        }
+        return $this->setData(RoleHierarchyInterface::COLUMN_CREATED_AT, $created_at);
     }
 }

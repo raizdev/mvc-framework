@@ -8,18 +8,14 @@
 namespace Ares\Role\Controller;
 
 use Ares\Framework\Controller\BaseController;
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\ValidationException;
-use Ares\Framework\Model\Adapter\DoctrineSearchCriteria;
 use Ares\Framework\Service\ValidationService;
 use Ares\Role\Exception\RoleException;
 use Ares\Role\Repository\RoleRepository;
 use Ares\Role\Service\AssignUserToRoleService;
 use Ares\Role\Service\CreateChildRoleService;
 use Ares\Role\Service\CreateRoleService;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -39,11 +35,6 @@ class RoleController extends BaseController
      * @var CreateChildRoleService
      */
     private CreateChildRoleService $createChildRoleService;
-
-    /**
-     * @var DoctrineSearchCriteria
-     */
-    private DoctrineSearchCriteria $searchCriteria;
 
     /**
      * @var ValidationService
@@ -67,7 +58,6 @@ class RoleController extends BaseController
      * @param CreateChildRoleService  $createChildRoleService
      * @param AssignUserToRoleService $assignUserToRoleService
      * @param ValidationService       $validationService
-     * @param DoctrineSearchCriteria  $searchCriteria
      * @param RoleRepository          $roleRepository
      */
     public function __construct(
@@ -75,14 +65,12 @@ class RoleController extends BaseController
         CreateChildRoleService $createChildRoleService,
         AssignUserToRoleService $assignUserToRoleService,
         ValidationService $validationService,
-        DoctrineSearchCriteria $searchCriteria,
         RoleRepository $roleRepository
     ) {
         $this->createRoleService = $createRoleService;
         $this->createChildRoleService = $createChildRoleService;
         $this->assignUserToRoleService = $assignUserToRoleService;
         $this->validationService = $validationService;
-        $this->searchCriteria = $searchCriteria;
         $this->roleRepository = $roleRepository;
     }
 
@@ -92,8 +80,7 @@ class RoleController extends BaseController
      * @param array    $args
      *
      * @return Response
-     * @throws InvalidArgumentException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws DataObjectManagerException
      */
     public function list(Request $request, Response $response, array $args): Response
     {
@@ -103,19 +90,16 @@ class RoleController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        $this->searchCriteria
-            ->setPage((int) $page)
-            ->setLimit((int) $resultPerPage)
-            ->addOrder('id', 'DESC');
-
-        $roles = $this->roleRepository->paginate($this->searchCriteria);
+        $roles = $this->roleRepository
+            ->getPaginatedRoles(
+                (int) $page,
+                (int) $resultPerPage
+            );
 
         return $this->respond(
             $response,
             response()
-                ->setData(
-                    $roles->toArray()
-                )
+                ->setData($roles)
         );
     }
 
@@ -124,12 +108,10 @@ class RoleController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws ValidationException
+     * @throws CacheException
+     * @throws DataObjectManagerException
      * @throws RoleException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws InvalidArgumentException
+     * @throws ValidationException
      */
     public function createRole(Request $request, Response $response): Response
     {
@@ -153,10 +135,7 @@ class RoleController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws InvalidArgumentException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws DataObjectManagerException
      * @throws RoleException
      * @throws ValidationException
      */
@@ -183,10 +162,8 @@ class RoleController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws InvalidArgumentException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws CacheException
+     * @throws DataObjectManagerException
      * @throws RoleException
      * @throws ValidationException
      */
@@ -214,18 +191,15 @@ class RoleController extends BaseController
      * @param             $args
      *
      * @return Response
-     * @throws InvalidArgumentException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
      * @throws RoleException
+     * @throws DataObjectManagerException
      */
-    public function deleteRole(Request $request, Response $response, $args): Response
+    public function deleteRole(Request $request, Response $response, array $args): Response
     {
         /** @var int $id */
         $id = $args['id'];
 
-        $deleted = $this->roleRepository->delete((int)$id);
+        $deleted = $this->roleRepository->delete((int) $id);
 
         if (!$deleted) {
             throw new RoleException(__('Role could not be deleted.'), 409);

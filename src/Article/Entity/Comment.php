@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Ares (https://ares.to)
  *
@@ -7,78 +7,34 @@
 
 namespace Ares\Article\Entity;
 
-use Ares\Framework\Entity\Entity;
+use Ares\Article\Entity\Contract\CommentInterface;
+use Ares\Article\Repository\CommentRepository;
+use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Model\DataObject;
 use Ares\User\Entity\User;
-use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\JoinColumn;
-use Doctrine\ORM\Mapping\ManyToOne;
+use Ares\User\Repository\UserRepository;
 
 /**
  * Class Article
  *
  * @package Ares\Article\Entity
- *
- * @ORM\Entity
- * @ORM\Table(name="ares_articles_comments", uniqueConstraints={@ORM\UniqueConstraint(name="title", columns={"title"})}))
- * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
- * @ORM\HasLifecycleCallbacks
  */
-class Comment extends Entity
+class Comment extends DataObject implements CommentInterface
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private int $id;
+    /** @var string */
+    public const TABLE = 'ares_articles_comments';
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private string $content;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private int $is_edited;
-
-    /**
-     * @ManyToOne(targetEntity="\Ares\User\Entity\User", fetch="EAGER")
-     */
-    private ?User $user;
-
-    /**
-     * @ORM\OneToOne(targetEntity="\Ares\Article\Entity\Article", fetch="EAGER")
-     * @JoinColumn(name="article_id", referencedColumnName="id")
-     */
-    private ?Article $article;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private int $likes;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private int $dislikes;
-
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    protected \DateTime $created_at;
-
-    /**
-     * @ORM\Column(type="datetime", nullable = true)
-     */
-    protected \DateTime $updated_at;
+    /*** @var array */
+    public const RELATIONS = [
+      'user' => 'getUser'
+    ];
 
     /**
      * @return int
      */
     public function getId(): int
     {
-        return $this->id;
+        return $this->getData(CommentInterface::COLUMN_ID);
     }
 
     /**
@@ -86,11 +42,45 @@ class Comment extends Entity
      *
      * @return Comment
      */
-    public function setId(int $id): self
+    public function setId(int $id): Comment
     {
-        $this->id = $id;
+        return $this->setData(CommentInterface::COLUMN_ID, $id);
+    }
 
-        return $this;
+    /**
+     * @return int
+     */
+    public function getUserId(): int
+    {
+        return $this->getData(CommentInterface::COLUMN_USER_ID);
+    }
+
+    /**
+     * @param int $user_id
+     *
+     * @return Comment
+     */
+    public function setUserId(int $user_id): Comment
+    {
+        return $this->setData(CommentInterface::COLUMN_USER_ID, $user_id);
+    }
+
+    /**
+     * @return int
+     */
+    public function getArticleId(): int
+    {
+        return $this->getData(CommentInterface::COLUMN_ARTICLE_ID);
+    }
+
+    /**
+     * @param int $article_id
+     *
+     * @return Comment
+     */
+    public function setArticleId(int $article_id): Comment
+    {
+        return $this->setData(CommentInterface::COLUMN_ARTICLE_ID, $article_id);
     }
 
     /**
@@ -98,7 +88,7 @@ class Comment extends Entity
      */
     public function getContent(): string
     {
-        return $this->content;
+        return $this->getData(CommentInterface::COLUMN_CONTENT);
     }
 
     /**
@@ -106,11 +96,9 @@ class Comment extends Entity
      *
      * @return Comment
      */
-    public function setContent(string $content): self
+    public function setContent(string $content): Comment
     {
-        $this->content = $content;
-
-        return $this;
+        return $this->setData(CommentInterface::COLUMN_CONTENT, $content);
     }
 
     /**
@@ -118,7 +106,7 @@ class Comment extends Entity
      */
     public function getIsEdited(): int
     {
-        return $this->is_edited;
+        return $this->getData(CommentInterface::COLUMN_IS_EDITED);
     }
 
     /**
@@ -126,51 +114,9 @@ class Comment extends Entity
      *
      * @return Comment
      */
-    public function setIsEdited(int $is_edited): self
+    public function setIsEdited(int $is_edited): Comment
     {
-        $this->is_edited = $is_edited;
-
-        return $this;
-    }
-
-    /**
-     * @return User|null
-     */
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-    /**
-     * @param User|null $user
-     *
-     * @return Comment
-     */
-    public function setUser(?User $user): self
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    /**
-     * @return Article|null
-     */
-    public function getArticle(): ?Article
-    {
-        return $this->article;
-    }
-
-    /**
-     * @param Article|null $article
-     *
-     * @return Comment
-     */
-    public function setArticle(?Article $article): self
-    {
-        $this->article = $article;
-
-        return $this;
+        return $this->setData(CommentInterface::COLUMN_IS_EDITED, $is_edited);
     }
 
     /**
@@ -178,7 +124,7 @@ class Comment extends Entity
      */
     public function getLikes(): int
     {
-        return $this->likes;
+        return $this->getData(CommentInterface::COLUMN_LIKES);
     }
 
     /**
@@ -186,11 +132,9 @@ class Comment extends Entity
      *
      * @return Comment
      */
-    public function setLikes(int $likes): self
+    public function setLikes(int $likes): Comment
     {
-        $this->likes = $likes;
-
-        return $this;
+        return $this->setData(CommentInterface::COLUMN_LIKES, $likes);
     }
 
     /**
@@ -198,7 +142,7 @@ class Comment extends Entity
      */
     public function getDislikes(): int
     {
-        return $this->dislikes;
+        return $this->getData(CommentInterface::COLUMN_DISLIKES);
     }
 
     /**
@@ -206,11 +150,9 @@ class Comment extends Entity
      *
      * @return Comment
      */
-    public function setDislikes(int $dislikes): self
+    public function setDislikes(int $dislikes): Comment
     {
-        $this->dislikes = $dislikes;
-
-        return $this;
+        return $this->setData(CommentInterface::COLUMN_DISLIKES, $dislikes);
     }
 
     /**
@@ -218,7 +160,7 @@ class Comment extends Entity
      */
     public function getCreatedAt(): \DateTime
     {
-        return $this->created_at;
+        return $this->getData(CommentInterface::COLUMN_CREATED_AT);
     }
 
     /**
@@ -226,11 +168,9 @@ class Comment extends Entity
      *
      * @return Comment
      */
-    public function setCreatedAt(\DateTime $created_at): self
+    public function setCreatedAt(\DateTime $created_at): Comment
     {
-        $this->created_at = $created_at;
-
-        return $this;
+        return $this->setData(CommentInterface::COLUMN_CREATED_AT, $created_at);
     }
 
     /**
@@ -238,7 +178,7 @@ class Comment extends Entity
      */
     public function getUpdatedAt(): \DateTime
     {
-        return $this->updated_at;
+        return $this->getData(CommentInterface::COLUMN_UPDATED_AT);
     }
 
     /**
@@ -246,70 +186,54 @@ class Comment extends Entity
      *
      * @return Comment
      */
-    public function setUpdatedAt(\DateTime $updated_at): self
+    public function setUpdatedAt(\DateTime $updated_at): Comment
     {
-        $this->updated_at = $updated_at;
-
-        return $this;
+        return $this->setData(CommentInterface::COLUMN_UPDATED_AT, $updated_at);
     }
 
     /**
-     * Gets triggered only on insert
+     * @return User|null
      *
-     * @ORM\PrePersist
+     * @throws DataObjectManagerException
      */
-    public function onPrePersist(): void
+    public function getUser(): ?User
     {
-        $this->created_at = new \DateTime("now");
-        $this->updated_at = new \DateTime("now");
-    }
+        /** @var User $user */
+        $user = $this->getData('user');
 
-    /**
-     * Gets triggered every time on update
-     *
-     * @ORM\PreUpdate
-     */
-    public function onPreUpdate(): void
-    {
-        $this->updated_at = new \DateTime("now");
-    }
-
-    /**
-     * Returns a copy of the current Entity safely
-     *
-     * @return array
-     */
-    public function jsonSerialize(): array
-    {
-        return [
-            'id' => $this->getId(),
-            'content' => $this->getContent(),
-            'is_edited' => $this->getIsEdited(),
-            'author' => $this->getUser(),
-            'likes' => $this->getLikes(),
-            'dislikes' => $this->getDislikes(),
-            'created_at' => $this->getCreatedAt(),
-            'updated_at' => $this->getUpdatedAt()
-        ];
-    }
-
-    /**
-     * @return string
-     */
-    public function serialize(): string
-    {
-        return serialize(get_object_vars($this));
-    }
-
-    /**
-     * @param   string  $data
-     */
-    public function unserialize($data): void
-    {
-        $values = unserialize($data);
-
-        foreach ($values as $key => $value) {
-            $this->$key = $value;
+        if ($user) {
+            return $user;
         }
+
+        /** @var CommentRepository $commentRepository */
+        $commentRepository = repository(CommentRepository::class);
+
+        /** @var UserRepository $userRepository */
+        $userRepository = repository(UserRepository::class);
+
+        /** @var User $user */
+        $user = $commentRepository->getOneToOne(
+            $userRepository,
+            $this->getUserId(),
+            'id'
+        );
+
+        if (!$user) {
+            return null;
+        }
+
+        $this->setUser($user);
+
+        return $user;
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return Comment
+     */
+    public function setUser(User $user): Comment
+    {
+        return $this->setData('user', $user);
     }
 }

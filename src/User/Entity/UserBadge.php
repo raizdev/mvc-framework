@@ -7,155 +7,88 @@
 
 namespace Ares\User\Entity;
 
-use Ares\Framework\Entity\Entity;
-use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\JoinColumn;
+use Ares\Framework\Model\DataObject;
+use Ares\User\Entity\Contract\UserBadgeInterface;
 
 /**
  * Class UserBadge
  *
  * @package Ares\User\Entity
- *
- * @ORM\Entity
- * @ORM\Table(name="users_badges")
- * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
  */
-class UserBadge extends Entity
+class UserBadge extends DataObject implements UserBadgeInterface
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private int $id;
-
-    /**
-     * @ORM\OneToOne(targetEntity="\Ares\User\Entity\User", fetch="EAGER")
-     * @JoinColumn(name="user_id", referencedColumnName="id")
-     */
-    private ?User $user;
-
-    /**
-     * @ORM\Column(type="integer", length=11)
-     */
-    private int $slot_id;
-
-    /**
-     * @ORM\Column(type="string", length=100)
-     */
-    private string $badge_code;
+    /** @var string */
+    public const TABLE = 'user_badges';
 
     /**
      * @return int
      */
     public function getId(): int
     {
-        return $this->id;
+        return $this->getData(UserBadgeInterface::COLUMN_ID);
     }
 
     /**
-     * @param   int  $id
+     * @param int $id
      *
      * @return UserBadge
      */
-    public function setId(int $id): self
+    public function setId(int $id): UserBadge
     {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * @return User|null
-     */
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-    /**
-     * @param   User|null  $user
-     *
-     * @return UserBadge
-     */
-    public function setUser(?User $user): self
-    {
-        $this->user = $user;
-
-        return $this;
+        return $this->setData(UserBadgeInterface::COLUMN_ID, $id);
     }
 
     /**
      * @return int
      */
-    public function getSlot(): int
+    public function getUserId(): int
     {
-        return $this->slot_id;
+        return $this->getData(UserBadgeInterface::COLUMN_USER_ID);
     }
 
     /**
-     * @param   int  $slot
+     * @param int $user_id
      *
      * @return UserBadge
      */
-    public function setSlot(int $slot): self
+    public function setUserId(int $user_id): UserBadge
     {
-        $this->slot_id = $slot;
+        return $this->setData(UserBadgeInterface::COLUMN_USER_ID, $user_id);
+    }
 
-        return $this;
+    /**
+     * @return int
+     */
+    public function getSlotId(): int
+    {
+        return $this->getData(UserBadgeInterface::COLUMN_SLOT_ID);
+    }
+
+    /**
+     * @param int $slot_id
+     *
+     * @return UserBadge
+     */
+    public function setSlotId(int $slot_id): UserBadge
+    {
+        return $this->setData(UserBadgeInterface::COLUMN_SLOT_ID, $slot_id);
     }
 
     /**
      * @return string
      */
-    public function getCode(): string
+    public function getBadgeCode(): string
     {
-        return $this->badge_code;
+        return $this->getData(UserBadgeInterface::COLUMN_BADGE_CODE);
     }
 
     /**
-     * @param   string  $code
+     * @param string $badge_code
      *
      * @return UserBadge
      */
-    public function setCode(string $code): self
+    public function setBadgeCode(string $badge_code): UserBadge
     {
-        $this->badge_code = $code;
-
-        return $this;
-    }
-
-    /**
-     * Returns a copy of the current Entity safely
-     *
-     * @return array
-     */
-    public function jsonSerialize(): array
-    {
-        return [
-            'id' => $this->getId(),
-            'slot' => $this->getSlot(),
-            'code' => $this->getCode(),
-        ];
-    }
-
-    /**
-     * @return string
-     */
-    public function serialize(): string
-    {
-        return serialize(get_object_vars($this));
-    }
-
-    /**
-     * @param   string  $data
-     */
-    public function unserialize($data): void
-    {
-        $values = unserialize($data);
-
-        foreach ($values as $key => $value) {
-            $this->$key = $value;
-        }
+        return $this->setData(UserBadgeInterface::COLUMN_BADGE_CODE, $badge_code);
     }
 }

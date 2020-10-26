@@ -5,6 +5,9 @@
  * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
  */
 
+use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Model\Query\Collection;
+use Ares\Framework\Repository\BaseRepository;
 use League\Container\Container;
 
 if (!function_exists('__')) {
@@ -41,7 +44,7 @@ if (!function_exists('app_dir')) {
      *
      * @return string
      */
-    function app_dir() {
+    function app_dir(): string {
         return __DIR__;
     }
 }
@@ -52,7 +55,7 @@ if (!function_exists('base_dir')) {
      *
      * @return string
      */
-    function base_dir() {
+    function base_dir(): string {
         return __DIR__ . '/../';
     }
 }
@@ -63,7 +66,7 @@ if (!function_exists('cache_dir')) {
      *
      * @return string
      */
-    function cache_dir() {
+    function cache_dir(): string {
         return __DIR__ . '/../tmp/Cache';
     }
 }
@@ -74,7 +77,7 @@ if (!function_exists('tmp_dir')) {
      *
      * @return string
      */
-    function tmp_dir() {
+    function tmp_dir(): string {
         return __DIR__ . '/../tmp';
     }
 }
@@ -85,7 +88,7 @@ if (!function_exists('route_cache_dir')) {
      *
      * @return string
      */
-    function route_cache_dir() {
+    function route_cache_dir(): string {
         return __DIR__ . '/../tmp/Cache/routing';
     }
 }
@@ -96,7 +99,41 @@ if (!function_exists('container')) {
      *
      * @return Container
      */
-    function container() {
+    function container(): \League\Container\Container {
         return \Ares\Framework\Proxy\App::getContainer();
+    }
+}
+
+if (!function_exists('repository')) {
+    /**
+     * Returns repository by given namespace.
+     *
+     * @param string $repository
+     * @return BaseRepository
+     */
+    function repository(string $repository): ?BaseRepository {
+        $container = container();
+        $repository = $container->get($repository);
+
+        if (!$repository instanceof BaseRepository) {
+            throw new DataObjectManagerException(
+                __('Tried to instantiating not existing repository "%s"', [$repository]),
+                500
+            );
+        }
+
+        return $repository;
+    }
+}
+
+if (!function_exists('accumulate')) {
+    /**
+     * Returns data as new collection.
+     *
+     * @param mixed $items
+     * @return Collection
+     */
+    function accumulate($items = null): Collection {
+        return new Collection($items);
     }
 }

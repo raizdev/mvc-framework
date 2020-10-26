@@ -17,10 +17,6 @@ return [
     $container->addServiceProvider(
         new \Ares\Framework\Provider\ConfigServiceProvider()
     ),
-    // Adds our DatabaseProvider
-    $container->addServiceProvider(
-        new \Ares\Framework\Provider\DatabaseServiceProvider()
-    ),
     // Adds our LoggingProvider
     $container->addServiceProvider(
         new \Ares\Framework\Provider\LoggingServiceProvider()
@@ -40,10 +36,6 @@ return [
     // Adds our CacheServiceProvider
     $container->addServiceProvider(
         new \Ares\Framework\Provider\CacheServiceProvider()
-    ),
-    // Adds our SearchCriteriaServiceProvider
-    $container->addServiceProvider(
-        new \Ares\Framework\Provider\SearchCriteriaServiceProvider()
     ),
     // Adds our SlugServiceProvider
     $container->addServiceProvider(

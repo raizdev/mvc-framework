@@ -7,16 +7,18 @@
 
 namespace Ares\User\Service\Gift;
 
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
+use Ares\Rcon\Exception\RconException;
+use Ares\Rcon\Service\ExecuteRconCommandService;
+use Ares\Role\Exception\RoleException;
 use Ares\User\Entity\Gift\DailyGift;
 use Ares\User\Entity\User;
 use Ares\User\Exception\Gift\DailyGiftException;
 use Ares\User\Repository\Gift\DailyGiftRepository;
-use Ares\User\Repository\UserRepository;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
+use Exception;
+use JsonException;
+use PHLAK\Config\Config;
 
 /**
  * Class PickGiftService
@@ -31,46 +33,54 @@ class PickGiftService
     private DailyGiftRepository $dailyGiftRepository;
 
     /**
-     * @var UserRepository
+     * @var ExecuteRconCommandService
      */
-    private UserRepository $userRepository;
+    private ExecuteRconCommandService $executeRconCommandService;
+
+    /**
+     * @var Config
+     */
+    private Config $config;
 
     /**
      * PickGiftService constructor.
      *
-     * @param DailyGiftRepository $dailyGiftRepository
-     * @param UserRepository $userRepository
+     * @param DailyGiftRepository       $dailyGiftRepository
+     * @param ExecuteRconCommandService $executeRconCommandService
+     * @param Config                    $config
      */
     public function __construct(
         DailyGiftRepository $dailyGiftRepository,
-        UserRepository $userRepository
+        ExecuteRconCommandService $executeRconCommandService,
+        Config $config
     ) {
         $this->dailyGiftRepository = $dailyGiftRepository;
-        $this->userRepository = $userRepository;
+        $this->executeRconCommandService = $executeRconCommandService;
+        $this->config = $config;
     }
 
     /**
      * Checks and fetches user daily gift.
      *
      * @param User $user
+     *
      * @return CustomResponseInterface
      * @throws DailyGiftException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws InvalidArgumentException
+     * @throws DataObjectManagerException
+     * @throws JsonException
+     * @throws RconException
+     * @throws RoleException
      */
     public function execute(User $user): CustomResponseInterface
     {
-        $userId = $user->getId();
-
         /** @var DailyGift $dailyGift */
-        $dailyGift = $this->dailyGiftRepository->getOneBy([
-            'user_id' => $userId
-        ]);
+        $dailyGift = $this->dailyGiftRepository->get($user->getId(), 'user_id');
 
         if (!$dailyGift) {
-            $dailyGift = $this->getNewDailyGift($userId);
+            $dailyGift = $this->getNewDailyGift($user);
+
+            return response()
+                ->setData($dailyGift);
         }
 
         $pickTime = $dailyGift->getPickTime();
@@ -89,57 +99,79 @@ class PickGiftService
      * Returns random gift amount.
      *
      * @return int
-     * @throws \Exception
+     * @throws Exception
      */
     private function getRandomGiftAmount(): int
     {
-        return random_int(3000, 5000);
+        return random_int(
+            $this->config->get('hotel_settings.gift.minAmount'),
+            $this->config->get('hotel_settings.gift.maxAmount')
+        );
     }
 
     /**
      * Applies gift to user.
      *
-     * @param   DailyGift  $dailyGift
-     * @param   User       $user
-     * @param   int        $amount
+     * @param DailyGift $dailyGift
+     * @param User      $user
+     * @param int       $amount
      *
-     * @throws InvalidArgumentException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws DataObjectManagerException
+     * @throws JsonException
+     * @throws RconException
+     * @throws RoleException
      */
     private function applyGift(DailyGift $dailyGift, User $user, int $amount): void
     {
-        $credits = $user->getCredits();
-        $credits += $amount;
-
-        $user->setCredits($credits);
         $dailyGift->setPickTime(strtotime('+1 day'));
 
-        $this->userRepository->update($user);
-        $this->dailyGiftRepository->update($dailyGift);
+        $this->executeRconCommandService->execute(
+            $user->getId(),
+            [
+                'command' => 'givecredits',
+                'params' => [
+                    'user_id' => $user->getId(),
+                    'credits' => $amount
+                ]
+            ],
+            true
+        );
+
+        $this->dailyGiftRepository->save($dailyGift);
     }
 
     /**
      * Saves and returns new daily gift.
      *
-     * @param   int  $userId
+     * @param User $user
      *
-     * @return DailyGift
-     * @throws InvalidArgumentException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws \Exception
+     * @return DailyGift|null
+     * @throws DataObjectManagerException
+     * @throws JsonException
+     * @throws RconException
+     * @throws RoleException
+     * @throws Exception
      */
-    private function getNewDailyGift(int $userId): DailyGift
+    private function getNewDailyGift(User $user): ?DailyGift
     {
         $dailyGift = new DailyGift();
 
         $dailyGift
-            ->setUserId($userId)
+            ->setUserId($user->getId())
             ->setPickTime(strtotime('+1 day'))
             ->setAmount($this->getRandomGiftAmount());
+
+        $this->executeRconCommandService->execute(
+            $user->getId(),
+            [
+                'command' => 'givecredits',
+                'params' => [
+                    'user_id' => $user->getId(),
+                    'credits' => $this->getRandomGiftAmount()
+                ]
+            ],
+            true
+        );
 
         $this->dailyGiftRepository->save($dailyGift);
 

@@ -8,11 +8,8 @@
 namespace Ares\Permission\Controller;
 
 use Ares\Framework\Controller\BaseController;
-use Ares\Framework\Model\Adapter\DoctrineSearchCriteria;
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Permission\Repository\PermissionRepository;
-use Doctrine\Common\Collections\Criteria;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -29,54 +26,31 @@ class PermissionController extends BaseController
     private PermissionRepository $permissionRepository;
 
     /**
-     * @var DoctrineSearchCriteria
-     */
-    private DoctrineSearchCriteria $searchCriteria;
-
-    /**
      * PermissionController constructor.
      *
      * @param PermissionRepository   $permissionRepository
-     * @param DoctrineSearchCriteria $searchCriteria
      */
     public function __construct(
-        PermissionRepository $permissionRepository,
-        DoctrineSearchCriteria $searchCriteria
+        PermissionRepository $permissionRepository
     ) {
         $this->permissionRepository = $permissionRepository;
-        $this->searchCriteria = $searchCriteria;
     }
 
     /**
      * @param Request     $request
      * @param Response    $response
      *
-     * @param             $args
-     *
      * @return Response
-     * @throws InvalidArgumentException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws DataObjectManagerException
      */
-    public function listUserWithRank(Request $request, Response $response, $args): Response
+    public function listUserWithRank(Request $request, Response $response): Response
     {
-        $this->searchCriteria
-            ->addOrder('id', 'DESC');
-
-        $users = $this->permissionRepository->getList($this->searchCriteria, false);
-        $criteria = Criteria::create()
-            ->andWhere(
-                Criteria::expr()
-                    ->gt('id', '3')
-            );
+        $users = $this->permissionRepository->getListOfUserWithRanks();
 
         return $this->respond(
             $response,
             response()
-                ->setData(
-                    $users
-                        ->matching($criteria)
-                        ->toArray()
-                )
+                ->setData($users)
         );
     }
 }

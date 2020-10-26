@@ -7,60 +7,34 @@
 
 namespace Ares\Permission\Entity;
 
-use Ares\Framework\Entity\Entity;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\OneToMany;
+use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Model\DataObject;
+use Ares\Permission\Entity\Contract\PermissionInterface;
+use Ares\Permission\Repository\PermissionRepository;
+use Ares\User\Repository\UserRepository;
+use Ares\Framework\Model\Query\Collection;
 
 /**
  * Class Permission
  *
  * @package Ares\Permission\Entity
- *
- * @ORM\Table(name="permissions")
- * @ORM\Entity
- * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
  */
-class Permission extends Entity
+class Permission extends DataObject implements PermissionInterface
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private int $id;
+    /** @var string */
+    public const TABLE = 'permissions';
 
-    /**
-     * @ORM\Column(type="string")
-     */
-    private string $rank_name;
-
-    /**
-     * @ORM\Column(type="string")
-     */
-    private string $badge;
-
-    /**
-     * @ORM\Column(type="string")
-     */
-    private string $prefix;
-
-    /**
-     * @ORM\Column(type="string")
-     */
-    private string $prefix_color;
-
-    /**
-     * @OneToMany(targetEntity="\Ares\User\Entity\User", mappedBy="rank_data")
-     */
-    private ?Collection $user_with_rank;
+    /** @var array **/
+    public const RELATIONS = [
+      'users' => 'getUsers'
+    ];
 
     /**
      * @return int
      */
     public function getId(): int
     {
-        return $this->id;
+        return $this->getData(PermissionInterface::COLUMN_ID);
     }
 
     /**
@@ -68,31 +42,27 @@ class Permission extends Entity
      *
      * @return Permission
      */
-    public function setId(int $id): self
+    public function setId(int $id): Permission
     {
-        $this->id = $id;
-
-        return $this;
+        return $this->setData(PermissionInterface::COLUMN_ID, $id);
     }
 
     /**
      * @return string
      */
-    public function getRankName(): ?string
+    public function getRankName(): string
     {
-        return $this->rank_name;
+        return $this->getData(PermissionInterface::COLUMN_RANK_NAME);
     }
 
     /**
-     * @param   string  $rank
+     * @param string $rank_name
      *
      * @return Permission
      */
-    public function setRankName(string $rank): self
+    public function setRankName(string $rank_name): Permission
     {
-        $this->rank_name = $rank;
-
-        return $this;
+        return $this->setData(PermissionInterface::COLUMN_RANK_NAME, $rank_name);
     }
 
     /**
@@ -100,19 +70,35 @@ class Permission extends Entity
      */
     public function getBadge(): string
     {
-        return $this->badge;
+        return $this->getData(PermissionInterface::COLUMN_BADGE);
     }
 
     /**
-     * @param   string  $badge
+     * @param string $badge
      *
      * @return Permission
      */
-    public function setBadge(string $badge): self
+    public function setBadge(string $badge): Permission
     {
-        $this->badge = $badge;
+        return $this->setData(PermissionInterface::COLUMN_BADGE, $badge);
+    }
 
-        return $this;
+    /**
+     * @return int
+     */
+    public function getLevel(): int
+    {
+        return $this->getData(PermissionInterface::COLUMN_LEVEL);
+    }
+
+    /**
+     * @param int $level
+     *
+     * @return Permission
+     */
+    public function setLevel(int $level): Permission
+    {
+        return $this->setData(PermissionInterface::COLUMN_LEVEL, $level);
     }
 
     /**
@@ -120,7 +106,7 @@ class Permission extends Entity
      */
     public function getPrefix(): string
     {
-        return $this->prefix;
+        return $this->getData(PermissionInterface::COLUMN_PREFIX);
     }
 
     /**
@@ -128,11 +114,9 @@ class Permission extends Entity
      *
      * @return Permission
      */
-    public function setPrefix(string $prefix): self
+    public function setPrefix(string $prefix): Permission
     {
-        $this->prefix = $prefix;
-
-        return $this;
+        return $this->setData(PermissionInterface::COLUMN_PREFIX, $prefix);
     }
 
     /**
@@ -140,7 +124,7 @@ class Permission extends Entity
      */
     public function getPrefixColor(): string
     {
-        return $this->prefix_color;
+        return $this->getData(PermissionInterface::COLUMN_PREFIX_COLOR);
     }
 
     /**
@@ -148,66 +132,53 @@ class Permission extends Entity
      *
      * @return Permission
      */
-    public function setPrefixColor(string $prefix_color): self
+    public function setPrefixColor(string $prefix_color): Permission
     {
-        $this->prefix_color = $prefix_color;
-
-        return $this;
+        return $this->setData(PermissionInterface::COLUMN_PREFIX_COLOR, $prefix_color);
     }
-
 
     /**
      * @return Collection|null
+     *
+     * @throws DataObjectManagerException
      */
-    public function getUserWithRank(): ?Collection
+    public function getUsers(): ?Collection
     {
-        return $this->user_with_rank;
+        $users = $this->getData('users');
+
+        if ($users) {
+            return $users;
+        }
+
+        /** @var PermissionRepository $permissionRepository */
+        $permissionRepository = repository(PermissionRepository::class);
+
+        /** @var UserRepository $userRepository */
+        $userRepository = repository(UserRepository::class);
+
+        $users = $permissionRepository->getOneToMany(
+            $userRepository,
+            $this->getId(),
+            'rank'
+        );
+
+        if (!$users->toArray()) {
+            return null;
+        }
+
+        $this->setUsers($users);
+
+        return $users;
+
     }
 
     /**
-     * @param Collection|null $userWithRank
+     * @param Collection $users
      *
      * @return Permission
      */
-    public function setUserWithRank(?Collection $userWithRank): self
+    public function setUsers(Collection $users): Permission
     {
-        $this->user_with_rank = $userWithRank;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function jsonSerialize(): array
-    {
-        return [
-            'id' => $this->getId(),
-            'rank_name' => $this->getRankName(),
-            'badge' => $this->getBadge(),
-            'prefix' => $this->getPrefix(),
-            'prefix_color' => $this->getPrefixColor(),
-            'users' => $this->getUserWithRank()->toArray()
-        ];
-    }
-
-    /**
-     * @return string
-     */
-    public function serialize(): string
-    {
-        return serialize(get_object_vars($this));
-    }
-
-    /**
-     * @param string $data
-     */
-    public function unserialize($data): void
-    {
-        $values = unserialize($data);
-
-        foreach ($values as $key => $value) {
-            $this->$key = $value;
-        }
+        return $this->setData('users', $users);
     }
 }

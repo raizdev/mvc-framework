@@ -8,17 +8,13 @@
 namespace Ares\Settings\Controller;
 
 use Ares\Framework\Controller\BaseController;
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\ValidationException;
-use Ares\Framework\Model\Adapter\DoctrineSearchCriteria;
 use Ares\Framework\Service\ValidationService;
 use Ares\Settings\Entity\Setting;
 use Ares\Settings\Exception\SettingsException;
 use Ares\Settings\Repository\SettingsRepository;
 use Ares\Settings\Service\UpdateSettingsService;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -45,37 +41,29 @@ class SettingsController extends BaseController
     private UpdateSettingsService $updateSettingsService;
 
     /**
-     * @var DoctrineSearchCriteria
-     */
-    private DoctrineSearchCriteria $searchCriteria;
-
-    /**
      * SettingsController constructor.
      *
      * @param   ValidationService       $validationService
      * @param   SettingsRepository      $settingsRepository
      * @param   UpdateSettingsService   $updateSettingsService
-     * @param   DoctrineSearchCriteria  $searchCriteria
      */
     public function __construct(
         ValidationService $validationService,
         SettingsRepository $settingsRepository,
-        UpdateSettingsService $updateSettingsService,
-        DoctrineSearchCriteria $searchCriteria
+        UpdateSettingsService $updateSettingsService
     ) {
         $this->validationService     = $validationService;
         $this->settingsRepository    = $settingsRepository;
         $this->updateSettingsService = $updateSettingsService;
-        $this->searchCriteria        = $searchCriteria;
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request  $request
+     * @param Response $response
      *
      * @return Response
-     * @throws ValidationException
      * @throws SettingsException
+     * @throws ValidationException
      */
     public function get(Request $request, Response $response): Response
     {
@@ -90,9 +78,7 @@ class SettingsController extends BaseController
         $key = $parsedData['key'];
 
         /** @var Setting $configData */
-        $configData = $this->settingsRepository->getOneBy([
-            'key' => $key
-        ]);
+        $configData = $this->settingsRepository->get($key, 'key');
 
         if (!$configData) {
             throw new SettingsException(__('Key not found in Config'));
@@ -106,16 +92,15 @@ class SettingsController extends BaseController
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request  $request
+     * @param Response $response
      *
-     * @param             $args
+     * @param array    $args
      *
      * @return Response
-     * @throws InvalidArgumentException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws DataObjectManagerException
      */
-    public function list(Request $request, Response $response, $args): Response
+    public function list(Request $request, Response $response, array $args): Response
     {
         /** @var int $page */
         $page = $args['page'];
@@ -123,32 +108,28 @@ class SettingsController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        $this->searchCriteria
-            ->setPage((int) $page)
-            ->setLimit((int) $resultPerPage);
-
-        $settings = $this->settingsRepository->paginate($this->searchCriteria, false);
+        $settings = $this->settingsRepository
+            ->getPaginatedList(
+                $this->settingsRepository->getDataObjectManager(),
+                (int) $page,
+                (int) $resultPerPage
+            );
 
         return $this->respond(
             $response,
             response()
-                ->setData(
-                    $settings->toArray()
-                )
+                ->setData($settings)
         );
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request  $request
+     * @param Response $response
      *
      * @return Response
+     * @throws DataObjectManagerException
      * @throws SettingsException
      * @throws ValidationException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws InvalidArgumentException
      */
     public function set(Request $request, Response $response): Response
     {

@@ -7,12 +7,12 @@
 
 namespace Ares\Vote\Service\Votes;
 
+use Ares\Framework\Exception\CacheException;
+use Ares\Framework\Model\DataObject;
 use Ares\Vote\Exception\VoteException;
 use Ares\Vote\Interfaces\VoteTypeInterface;
 use Ares\Vote\Service\GetVoteEntityService;
 use Exception;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 
 /**
  * Class DecrementVoteService
@@ -40,25 +40,23 @@ class DecrementVoteService
     /**
      * Decrements votes by given data.
      *
-     * @param   int  $entityId
-     * @param   int  $voteEntity
-     * @param   int  $voteType
+     * @param int $entityId
+     * @param int $voteEntity
+     * @param int $voteType
      *
      * @return bool
      * @throws VoteException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws InvalidArgumentException
      */
     public function execute(int $entityId, int $voteEntity, int $voteType): bool
     {
-        $entityRepository = $this->getVoteEntityService->execute($entityId, $voteEntity);
+        $entityRepository = $this->getVoteEntityService->execute($voteEntity);
 
         if (!$entityRepository) {
             throw new VoteException(__('Related EntityRepository could not be found'));
         }
 
-        /** @var Object $entity */
-        $entity = $entityRepository->get($entityId, false);
+        /** @var DataObject $entity */
+        $entity = $entityRepository->get($entityId);
 
         if (!$entity) {
             throw new VoteException(__('Related Entity could not be found'));
@@ -77,7 +75,7 @@ class DecrementVoteService
         }
 
         try {
-            $entityRepository->update($entity);
+            $entityRepository->save($entity);
 
             return true;
         } catch (Exception $exception) {

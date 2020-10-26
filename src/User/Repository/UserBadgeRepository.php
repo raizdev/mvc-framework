@@ -7,8 +7,11 @@
 
 namespace Ares\User\Repository;
 
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Repository\BaseRepository;
 use Ares\User\Entity\UserBadge;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Ares\Framework\Model\Query\Collection;
 
 /**
  * Class UserBadgeRepository
@@ -27,20 +30,34 @@ class UserBadgeRepository extends BaseRepository
     protected string $entity = UserBadge::class;
 
     /**
-     * @param $user
+     * @param int $profileId
      *
-     * @return int|mixed|string
+     * @return Collection
      */
-    public function getSlotBadges($user): array
+    public function getListOfSlottedUserBadges(int $profileId): Collection
     {
-        return $this->getEntityManager()->createQueryBuilder()
-            ->select('b')
-            ->from(UserBadge::class, 'b')
-            ->andWhere('b.user = ?1')
-            ->andWhere('b.slot_id > 1')
-            ->orderBy('b.slot_id', 'ASC')
-            ->setParameter(1, $user)
-            ->getQuery()
-            ->getResult();
+        $searchCriteria = $this->getDataObjectManager()
+            ->where([
+                'user_id' => $profileId
+            ])
+            ->where('slot_id', '>', 1)
+            ->orderBy('slot_id', 'ASC');
+
+        return $this->getList($searchCriteria);
+    }
+
+    /**
+     * @param int $page
+     * @param int $resultPerPage
+     *
+     * @return LengthAwarePaginator
+     * @throws DataObjectManagerException
+     */
+    public function getPaginatedBadgeList(int $page, int $resultPerPage): LengthAwarePaginator
+    {
+        $searchCriteria = $this->getDataObjectManager()
+            ->orderBy('id', 'DESC');
+
+        return $this->getPaginatedList($searchCriteria, $page, $resultPerPage);
     }
 }

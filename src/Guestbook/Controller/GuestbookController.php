@@ -8,8 +8,8 @@
 namespace Ares\Guestbook\Controller;
 
 use Ares\Framework\Controller\BaseController;
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\ValidationException;
-use Ares\Framework\Model\Adapter\DoctrineSearchCriteria;
 use Ares\Framework\Service\ValidationService;
 use Ares\Guestbook\Exception\GuestbookException;
 use Ares\Guestbook\Repository\GuestbookRepository;
@@ -19,10 +19,6 @@ use Ares\Guild\Repository\GuildRepository;
 use Ares\User\Entity\User;
 use Ares\User\Exception\UserException;
 use Ares\User\Repository\UserRepository;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -42,11 +38,6 @@ class GuestbookController extends BaseController
      * @var UserRepository
      */
     private UserRepository $userRepository;
-
-    /**
-     * @var DoctrineSearchCriteria
-     */
-    private DoctrineSearchCriteria $searchCriteria;
 
     /**
      * @var ValidationService
@@ -69,7 +60,6 @@ class GuestbookController extends BaseController
      * @param GuestbookRepository         $guestbookRepository
      * @param UserRepository              $userRepository
      * @param GuildRepository             $guildRepository
-     * @param DoctrineSearchCriteria      $searchCriteria
      * @param ValidationService           $validationService
      * @param CreateGuestbookEntryService $createGuestbookEntryService
      */
@@ -77,14 +67,12 @@ class GuestbookController extends BaseController
         GuestbookRepository $guestbookRepository,
         UserRepository $userRepository,
         GuildRepository $guildRepository,
-        DoctrineSearchCriteria $searchCriteria,
         ValidationService $validationService,
         CreateGuestbookEntryService $createGuestbookEntryService
     ) {
         $this->guestbookRepository = $guestbookRepository;
         $this->userRepository = $userRepository;
         $this->guildRepository = $guildRepository;
-        $this->searchCriteria = $searchCriteria;
         $this->validationService = $validationService;
         $this->createGuestbookEntryService = $createGuestbookEntryService;
     }
@@ -94,12 +82,10 @@ class GuestbookController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws ValidationException
+     * @throws DataObjectManagerException
+     * @throws GuestbookException
      * @throws UserException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws InvalidArgumentException|GuestbookException
+     * @throws ValidationException
      */
     public function create(Request $request, Response $response): Response
     {
@@ -108,33 +94,37 @@ class GuestbookController extends BaseController
 
         $this->validationService->validate($parsedData, [
             'content' => 'required',
-            'profile' => 'numeric',
+            'profile_id' => 'numeric',
             'guild' => 'numeric'
         ]);
 
-        /** @var int $profile_id */
-        $profile_id = $parsedData['profile'] ?? 0;
+        /** @var int $profileId */
+        $profileId = $parsedData['profile_id'] ?? 0;
 
-        /** @var int $guild_id */
-        $guild_id = $parsedData['guild'] ?? 0;
+        /** @var int $guildId */
+        $guildId = $parsedData['guild_id'] ?? 0;
 
         /** @var User $user */
-        $user = $this->getUser($this->userRepository, $request, false);
+        $user = $this->getUser($this->userRepository, $request);
 
         /** @var User $profile */
-        $profile = $this->userRepository->get((int)$profile_id, false);
+        $profile = $this->userRepository->get((int) $profileId);
 
         /** @var Guild $guild */
-        $guild = $this->guildRepository->get((int)$guild_id, false);
+        $guild = $this->guildRepository->get((int) $guildId);
 
         if (!$profile && !$guild) {
             throw new GuestbookException(__('The associated Entities could not be found'));
         }
 
-        $parsedData['profile'] = $profile;
-        $parsedData['guild'] = $guild;
+        $parsedData['profile_id'] = $profile->getId();
+        $parsedData['guild_id'] = $guild->getId();
 
-        $customResponse = $this->createGuestbookEntryService->execute($user, $parsedData);
+        $customResponse = $this->createGuestbookEntryService
+            ->execute(
+                $user->getId(),
+                $parsedData
+            );
 
         return $this->respond(
             $response,
@@ -148,9 +138,9 @@ class GuestbookController extends BaseController
      * @param             $args
      *
      * @return Response
-     * @throws PhpfastcacheSimpleCacheException|InvalidArgumentException
+     * @throws DataObjectManagerException
      */
-    public function profileList(Request $request, Response $response, $args): Response
+    public function profileList(Request $request, Response $response, array $args): Response
     {
         /** @var int $page */
         $page = $args['page'];
@@ -161,26 +151,17 @@ class GuestbookController extends BaseController
         /** @var int $profileId */
         $profileId = $args['profile_id'];
 
-        $this->searchCriteria
-            ->setPage((int)$page)
-            ->setLimit((int)$resultPerPage)
-            ->addFilter('profile', (int)$profileId)
-            ->addOrder('id', 'DESC');
-
-        $entries = $this->guestbookRepository->paginate($this->searchCriteria, false);
+        $entries = $this->guestbookRepository
+            ->getPaginatedProfileEntries(
+                (int) $profileId,
+                (int) $page,
+                (int) $resultPerPage
+            );
 
         return $this->respond(
             $response,
             response()
-                ->setData([
-                    'pagination' => [
-                        'totalPages' => $entries->getPages(),
-                        'prevPage' => $entries->getPrevPage(),
-                        'nextPage' => $entries->getNextPage()
-                    ],
-                    'entries' => $entries->toArray(),
-                    'totalEntries' => $entries->getTotal()
-                ])
+                ->setData($entries)
         );
     }
 
@@ -190,9 +171,9 @@ class GuestbookController extends BaseController
      * @param             $args
      *
      * @return Response
-     * @throws PhpfastcacheSimpleCacheException|InvalidArgumentException
+     * @throws DataObjectManagerException
      */
-    public function guildList(Request $request, Response $response, $args): Response
+    public function guildList(Request $request, Response $response, array $args): Response
     {
         /** @var int $page */
         $page = $args['page'];
@@ -203,26 +184,17 @@ class GuestbookController extends BaseController
         /** @var int $guildId */
         $guildId = $args['guild_id'];
 
-        $this->searchCriteria
-            ->setPage((int)$page)
-            ->setLimit((int)$resultPerPage)
-            ->addFilter('guild', (int)$guildId)
-            ->addOrder('id', 'DESC');
-
-        $entries = $this->guestbookRepository->paginate($this->searchCriteria, false);
+        $entries = $this->guestbookRepository
+            ->getPaginatedGuildEntries(
+                (int) $guildId,
+                (int) $page,
+                (int) $resultPerPage
+            );
 
         return $this->respond(
             $response,
             response()
-                ->setData([
-                    'pagination' => [
-                        'totalPages' => $entries->getPages(),
-                        'prevPage' => $entries->getPrevPage(),
-                        'nextPage' => $entries->getNextPage()
-                    ],
-                    'entries' => $entries->toArray(),
-                    'totalEntries' => $entries->getTotal()
-                ])
+                ->setData($entries)
         );
     }
 
@@ -233,12 +205,9 @@ class GuestbookController extends BaseController
      *
      * @return Response
      * @throws GuestbookException
-     * @throws InvalidArgumentException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws DataObjectManagerException
      */
-    public function delete(Request $request, Response $response, $args): Response
+    public function delete(Request $request, Response $response, array $args): Response
     {
         /** @var int $id */
         $id = $args['id'];

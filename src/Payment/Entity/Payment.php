@@ -7,89 +7,62 @@
 
 namespace Ares\Payment\Entity;
 
-use Ares\Framework\Entity\Entity;
+use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Model\DataObject;
+use Ares\Payment\Entity\Contract\PaymentInterface;
+use Ares\Payment\Repository\PaymentRepository;
 use Ares\User\Entity\User;
-use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\JoinColumn;
-use Doctrine\ORM\Mapping\OneToOne;
+use Ares\User\Repository\UserRepository;
 
 /**
  * Class Payment
  *
  * @package Ares\Payment\Entity
- *
- * @ORM\Table(name="ares_payments")
- * @ORM\Entity(repositoryClass="Ares\Payment\Repository\PaymentRepository")
- * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
  */
-class Payment extends Entity
+class Payment extends DataObject implements PaymentInterface
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private int $id;
+    /** @var string */
+    public const TABLE = 'ares_payments';
 
-    /**
-     * @OneToOne(targetEntity="\Ares\User\Entity\User")
-     * @JoinColumn(name="user_id", referencedColumnName="id")
-     */
-    private ?User $user;
-
-    /**
-     * @ORM\Column(type="string", length=40)
-     */
-    private string $code;
-
-    /**
-     * @ORM\Column(type="integer", length=11)
-     */
-    private int $processed;
-
-    /**
-     * @ORM\Column(type="integer", length=11)
-     */
-    private int $type;
+    /** @var array **/
+    public const RELATIONS = [
+      'user' => 'getUser'
+    ];
 
     /**
      * @return int
      */
     public function getId(): int
     {
-        return $this->id;
+        return $this->getData(PaymentInterface::COLUMN_ID);
     }
 
     /**
-     * @param   int  $id
+     * @param int $id
      *
      * @return Payment
      */
-    public function setId(int $id): self
+    public function setId(int $id): Payment
     {
-        $this->id = $id;
-
-        return $this;
+        return $this->setData(PaymentInterface::COLUMN_ID, $id);
     }
 
     /**
-     * @return User|null
+     * @return int
      */
-    public function getUser(): ?User
+    public function getUserId(): int
     {
-        return $this->user;
+        return $this->getData(PaymentInterface::COLUMN_USER_ID);
     }
 
     /**
-     * @param   User|null  $user
+     * @param int $user_id
      *
      * @return Payment
      */
-    public function setUser(?User $user): self
+    public function setUserId(int $user_id): Payment
     {
-        $this->user = $user;
-
-        return $this;
+        return $this->setData(PaymentInterface::COLUMN_USER_ID, $user_id);
     }
 
     /**
@@ -97,19 +70,17 @@ class Payment extends Entity
      */
     public function getCode(): string
     {
-        return $this->code;
+        return $this->getData(PaymentInterface::COLUMN_CODE);
     }
 
     /**
-     * @param   string  $code
+     * @param string $code
      *
      * @return Payment
      */
-    public function setCode(string $code): self
+    public function setCode(string $code): Payment
     {
-        $this->code = $code;
-
-        return $this;
+        return $this->setData(PaymentInterface::COLUMN_CODE, $code);
     }
 
     /**
@@ -117,19 +88,17 @@ class Payment extends Entity
      */
     public function getProcessed(): int
     {
-        return $this->processed;
+        return $this->getData(PaymentInterface::COLUMN_PROCESSED);
     }
 
     /**
-     * @param   int  $processed
+     * @param int $processed
      *
      * @return Payment
      */
-    public function setProcessed(int $processed): self
+    public function setProcessed(int $processed): Payment
     {
-        $this->processed = $processed;
-
-        return $this;
+        return $this->setData(PaymentInterface::COLUMN_PROCESSED, $processed);
     }
 
     /**
@@ -137,52 +106,63 @@ class Payment extends Entity
      */
     public function getType(): int
     {
-        return $this->type;
+        return $this->getData(PaymentInterface::COLUMN_TYPE);
     }
 
     /**
-     * @param   int  $type
+     * @param int $type
      *
      * @return Payment
      */
-    public function setType(int $type): self
+    public function setType(int $type): Payment
     {
-        $this->type = $type;
-
-        return $this;
+        return $this->setData(PaymentInterface::COLUMN_TYPE, $type);
     }
 
     /**
-     * @return array
+     * @return User|null
+     *
+     * @throws DataObjectManagerException
      */
-    public function jsonSerialize(): array
+    public function getUser(): ?User
     {
-        return [
-            'id' => $this->getId(),
-            'user' => $this->getUser(),
-            'code' => $this->getCode(),
-            'processed' => $this->getProcessed(),
-            'type' => $this->getType()
-        ];
-    }
+        /** @var User $user */
+        $user = $this->getData('user');
 
-    /**
-     * @return string
-     */
-    public function serialize(): string
-    {
-        return serialize(get_object_vars($this));
-    }
-
-    /**
-     * @param string $data
-     */
-    public function unserialize($data): void
-    {
-        $values = unserialize($data);
-
-        foreach ($values as $key => $value) {
-            $this->$key = $value;
+        if ($user) {
+            return $user;
         }
+
+        /** @var PaymentRepository $paymentRepository **/
+        $paymentRepository = repository(PaymentRepository::class);
+
+        /** @var UserRepository $userRepository */
+        $userRepository = repository(UserRepository::class);
+
+        /** @var User $user */
+        $user = $paymentRepository->getOneToOne(
+            $userRepository,
+            $this->getUserId(),
+            'id'
+        );
+
+        if (!$user) {
+            return null;
+        }
+
+        $this->setData('user', $user);
+
+
+        return $user;
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return Payment
+     */
+    public function setUser(User $user): Payment
+    {
+        return $this->setData('user', $user);
     }
 }

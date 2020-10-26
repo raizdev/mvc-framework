@@ -15,11 +15,11 @@
         }
     ],
     "require": {
-        "ext-sockets": "*",
         "ext-json": "*",
+        "ext-sockets": "*",
         "cocur/slugify": "dev-master",
-        "doctrine/orm": "^2.7.3",
-        "javihgil/doctrine-pagination": "^1.1@dev",
+        "illuminate/database": "^9.0@dev",
+        "illuminate/pagination": "^9.0@dev",
         "league/container": "dev-master",
         "monolog/monolog": "^1.24",
         "phlak/config": "dev-master",
@@ -30,7 +30,6 @@
         "slim/psr7": "^0.5.0",
         "slim/slim": "^4.5.0",
         "statical/statical": "dev-master",
-        "symfony/console": "^4.2",
         "tuupola/cors-middleware": "dev-master",
         "vlucas/phpdotenv": "^5.0@dev"
     },

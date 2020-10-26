@@ -9,6 +9,7 @@ namespace Ares\Forum\Repository;
 
 use Ares\Forum\Entity\Topic;
 use Ares\Framework\Repository\BaseRepository;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 /**
  * Class TopicRepository
@@ -25,4 +26,18 @@ class TopicRepository extends BaseRepository
 
     /** @var string */
     protected string $entity = Topic::class;
+
+    /**
+     * @param int $page
+     * @param int $resultPerPage
+     *
+     * @return LengthAwarePaginator
+     */
+    public function getPaginatedTopicList(int $page, int $resultPerPage): LengthAwarePaginator
+    {
+        $searchCriteria = $this->getDataObjectManager()
+            ->orderBy('id', 'DESC');
+
+        return $this->getPaginatedList($searchCriteria, $page, $resultPerPage);
+    }
 }

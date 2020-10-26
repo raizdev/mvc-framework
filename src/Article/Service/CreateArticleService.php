@@ -10,13 +10,9 @@ namespace Ares\Article\Service;
 use Ares\Article\Entity\Article;
 use Ares\Article\Exception\ArticleException;
 use Ares\Article\Repository\ArticleRepository;
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
-use Ares\User\Entity\User;
 use Cocur\Slugify\Slugify;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 
 /**
  * Class CreateArticleService
@@ -52,28 +48,25 @@ class CreateArticleService
     /**
      * Creates new article with given data.
      *
-     * @param User  $user
+     * @param int   $userId
      * @param array $data
      *
      * @return CustomResponseInterface
      * @throws ArticleException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws InvalidArgumentException
+     * @throws DataObjectManagerException
      */
-    public function execute(User $user, array $data): CustomResponseInterface
+    public function execute(int $userId, array $data): CustomResponseInterface
     {
-        $article = $this->getNewArticle($user, $data);
+        $article = $this->getNewArticle($userId, $data);
 
-        $existingArticle = $this->articleRepository->getOneBy([
-            'title' => $article->getTitle()
-        ]);
+        /** @var Article $existingArticle */
+        $existingArticle = $this->articleRepository->get($article->getTitle(), 'title');
 
         if ($existingArticle) {
             throw new ArticleException(__('Article with given Title already exists.'), 422);
         }
 
+        /** @var Article $article */
         $article = $this->articleRepository->save($article);
 
         return response()
@@ -83,11 +76,12 @@ class CreateArticleService
     /**
      * Returns new article.
      *
-     * @param User $user
+     * @param int   $userId
      * @param array $data
+     *
      * @return Article
      */
-    private function getNewArticle(User $user, array $data): Article
+    private function getNewArticle(int $userId, array $data): Article
     {
         $article = new Article();
 
@@ -97,7 +91,7 @@ class CreateArticleService
             ->setDescription($data['description'])
             ->setContent($data['content'])
             ->setImage($data['image'])
-            ->setAuthor($user)
+            ->setAuthorId($userId)
             ->setHidden($data['hidden'])
             ->setPinned($data['pinned'])
             ->setLikes(0)

@@ -7,14 +7,11 @@
 
 namespace Ares\Role\Service;
 
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\Role\Entity\Role;
 use Ares\Role\Exception\RoleException;
 use Ares\Role\Repository\RoleRepository;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 
 /**
  * Class CreateRoleService
@@ -43,17 +40,13 @@ class CreateRoleService
      * @param array $data
      *
      * @return CustomResponseInterface
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
      * @throws RoleException
-     * @throws InvalidArgumentException
+     * @throws DataObjectManagerException
      */
     public function execute(array $data): CustomResponseInterface
     {
-        $existingRole = $this->roleRepository->getOneBy([
-            'name' => $data['name']
-        ]);
+        /** @var Role $existingRole */
+        $existingRole = $this->roleRepository->get($data['name'], 'name');
 
         if ($existingRole) {
             throw new RoleException(__('There is already a Role with that name'));

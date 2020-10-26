@@ -7,6 +7,7 @@
 
 namespace Ares\Role\Service;
 
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\Role\Entity\Permission;
 use Ares\Role\Entity\Role;
@@ -15,10 +16,6 @@ use Ares\Role\Exception\RoleException;
 use Ares\Role\Repository\PermissionRepository;
 use Ares\Role\Repository\RolePermissionRepository;
 use Ares\Role\Repository\RoleRepository;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 
 /**
  * Class CreateChildPermission
@@ -63,11 +60,8 @@ class CreateRolePermissionService
      * @param array $data
      *
      * @return CustomResponseInterface
-     * @throws InvalidArgumentException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
      * @throws RoleException
+     * @throws DataObjectManagerException
      */
     public function execute(array $data): CustomResponseInterface
     {
@@ -83,21 +77,22 @@ class CreateRolePermissionService
         /** @var Permission $permission */
         $permission = $this->permissionRepository->get($permissionId);
 
-
         if (!$role || !$permission) {
             throw new RoleException(__('Could not found given Role or Permission'));
         }
 
-        $existingRolePermission = $this->rolePermissionRepository->getOneBy([
-            'role' => $role,
-            'permission' => $permission
-        ]);
+        /** @var RolePermission $existingRolePermission */
+        $existingRolePermission = $this->rolePermissionRepository
+            ->getExistingRolePermission(
+                $role->getId(),
+                $permission->getId()
+            );
 
         if ($existingRolePermission) {
             throw new RoleException(__('There is already a Permission assigned to that Role'));
         }
 
-        $rolePermission = $this->getNewRolePermission($role, $permission);
+        $rolePermission = $this->getNewRolePermission($role->getId(), $permission->getId());
 
         /** @var RolePermission $rolePermission */
         $rolePermission = $this->rolePermissionRepository->save($rolePermission);
@@ -107,18 +102,18 @@ class CreateRolePermissionService
     }
 
     /**
-     * @param Role       $role
-     * @param Permission $permission
+     * @param int $roleId
+     * @param int $permissionId
      *
      * @return RolePermission
      */
-    private function getNewRolePermission(Role $role, Permission $permission): RolePermission
+    private function getNewRolePermission(int $roleId, int $permissionId): RolePermission
     {
         $rolePermission = new RolePermission();
 
         $rolePermission
-            ->setRole($role)
-            ->setPermission($permission);
+            ->setRoleId($roleId)
+            ->setPermissionId($permissionId);
 
         return $rolePermission;
     }

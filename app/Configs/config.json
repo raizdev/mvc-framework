@@ -22,6 +22,10 @@
         }
       }
     },
+    "gift": {
+      "minAmount": 3000,
+      "maxAmount": 5000
+    },
     "client": {
       "rcon_host": "127.0.0.1",
       "rcon_port": 3001

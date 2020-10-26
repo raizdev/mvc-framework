@@ -10,11 +10,8 @@ namespace Ares\Forum\Service\Topic;
 use Ares\Forum\Entity\Topic;
 use Ares\Forum\Exception\TopicException;
 use Ares\Forum\Repository\TopicRepository;
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 
 /**
  * Class EditTopicService
@@ -40,14 +37,11 @@ class EditTopicService
     }
 
     /**
-     * @param   array  $data
+     * @param array $data
      *
      * @return CustomResponseInterface
      * @throws TopicException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws InvalidArgumentException
+     * @throws DataObjectManagerException
      */
     public function execute(array $data): CustomResponseInterface
     {
@@ -61,7 +55,7 @@ class EditTopicService
         $description = $data['description'];
 
         /** @var Topic $topic */
-        $topic = $this->topicRepository->get($topic_id, false);
+        $topic = $this->topicRepository->get($topic_id);
 
         if (!$topic) {
             throw new TopicException(__('Topic not found'));
@@ -71,8 +65,10 @@ class EditTopicService
             ->setTitle($title)
             ->setDescription($description);
 
-        $topic = $this->topicRepository->update($topic);
+        /** @var Topic $topic */
+        $topic = $this->topicRepository->save($topic);
 
-        return response()->setData($topic->toArray());
+        return response()
+            ->setData($topic);
     }
 }

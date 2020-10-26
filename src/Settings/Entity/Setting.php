@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Ares (https://ares.to)
  *
@@ -7,43 +7,25 @@
 
 namespace Ares\Settings\Entity;
 
-use Ares\Framework\Entity\Entity;
-use Doctrine\ORM\Mapping as ORM;
+use Ares\Framework\Model\DataObject;
+use Ares\Settings\Entity\Contract\SettingInterface;
 
 /**
  * Class Settings
  *
  * @package Ares\Settings\Entity
- *
- * @ORM\Entity
- * @ORM\Table(name="ares_settings")
- * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
  */
-class Setting extends Entity
+class Setting extends DataObject implements SettingInterface
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private int $id;
-
-    /**
-     * @ORM\Column(type="string", length=200)
-     */
-    private string $key;
-
-    /**
-     * @ORM\Column(type="string", length=200)
-     */
-    private string $value;
+    /** @var string */
+    public const TABLE = 'ares_settings';
 
     /**
      * @return int
      */
     public function getId(): int
     {
-        return $this->id;
+        return $this->getData(SettingInterface::COLUMN_ID);
     }
 
     /**
@@ -51,11 +33,9 @@ class Setting extends Entity
      *
      * @return Setting
      */
-    public function setId(int $id): self
+    public function setId(int $id): Setting
     {
-        $this->id = $id;
-
-        return $this;
+        return $this->setData(SettingInterface::COLUMN_ID, $id);
     }
 
     /**
@@ -63,7 +43,7 @@ class Setting extends Entity
      */
     public function getKey(): string
     {
-        return $this->key;
+        return $this->getData(SettingInterface::COLUMN_KEY);
     }
 
     /**
@@ -71,11 +51,9 @@ class Setting extends Entity
      *
      * @return Setting
      */
-    public function setKey(string $key): self
+    public function setKey(string $key): Setting
     {
-        $this->key = $key;
-
-        return $this;
+        return $this->setData(SettingInterface::COLUMN_KEY, $key);
     }
 
     /**
@@ -83,7 +61,7 @@ class Setting extends Entity
      */
     public function getValue(): string
     {
-        return $this->value;
+        return $this->getData(SettingInterface::COLUMN_VALUE);
     }
 
     /**
@@ -91,43 +69,8 @@ class Setting extends Entity
      *
      * @return Setting
      */
-    public function setValue(string $value): self
+    public function setValue(string $value): Setting
     {
-        $this->value = $value;
-
-        return $this;
-    }
-
-    /**
-     * Returns a copy of the current Entity safely
-     *
-     * @return array
-     */
-    public function jsonSerialize(): array
-    {
-        return [
-            'key' => $this->getKey(),
-            'value' => $this->getValue()
-        ];
-    }
-
-    /**
-     * @return string
-     */
-    public function serialize(): string
-    {
-        return serialize(get_object_vars($this));
-    }
-
-    /**
-     * @param $data
-     */
-    public function unserialize($data): void
-    {
-        $values = unserialize($data);
-
-        foreach ($values as $key => $value) {
-            $this->$key = $value;
-        }
+        return $this->setData(SettingInterface::COLUMN_VALUE, $value);
     }
 }

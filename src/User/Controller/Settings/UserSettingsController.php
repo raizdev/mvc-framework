@@ -8,8 +8,10 @@
 namespace Ares\User\Controller\Settings;
 
 use Ares\Framework\Controller\BaseController;
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
+use Ares\User\Entity\User;
 use Ares\User\Exception\UserException;
 use Ares\User\Exception\UserSettingsException;
 use Ares\User\Repository\UserRepository;
@@ -17,10 +19,6 @@ use Ares\User\Service\Settings\ChangeEmailService;
 use Ares\User\Service\Settings\ChangeGeneralSettingsService;
 use Ares\User\Service\Settings\ChangePasswordService;
 use Ares\User\Service\Settings\ChangeUsernameService;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -64,12 +62,12 @@ class UserSettingsController extends BaseController
     /**
      * UserSettingsController constructor.
      *
-     * @param ValidationService $validationService
+     * @param ValidationService            $validationService
      * @param ChangeGeneralSettingsService $changeGeneralSettingsService
-     * @param ChangePasswordService $changePasswordService
-     * @param ChangeEmailService $changeEmailService
-     * @param ChangeUsernameService $changeUsernameService
-     * @param UserRepository $userRepository
+     * @param ChangePasswordService        $changePasswordService
+     * @param ChangeEmailService           $changeEmailService
+     * @param ChangeUsernameService        $changeUsernameService
+     * @param UserRepository               $userRepository
      */
     public function __construct(
         ValidationService $validationService,
@@ -92,13 +90,10 @@ class UserSettingsController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws ValidationException
      * @throws UserException
      * @throws UserSettingsException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws InvalidArgumentException
+     * @throws ValidationException
+     * @throws DataObjectManagerException
      */
     public function changeGeneralSettings(Request $request, Response $response): Response
     {
@@ -115,8 +110,14 @@ class UserSettingsController extends BaseController
             'ignore_pets' => 'required'
         ]);
 
-        $user = $this->getUser($this->userRepository, $request, false);
-        $customResponse = $this->changeGeneralSettingsService->execute($user, $parsedData);
+        /** @var User $user */
+        $user = $this->getUser($this->userRepository, $request);
+
+        $customResponse = $this->changeGeneralSettingsService
+            ->execute(
+                $user,
+                $parsedData
+            );
 
         return $this->respond(
             $response,
@@ -129,10 +130,7 @@ class UserSettingsController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws InvalidArgumentException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws DataObjectManagerException
      * @throws UserException
      * @throws UserSettingsException
      * @throws ValidationException
@@ -147,12 +145,15 @@ class UserSettingsController extends BaseController
             'password' => 'required'
         ]);
 
-        $user = $this->getUser($this->userRepository, $request, false);
-        $customResponse = $this->changePasswordService->execute(
-            $user,
-            $parsedData['new_password'],
-            $parsedData['password']
-        );
+        /** @var User $user */
+        $user = $this->getUser($this->userRepository, $request);
+
+        $customResponse = $this->changePasswordService
+            ->execute(
+                $user,
+                $parsedData['new_password'],
+                $parsedData['password']
+            );
 
         return $this->respond(
             $response,
@@ -165,10 +166,7 @@ class UserSettingsController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws InvalidArgumentException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws DataObjectManagerException
      * @throws UserException
      * @throws UserSettingsException
      * @throws ValidationException
@@ -183,7 +181,9 @@ class UserSettingsController extends BaseController
             'password' => 'required'
         ]);
 
-        $user = $this->getUser($this->userRepository, $request, false);
+        /** @var User $user */
+        $user = $this->getUser($this->userRepository, $request);
+
         $customResponse = $this->changeEmailService->execute(
             $user,
             $parsedData['email'],
@@ -201,10 +201,7 @@ class UserSettingsController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws InvalidArgumentException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws DataObjectManagerException
      * @throws UserException
      * @throws UserSettingsException
      * @throws ValidationException
@@ -219,7 +216,9 @@ class UserSettingsController extends BaseController
             'password' => 'required'
         ]);
 
-        $user = $this->getUser($this->userRepository, $request, false);
+        /** @var User $user */
+        $user = $this->getUser($this->userRepository, $request);
+
         $customResponse = $this->changeUsernameService->execute(
             $user,
             $parsedData['username'],

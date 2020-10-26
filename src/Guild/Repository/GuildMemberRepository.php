@@ -7,10 +7,10 @@
 
 namespace Ares\Guild\Repository;
 
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Guild\Entity\GuildMember;
-use Ares\Guild\Entity\Guild;
-use Doctrine\ORM\Query\Expr\Join;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 /**
  * Class GuildMemberRepository
@@ -29,23 +29,57 @@ class GuildMemberRepository extends BaseRepository
     protected string $entity = GuildMember::class;
 
     /**
-     * @return array
+     * @param int $profileId
+     * @param int $page
+     * @param int $resultPerPage
+     *
+     * @return LengthAwarePaginator
+     * @throws DataObjectManagerException
      */
-    public function getMemberCountByGuild(): array
+    public function getPaginatedProfileGuilds(int $profileId, int $page, int $resultPerPage): LengthAwarePaginator
     {
-        return $this->getEntityManager()->createQueryBuilder()
-            ->select('g.id, count(m.guild) as member')
-            ->from(Guild::class, 'g')
+        $searchCriteria = $this->getDataObjectManager()
+            ->select(['user_id', 'guild_id'])
             ->leftJoin(
-                GuildMember::class,
-                'm',
-                Join::WITH,
-                'g.id = m.guild'
+                'guilds',
+                'guilds_members.guild_id',
+                '=',
+                'guilds.id'
             )
-            ->groupBy('g.id')
-            ->orderBy('member', 'DESC')
-            ->setMaxResults(1)
-            ->getQuery()
-            ->getResult();
+            ->where('guilds_members.user_id', $profileId)
+            ->orderBy('guilds.id', 'DESC')
+            ->addRelation('guilds');
+
+        return $this->getPaginatedList($searchCriteria, $page, $resultPerPage);
+    }
+
+    /**
+     * @param int $guildId
+     *
+     * @return int
+     */
+    public function getGuildMemberCount(int $guildId): int
+    {
+        $searchCriteria = $this->getDataObjectManager()
+            ->where('guild_id', $guildId);
+
+        return $this->getList($searchCriteria)->count();
+    }
+
+    /**
+     * @param int $guildId
+     * @param int $page
+     * @param int $resultPerPage
+     *
+     * @return LengthAwarePaginator
+     * @throws DataObjectManagerException
+     */
+    public function getPaginatedGuildMembers(int $guildId, int $page, int $resultPerPage): LengthAwarePaginator
+    {
+        $searchCriteria = $this->getDataObjectManager()
+            ->where('guild_id', $guildId)
+            ->orderBy('level_id', 'ASC');
+
+        return $this->getPaginatedList($searchCriteria, $page, $resultPerPage);
     }
 }

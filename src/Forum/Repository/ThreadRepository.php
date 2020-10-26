@@ -8,9 +8,10 @@
 namespace Ares\Forum\Repository;
 
 use Ares\Forum\Entity\Thread;
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Repository\BaseRepository;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Ares\Framework\Model\Query\Collection;
 
 /**
  * Class ThreadRepository
@@ -29,29 +30,40 @@ class ThreadRepository extends BaseRepository
     protected string $entity = Thread::class;
 
     /**
-     * @param int    $topic
+     * @param int    $topicId
      * @param string $slug
-     * @param bool   $cachedEntity
      *
-     * @return mixed|object|null
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws InvalidArgumentException
+     * @return Collection
+     * @throws DataObjectManagerException
      */
-    public function findByCriteria(int $topic, string $slug, bool $cachedEntity = true)
+    public function getSingleThread(int $topicId, string $slug): Collection
     {
-        $entity = $this->cacheService->get($this->cachePrefix . $slug);
+        $searchCriteria = $this->getDataObjectManager()
+            ->addRelation('user')
+            ->where([
+                'topic_id' => $topicId,
+                'slug' => $slug
+            ]);
 
-        if ($entity && $cachedEntity) {
-            return unserialize($entity);
-        }
+        /** @var Thread $thread */
+        return $this->getList($searchCriteria)->first();
+    }
 
-        $entity = $this->getOneBy([
-            'topic' => $topic,
-            'slug' => $slug
-        ]);
+    /**
+     * @param int $topicId
+     * @param int $page
+     * @param int $resultPerPage
+     *
+     * @return LengthAwarePaginator
+     * @throws DataObjectManagerException
+     */
+    public function getPaginatedThreadList(int $topicId, int $page, int $resultPerPage): LengthAwarePaginator
+    {
+        $searchCriteria = $this->getDataObjectManager()
+            ->addRelation('user')
+            ->where('topic_id', (int) $topicId)
+            ->orderBy('id', 'DESC');
 
-        $this->cacheService->set($this->cachePrefix . $slug, serialize($entity));
-
-        return $entity;
+        return $this->getPaginatedList($searchCriteria, $page, $resultPerPage);
     }
 }

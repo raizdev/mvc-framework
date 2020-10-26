@@ -7,22 +7,18 @@
 
 namespace Ares\Article\Controller;
 
-use Ares\Article\Entity\Comment;
 use Ares\Article\Exception\CommentException;
 use Ares\Article\Repository\CommentRepository;
 use Ares\Article\Service\CreateCommentService;
+use Ares\Article\Service\EditCommentService;
 use Ares\Framework\Controller\BaseController;
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\ValidationException;
-use Ares\Framework\Model\Adapter\DoctrineSearchCriteria;
 use Ares\Framework\Service\ValidationService;
 use Ares\User\Entity\User;
 use Ares\User\Exception\UserException;
 use Ares\User\Repository\UserRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
-use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
-use Psr\Cache\InvalidArgumentException;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -37,11 +33,6 @@ class CommentController extends BaseController
      * @var CommentRepository
      */
     private CommentRepository $commentRepository;
-
-    /**
-     * @var DoctrineSearchCriteria
-     */
-    private DoctrineSearchCriteria $searchCriteria;
 
     /**
      * @var ValidationService
@@ -59,43 +50,45 @@ class CommentController extends BaseController
     private UserRepository $userRepository;
 
     /**
+     * @var EditCommentService
+     */
+    private EditCommentService $editCommentService;
+
+    /**
      * CommentController constructor.
      *
-     * @param   CommentRepository       $commentRepository
-     * @param   DoctrineSearchCriteria  $searchCriteria
-     * @param   ValidationService       $validationService
-     * @param   CreateCommentService    $createCommentService
-     * @param   UserRepository          $userRepository
+     * @param CommentRepository    $commentRepository
+     * @param ValidationService    $validationService
+     * @param CreateCommentService $createCommentService
+     * @param EditCommentService   $editCommentService
+     * @param UserRepository       $userRepository
      */
     public function __construct(
         CommentRepository $commentRepository,
-        DoctrineSearchCriteria $searchCriteria,
         ValidationService $validationService,
         CreateCommentService $createCommentService,
+        EditCommentService $editCommentService,
         UserRepository $userRepository
     ) {
         $this->commentRepository    = $commentRepository;
-        $this->searchCriteria       = $searchCriteria;
         $this->validationService    = $validationService;
         $this->createCommentService = $createCommentService;
+        $this->editCommentService   = $editCommentService;
         $this->userRepository       = $userRepository;
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
-     * @param             $args
+     * @param Request     $request
+     * @param Response    $response
      *
      * @return Response
-     * @throws InvalidArgumentException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
-     * @throws ValidationException
-     * @throws UserException
+     * @throws CacheException
      * @throws CommentException
+     * @throws DataObjectManagerException
+     * @throws UserException
+     * @throws ValidationException
      */
-    public function create(Request $request, Response $response, $args): Response
+    public function create(Request $request, Response $response): Response
     {
         /** @var array $parsedData */
         $parsedData = $request->getParsedBody();
@@ -106,9 +99,9 @@ class CommentController extends BaseController
         ]);
 
         /** @var User $user */
-        $user = $this->getUser($this->userRepository, $request, false);
+        $user = $this->getUser($this->userRepository, $request);
 
-        $customResponse = $this->createCommentService->execute($user, $parsedData);
+        $customResponse = $this->createCommentService->execute($user->getId(), $parsedData);
 
         return $this->respond(
             $response,
@@ -117,16 +110,14 @@ class CommentController extends BaseController
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request  $request
+     * @param Response $response
      *
      * @return Response
      * @throws CommentException
-     * @throws InvalidArgumentException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
      * @throws ValidationException
+     * @throws CacheException
+     * @throws DataObjectManagerException
      */
     public function edit(Request $request, Response $response): Response
     {
@@ -138,36 +129,23 @@ class CommentController extends BaseController
             'content'    => 'required'
         ]);
 
-        /** @var Comment $comment */
-        $comment = $this->commentRepository->get($parsedData['comment_id'], false);
-
-        if (!$comment) {
-            throw new CommentException(__('Related Comment could not be found'));
-        }
-
-        $comment
-            ->setContent($parsedData['content'])
-            ->setIsEdited(1);
-
-        $comment = $this->commentRepository->update($comment);
+        $customResponse = $this->editCommentService->execute($parsedData);
 
         return $this->respond(
             $response,
-            response()
-                ->setData($comment)
+            $customResponse
         );
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request     $request
+     * @param Response    $response
      * @param             $args
      *
      * @return Response
-     * @throws InvalidArgumentException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws DataObjectManagerException
      */
-    public function list(Request $request, Response $response, $args): Response
+    public function list(Request $request, Response $response, array $args): Response
     {
         /** @var int $articleId */
         $articleId = $args['article_id'];
@@ -178,42 +156,31 @@ class CommentController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        $this->searchCriteria->setPage((int) $page)
-            ->setLimit((int) $resultPerPage)
-            ->addFilter('article', (int) $articleId)
-            ->addOrder('id', 'DESC');
-
-        /** @var ArrayCollection $pinnedArticles */
-        $comments = $this->commentRepository->paginate($this->searchCriteria, false);
+        /** @var LengthAwarePaginator $comments */
+        $comments = $this->commentRepository
+            ->getPaginatedCommentList(
+                (int) $articleId,
+                (int) $page,
+                (int) $resultPerPage
+            );
 
         return $this->respond(
             $response,
             response()
-                ->setData([
-                    'pagination'    => [
-                        'totalPages' => $comments->getPages(),
-                        'prevPage'   => $comments->getPrevPage(),
-                        'nextPage'   => $comments->getNextPage()
-                    ],
-                    'comments'      => $comments->toArray(),
-                    'totalComments' => $comments->getTotal()
-                ])
+                ->setData($comments)
         );
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request     $request
+     * @param Response    $response
      * @param             $args
      *
      * @return Response
      * @throws CommentException
-     * @throws InvalidArgumentException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PhpfastcacheSimpleCacheException
+     * @throws DataObjectManagerException
      */
-    public function delete(Request $request, Response $response, $args): Response
+    public function delete(Request $request, Response $response, array $args): Response
     {
         /** @var int $id */
         $id = $args['id'];

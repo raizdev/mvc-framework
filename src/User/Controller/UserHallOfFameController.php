@@ -8,25 +8,20 @@
 namespace Ares\User\Controller;
 
 use Ares\Framework\Controller\BaseController;
-use Ares\User\Exception\UserException;
+use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\User\Repository\UserCurrencyRepository;
 use Ares\User\Repository\UserRepository;
 use Ares\User\Repository\UserSettingRepository;
-use Doctrine\Common\Collections\ArrayCollection;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 /**
- * @TODO    needs refactoring
- *
  * Class UserHallOfFameController
  *
  * @package Ares\User\Controller
  */
 class UserHallOfFameController extends BaseController
 {
-    /** @var int */
-    private const TOP_USER_QUANTITY = 3;
-
     /**
      * @var UserRepository
      */
@@ -38,60 +33,59 @@ class UserHallOfFameController extends BaseController
     private UserSettingRepository $userSettingRepository;
 
     /**
+     * @var UserCurrencyRepository
+     */
+    private UserCurrencyRepository $userCurrencyRepository;
+
+    /**
      * UserHallOfFameController constructor.
      *
-     * @param   UserRepository         $userRepository
-     * @param   UserSettingRepository  $userSettingRepository
+     * @param UserRepository         $userRepository
+     * @param UserSettingRepository  $userSettingRepository
+     * @param UserCurrencyRepository $userCurrencyRepository
      */
     public function __construct(
         UserRepository $userRepository,
-        UserSettingRepository $userSettingRepository
+        UserSettingRepository $userSettingRepository,
+        UserCurrencyRepository $userCurrencyRepository
     ) {
-        $this->userRepository        = $userRepository;
+        $this->userRepository = $userRepository;
         $this->userSettingRepository = $userSettingRepository;
+        $this->userCurrencyRepository = $userCurrencyRepository;
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request  $request
+     * @param Response $response
      *
      * @return Response
      */
     public function topCredits(Request $request, Response $response): Response
     {
-        /** @var ArrayCollection $users */
-        $users = $this->userRepository->findBy([], [
-            'credits' => 'DESC'
-        ], self::TOP_USER_QUANTITY);
+        $users = $this->userRepository->getTopCredits();
 
         return $this->respond(
             $response,
             response()
-                ->setData(
-                    $users->toArray()
-                )
+                ->setData($users)
         );
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request  $request
+     * @param Response $response
      *
      * @return Response
+     * @throws DataObjectManagerException
      */
     public function topDiamonds(Request $request, Response $response): Response
     {
-        /** @var ArrayCollection $users */
-        $users = $this->userRepository->findBy([], [
-            'points' => 'DESC'
-        ], self::TOP_USER_QUANTITY);
+        $users = $this->userCurrencyRepository->getTopDiamonds();
 
         return $this->respond(
             $response,
             response()
-                ->setData(
-                    $users->toArray()
-                )
+                ->setData($users)
         );
     }
 
@@ -100,42 +94,34 @@ class UserHallOfFameController extends BaseController
      * @param Response $response
      *
      * @return Response
+     * @throws DataObjectManagerException
      */
-    public function topPixels(Request $request, Response $response): Response
+    public function topDuckets(Request $request, Response $response): Response
     {
-        /** @var ArrayCollection $users */
-        $users = $this->userRepository->findBy([], [
-            'pixels' => 'DESC'
-        ], self::TOP_USER_QUANTITY);
+        $users = $this->userCurrencyRepository->getTopDuckets();
 
         return $this->respond(
             $response,
             response()
-                ->setData(
-                    $users->toArray()
-                )
+                ->setData($users)
         );
     }
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request  $request
+     * @param Response $response
      *
      * @return Response
+     * @throws DataObjectManagerException
      */
     public function topAchievement(Request $request, Response $response): Response
     {
-        /** @var ArrayCollection $users */
-        $users = $this->userSettingRepository->findBy([], [
-            'achievement_score' => 'DESC'
-        ], self::TOP_USER_QUANTITY);
+        $users = $this->userSettingRepository->getTopAchievements();
 
         return $this->respond(
             $response,
             response()
-                ->setData(
-                    $users->toArray()
-                )
+                ->setData($users)
         );
     }
 
@@ -144,21 +130,15 @@ class UserHallOfFameController extends BaseController
      * @param Response $response
      *
      * @return Response
+     * @throws DataObjectManagerException
      */
     public function topOnlineTime(Request $request, Response $response): Response
     {
-        /** @var ArrayCollection $users */
-        $users = $this->userSettingRepository->findBy([], [
-            'online_time' => 'DESC'
-        ], self::TOP_USER_QUANTITY);
-
+        $users = $this->userSettingRepository->getTopOnlineTime();
 
         return $this->respond(
             $response,
-            response()
-                ->setData(
-                    $users->toArray()
-                )
+            response()->setData($users)
         );
     }
 }

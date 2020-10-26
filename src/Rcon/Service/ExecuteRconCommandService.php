@@ -7,13 +7,13 @@
 
 namespace Ares\Rcon\Service;
 
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\Rcon\Exception\RconException;
 use Ares\Rcon\Model\Rcon;
 use Ares\Rcon\Repository\RconRepository;
 use Ares\Role\Exception\RoleException;
 use Ares\Role\Service\CheckAccessService;
-use Doctrine\ORM\Query\QueryException;
 use JsonException;
 
 /**
@@ -59,33 +59,34 @@ class ExecuteRconCommandService
      * @param int   $userId
      * @param array $data
      *
+     * @param bool  $fromSystem
+     *
      * @return CustomResponseInterface
+     * @throws DataObjectManagerException
      * @throws JsonException
-     * @throws QueryException
      * @throws RconException
      * @throws RoleException
      */
-    public function execute(int $userId, array $data): CustomResponseInterface
+    public function execute(int $userId, array $data, bool $fromSystem = false): CustomResponseInterface
     {
         /** @var \Ares\Rcon\Entity\Rcon $existingCommand */
-        $existingCommand = $this->rconRepository->getOneBy([
-            'command' => $data['command']
-        ]);
+        $existingCommand = $this->rconRepository->get($data['command'], 'command');
 
         if (!$existingCommand) {
             throw new RconException(__('Could not found the given command to execute'), 404);
         }
 
-        // @Todo Can be refactored dont hate me pls
-        if ($existingCommand->getPermission() === null) {
-            $permissionName = null;
-        } else {
+        if (!$fromSystem && $existingCommand->getPermission() !== null) {
             $permissionName = $existingCommand
                 ->getPermission()
                 ->getName();
         }
 
-        $hasAccess = $this->checkAccessService->execute($userId, $permissionName);
+        $hasAccess = $this->checkAccessService
+            ->execute(
+                $userId,
+                $permissionName ?? null
+            );
 
         if (!$hasAccess) {
             throw new RoleException(__('You dont have the special rights to execute that action'));
@@ -96,8 +97,7 @@ class ExecuteRconCommandService
             ->sendCommand(
                 $this->rcon->getSocket(),
                 $data['command'],
-                $data['param'] ?? null,
-                $data['value'] ?? null
+                $data['params'] ?? null
             );
 
         return response()

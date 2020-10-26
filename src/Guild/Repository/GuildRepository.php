@@ -7,11 +7,11 @@
 
 namespace Ares\Guild\Repository;
 
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\SearchCriteriaInterface;
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Guild\Entity\Guild;
-use Ares\Guild\Entity\GuildMember;
-use Doctrine\ORM\Query\Expr\Join;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 /**
  * Class GuildRepository
@@ -30,47 +30,67 @@ class GuildRepository extends BaseRepository
     protected string $entity = Guild::class;
 
     /**
-     * @param SearchCriteriaInterface $searchCriteria
-     * @return int|mixed|string
+     * @param string $term
+     * @param int    $page
+     * @param int    $resultPerPage
+     *
+     * @return LengthAwarePaginator
+     * @throws DataObjectManagerException
      */
-    public function profileGuilds(SearchCriteriaInterface $searchCriteria)
+    public function searchGuilds(string $term, int $page, int $resultPerPage): LengthAwarePaginator
     {
-        return $this->createPaginatedQueryBuilder()
-            ->addPagination($searchCriteria->getPage(), $searchCriteria->getLimit())
-            ->select('g.id, g.name, g.description, g.badge')
-            ->from(Guild::class, 'g')
-            ->join(
-                GuildMember::class,
-                'm',
-                Join::WITH,
-                'g.id = m.guild'
+        $searchCriteria = $this->getDataObjectManager()
+            ->selectRaw(
+                'guilds.id, guilds.name, guilds.description, guilds.badge, guilds.date_created, 
+                count(guilds_members.guild_id) as member_count'
             )
-            ->getQuery()
-            ->getResult();
+            ->leftJoin(
+                'guilds_members',
+                'guilds.id',
+                '=',
+                'guilds_members.guild_id'
+            )
+            ->where('guilds.name', 'LIKE', '%'.$term.'%')
+            ->orderBy('member_count', 'DESC');
+
+        return $this->getPaginatedList($searchCriteria, $page, $resultPerPage);
     }
 
     /**
-     * Searchs guilds by search term.
-     *
-     * @param string $term
-     * @return int|mixed|string
+     * @return Guild|null
      */
-    public function searchGuilds(string $term): array
+    public function getMostMemberGuild(): ?Guild
     {
-        return $this->getEntityManager()->createQueryBuilder()
-            ->select('g.id, g.name, g.description, g.badge, count(gm.guild) as online')
-            ->from(Guild::class, 'g')
-            ->leftJoin(
-                GuildMember::class,
-                'gm',
-                Join::WITH,
-                'g.id = gm.guild'
+        $searchCriteria = $this->getDataObjectManager()
+            ->selectRaw(
+                'guilds.id, guilds.name, guilds.description, guilds.badge, guilds.date_created, 
+                count(guilds_members.guild_id) as member_count'
             )
-            ->where('g.name LIKE :term')
-            ->orderBy('online', 'DESC')
-            ->groupBy('g.id')
-            ->setParameter('term', '%'.$term.'%')
-            ->getQuery()
-            ->getResult();
+            ->leftJoin(
+                'guilds_members',
+                'guilds.id',
+                '=',
+                'guilds_members.guild_id'
+            )
+            ->orderBy('member_count', 'DESC');
+
+        return $this->getList($searchCriteria)->first();
+    }
+
+    /**
+     * @param int $page
+     * @param int $resultPerPage
+     *
+     * @return LengthAwarePaginator
+     * @throws DataObjectManagerException
+     */
+    public function getPaginatedGuildList(int $page, int $resultPerPage): LengthAwarePaginator
+    {
+        $searchCriteria = $this->getDataObjectManager()
+            ->addRelation('user')
+            ->addRelation('room')
+            ->orderBy('id', 'DESC');
+
+        return $this->getPaginatedList($searchCriteria, $page, $resultPerPage);
     }
 }

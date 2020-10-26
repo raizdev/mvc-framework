@@ -1,10 +1,4 @@
-<?php
-/**
- * Ares (https://ares.to)
- *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
- */
-
+<?php declare(strict_types=1);
 /**
  * Ares (https://ares.to)
  *
@@ -13,162 +7,75 @@
 
 namespace Ares\Forum\Entity;
 
-use Ares\Framework\Entity\Entity;
+use Ares\Forum\Entity\Contract\ThreadInterface;
+use Ares\Forum\Repository\ThreadRepository;
+use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Model\DataObject;
 use Ares\User\Entity\User;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
+use Ares\User\Repository\UserRepository;
 
 /**
  * Class Thread
  *
  * @package Ares\Forum\Entity
- *
- * @ORM\Entity
- * @ORM\Table(name="ares_forum_threads", uniqueConstraints={@ORM\UniqueConstraint(name="title", columns={"title"})}))
- * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
- * @ORM\HasLifecycleCallbacks
  */
-class Thread extends Entity
+class Thread extends DataObject implements ThreadInterface
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private int $id;
-
-    /**
-     * @ORM\OneToOne(targetEntity="\Ares\Forum\Entity\Topic")
-     */
-    private ?Topic $topic;
-
-    /**
-     * @ORM\OneToOne(targetEntity="\Ares\User\Entity\User")
-     */
-    private ?User $user;
-
-    /**
-     * @ORM\OneToMany(targetEntity="\Ares\Forum\Entity\Comment", mappedBy="thread", fetch="EAGER")
-     */
-    private ?Collection $comments;
-
-    /**
-     * @ORM\Column(type="string", length=100)
-     */
-    private string $slug;
-
-    /**
-     * @ORM\Column(type="string", length=100)
-     */
-    private string $title;
-
-    /**
-     * @ORM\Column(type="string")
-     */
-    private string $description;
-
-    /**
-     * @ORM\Column(type="string")
-     */
-    private string $content;
-
-    /**
-     * @ORM\Column(type="integer", length=11)
-     */
-    private int $likes;
-
-    /**
-     * @ORM\Column(type="integer", length=11)
-     */
-    private int $dislikes;
-
-    /**
-     * @ORM\Column(type="datetime", nullable = true)
-     */
-    private \DateTime $created_at;
-
-    /**
-     * @ORM\Column(type="datetime", nullable = true)
-     */
-    private \DateTime $updated_at;
+    /** @var string */
+    public const TABLE = 'ares_forum_threads';
 
     /**
      * @return int
      */
     public function getId(): int
     {
-        return $this->id;
+        return $this->getData(ThreadInterface::COLUMN_ID);
     }
 
     /**
-     * @param   int  $id
+     * @param int $id
      *
      * @return Thread
      */
-    public function setId(int $id): self
+    public function setId(int $id): Thread
     {
-        $this->id = $id;
-
-        return $this;
+        return $this->setData(ThreadInterface::COLUMN_ID, $id);
     }
 
     /**
-     * @return Topic|null
+     * @return int
      */
-    public function getTopic(): ?Topic
+    public function getTopicId(): int
     {
-        return $this->topic;
+        return $this->getData(ThreadInterface::COLUMN_TOPIC_ID);
     }
 
     /**
-     * @param   Topic|null  $topic
+     * @param int $topic_id
      *
      * @return Thread
      */
-    public function setTopic(?Topic $topic): self
+    public function setTopicId(int $topic_id): Thread
     {
-        $this->topic = $topic;
-
-        return $this;
+        return $this->setData(ThreadInterface::COLUMN_TOPIC_ID, $topic_id);
     }
 
     /**
-     * @return User|null
+     * @return int
      */
-    public function getUser(): ?User
+    public function getUserId(): int
     {
-        return $this->user;
+        return $this->getData(ThreadInterface::COLUMN_USER_ID);
     }
 
     /**
-     * @param   User|null  $user
+     * @param int $user_id
      *
      * @return Thread
      */
-    public function setUser(?User $user): self
+    public function setUserId(int $user_id): Thread
     {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|null
-     */
-    public function getComments(): ?Collection
-    {
-        return $this->comments;
-    }
-
-    /**
-     * @param Collection|null $comments
-     * @return Thread
-     */
-    public function setComments(?Collection $comments): self
-    {
-        $this->comments = $comments;
-
-        return $this;
+        return $this->setData(ThreadInterface::COLUMN_USER_ID, $user_id);
     }
 
     /**
@@ -176,7 +83,7 @@ class Thread extends Entity
      */
     public function getSlug(): string
     {
-        return $this->slug;
+        return $this->getData(ThreadInterface::COLUMN_SLUG);
     }
 
     /**
@@ -184,11 +91,9 @@ class Thread extends Entity
      *
      * @return Thread
      */
-    public function setSlug(string $slug): self
+    public function setSlug(string $slug): Thread
     {
-        $this->slug = $slug;
-
-        return $this;
+        return $this->setData(ThreadInterface::COLUMN_SLUG, $slug);
     }
 
     /**
@@ -196,19 +101,17 @@ class Thread extends Entity
      */
     public function getTitle(): string
     {
-        return $this->title;
+        return $this->getData(ThreadInterface::COLUMN_TITLE);
     }
 
     /**
-     * @param   string  $title
+     * @param string $title
      *
      * @return Thread
      */
-    public function setTitle(string $title): self
+    public function setTitle(string $title): Thread
     {
-        $this->title = $title;
-
-        return $this;
+        return $this->setData(ThreadInterface::COLUMN_TITLE, $title);
     }
 
     /**
@@ -216,19 +119,17 @@ class Thread extends Entity
      */
     public function getDescription(): string
     {
-        return $this->description;
+        return $this->getData(ThreadInterface::COLUMN_DESCRIPTION);
     }
 
     /**
-     * @param   string  $description
+     * @param string $description
      *
      * @return Thread
      */
-    public function setDescription(string $description): self
+    public function setDescription(string $description): Thread
     {
-        $this->description = $description;
-
-        return $this;
+        return $this->setData(ThreadInterface::COLUMN_DESCRIPTION, $description);
     }
 
     /**
@@ -236,19 +137,17 @@ class Thread extends Entity
      */
     public function getContent(): string
     {
-        return $this->content;
+        return $this->getData(ThreadInterface::COLUMN_CONTENT);
     }
 
     /**
-     * @param   string  $content
+     * @param string $content
      *
      * @return Thread
      */
-    public function setContent(string $content): self
+    public function setContent(string $content): Thread
     {
-        $this->content = $content;
-
-        return $this;
+        return $this->setData(ThreadInterface::COLUMN_CONTENT, $content);
     }
 
     /**
@@ -256,19 +155,17 @@ class Thread extends Entity
      */
     public function getLikes(): int
     {
-        return $this->likes;
+        return $this->getData(ThreadInterface::COLUMN_LIKES);
     }
 
     /**
-     * @param   int  $likes
+     * @param int $likes
      *
      * @return Thread
      */
-    public function setLikes(int $likes): self
+    public function setLikes(int $likes): Thread
     {
-        $this->likes = $likes;
-
-        return $this;
+        return $this->setData(ThreadInterface::COLUMN_LIKES, $likes);
     }
 
     /**
@@ -276,40 +173,35 @@ class Thread extends Entity
      */
     public function getDislikes(): int
     {
-        return $this->dislikes;
+        return $this->getData(ThreadInterface::COLUMN_DISLIKES);
     }
 
     /**
-     * @param   int  $dislikes
+     * @param int $dislikes
      *
      * @return Thread
      */
-    public function setDislikes(int $dislikes): self
+    public function setDislikes(int $dislikes): Thread
     {
-        $this->dislikes = $dislikes;
-
-        return $this;
+        return $this->setData(ThreadInterface::COLUMN_DISLIKES, $dislikes);
     }
-
 
     /**
      * @return \DateTime
      */
     public function getCreatedAt(): \DateTime
     {
-        return $this->created_at;
+        return $this->getData(ThreadInterface::COLUMN_CREATED_AT);
     }
 
     /**
-     * @param   \DateTime  $created_at
+     * @param \DateTime $created_at
      *
      * @return Thread
      */
-    public function setCreatedAt(\DateTime $created_at): self
+    public function setCreatedAt(\DateTime $created_at): Thread
     {
-        $this->created_at = $created_at;
-
-        return $this;
+        return $this->setData(ThreadInterface::COLUMN_CREATED_AT, $created_at);
     }
 
     /**
@@ -317,81 +209,62 @@ class Thread extends Entity
      */
     public function getUpdatedAt(): \DateTime
     {
-        return $this->updated_at;
+        return $this->getData(ThreadInterface::COLUMN_UPDATED_AT);
     }
 
     /**
-     * @param   \DateTime  $updated_at
+     * @param \DateTime $updated_at
      *
      * @return Thread
      */
-    public function setUpdatedAt(\DateTime $updated_at): self
+    public function setUpdatedAt(\DateTime $updated_at): Thread
     {
-        $this->updated_at = $updated_at;
-
-        return $this;
+        return $this->setData(ThreadInterface::COLUMN_UPDATED_AT, $updated_at);
     }
 
     /**
-     * Gets triggered only on insert
+     * @return User|null
      *
-     * @ORM\PrePersist
+     * @throws DataObjectManagerException
      */
-    public function onPrePersist(): void
+    public function getUser(): ?User
     {
-        $this->created_at = new \DateTime("now");
-        $this->updated_at = new \DateTime("now");
-    }
+        /** @var User $user */
+        $user = $this->getData('user');
 
-    /**
-     * Gets triggered every time on update
-     *
-     * @ORM\PreUpdate
-     */
-    public function onPreUpdate(): void
-    {
-        $this->updated_at = new \DateTime("now");
-    }
-
-    /**
-     * Returns a copy of the current Entity safely
-     *
-     * @return array
-     */
-    public function jsonSerialize(): array
-    {
-        return [
-            'id' => $this->getId(),
-            'title' => $this->getTitle(),
-            'user' => $this->getUser(),
-            'slug' => $this->getId() . '-' . $this->getSlug(),
-            'content' => $this->getContent(),
-            'description' => $this->getDescription(),
-            'likes' => $this->getLikes(),
-            'dislikes' => $this->getDislikes(),
-            'comments' => $this->getComments()->count(),
-            'created_at' => $this->getCreatedAt(),
-            'updated_at' => $this->getUpdatedAt()
-        ];
-    }
-
-    /**
-     * @return string
-     */
-    public function serialize(): string
-    {
-        return serialize(get_object_vars($this));
-    }
-
-    /**
-     * @param   string  $data
-     */
-    public function unserialize($data): void
-    {
-        $values = unserialize($data);
-
-        foreach ($values as $key => $value) {
-            $this->$key = $value;
+        if ($user) {
+            return $user;
         }
+
+        /** @var ThreadRepository $threadRepository */
+        $threadRepository = repository(ThreadRepository::class);
+
+        /** @var UserRepository $userRepository */
+        $userRepository = repository(UserRepository::class);
+
+        /** @var User $user */
+        $user = $threadRepository->getOneToOne(
+            $userRepository,
+            $this->getUserId(),
+            'id'
+        );
+
+        if (!$user) {
+            return null;
+        }
+
+        $this->setUser($user);
+
+        return $user;
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return Thread
+     */
+    public function setUser(User $user): Thread
+    {
+        return $this->setData('user', $user);
     }
 }
