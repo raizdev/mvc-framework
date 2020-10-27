@@ -66,7 +66,7 @@ class TicketService
     {
         return hash(
             'sha256',
-            $user->getId() . random_int(1337, 2337) . '-' . $_ENV["WEB_NAME"],
+            $user->getUsername() . random_int(1337, 2337) . '-' . $_ENV["WEB_NAME"],
             false
         );
     }
