@@ -142,7 +142,7 @@ class Photo extends DataObject implements PhotoInterface
         /** @var User $user */
         $user = $photoRepository->getOneToOne(
             $userRepository,
-            $this->getId(),
+            $this->getUserId(),
             'id'
         );
 

@@ -38,7 +38,8 @@ class PhotoRepository extends BaseRepository
     public function getPaginatedPhotoList(int $page, int $resultPerPage): LengthAwarePaginator
     {
         $searchCriteria = $this->getDataObjectManager()
-            ->orderBy('id', 'DESC');
+            ->orderBy('id', 'DESC')
+            ->addRelation('user');
 
         return $this->getPaginatedList($searchCriteria, $page, $resultPerPage);
     }
