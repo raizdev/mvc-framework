@@ -70,7 +70,7 @@ class ThrottleMiddleware implements MiddlewareInterface
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ): ResponseInterface {
-        if (!$_ENV['CACHE_REDIS_ENABLED']) {
+        if (!$_ENV['THROTTLE_ENABLED']) {
             return $handler->handle($request);
         }
 
