@@ -8,7 +8,6 @@
 namespace Ares\Vote\Controller;
 
 use Ares\Framework\Controller\BaseController;
-use Ares\Framework\Exception\CacheException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
@@ -102,7 +101,6 @@ class VoteController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws CacheException
      * @throws DataObjectManagerException
      * @throws UserException
      * @throws ValidationException
