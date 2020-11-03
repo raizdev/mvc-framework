@@ -39,4 +39,45 @@ class VoteRepository extends BaseRepository
 
         return $this->getList($searchCriteria);
     }
+
+    /**
+     * @param Vote $vote
+     * @param int  $userId
+     *
+     * @return Vote|null
+     */
+    public function getExistingVote(Vote $vote, int $userId): ?Vote
+    {
+        $searchCriteria = $this->getDataObjectManager()
+            ->where([
+                'entity_id' => $vote->getEntityId(),
+                'vote_entity' => $vote->getVoteEntity(),
+                'user_id' => $userId
+            ]);
+
+        /** @var Vote $vote */
+        return $this->getList($searchCriteria)->first();
+    }
+
+    /**
+     * @param int $entityId
+     * @param int $voteEntity
+     * @param int $voteType
+     * @param int $userId
+     *
+     * @return Vote|null
+     */
+    public function getVoteForDeletion(int $entityId, int $voteEntity, int $voteType, int $userId): ?Vote
+    {
+        $searchCriteria = $this->getDataObjectManager()
+            ->where([
+                'entity_id' => $entityId,
+                'vote_entity' => $voteEntity,
+                'vote_type' => $voteType,
+                'user_id' => $userId
+            ]);
+
+        /** @var Vote $vote */
+        return $this->getList($searchCriteria)->first();
+    }
 }

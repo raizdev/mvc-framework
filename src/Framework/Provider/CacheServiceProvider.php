@@ -14,7 +14,7 @@ use League\Container\ServiceProvider\AbstractServiceProvider;
 
 /**
  * Class CacheServiceProvider
- * 
+ *
  * @package Ares\Framework\Provider
  */
 class CacheServiceProvider extends AbstractServiceProvider
@@ -28,12 +28,11 @@ class CacheServiceProvider extends AbstractServiceProvider
         $container = $this->getContainer();
 
         $container->share(FastCache::class, function () use ($container) {
-            $settings = $container->get('settings');
 
-            if ($settings['cache']['type'] == 'Predis') {
+            if ($_ENV['CACHE_TYPE'] == 'Predis') {
                 $configurationOption = new PredisConfig([
-                    'host' => $settings['cache']['redis_host'],
-                    'port' => (int)$settings['cache']['redis_port']
+                    'host' => $_ENV['CACHE_REDIS_HOST'],
+                    'port' => (int) $_ENV['CACHE_REDIS_PORT']
                 ]);
 
                 return new FastCache($_ENV['CACHE_TYPE'], $configurationOption);

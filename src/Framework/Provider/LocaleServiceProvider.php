@@ -20,7 +20,6 @@ class LocaleServiceProvider extends AbstractServiceProvider
 {
     /** @var array */
     protected $provides = [
-        'settings',
         Locale::class
     ];
 

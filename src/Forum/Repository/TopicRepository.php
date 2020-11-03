@@ -8,6 +8,7 @@
 namespace Ares\Forum\Repository;
 
 use Ares\Forum\Entity\Topic;
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Repository\BaseRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
@@ -32,6 +33,7 @@ class TopicRepository extends BaseRepository
      * @param int $resultPerPage
      *
      * @return LengthAwarePaginator
+     * @throws DataObjectManagerException
      */
     public function getPaginatedTopicList(int $page, int $resultPerPage): LengthAwarePaginator
     {

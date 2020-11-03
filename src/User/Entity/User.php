@@ -241,24 +241,6 @@ class User extends DataObject implements UserInterface
     }
 
     /**
-     * @return int
-     */
-    public function getAccountCreated(): int
-    {
-        return $this->getData(UserInterface::COLUMN_ACCOUNT_CREATED);
-    }
-
-    /**
-     * @param int $account_created
-     *
-     * @return User
-     */
-    public function setAccountCreated(int $account_created): User
-    {
-        return $this->setData(UserInterface::COLUMN_ACCOUNT_CREATED, $account_created);
-    }
-
-    /**
      * @return string
      */
     public function getIpRegister(): string

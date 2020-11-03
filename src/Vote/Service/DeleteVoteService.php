@@ -39,24 +39,22 @@ class DeleteVoteService
     /**
      * Deletes vote by given data.
      *
-     * @param int   $user_id
+     * @param int   $userId
      * @param array $data
      *
      * @return CustomResponseInterface
      * @throws DataObjectManagerException
      * @throws VoteException
      */
-    public function execute(int $user_id, array $data): CustomResponseInterface
+    public function execute(int $userId, array $data): CustomResponseInterface
     {
-        $searchCriteria = $this->voteRepository
-            ->getDataObjectManager()
-            ->where($data)
-            ->where('user_id', $user_id);
-
         /** @var Vote $vote */
-        $vote = $this->voteRepository
-            ->getList($searchCriteria)
-            ->first();
+        $vote = $this->voteRepository->getVoteForDeletion(
+            (int) $data['entity_id'],
+            (int) $data['vote_entity'],
+            (int) $data['vote_type'],
+            $userId
+        );
 
         if (!$vote) {
             throw new VoteException(__('Vote could not be found by given data.'), 404);

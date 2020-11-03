@@ -48,28 +48,18 @@ class CreateVoteService
     /**
      * Create new vote with given data.
      *
-     * @param int   $user_id
+     * @param int   $userId
      * @param array $data
      *
      * @return CustomResponseInterface
      * @throws VoteException
      * @throws DataObjectManagerException
      */
-    public function execute(int $user_id, array $data): CustomResponseInterface
+    public function execute(int $userId, array $data): CustomResponseInterface
     {
-        $vote = $this->getNewVote($user_id, $data);
+        $vote = $this->getNewVote($userId, $data);
 
-        $searchCriteria = $this->voteRepository
-            ->getDataObjectManager()
-            ->where([
-                'entity_id' => $vote->getEntityId(),
-                'vote_entity' => $vote->getVoteEntity(),
-                'user_id' => $user_id
-            ]);
-
-        $existingVote = $this->voteRepository
-            ->getList($searchCriteria)
-            ->first();
+        $existingVote = $this->voteRepository->getExistingVote($vote, $userId);
 
         if ($existingVote) {
             throw new VoteException(__('User already voted for this entity.'), 422);

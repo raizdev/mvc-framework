@@ -48,8 +48,7 @@ class ArticleRepository extends BaseRepository
                 'ares_articles.id',
                 '=',
                 'ares_articles_comments.article_id'
-            )
-            ->where('title', 'LIKE', '%'.$term.'%')
+            )->where('title', 'LIKE', '%'.$term.'%')
             ->where('hidden', 0)
             ->orderBy('comment_count', 'DESC')
             ->addRelation('user');
@@ -67,8 +66,7 @@ class ArticleRepository extends BaseRepository
             ->where([
                 'pinned' => 1,
                 'hidden' => 0
-            ])
-            ->addRelation('user')
+            ])->addRelation('user')
             ->orderBy('id', 'DESC')
             ->limit(3);
 

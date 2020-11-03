@@ -39,8 +39,7 @@ class UserBadgeRepository extends BaseRepository
         $searchCriteria = $this->getDataObjectManager()
             ->where([
                 'user_id' => $profileId
-            ])
-            ->where('slot_id', '>', 1)
+            ])->where('slot_id', '>', 1)
             ->orderBy('slot_id', 'ASC');
 
         return $this->getList($searchCriteria);

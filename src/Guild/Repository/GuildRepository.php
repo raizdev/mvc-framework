@@ -43,8 +43,7 @@ class GuildRepository extends BaseRepository
             ->selectRaw(
                 'guilds.id, guilds.name, guilds.description, guilds.badge, guilds.date_created, 
                 count(guilds_members.guild_id) as member_count'
-            )
-            ->leftJoin(
+            )->leftJoin(
                 'guilds_members',
                 'guilds.id',
                 '=',
@@ -65,8 +64,7 @@ class GuildRepository extends BaseRepository
             ->selectRaw(
                 'guilds.id, guilds.name, guilds.description, guilds.badge, guilds.date_created, 
                 count(guilds_members.guild_id) as member_count'
-            )
-            ->leftJoin(
+            )->leftJoin(
                 'guilds_members',
                 'guilds.id',
                 '=',

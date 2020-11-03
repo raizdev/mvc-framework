@@ -158,7 +158,6 @@ class RegisterService
             ->setMotto($this->config->get('hotel_settings.start_motto'))
             ->setIPRegister($data['ip_register'])
             ->setIpCurrent($data['ip_current'])
-            ->setAccountCreated(time())
             ->setLastLogin(time())
             ->setRank(1)
             ->setAuthTicket($this->ticketService->hash($user));

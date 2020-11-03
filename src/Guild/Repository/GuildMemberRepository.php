@@ -45,8 +45,7 @@ class GuildMemberRepository extends BaseRepository
                 'guilds_members.guild_id',
                 '=',
                 'guilds.id'
-            )
-            ->where('guilds_members.user_id', $profileId)
+            )->where('guilds_members.user_id', $profileId)
             ->orderBy('guilds.id', 'DESC')
             ->addRelation('guilds');
 

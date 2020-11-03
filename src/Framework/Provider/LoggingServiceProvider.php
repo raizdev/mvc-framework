@@ -21,7 +21,8 @@ use Psr\Log\LoggerInterface;
 class LoggingServiceProvider extends AbstractServiceProvider
 {
     protected $provides = [
-        LoggerInterface::class
+        LoggerInterface::class,
+        'logger_settings'
     ];
 
     public function register()
@@ -29,7 +30,7 @@ class LoggingServiceProvider extends AbstractServiceProvider
         $container = $this->getContainer();
 
         $container->add(LoggerInterface::class, function () use ($container) {
-            $settings       = $container->get('settings');
+            $settings       = $container->get('logger_settings');
             $loggerSettings = $settings['logger'];
             $logger         = new Logger($loggerSettings['name']);
 
@@ -43,6 +44,56 @@ class LoggingServiceProvider extends AbstractServiceProvider
             }
 
             return $logger;
+        });
+
+        $container->add('logger_settings', function () {
+            return [
+                'logger' => [
+                    'name' => $_ENV['WEB_NAME'] . '-event-log',
+                    'enabled_log_levels' => [
+                        // DEBUG
+                        [
+                            'path' => base_dir() . 'tmp/Logs/info.log',
+                            'level' => Logger::DEBUG
+                        ],
+                        // INFO
+                        [
+                            'path' => base_dir() . 'tmp/Logs/info.log',
+                            'level' => Logger::INFO
+                        ],
+                        // NOTICE
+                        [
+                            'path' => base_dir() . 'tmp/Logs/info.log',
+                            'level' => Logger::NOTICE
+                        ],
+                        // WARNING
+                        [
+                            'path' => base_dir() . 'tmp/Logs/warning.log',
+                            'level' => Logger::WARNING
+                        ],
+                        // ERROR
+                        [
+                            'path' => base_dir() . 'tmp/Logs/error.log',
+                            'level' => Logger::ERROR
+                        ],
+                        // CRITICAL
+                        [
+                            'path' => base_dir() . 'tmp/Logs/critical.log',
+                            'level' => Logger::CRITICAL
+                        ],
+                        // ALERT
+                        [
+                            'path' => base_dir() . 'tmp/Logs/critical.log',
+                            'level' => Logger::ALERT
+                        ],
+                        // EMERGENCY
+                        [
+                            'path' => base_dir() . 'tmp/Logs/critical.log',
+                            'level' => Logger::EMERGENCY
+                        ],
+                    ],
+                ]
+            ];
         });
     }
 }
