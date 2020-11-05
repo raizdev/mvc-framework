@@ -69,7 +69,7 @@ class ArticleRepository extends BaseRepository
             ])
             ->selectRaw(
                 'ares_articles.*,
-                count(ares_articles_comments.article_id) as comment_count'
+                count(ares_articles_comments.article_id) as comments'
             )->leftJoin(
                 'ares_articles_comments',
                 'ares_articles.id',
@@ -95,7 +95,7 @@ class ArticleRepository extends BaseRepository
         $searchCriteria = $this->getDataObjectManager()
             ->selectRaw(
                 'ares_articles.*,
-                count(ares_articles_comments.article_id) as comment_count'
+                count(ares_articles_comments.article_id) as comments'
             )->leftJoin(
                 'ares_articles_comments',
                 'ares_articles.id',
