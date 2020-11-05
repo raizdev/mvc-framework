@@ -61,23 +61,16 @@ class GuildController extends BaseController
         $id = $args['id'];
 
         /** @var Guild $guild */
-        $guild = $this->guildRepository->get((int) $id);
+        $guild = $this->guildRepository->getGuild((int) $id);
 
         if (!$guild) {
             throw new GuildException(__('No specific Guild found'));
         }
 
-        $guild->getUser();
-        $guild->getRoom();
-        $memberCount = $this->guildMemberRepository->getGuildMemberCount($guild->getId());
-
         return $this->respond(
             $response,
             response()
-                ->setData([
-                    'guild'        => $guild,
-                    'member_count' => $memberCount
-                ])
+                ->setData($guild)
         );
     }
 

@@ -89,4 +89,27 @@ class GuildRepository extends BaseRepository
 
         return $this->getPaginatedList($searchCriteria, $page, $resultPerPage);
     }
+
+    /**
+     * @param int $id
+     *
+     * @return mixed
+     * @throws DataObjectManagerException
+     */
+    public function getGuild(int $id): ?Guild
+    {
+        $searchCriteria = $this->getDataObjectManager()
+            ->selectRaw(
+                'guilds.*, (guilds_members.guild_id) as member_count'
+            )->leftJoin(
+                'guilds_members',
+                'guilds.id',
+                '=',
+                'guilds_members.guild_id'
+            )->where('id', $id)
+            ->addRelation('user')
+            ->addRelation('room');
+
+        return $this->getList($searchCriteria)->first();
+    }
 }
