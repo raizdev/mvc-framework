@@ -53,7 +53,7 @@ class Guild extends DataObject implements GuildInterface
     /**
      * @return int
      */
-    public function getUserId(): int
+    public function getUserId(): ?int
     {
         return $this->getData(GuildInterface::COLUMN_USER_ID);
     }
@@ -107,7 +107,7 @@ class Guild extends DataObject implements GuildInterface
     /**
      * @return int
      */
-    public function getRoomId(): int
+    public function getRoomId(): ?int
     {
         return $this->getData(GuildInterface::COLUMN_ROOM_ID);
     }

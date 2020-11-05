@@ -99,6 +99,7 @@ class GuildRepository extends BaseRepository
     public function getGuild(int $id): ?Guild
     {
         $searchCriteria = $this->getDataObjectManager()
+            ->where('guilds.id', $id)
             ->selectRaw(
                 'guilds.id, guilds.user_id, guilds.name, guilds.description, guilds.room_id,
                  guilds.badge, guilds.state, guilds.date_created, (guilds_members.guild_id) as member_count'
@@ -107,7 +108,7 @@ class GuildRepository extends BaseRepository
                 'guilds.id',
                 '=',
                 'guilds_members.guild_id'
-            )->where('guilds.id', $id)
+            )
             ->addRelation('user')
             ->addRelation('room');
 

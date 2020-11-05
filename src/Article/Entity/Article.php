@@ -140,7 +140,7 @@ class Article extends DataObject implements ArticleInterface
     /**
      * @return int
      */
-    public function getAuthorId(): int
+    public function getAuthorId(): ?int
     {
         return $this->getData(ArticleInterface::COLUMN_AUTHOR_ID);
     }

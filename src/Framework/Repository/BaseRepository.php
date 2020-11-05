@@ -224,7 +224,7 @@ abstract class BaseRepository
      * @param string $column
      * @return DataObject|null
      */
-    public function getOneToOne(BaseRepository $repository, int $id, string $column): ?DataObject
+    public function getOneToOne(BaseRepository $repository, ?int $id, string $column): ?DataObject
     {
         return $repository->get($id, $column);
     }

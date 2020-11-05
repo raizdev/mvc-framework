@@ -60,7 +60,7 @@ class ArticleRepository extends BaseRepository
      * @return Collection
      * @throws DataObjectManagerException
      */
-    public function getPinnedArticles(): Collection
+    public function getPinnedArticles(): ?Collection
     {
         $searchCriteria = $this->getDataObjectManager()
             ->where([
@@ -68,14 +68,13 @@ class ArticleRepository extends BaseRepository
                 'hidden' => 0
             ])
             ->selectRaw(
-                'ares_articles.*,
-                count(ares_articles_comments.article_id) as comments'
+                'ares_articles.*, count(ares_articles_comments.article_id) as comment'
             )->leftJoin(
                 'ares_articles_comments',
                 'ares_articles.id',
                 '=',
                 'ares_articles_comments.article_id'
-            )->orderBy('id', 'DESC')
+            )->orderBy('ares_articles.id', 'DESC')
             ->limit(3)
             ->addRelation('user');
 
@@ -92,6 +91,7 @@ class ArticleRepository extends BaseRepository
     public function getPaginatedArticleList(int $page, int $resultPerPage): LengthAwarePaginator
     {
         $searchCriteria = $this->getDataObjectManager()
+            ->where('hidden', 0)
             ->selectRaw(
                 'ares_articles.*,
                 count(ares_articles_comments.article_id) as comments'
@@ -100,8 +100,7 @@ class ArticleRepository extends BaseRepository
                 'ares_articles.id',
                 '=',
                 'ares_articles_comments.article_id'
-            )->where('hidden', 0)
-            ->orderBy('id', 'DESC')
+            )->orderBy('id', 'DESC')
             ->addRelation('user');
 
         return $this->getPaginatedList($searchCriteria, $page, $resultPerPage);
