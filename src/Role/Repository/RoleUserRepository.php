@@ -29,10 +29,10 @@ class RoleUserRepository extends BaseRepository
     /**
      * @param int $userId
      *
-     * @return array
+     * @return array|null
      * @throws QueryException
      */
-    public function getUserRoleIds($userId): array
+    public function getUserRoleIds($userId): ?array
     {
         $searchCriteria = $this->getDataObjectManager()
             ->select('role_id')
