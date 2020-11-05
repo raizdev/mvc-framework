@@ -75,8 +75,7 @@ class ArticleRepository extends BaseRepository
                 'ares_articles.id',
                 '=',
                 'ares_articles_comments.article_id'
-            )
-            ->orderBy('id', 'DESC')
+            )->orderBy('id', 'DESC')
             ->limit(3)
             ->addRelation('user');
 
@@ -101,8 +100,7 @@ class ArticleRepository extends BaseRepository
                 'ares_articles.id',
                 '=',
                 'ares_articles_comments.article_id'
-            )
-            ->where('hidden', 0)
+            )->where('hidden', 0)
             ->orderBy('id', 'DESC')
             ->addRelation('user');
 

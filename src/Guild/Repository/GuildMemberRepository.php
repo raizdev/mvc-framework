@@ -77,7 +77,8 @@ class GuildMemberRepository extends BaseRepository
     {
         $searchCriteria = $this->getDataObjectManager()
             ->where('guild_id', $guildId)
-            ->orderBy('level_id', 'ASC');
+            ->orderBy('level_id', 'ASC')
+            ->addRelation('user');
 
         return $this->getPaginatedList($searchCriteria, $page, $resultPerPage);
     }
