@@ -107,7 +107,7 @@ class GuildRepository extends BaseRepository
                 'guilds.id',
                 '=',
                 'guilds_members.guild_id'
-            )->where('id', $id)
+            )->where('guilds.id', $id)
             ->addRelation('user')
             ->addRelation('room');
 
