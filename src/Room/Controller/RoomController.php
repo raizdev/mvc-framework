@@ -54,12 +54,12 @@ class RoomController extends BaseController
 
         /** @var Room $room */
         $room = $this->roomRepository->get((int) $id);
-        $room->getGuild();
-        $room->getUser();
 
         if (!$room) {
             throw new RoomException(__('No specific Room found'), 404);
         }
+        $room->getGuild();
+        $room->getUser();
 
         return $this->respond(
             $response,

@@ -122,11 +122,11 @@ class ArticleController extends BaseController
 
         /** @var Article $article */
         $article = $this->articleRepository->get((string) $slug, 'slug');
-        $article->getUser();
 
         if (!$article) {
             throw new ArticleException(__('No specific Article found'), 404);
         }
+        $article->getUser();
 
         return $this->respond(
             $response,

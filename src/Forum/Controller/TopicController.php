@@ -133,11 +133,12 @@ class TopicController extends BaseController
     }
 
     /**
-     * @param Request     $request
-     * @param Response    $response
-     * @param             $args
+     * @param Request  $request
+     * @param Response $response
+     * @param array    $args
      *
      * @return Response
+     * @throws DataObjectManagerException
      */
     public function list(Request $request, Response $response, array $args): Response
     {

@@ -59,11 +59,12 @@ class PhotoController extends BaseController
     }
 
     /**
-     * @param Request     $request
-     * @param Response    $response
-     * @param             $args
+     * @param Request  $request
+     * @param Response $response
+     * @param array    $args
      *
      * @return Response
+     * @throws DataObjectManagerException
      * @throws PhotoException
      */
     public function photo(Request $request, Response $response, array $args): Response
@@ -77,6 +78,7 @@ class PhotoController extends BaseController
         if (!$photo) {
             throw new PhotoException(__('No Photo was found'), 404);
         }
+        $photo->getUser();
 
         return $this->respond(
             $response,
