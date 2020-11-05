@@ -39,9 +39,9 @@ class CommentRepository extends BaseRepository
     public function getPaginatedThreadCommentList(int $threadId, int $page, int $resultPerPage): LengthAwarePaginator
     {
         $searchCriteria = $this->getDataObjectManager()
-            ->addRelation('user')
             ->where('thread_id', $threadId)
-            ->orderBy('id', 'DESC');
+            ->orderBy('id', 'DESC')
+            ->addRelation('user');
 
         return $this->getPaginatedList($searchCriteria, $page, $resultPerPage);
     }

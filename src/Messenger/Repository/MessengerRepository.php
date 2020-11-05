@@ -40,8 +40,8 @@ class MessengerRepository extends BaseRepository
     {
         $searchCriteria = $this->getDataObjectManager()
             ->where('user_one_id', $userId)
-            ->addRelation('user')
-            ->orderBy('id', 'DESC');
+            ->orderBy('id', 'DESC')
+            ->addRelation('user');
 
         return $this->getPaginatedList($searchCriteria, $page, $resultPerPage);
     }

@@ -36,8 +36,8 @@ class PermissionRepository extends BaseRepository
     {
         $searchCriteria = $this->getDataObjectManager()
             ->where('id', '>', 3)
-            ->addRelation('users')
-            ->orderBy('id', 'DESC');
+            ->orderBy('id', 'DESC')
+            ->addRelation('users');
 
         return $this->getList($searchCriteria);
     }

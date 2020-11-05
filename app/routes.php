@@ -81,7 +81,7 @@ return function (App $app) {
                 $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}',
                     \Ares\Guild\Controller\GuildController::class . ':list');
                 $group->get('/{id:[0-9]+}', \Ares\Guild\Controller\GuildController::class . ':guild');
-                $group->get('/members/{id:[0-9]+}/list/{page:[0-9]+}/{rpp:[0-9]+}',
+                $group->get('/members/{guild_id:[0-9]+}/list/{page:[0-9]+}/{rpp:[0-9]+}',
                     \Ares\Guild\Controller\GuildController::class . ':members');
                 $group->get('/most/members', \Ares\Guild\Controller\GuildController::class . ':mostMembers');
             });

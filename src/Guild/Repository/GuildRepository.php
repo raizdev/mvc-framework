@@ -40,10 +40,11 @@ class GuildRepository extends BaseRepository
     public function searchGuilds(string $term, int $page, int $resultPerPage): LengthAwarePaginator
     {
         $searchCriteria = $this->getDataObjectManager()
-            ->selectRaw(
-                'guilds.id, guilds.name, guilds.description, guilds.badge, guilds.date_created, 
-                count(guilds_members.guild_id) as member_count'
-            )->leftJoin(
+            ->select([
+                'guilds.id', 'guilds.user_id', 'guilds.name','guilds.description',
+                'guilds.room_id','guilds.badge','guilds.date_created',
+            ])->selectRaw('count(guilds_members.guild_id) as member_count')
+            ->leftJoin(
                 'guilds_members',
                 'guilds.id',
                 '=',
@@ -60,10 +61,11 @@ class GuildRepository extends BaseRepository
     public function getMostMemberGuild(): ?Guild
     {
         $searchCriteria = $this->getDataObjectManager()
-            ->selectRaw(
-                'guilds.id, guilds.name, guilds.description, guilds.badge, guilds.date_created, 
-                count(guilds_members.guild_id) as member_count'
-            )->leftJoin(
+            ->select([
+                'guilds.id', 'guilds.user_id', 'guilds.name','guilds.description',
+                'guilds.room_id','guilds.badge','guilds.date_created',
+            ])->selectRaw('count(guilds_members.guild_id) as member_count')
+            ->leftJoin(
                 'guilds_members',
                 'guilds.id',
                 '=',
@@ -83,9 +85,17 @@ class GuildRepository extends BaseRepository
     public function getPaginatedGuildList(int $page, int $resultPerPage): LengthAwarePaginator
     {
         $searchCriteria = $this->getDataObjectManager()
-            ->addRelation('user')
-            ->addRelation('room')
-            ->orderBy('id', 'DESC');
+            ->select([
+                'guilds.id', 'guilds.user_id', 'guilds.name', 'guilds.description',
+                'guilds.room_id','guilds.badge','guilds.date_created',
+            ])->selectRaw('count(guilds_members.guild_id) as member_count')
+            ->leftJoin(
+                'guilds_members',
+                'guilds_members.guild_id',
+                '=',
+                'guilds.id'
+            )->orderBy('guilds.id')
+            ->addRelation('user');
 
         return $this->getPaginatedList($searchCriteria, $page, $resultPerPage);
     }
@@ -99,17 +109,17 @@ class GuildRepository extends BaseRepository
     public function getGuild(int $id): ?Guild
     {
         $searchCriteria = $this->getDataObjectManager()
+            ->select([
+                'guilds.id', 'guilds.user_id', 'guilds.name','guilds.description',
+                'guilds.room_id','guilds.badge','guilds.date_created',
+            ])->selectRaw('count(guilds_members.guild_id) as member_count')
             ->where('guilds.id', $id)
-            ->selectRaw(
-                'guilds.id, guilds.user_id, guilds.name, guilds.description, guilds.room_id,
-                 guilds.badge, guilds.state, guilds.date_created, (guilds_members.guild_id) as member_count'
-            )->leftJoin(
+            ->join(
                 'guilds_members',
                 'guilds.id',
                 '=',
                 'guilds_members.guild_id'
-            )
-            ->addRelation('user')
+            )->addRelation('user')
             ->addRelation('room');
 
         return $this->getList($searchCriteria)->first();

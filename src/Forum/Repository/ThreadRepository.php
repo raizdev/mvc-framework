@@ -60,9 +60,9 @@ class ThreadRepository extends BaseRepository
     public function getPaginatedThreadList(int $topicId, int $page, int $resultPerPage): LengthAwarePaginator
     {
         $searchCriteria = $this->getDataObjectManager()
-            ->addRelation('user')
             ->where('topic_id', (int) $topicId)
-            ->orderBy('id', 'DESC');
+            ->orderBy('id', 'DESC')
+            ->addRelation('user');
 
         return $this->getPaginatedList($searchCriteria, $page, $resultPerPage);
     }

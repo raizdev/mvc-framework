@@ -115,7 +115,7 @@ class GuildController extends BaseController
      */
     public function members(Request $request, Response $response, array $args): Response
     {
-        /** @var int $id */
+        /** @var int $guildId */
         $guildId = $args['guild_id'];
 
         /** @var int $page */

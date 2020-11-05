@@ -57,9 +57,9 @@ class RoomRepository extends BaseRepository
     public function getPaginatedRoomList(int $page, int $resultPerPage): LengthAwarePaginator
     {
         $searchCriteria = $this->getDataObjectManager()
+            ->orderBy('id', 'DESC')
             ->addRelation('guild')
-            ->addRelation('user')
-            ->orderBy('id', 'DESC');
+            ->addRelation('user');
 
         return $this->getPaginatedList($searchCriteria, $page, $resultPerPage);
     }

@@ -39,9 +39,9 @@ class GuestbookRepository extends BaseRepository
     public function getPaginatedProfileEntries(int $profileId, int $page, int $resultPerPage): LengthAwarePaginator
     {
         $searchCriteria = $this->getDataObjectManager()
-            ->addRelation('user')
             ->where('profile_id', $profileId)
-            ->orderBy('id', 'DESC');
+            ->orderBy('id', 'DESC')
+            ->addRelation('user');
 
         return $this->getPaginatedList($searchCriteria, $page, $resultPerPage);
     }
@@ -57,9 +57,9 @@ class GuestbookRepository extends BaseRepository
     public function getPaginatedGuildEntries(int $guildId, int $page, int $resultPerPage): LengthAwarePaginator
     {
         $searchCriteria = $this->getDataObjectManager()
-            ->addRelation('user')
             ->where('guild_id', $guildId)
-            ->orderBy('id', 'DESC');
+            ->orderBy('id', 'DESC')
+            ->addRelation('user');
 
         return $this->getPaginatedList($searchCriteria, $page, $resultPerPage);
     }

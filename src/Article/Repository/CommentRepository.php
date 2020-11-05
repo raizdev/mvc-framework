@@ -40,8 +40,8 @@ class CommentRepository extends BaseRepository
     {
         $searchCriteria = $this->getDataObjectManager()
             ->where('article_id', $articleId)
-            ->addRelation('user')
-            ->orderBy('id', 'DESC');
+            ->orderBy('id', 'DESC')
+            ->addRelation('user');
 
         return $this->getPaginatedList($searchCriteria, $page, $resultPerPage);
     }
