@@ -100,7 +100,8 @@ class GuildRepository extends BaseRepository
     {
         $searchCriteria = $this->getDataObjectManager()
             ->selectRaw(
-                'guilds.*, (guilds_members.guild_id) as member_count'
+                'guilds.id, guilds.user_id, guilds.name, guilds.description, guilds.room_id,
+                 guilds.badge, guilds.state, guilds.date_created, (guilds_members.guild_id) as member_count'
             )->leftJoin(
                 'guilds_members',
                 'guilds.id',
