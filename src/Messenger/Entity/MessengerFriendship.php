@@ -140,7 +140,7 @@ class MessengerFriendship extends DataObject implements MessengerFriendshipInter
         /** @var User $user */
         $user = $messengerRepository->getOneToOne(
             $userRepository,
-            $this->getUserOneId(),
+            $this->getUserTwoId(),
             'id'
         );
 
