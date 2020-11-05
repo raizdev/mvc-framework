@@ -14,7 +14,6 @@ use Ares\Framework\Model\Query\DataObjectManager;
 use Ares\Framework\Service\CacheService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Ares\Framework\Model\Query\Collection;
-use Illuminate\Contracts\Support\Arrayable;
 
 /**
  * Class BaseRepository
