@@ -178,10 +178,10 @@ class AuthController extends BaseController
         }
 
         /** @var array $boyList */
-        $boyList = array_map(null, $boyLooks);
+        $boyList = array_values($boyLooks);
 
         /** @var array $girlList */
-        $girlList = array_map(null, $girlLooks);
+        $girlList = array_values($girlLooks);
 
         return $this->respond(
             $response,
