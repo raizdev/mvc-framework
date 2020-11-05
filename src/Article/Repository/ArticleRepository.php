@@ -66,9 +66,19 @@ class ArticleRepository extends BaseRepository
             ->where([
                 'pinned' => 1,
                 'hidden' => 0
-            ])->addRelation('user')
+            ])
+            ->selectRaw(
+                'ares_articles.*,
+                count(ares_articles_comments.article_id) as comment_count'
+            )->leftJoin(
+                'ares_articles_comments',
+                'ares_articles.id',
+                '=',
+                'ares_articles_comments.article_id'
+            )
             ->orderBy('id', 'DESC')
-            ->limit(3);
+            ->limit(3)
+            ->addRelation('user');
 
         return $this->getList($searchCriteria);
     }
@@ -83,9 +93,18 @@ class ArticleRepository extends BaseRepository
     public function getPaginatedArticleList(int $page, int $resultPerPage): LengthAwarePaginator
     {
         $searchCriteria = $this->getDataObjectManager()
-            ->addRelation('user')
+            ->selectRaw(
+                'ares_articles.*,
+                count(ares_articles_comments.article_id) as comment_count'
+            )->leftJoin(
+                'ares_articles_comments',
+                'ares_articles.id',
+                '=',
+                'ares_articles_comments.article_id'
+            )
             ->where('hidden', 0)
-            ->orderBy('id', 'DESC');
+            ->orderBy('id', 'DESC')
+            ->addRelation('user');
 
         return $this->getPaginatedList($searchCriteria, $page, $resultPerPage);
     }
