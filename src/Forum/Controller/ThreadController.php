@@ -13,12 +13,11 @@ use Ares\Forum\Repository\ThreadRepository;
 use Ares\Forum\Service\Thread\CreateThreadService;
 use Ares\Forum\Service\Thread\EditThreadService;
 use Ares\Framework\Controller\BaseController;
+use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
 use Ares\User\Entity\User;
-use Ares\User\Exception\UserException;
-use Ares\User\Repository\UserRepository;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -28,11 +27,6 @@ class ThreadController extends BaseController
      * @var ThreadRepository
      */
     private ThreadRepository $threadRepository;
-
-    /**
-     * @var UserRepository
-     */
-    private UserRepository $userRepository;
 
     /**
      * @var ValidationService
@@ -53,34 +47,31 @@ class ThreadController extends BaseController
      * CommentController constructor.
      *
      * @param   ThreadRepository        $threadRepository
-     * @param   UserRepository          $userRepository
      * @param   CreateThreadService     $createThreadService
      * @param   EditThreadService       $editThreadService
      * @param   ValidationService       $validationService
      */
     public function __construct(
         ThreadRepository $threadRepository,
-        UserRepository $userRepository,
         CreateThreadService $createThreadService,
         EditThreadService $editThreadService,
         ValidationService $validationService
     ) {
         $this->threadRepository    = $threadRepository;
-        $this->userRepository      = $userRepository;
         $this->createThreadService = $createThreadService;
         $this->editThreadService   = $editThreadService;
         $this->validationService   = $validationService;
     }
 
     /**
-     * @param Request  $request
+     * @param Request $request
      * @param Response $response
      *
      * @return Response
      * @throws DataObjectManagerException
      * @throws ThreadException
-     * @throws UserException
      * @throws ValidationException
+     * @throws AuthenticationException
      */
     public function create(Request $request, Response $response): Response
     {

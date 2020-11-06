@@ -17,8 +17,6 @@ use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
 use Ares\User\Entity\User;
-use Ares\User\Exception\UserException;
-use Ares\User\Repository\UserRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -46,11 +44,6 @@ class CommentController extends BaseController
     private CreateCommentService $createCommentService;
 
     /**
-     * @var UserRepository
-     */
-    private UserRepository $userRepository;
-
-    /**
      * @var EditCommentService
      */
     private EditCommentService $editCommentService;
@@ -62,20 +55,17 @@ class CommentController extends BaseController
      * @param ValidationService    $validationService
      * @param CreateCommentService $createCommentService
      * @param EditCommentService   $editCommentService
-     * @param UserRepository       $userRepository
      */
     public function __construct(
         CommentRepository $commentRepository,
         ValidationService $validationService,
         CreateCommentService $createCommentService,
-        EditCommentService $editCommentService,
-        UserRepository $userRepository
+        EditCommentService $editCommentService
     ) {
         $this->commentRepository    = $commentRepository;
         $this->validationService    = $validationService;
         $this->createCommentService = $createCommentService;
         $this->editCommentService   = $editCommentService;
-        $this->userRepository       = $userRepository;
     }
 
     /**

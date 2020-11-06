@@ -8,6 +8,7 @@
 namespace Ares\Payment\Controller;
 
 use Ares\Framework\Controller\BaseController;
+use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
@@ -16,8 +17,6 @@ use Ares\Payment\Exception\PaymentException;
 use Ares\Payment\Repository\PaymentRepository;
 use Ares\Payment\Service\CreatePaymentService;
 use Ares\User\Entity\User;
-use Ares\User\Exception\UserException;
-use Ares\User\Repository\UserRepository;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -39,11 +38,6 @@ class PaymentController extends BaseController
     private CreatePaymentService $createPaymentService;
 
     /**
-     * @var UserRepository
-     */
-    private UserRepository $userRepository;
-
-    /**
      * @var ValidationService
      */
     private ValidationService $validationService;
@@ -52,31 +46,28 @@ class PaymentController extends BaseController
      * PaymentController constructor.
      *
      * @param   PaymentRepository       $paymentRepository
-     * @param   UserRepository          $userRepository
      * @param   CreatePaymentService    $createPaymentService
      * @param   ValidationService       $validationService
      */
     public function __construct(
         PaymentRepository $paymentRepository,
-        UserRepository $userRepository,
         CreatePaymentService $createPaymentService,
         ValidationService $validationService
     ) {
         $this->paymentRepository = $paymentRepository;
-        $this->userRepository = $userRepository;
         $this->createPaymentService = $createPaymentService;
         $this->validationService = $validationService;
     }
 
     /**
-     * @param Request  $request
+     * @param Request $request
      * @param Response $response
      *
      * @return Response
-     * @throws PaymentException
-     * @throws UserException
-     * @throws ValidationException
      * @throws DataObjectManagerException
+     * @throws PaymentException
+     * @throws ValidationException
+     * @throws AuthenticationException
      */
     public function create(Request $request, Response $response): Response
     {

@@ -16,7 +16,6 @@ use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
-use Ares\User\Repository\UserRepository;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -31,11 +30,6 @@ class TopicController extends BaseController
      * @var TopicRepository
      */
     private TopicRepository $topicRepository;
-
-    /**
-     * @var UserRepository
-     */
-    private UserRepository $userRepository;
 
     /**
      * @var CreateTopicService
@@ -56,20 +50,17 @@ class TopicController extends BaseController
      * TopicController constructor.
      *
      * @param   TopicRepository         $topicRepository
-     * @param   UserRepository          $userRepository
      * @param   CreateTopicService      $createTopicService
      * @param   EditTopicService        $editTopicService
      * @param   ValidationService       $validationService
      */
     public function __construct(
         TopicRepository $topicRepository,
-        UserRepository $userRepository,
         CreateTopicService $createTopicService,
         EditTopicService $editTopicService,
         ValidationService $validationService
     ) {
         $this->topicRepository    = $topicRepository;
-        $this->userRepository     = $userRepository;
         $this->createTopicService = $createTopicService;
         $this->editTopicService   = $editTopicService;
         $this->validationService  = $validationService;

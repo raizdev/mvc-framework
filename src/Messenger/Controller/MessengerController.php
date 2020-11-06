@@ -8,11 +8,10 @@
 namespace Ares\Messenger\Controller;
 
 use Ares\Framework\Controller\BaseController;
+use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Messenger\Repository\MessengerRepository;
 use Ares\User\Entity\User;
-use Ares\User\Exception\UserException;
-use Ares\User\Repository\UserRepository;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -29,33 +28,25 @@ class MessengerController extends BaseController
     private MessengerRepository $messengerRepository;
 
     /**
-     * @var UserRepository
-     */
-    private UserRepository $userRepository;
-
-    /**
      * MessengerController constructor.
      *
      * @param MessengerRepository    $messengerRepository
-     * @param UserRepository         $userRepository
      */
     public function __construct(
-        MessengerRepository $messengerRepository,
-        UserRepository $userRepository
+        MessengerRepository $messengerRepository
     ) {
         $this->messengerRepository = $messengerRepository;
-        $this->userRepository = $userRepository;
     }
 
     /**
-     * @param Request     $request
-     * @param Response    $response
+     * @param Request $request
+     * @param Response $response
      *
-     * @param             $args
+     * @param array $args
      *
      * @return Response
-     * @throws UserException
      * @throws DataObjectManagerException
+     * @throws AuthenticationException
      */
     public function friends(Request $request, Response $response, array $args): Response
     {

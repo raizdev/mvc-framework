@@ -93,11 +93,11 @@ class ProfileController extends BaseController
      */
     public function slotBadges(Request $request, Response $response, array $args): Response
     {
-        /** @var int $profile_id */
-        $profile_id = $args['profile_id'];
+        /** @var int $profileId */
+        $profileId = $args['profile_id'];
 
         /** @var User $profile */
-        $profile = $this->userRepository->get((int) $profile_id);
+        $profile = $this->userRepository->get((int) $profileId);
 
         if (!$profile) {
             throw new ProfileException(__('No associated Profile was found'), 404);
@@ -126,8 +126,8 @@ class ProfileController extends BaseController
      */
     public function badgeList(Request $request, Response $response, array $args): Response
     {
-        /** @var int $profile_id */
-        $profile_id = $args['profile_id'];
+        /** @var int $profileId */
+        $profileId = $args['profile_id'];
 
         /** @var int $page */
         $page = $args['page'];
@@ -136,7 +136,7 @@ class ProfileController extends BaseController
         $resultPerPage = $args['rpp'];
 
         /** @var User $profile */
-        $profile = $this->userRepository->get((int)$profile_id);
+        $profile = $this->userRepository->get((int) $profileId);
 
         if (!$profile) {
             throw new ProfileException(__('No associated Profile was found'), 404);
@@ -166,8 +166,8 @@ class ProfileController extends BaseController
      */
     public function friendList(Request $request, Response $response, array $args): Response
     {
-        /** @var int $profile_id */
-        $profile_id = $args['profile_id'];
+        /** @var int $profileId */
+        $profileId = $args['profile_id'];
 
         /** @var int $page */
         $page = $args['page'];
@@ -176,7 +176,7 @@ class ProfileController extends BaseController
         $resultPerPage = $args['rpp'];
 
         /** @var User $profile */
-        $profile = $this->userRepository->get((int)$profile_id);
+        $profile = $this->userRepository->get((int) $profileId);
 
         if (!$profile) {
             throw new ProfileException(__('No associated Profile was found'), 404);

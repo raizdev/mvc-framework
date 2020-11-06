@@ -17,7 +17,6 @@ use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
 use Ares\User\Entity\User;
-use Ares\User\Repository\UserRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -45,26 +44,18 @@ class ArticleController extends BaseController
     private ValidationService $validationService;
 
     /**
-     * @var UserRepository
-     */
-    private UserRepository $userRepository;
-
-    /**
      * NewsController constructor.
      *
      * @param   ArticleRepository       $articleRepository
-     * @param   UserRepository          $userRepository
      * @param   CreateArticleService    $createArticleService
      * @param   ValidationService       $validationService
      */
     public function __construct(
         ArticleRepository $articleRepository,
-        UserRepository $userRepository,
         CreateArticleService $createArticleService,
         ValidationService $validationService
     ) {
         $this->articleRepository    = $articleRepository;
-        $this->userRepository       = $userRepository;
         $this->createArticleService = $createArticleService;
         $this->validationService    = $validationService;
     }

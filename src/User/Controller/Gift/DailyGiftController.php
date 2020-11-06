@@ -11,8 +11,6 @@ use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\User\Entity\User;
 use Ares\User\Exception\Gift\DailyGiftException;
-use Ares\User\Exception\UserException;
-use Ares\User\Repository\UserRepository;
 use Ares\User\Service\Gift\PickGiftService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -31,22 +29,14 @@ class DailyGiftController extends BaseController
     private PickGiftService $pickGiftService;
 
     /**
-     * @var UserRepository
-     */
-    private UserRepository $userRepository;
-
-    /**
      * DailyGiftController constructor.
      *
      * @param PickGiftService $pickGiftService
-     * @param UserRepository $userRepository
      */
     public function __construct(
-        PickGiftService $pickGiftService,
-        UserRepository $userRepository
+        PickGiftService $pickGiftService
     ) {
         $this->pickGiftService = $pickGiftService;
-        $this->userRepository = $userRepository;
     }
 
     /**
@@ -58,7 +48,6 @@ class DailyGiftController extends BaseController
      * @return Response
      * @throws DailyGiftException
      * @throws DataObjectManagerException
-     * @throws UserException
      */
     public function pick(Request $request, Response $response): ResponseInterface
     {

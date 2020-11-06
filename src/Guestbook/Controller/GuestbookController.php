@@ -8,6 +8,7 @@
 namespace Ares\Guestbook\Controller;
 
 use Ares\Framework\Controller\BaseController;
+use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
@@ -78,14 +79,14 @@ class GuestbookController extends BaseController
     }
 
     /**
-     * @param Request  $request
+     * @param Request $request
      * @param Response $response
      *
      * @return Response
      * @throws DataObjectManagerException
      * @throws GuestbookException
-     * @throws UserException
      * @throws ValidationException
+     * @throws AuthenticationException
      */
     public function create(Request $request, Response $response): Response
     {

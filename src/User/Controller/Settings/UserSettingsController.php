@@ -12,9 +12,7 @@ use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
 use Ares\User\Entity\User;
-use Ares\User\Exception\UserException;
 use Ares\User\Exception\UserSettingsException;
-use Ares\User\Repository\UserRepository;
 use Ares\User\Service\Settings\ChangeEmailService;
 use Ares\User\Service\Settings\ChangeGeneralSettingsService;
 use Ares\User\Service\Settings\ChangePasswordService;
@@ -55,11 +53,6 @@ class UserSettingsController extends BaseController
     private ChangeUsernameService $changeUsernameService;
 
     /**
-     * @var UserRepository
-     */
-    private UserRepository $userRepository;
-
-    /**
      * UserSettingsController constructor.
      *
      * @param ValidationService            $validationService
@@ -67,22 +60,19 @@ class UserSettingsController extends BaseController
      * @param ChangePasswordService        $changePasswordService
      * @param ChangeEmailService           $changeEmailService
      * @param ChangeUsernameService        $changeUsernameService
-     * @param UserRepository               $userRepository
      */
     public function __construct(
         ValidationService $validationService,
         ChangeGeneralSettingsService $changeGeneralSettingsService,
         ChangePasswordService $changePasswordService,
         ChangeEmailService $changeEmailService,
-        ChangeUsernameService $changeUsernameService,
-        UserRepository $userRepository
+        ChangeUsernameService $changeUsernameService
     ) {
         $this->validationService = $validationService;
         $this->changeGeneralSettingsService = $changeGeneralSettingsService;
         $this->changePasswordService = $changePasswordService;
         $this->changeEmailService = $changeEmailService;
         $this->changeUsernameService = $changeUsernameService;
-        $this->userRepository = $userRepository;
     }
 
     /**
@@ -90,7 +80,6 @@ class UserSettingsController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws UserException
      * @throws UserSettingsException
      * @throws ValidationException
      * @throws DataObjectManagerException
@@ -131,7 +120,6 @@ class UserSettingsController extends BaseController
      *
      * @return Response
      * @throws DataObjectManagerException
-     * @throws UserException
      * @throws UserSettingsException
      * @throws ValidationException
      */
@@ -167,7 +155,6 @@ class UserSettingsController extends BaseController
      *
      * @return Response
      * @throws DataObjectManagerException
-     * @throws UserException
      * @throws UserSettingsException
      * @throws ValidationException
      */
@@ -202,7 +189,6 @@ class UserSettingsController extends BaseController
      *
      * @return Response
      * @throws DataObjectManagerException
-     * @throws UserException
      * @throws UserSettingsException
      * @throws ValidationException
      */

@@ -8,12 +8,11 @@
 namespace Ares\Vote\Controller;
 
 use Ares\Framework\Controller\BaseController;
+use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
 use Ares\User\Entity\User;
-use Ares\User\Exception\UserException;
-use Ares\User\Repository\UserRepository;
 use Ares\Vote\Exception\VoteException;
 use Ares\Vote\Repository\VoteRepository;
 use Ares\Vote\Service\CreateVoteService;
@@ -34,11 +33,6 @@ class VoteController extends BaseController
      * @var VoteRepository
      */
     private VoteRepository $voteRepository;
-
-    /**
-     * @var UserRepository
-     */
-    private UserRepository $userRepository;
 
     /**
      * @var ValidationService
@@ -69,7 +63,6 @@ class VoteController extends BaseController
      * VoteController constructor.
      *
      * @param   VoteRepository          $voteRepository
-     * @param   UserRepository          $userRepository
      * @param   ValidationService       $validationService
      * @param   CreateVoteService       $createVoteService
      * @param   DeleteVoteService       $deleteVoteService
@@ -78,7 +71,6 @@ class VoteController extends BaseController
      */
     public function __construct(
         VoteRepository $voteRepository,
-        UserRepository $userRepository,
         ValidationService $validationService,
         CreateVoteService $createVoteService,
         DeleteVoteService $deleteVoteService,
@@ -86,7 +78,6 @@ class VoteController extends BaseController
         DecrementVoteService $decrementVoteService
     ) {
         $this->voteRepository         = $voteRepository;
-        $this->userRepository         = $userRepository;
         $this->validationService      = $validationService;
         $this->createVoteService      = $createVoteService;
         $this->deleteVoteService      = $deleteVoteService;
@@ -97,14 +88,14 @@ class VoteController extends BaseController
     /**
      * Create new vote.
      *
-     * @param Request  $request
+     * @param Request $request
      * @param Response $response
      *
      * @return Response
      * @throws DataObjectManagerException
-     * @throws UserException
      * @throws ValidationException
      * @throws VoteException
+     * @throws AuthenticationException
      */
     public function create(Request $request, Response $response): Response
     {
@@ -147,11 +138,11 @@ class VoteController extends BaseController
     /**
      * Returns total count of likes/dislikes for given entity.
      *
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request $request
+     * @param Response $response
      *
      * @return Response
-     * @throws UserException
+     * @throws AuthenticationException
      */
     public function getTotalVotes(Request $request, Response $response)
     {
@@ -170,12 +161,12 @@ class VoteController extends BaseController
     /**
      * Delete vote.
      *
-     * @param Request  $request
+     * @param Request $request
      * @param Response $response
      *
      * @return Response
+     * @throws AuthenticationException
      * @throws DataObjectManagerException
-     * @throws UserException
      * @throws ValidationException
      * @throws VoteException
      */

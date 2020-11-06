@@ -166,7 +166,7 @@ if (!function_exists('user')) {
         }
 
         /** @var UserRepository $userRepository */
-        $userRepository = Container::get(UserRepository::class);
+        $userRepository = container()->get(UserRepository::class);
 
         /** @var User $user */
         $user = $userRepository->get((int) $authUser, User::COLUMN_ID, $isCached);

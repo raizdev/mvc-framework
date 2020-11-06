@@ -17,9 +17,6 @@ use Ares\Rcon\Service\DeleteRconCommandService;
 use Ares\Rcon\Service\ExecuteRconCommandService;
 use Ares\Role\Exception\RoleException;
 use Ares\User\Entity\User;
-use Ares\User\Exception\UserException;
-use Ares\User\Repository\UserRepository;
-use JsonException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -51,30 +48,22 @@ class RconController extends BaseController
     private ValidationService $validationService;
 
     /**
-     * @var UserRepository
-     */
-    private UserRepository $userRepository;
-
-    /**
      * RconController constructor.
      *
      * @param ExecuteRconCommandService $executeRconCommandService
      * @param DeleteRconCommandService  $deleteRconCommandService
      * @param CreateRconCommandService  $createRconCommandService
-     * @param UserRepository            $userRepository
      * @param ValidationService         $validationService
      */
     public function __construct(
         ExecuteRconCommandService $executeRconCommandService,
         DeleteRconCommandService $deleteRconCommandService,
         CreateRconCommandService $createRconCommandService,
-        UserRepository $userRepository,
         ValidationService $validationService
     ) {
         $this->executeRconCommandService = $executeRconCommandService;
         $this->deleteRconCommandService = $deleteRconCommandService;
         $this->createRconCommandService = $createRconCommandService;
-        $this->userRepository = $userRepository;
         $this->validationService = $validationService;
     }
 
@@ -83,10 +72,9 @@ class RconController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws JsonException
+     * @throws \JsonException
      * @throws RconException
      * @throws RoleException
-     * @throws UserException
      * @throws ValidationException
      * @throws DataObjectManagerException
      */

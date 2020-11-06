@@ -13,11 +13,11 @@ use Ares\Forum\Repository\CommentRepository;
 use Ares\Forum\Service\Comment\CreateCommentService;
 use Ares\Forum\Service\Comment\EditCommentService;
 use Ares\Framework\Controller\BaseController;
+use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
 use Ares\User\Entity\User;
-use Ares\User\Exception\UserException;
 use Ares\User\Repository\UserRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -34,11 +34,6 @@ class CommentController extends BaseController
      * @var CommentRepository
      */
     private CommentRepository $commentRepository;
-
-    /**
-     * @var UserRepository
-     */
-    private UserRepository $userRepository;
 
     /**
      * @var CreateCommentService
@@ -59,34 +54,31 @@ class CommentController extends BaseController
      * CommentController constructor.
      *
      * @param   CommentRepository       $commentRepository
-     * @param   UserRepository          $userRepository
      * @param   CreateCommentService    $createCommentService
      * @param   EditCommentService      $editCommentService
      * @param   ValidationService       $validationService
      */
     public function __construct(
         CommentRepository $commentRepository,
-        UserRepository $userRepository,
         CreateCommentService $createCommentService,
         EditCommentService $editCommentService,
         ValidationService $validationService
     ) {
         $this->commentRepository    = $commentRepository;
-        $this->userRepository       = $userRepository;
         $this->createCommentService = $createCommentService;
         $this->editCommentService   = $editCommentService;
         $this->validationService    = $validationService;
     }
 
     /**
-     * @param Request  $request
+     * @param Request $request
      * @param Response $response
      *
      * @return Response
      * @throws CommentException
      * @throws DataObjectManagerException
-     * @throws UserException
      * @throws ValidationException
+     * @throws AuthenticationException
      */
     public function create(Request $request, Response $response): Response
     {
