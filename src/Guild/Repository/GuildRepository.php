@@ -8,7 +8,6 @@
 namespace Ares\Guild\Repository;
 
 use Ares\Framework\Exception\DataObjectManagerException;
-use Ares\Framework\Interfaces\SearchCriteriaInterface;
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Guild\Entity\Guild;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -94,7 +93,8 @@ class GuildRepository extends BaseRepository
                 'guilds_members.guild_id',
                 '=',
                 'guilds.id'
-            )->orderBy('guilds.id')
+            )->groupBy('guilds.id')
+            ->orderBy('guilds.id')
             ->addRelation('user');
 
         return $this->getPaginatedList($searchCriteria, $page, $resultPerPage);

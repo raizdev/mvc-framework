@@ -133,6 +133,10 @@ class DataObjectManager extends Builder
      */
     private function getColumns(array $columns): array
     {
+        if($this->aggregate) {
+            return $columns;
+        }
+
         if ($columns !== ['*']) {
             return $columns;
         }
