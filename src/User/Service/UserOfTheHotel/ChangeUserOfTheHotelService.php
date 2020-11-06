@@ -97,7 +97,7 @@ class ChangeUserOfTheHotelService
 
         return $newUser
             ->setUserId($userData->getId())
-            ->setToTimestamp(1605291305)
+            ->setToTimestamp(strtotime('+1 week'))
             ->setCreatedAt(new \DateTime());
     }
 }
