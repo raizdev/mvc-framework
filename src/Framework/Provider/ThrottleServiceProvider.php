@@ -19,10 +19,16 @@ use Predis\Client;
  */
 class ThrottleServiceProvider extends AbstractServiceProvider
 {
+    /**
+     * @var string[]
+     */
     protected $provides = [
         ThrottleMiddleware::class
     ];
 
+    /**
+     * Registers new service.
+     */
     public function register()
     {
         $container = $this->getContainer();

@@ -25,6 +25,9 @@ class ValidationServiceProvider extends AbstractServiceProvider
         Validator::class
     ];
 
+    /**
+     * Registers new service.
+     */
     public function register()
     {
         $container = $this->getContainer();

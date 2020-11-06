@@ -17,9 +17,10 @@ use Illuminate\Support\Collection as IlluminateCollection;
 class Collection extends IlluminateCollection
 {
     /**
+     * Returns array of collection value by key.
+     *
      * @param mixed $key
      * @param null  $default
-     *
      * @return array|mixed
      */
     public function get($key, $default = null)

@@ -20,11 +20,17 @@ use Psr\Log\LoggerInterface;
  */
 class LoggingServiceProvider extends AbstractServiceProvider
 {
+    /**
+     * @var string[]
+     */
     protected $provides = [
         LoggerInterface::class,
         'logger_settings'
     ];
 
+    /**
+     * Registers new service.
+     */
     public function register()
     {
         $container = $this->getContainer();

@@ -18,10 +18,16 @@ use Slim\Factory\AppFactory;
  */
 class AppServiceProvider extends AbstractServiceProvider
 {
+    /**
+     * @var string[]
+     */
     protected $provides = [
         App::class
     ];
 
+    /**
+     * Registers new service.
+     */
     public function register()
     {
         $container = $this->getContainer();

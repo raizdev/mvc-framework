@@ -14,9 +14,6 @@ return function (App $app) {
         return $response;
     });
 
-    // Status
-    $app->get('/', \Ares\Framework\Controller\Status\StatusController::class . ':getStatus');
-
     $app->group('/{locale}', function (RouteCollectorProxy $group) {
 
         // Only Accessible if LoggedIn

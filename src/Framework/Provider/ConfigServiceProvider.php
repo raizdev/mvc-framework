@@ -18,10 +18,16 @@ use PHLAK\Config\Config;
  */
 class ConfigServiceProvider extends AbstractServiceProvider
 {
+    /**
+     * @var string[]
+     */
     protected $provides = [
         Config::class
     ];
 
+    /**
+     * Registers new service.
+     */
     public function register()
     {
         $container = $this->getContainer();

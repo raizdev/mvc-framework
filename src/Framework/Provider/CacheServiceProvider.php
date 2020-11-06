@@ -19,10 +19,16 @@ use League\Container\ServiceProvider\AbstractServiceProvider;
  */
 class CacheServiceProvider extends AbstractServiceProvider
 {
+    /**
+     * @var string[]
+     */
     protected $provides = [
         FastCache::class
     ];
 
+    /**
+     * Registers new service.
+     */
     public function register()
     {
         $container = $this->getContainer();

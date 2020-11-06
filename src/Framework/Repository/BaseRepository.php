@@ -220,7 +220,7 @@ abstract class BaseRepository
      * Returns one to one relation.
      *
      * @param BaseRepository $repository
-     * @param int $id
+     * @param int|null $id
      * @param string $column
      * @return DataObject|null
      */

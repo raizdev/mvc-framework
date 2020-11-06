@@ -18,10 +18,16 @@ use PHLAK\Config\Config;
  */
 class SlugServiceProvider extends AbstractServiceProvider
 {
+    /**
+     * @var string[]
+     */
     protected $provides = [
         Slugify::class
     ];
 
+    /**
+     * Registers new service.
+     */
     public function register()
     {
         $container = $this->getContainer();

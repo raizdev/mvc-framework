@@ -70,6 +70,7 @@ class UserSettingRepository extends BaseRepository
         $searchCriteria = $this->getDataObjectManager()
             ->select(['user_id', 'respects_received'])
             ->orderBy('respects_received', 'DESC')
+            ->limit(1)
             ->addRelation('user');
 
         return $this->getList($searchCriteria)->first();

@@ -53,7 +53,7 @@ abstract class BaseController
         $authUser = $this->authUser($request);
 
         /** @var User $user */
-        $user = $userRepository->get((int) $authUser, 'id', $isCached);
+        $user = $userRepository->get((int) $authUser, User::COLUMN_ID, $isCached);
 
         if (!$user) {
             throw new UserException(__('User doesnt exists.'), 404);

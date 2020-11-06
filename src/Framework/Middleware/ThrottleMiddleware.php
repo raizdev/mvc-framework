@@ -161,7 +161,7 @@ class ThrottleMiddleware implements MiddlewareInterface
      */
     private function getUrl(): string
     {
-        $url = preg_split('/\/([a-zA-Z0-9]{0,}\/)/', $_SERVER['REQUEST_URI']);
+        $url = preg_split('/\/([a-zA-Z0-9]*\/)/', $_SERVER['REQUEST_URI']);
 
         return $url[self::LOCALE_KEY];
     }

@@ -25,7 +25,7 @@ class LocaleHelper
         $path = $this->getPath();
         $fileName = $this->getFileName($locale);
 
-        $jsonContent = file_get_contents($path . $fileName);
+        $jsonContent = @file_get_contents($path . $fileName);
 
         if (!$jsonContent) {
             return [];
