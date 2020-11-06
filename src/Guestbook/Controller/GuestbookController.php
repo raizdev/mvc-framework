@@ -105,7 +105,7 @@ class GuestbookController extends BaseController
         $guildId = $parsedData['guild_id'] ?? 0;
 
         /** @var User $user */
-        $user = $this->getUser($this->userRepository, $request);
+        $user = user($request);
 
         /** @var User $profile */
         $profile = $this->userRepository->get((int) $profileId);

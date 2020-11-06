@@ -12,11 +12,11 @@ use Ares\Framework\Controller\BaseController;
 use Ares\Article\Entity\Article;
 use Ares\Article\Exception\ArticleException;
 use Ares\Article\Repository\ArticleRepository;
+use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
 use Ares\User\Entity\User;
-use Ares\User\Exception\UserException;
 use Ares\User\Repository\UserRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -72,14 +72,14 @@ class ArticleController extends BaseController
     /**
      * Creates new article.
      *
-     * @param Request  $request
+     * @param Request $request
      * @param Response $response
      *
      * @return Response
      * @throws ArticleException
      * @throws DataObjectManagerException
-     * @throws UserException
      * @throws ValidationException
+     * @throws AuthenticationException
      */
     public function create(Request $request, Response $response): Response
     {
@@ -96,9 +96,9 @@ class ArticleController extends BaseController
         ]);
 
         /** @var User $user */
-        $user = $this->getUser($this->userRepository, $request);
+        $userId = user($request)->getId();
 
-        $customResponse = $this->createArticleService->execute($user->getId(), $parsedData);
+        $customResponse = $this->createArticleService->execute($userId, $parsedData);
 
         return $this->respond(
             $response,

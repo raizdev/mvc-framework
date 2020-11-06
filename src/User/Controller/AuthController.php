@@ -208,7 +208,7 @@ class AuthController extends BaseController
     public function ticket(Request $request, Response $response): Response
     {
         /** @var User $user */
-        $user = $this->getUser($this->userRepository, $request);
+        $user = user($request);
 
         /** @var TicketService $ticket */
         $ticket = $this->ticketService->generate($user);

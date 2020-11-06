@@ -111,7 +111,7 @@ class UserSettingsController extends BaseController
         ]);
 
         /** @var User $user */
-        $user = $this->getUser($this->userRepository, $request);
+        $user = user($request);
 
         $customResponse = $this->changeGeneralSettingsService
             ->execute(
@@ -146,7 +146,7 @@ class UserSettingsController extends BaseController
         ]);
 
         /** @var User $user */
-        $user = $this->getUser($this->userRepository, $request);
+        $user = user($request);
 
         $customResponse = $this->changePasswordService
             ->execute(
@@ -182,7 +182,7 @@ class UserSettingsController extends BaseController
         ]);
 
         /** @var User $user */
-        $user = $this->getUser($this->userRepository, $request);
+        $user = user($request);
 
         $customResponse = $this->changeEmailService->execute(
             $user,
@@ -217,7 +217,7 @@ class UserSettingsController extends BaseController
         ]);
 
         /** @var User $user */
-        $user = $this->getUser($this->userRepository, $request);
+        $user = user($request);
 
         $customResponse = $this->changeUsernameService->execute(
             $user,

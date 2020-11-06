@@ -12,6 +12,7 @@ use Ares\Article\Repository\CommentRepository;
 use Ares\Article\Service\CreateCommentService;
 use Ares\Article\Service\EditCommentService;
 use Ares\Framework\Controller\BaseController;
+use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
@@ -78,14 +79,14 @@ class CommentController extends BaseController
     }
 
     /**
-     * @param Request     $request
-     * @param Response    $response
+     * @param Request $request
+     * @param Response $response
      *
      * @return Response
      * @throws CommentException
      * @throws DataObjectManagerException
-     * @throws UserException
      * @throws ValidationException
+     * @throws AuthenticationException
      */
     public function create(Request $request, Response $response): Response
     {
@@ -98,9 +99,9 @@ class CommentController extends BaseController
         ]);
 
         /** @var User $user */
-        $user = $this->getUser($this->userRepository, $request);
+        $userId = user($request)->getId();
 
-        $customResponse = $this->createCommentService->execute($user->getId(), $parsedData);
+        $customResponse = $this->createCommentService->execute($userId, $parsedData);
 
         return $this->respond(
             $response,

@@ -100,7 +100,7 @@ class RconController extends BaseController
         ]);
 
         /** @var User $user */
-        $user = $this->getUser($this->userRepository, $request);
+        $user = user($request);
 
         $customResponse = $this->executeRconCommandService
             ->execute(

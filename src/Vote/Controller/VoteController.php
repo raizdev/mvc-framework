@@ -118,9 +118,13 @@ class VoteController extends BaseController
         ]);
 
         /** @var User $user */
-        $user = $this->getUser($this->userRepository, $request);
+        $user = user($request);
 
-        $customResponse = $this->createVoteService->execute($user->getId(), $parsedData);
+        $customResponse = $this->createVoteService
+            ->execute(
+                $user->getId(),
+                $parsedData
+            );
 
         $result = $this->incrementVoteService
             ->execute(
@@ -152,7 +156,7 @@ class VoteController extends BaseController
     public function getTotalVotes(Request $request, Response $response)
     {
         /** @var User $user */
-        $user = $this->getUser($this->userRepository, $request);
+        $user = user($request);
 
         $votes = $this->voteRepository->getUserVoteList($user->getId());
 
@@ -187,7 +191,7 @@ class VoteController extends BaseController
         ]);
 
         /** @var User $user */
-        $user = $this->getUser($this->userRepository, $request);
+        $user = user($request);
 
         $customResponse = $this->deleteVoteService->execute($user->getId(), $parsedData);
 

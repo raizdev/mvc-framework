@@ -63,7 +63,7 @@ class DailyGiftController extends BaseController
     public function pick(Request $request, Response $response): ResponseInterface
     {
         /** @var User $user */
-        $user = $this->getUser($this->userRepository, $request);
+        $user = user($request);
 
         $customResponse = $this->pickGiftService->execute($user);
 

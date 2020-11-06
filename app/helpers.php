@@ -5,10 +5,19 @@
  * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
  */
 
+use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Interfaces\CustomResponseInterface;
+use Ares\Framework\Model\CustomResponse;
+use Ares\Framework\Model\DataObject;
 use Ares\Framework\Model\Query\Collection;
+use Ares\Framework\Proxy\App;
 use Ares\Framework\Repository\BaseRepository;
+use Ares\Framework\Service\LocaleService;
+use Ares\User\Entity\User;
+use Ares\User\Repository\UserRepository;
 use League\Container\Container;
+use Psr\Http\Message\ServerRequestInterface as Request;
 
 if (!function_exists('__')) {
     /**
@@ -19,9 +28,9 @@ if (!function_exists('__')) {
      * @return string
      */
     function __(string $key, array $placeholder = []): string {
-        $container = \Ares\Framework\Proxy\App::getContainer();
-        /** @var \Ares\Framework\Service\LocaleService $localeService */
-        $localeService = $container->get(\Ares\Framework\Service\LocaleService::class);
+        $container = App::getContainer();
+        /** @var LocaleService $localeService */
+        $localeService = $container->get(LocaleService::class);
         return $localeService->translate($key, $placeholder);
     }
 }
@@ -30,11 +39,11 @@ if (!function_exists('response')) {
     /**
      * Returns instance of custom response.
      *
-     * @return \Ares\Framework\Interfaces\CustomResponseInterface
+     * @return CustomResponseInterface
      */
-    function response(): \Ares\Framework\Interfaces\CustomResponseInterface {
-        $container = \Ares\Framework\Proxy\App::getContainer();
-        return $container->get(\Ares\Framework\Model\CustomResponse::class);
+    function response(): CustomResponseInterface {
+        $container = App::getContainer();
+        return $container->get(CustomResponse::class);
     }
 }
 
@@ -100,7 +109,7 @@ if (!function_exists('container')) {
      * @return Container
      */
     function container(): \League\Container\Container {
-        return \Ares\Framework\Proxy\App::getContainer();
+        return App::getContainer();
     }
 }
 
@@ -135,5 +144,37 @@ if (!function_exists('accumulate')) {
      */
     function accumulate($items = null): Collection {
         return new Collection($items);
+    }
+}
+
+if (!function_exists('user')) {
+    /**
+     * Returns current authenticated user.
+     * Required classes: \Ares\User\Repository\UserRepository, \Ares\User\Entity\User
+     *
+     * @param Request $request
+     * @param bool $isCached
+     * @return User
+     * @throws AuthenticationException
+     */
+    function user(Request $request, bool $isCached = true): User {
+        /** @var array $user */
+        $authUser = $request->getAttribute('ares_uid');
+
+        if (!$authUser) {
+            return json_decode(json_encode($authUser), true);
+        }
+
+        /** @var UserRepository $userRepository */
+        $userRepository = Container::get(UserRepository::class);
+
+        /** @var User $user */
+        $user = $userRepository->get((int) $authUser, User::COLUMN_ID, $isCached);
+
+        if (!$user) {
+            throw new AuthenticationException(__('User doesnt exists.'), 404);
+        }
+
+        return $user;
     }
 }

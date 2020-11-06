@@ -66,7 +66,7 @@ class MessengerController extends BaseController
         $resultPerPage = $args['rpp'];
 
         /** @var User $user */
-        $user = $this->getUser($this->userRepository, $request);
+        $user = user($request);
 
         $friends = $this->messengerRepository
             ->getPaginatedMessengerFriends(
