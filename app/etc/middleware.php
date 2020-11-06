@@ -24,6 +24,7 @@ return function (App $app) {
         "credentials" => true,
         "cache" => $_ENV['TOKEN_DURATION']
     ]));
+
     $app->add(\Ares\Framework\Middleware\BodyParserMiddleware::class);
     $app->add(\Ares\Framework\Middleware\ClaimMiddleware::class);
     $app->addRoutingMiddleware();

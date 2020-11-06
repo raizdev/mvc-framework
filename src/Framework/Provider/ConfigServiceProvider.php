@@ -33,7 +33,7 @@ class ConfigServiceProvider extends AbstractServiceProvider
         $container = $this->getContainer();
 
         $container->share(Config::class, function () {
-            return new Config(app_dir() . '/Configs');
+            return new Config(app_dir() . '/configs');
         });
     }
 }

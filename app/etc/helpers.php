@@ -9,7 +9,6 @@ use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\Framework\Model\CustomResponse;
-use Ares\Framework\Model\DataObject;
 use Ares\Framework\Model\Query\Collection;
 use Ares\Framework\Proxy\App;
 use Ares\Framework\Repository\BaseRepository;
@@ -54,7 +53,7 @@ if (!function_exists('app_dir')) {
      * @return string
      */
     function app_dir(): string {
-        return __DIR__;
+        return __DIR__ . '/..';
     }
 }
 
@@ -65,7 +64,7 @@ if (!function_exists('base_dir')) {
      * @return string
      */
     function base_dir(): string {
-        return __DIR__ . '/../';
+        return __DIR__ . '/../../';
     }
 }
 
@@ -76,7 +75,7 @@ if (!function_exists('cache_dir')) {
      * @return string
      */
     function cache_dir(): string {
-        return __DIR__ . '/../tmp/Cache';
+        return __DIR__ . '/../../tmp/Cache';
     }
 }
 
@@ -87,7 +86,7 @@ if (!function_exists('tmp_dir')) {
      * @return string
      */
     function tmp_dir(): string {
-        return __DIR__ . '/../tmp';
+        return __DIR__ . '/../../tmp';
     }
 }
 
@@ -98,7 +97,7 @@ if (!function_exists('route_cache_dir')) {
      * @return string
      */
     function route_cache_dir(): string {
-        return __DIR__ . '/../tmp/Cache/routing';
+        return __DIR__ . '/../../tmp/Cache/routing';
     }
 }
 

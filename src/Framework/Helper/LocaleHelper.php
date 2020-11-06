@@ -39,7 +39,7 @@ class LocaleHelper
      */
     private function getPath(): string
     {
-        return app_dir() . '/Lang/';
+        return app_dir() . '/lang/';
     }
 
     /**
