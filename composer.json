@@ -12,6 +12,10 @@
         {
             "name": "Dome",
             "homepage": "https://ares.to"
+        },
+        {
+            "name": "s1njar",
+            "homepage": "https://ares.to"
         }
     ],
     "require": {
@@ -20,7 +24,7 @@
         "cocur/slugify": "dev-master",
         "illuminate/database": "^9.0@dev",
         "illuminate/pagination": "^9.0@dev",
-        "league/container": "dev-master",
+        "league/container": "3.3.3",
         "monolog/monolog": "^1.24",
         "phlak/config": "dev-master",
         "phpfastcache/phpfastcache": "dev-master",

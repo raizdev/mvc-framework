@@ -60,7 +60,6 @@ class CreateThreadService
      * @param array $data
      *
      * @return CustomResponseInterface
-     * @throws CacheException
      * @throws DataObjectManagerException
      * @throws ThreadException
      */

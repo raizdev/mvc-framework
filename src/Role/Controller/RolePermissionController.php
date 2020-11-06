@@ -13,7 +13,6 @@ use Ares\Framework\Exception\ValidationException as ValidationExceptionAlias;
 use Ares\Framework\Service\ValidationService;
 use Ares\Role\Exception\RoleException;
 use Ares\Role\Repository\PermissionRepository;
-use Ares\Role\Service\CreateChildPermission;
 use Ares\Role\Service\CreateRolePermissionService;
 use Ares\Role\Service\CreatePermissionService;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -100,7 +99,6 @@ class RolePermissionController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws CacheException
      * @throws DataObjectManagerException
      * @throws RoleException
      * @throws ValidationExceptionAlias
@@ -127,7 +125,6 @@ class RolePermissionController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws CacheException
      * @throws DataObjectManagerException
      * @throws RoleException
      * @throws ValidationExceptionAlias

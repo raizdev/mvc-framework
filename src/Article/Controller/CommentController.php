@@ -82,7 +82,6 @@ class CommentController extends BaseController
      * @param Response    $response
      *
      * @return Response
-     * @throws CacheException
      * @throws CommentException
      * @throws DataObjectManagerException
      * @throws UserException
@@ -116,7 +115,6 @@ class CommentController extends BaseController
      * @return Response
      * @throws CommentException
      * @throws ValidationException
-     * @throws CacheException
      * @throws DataObjectManagerException
      */
     public function edit(Request $request, Response $response): Response

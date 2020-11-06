@@ -50,7 +50,6 @@ class CreateTopicService
      *
      * @return CustomResponseInterface
      * @throws TopicException
-     * @throws CacheException
      * @throws DataObjectManagerException
      */
     public function execute(array $data)

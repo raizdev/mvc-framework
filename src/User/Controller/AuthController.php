@@ -202,7 +202,6 @@ class AuthController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws CacheException
      * @throws DataObjectManagerException
      * @throws UserException
      */

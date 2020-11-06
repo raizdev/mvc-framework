@@ -7,7 +7,6 @@
 
 namespace Ares\Vote\Service\Votes;
 
-use Ares\Framework\Exception\CacheException;
 use Ares\Framework\Model\DataObject;
 use Ares\Vote\Exception\VoteException;
 use Ares\Vote\Interfaces\VoteTypeInterface;

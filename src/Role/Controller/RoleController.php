@@ -108,7 +108,6 @@ class RoleController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws CacheException
      * @throws DataObjectManagerException
      * @throws RoleException
      * @throws ValidationException
@@ -162,7 +161,6 @@ class RoleController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws CacheException
      * @throws DataObjectManagerException
      * @throws RoleException
      * @throws ValidationException
