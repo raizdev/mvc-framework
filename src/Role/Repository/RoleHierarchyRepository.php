@@ -9,6 +9,7 @@ namespace Ares\Role\Repository;
 
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Role\Entity\RoleHierarchy;
+use Illuminate\Database\QueryException;
 
 /**
  * Class RoleHierarchyRepository
@@ -56,7 +57,7 @@ class RoleHierarchyRepository extends BaseRepository
         while (count($parentIds) > 0) {
             $parentIds = $this->getChildIds($parentIds);
             $allChildIds = array_merge($allChildIds, $parentIds);
-        };
+        }
 
         return $allChildIds;
     }
@@ -74,12 +75,12 @@ class RoleHierarchyRepository extends BaseRepository
 
         if (count($childIds) > 0) {
 
-            if (in_array($findingChildId, $childIds)) {
+            if (in_array($findingChildId, $childIds, true)) {
                 return true;
             }
 
             foreach ($childIds as $childId) {
-                if ($this->hasChildRoleId($childId, $findingChildId) == true) {
+                if ($this->hasChildRoleId($childId, $findingChildId) === true) {
                     return true;
                 }
             }

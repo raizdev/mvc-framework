@@ -49,6 +49,7 @@ class GuildRepository extends BaseRepository
                 '=',
                 'guilds_members.guild_id'
             )->where('guilds.name', 'LIKE', '%'.$term.'%')
+            ->groupBy('guilds.id')
             ->orderBy('member_count', 'DESC');
 
         return $this->getPaginatedList($searchCriteria, $page, $resultPerPage);
@@ -69,7 +70,8 @@ class GuildRepository extends BaseRepository
                 'guilds.id',
                 '=',
                 'guilds_members.guild_id'
-            )->orderBy('member_count', 'DESC');
+            )->groupBy('guilds.id')
+            ->orderBy('member_count', 'DESC');
 
         return $this->getList($searchCriteria)->first();
     }
@@ -119,7 +121,8 @@ class GuildRepository extends BaseRepository
                 'guilds.id',
                 '=',
                 'guilds_members.guild_id'
-            )->addRelation('user')
+            )->groupBy('guilds.id')
+            ->addRelation('user')
             ->addRelation('room');
 
         return $this->getList($searchCriteria)->first();

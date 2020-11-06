@@ -9,6 +9,7 @@ namespace Ares\Role\Repository;
 
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Role\Entity\RoleUser;
+use Illuminate\Database\QueryException;
 
 /**
  * Class RoleUserRepository

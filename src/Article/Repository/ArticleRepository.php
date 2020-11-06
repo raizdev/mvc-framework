@@ -53,6 +53,7 @@ class ArticleRepository extends BaseRepository
                 'ares_articles_comments.article_id'
             )->where('title', 'LIKE', '%' . $term . '%')
             ->where('hidden', 0)
+            ->groupBy('ares_articles.id')
             ->orderBy('comments', 'DESC')
             ->addRelation('user');
 
@@ -80,7 +81,8 @@ class ArticleRepository extends BaseRepository
             )->where([
                 'pinned' => 1,
                 'hidden' => 0
-            ])->orderBy('ares_articles.id', 'DESC')
+            ])->groupBy('ares_articles.id')
+            ->orderBy('ares_articles.id', 'DESC')
             ->limit(3)
             ->addRelation('user');
 
@@ -108,7 +110,8 @@ class ArticleRepository extends BaseRepository
                 'ares_articles.id',
                 '=',
                 'ares_articles_comments.article_id'
-            )->where('ares_articles.hidden', 0)
+            )->groupBy('ares_articles.id')
+            ->where('ares_articles.hidden', 0)
             ->orderBy('ares_articles.id', 'DESC')
             ->addRelation('user');
 
