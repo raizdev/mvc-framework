@@ -14,7 +14,7 @@ It can be used for fast creating and expanding Habbo Retros.
 
 ##### 1. Clone project. 
 ```console
-$ git clone https://github.com/Domexx/Ares-Habbo-Backend.git
+$ git clone https://github.com/Domexx/ares-habbo-backend.git
 ```
 ##### 2. Change directory to project.
 ```console
