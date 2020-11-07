@@ -78,7 +78,7 @@ class CreateVoteService
             throw new VoteException(__('The related vote entity has no existing data.'), 404);
         }
 
-        $vote = $this->voteRepository->save($entity);
+        $vote = $this->voteRepository->save($vote);
 
         return response()
             ->setData($vote);
