@@ -8,9 +8,9 @@
 namespace Ares\User\Controller;
 
 use Ares\Framework\Controller\BaseController;
+use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\User\Entity\User;
-use Ares\User\Exception\UserException;
 use Ares\User\Repository\UserRepository;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -45,8 +45,8 @@ class UserController extends BaseController
      * @param Response $response The current Response
      *
      * @return Response Returns a Response with the given Data
-     * @throws UserException
      * @throws DataObjectManagerException
+     * @throws AuthenticationException
      */
     public function user(Request $request, Response $response): Response
     {
