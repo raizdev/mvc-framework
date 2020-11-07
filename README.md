@@ -4,7 +4,7 @@
 ==========================
 
 ## Introduction
-This project is a part of the custom Ares CMS for Habbo. You can easily create your custom Frontend Application 
+This project is the backend api part of the custom Ares CMS for Habbo. You can easily create your custom Frontend Application 
 while not worrying about the Backend, Ares takes care of everything.
 
 It can be used for fast creating and expanding Habbo Retros.
@@ -110,7 +110,7 @@ class Controller extends BaseController
      */
     public function customResponse(Request $request, Response $response): Response
     {
-        /** @var string $user */
+        /** @var string $customResponse */
         $customResponse = 'your custom response';
 
         return $this->respond(
