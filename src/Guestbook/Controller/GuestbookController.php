@@ -96,7 +96,7 @@ class GuestbookController extends BaseController
         $this->validationService->validate($parsedData, [
             'content' => 'required',
             'profile_id' => 'numeric',
-            'guild' => 'numeric'
+            'guild_id' => 'numeric'
         ]);
 
         /** @var int $profileId */
