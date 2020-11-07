@@ -100,10 +100,10 @@ class GuestbookController extends BaseController
         ]);
 
         /** @var int $profileId */
-        $profileId = $parsedData['profile_id'] ?? 0;
+        $profileId = $parsedData['profile_id'] ?? null;
 
         /** @var int $guildId */
-        $guildId = $parsedData['guild_id'] ?? 0;
+        $guildId = $parsedData['guild_id'] ?? null;
 
         /** @var User $user */
         $user = user($request);
@@ -118,8 +118,8 @@ class GuestbookController extends BaseController
             throw new GuestbookException(__('The associated Entities could not be found'));
         }
 
-        $parsedData['profile_id'] = (!$profile) ? 0 : $profile->getId();
-        $parsedData['guild_id'] = (!$guild) ? 0 : $guild->getId();
+        $parsedData['profile_id'] = (!$profile) ? null : $profile->getId();
+        $parsedData['guild_id'] = (!$guild) ? null : $guild->getId();
 
         $customResponse = $this->createGuestbookEntryService
             ->execute(

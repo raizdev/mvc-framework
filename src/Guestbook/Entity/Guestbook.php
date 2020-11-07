@@ -68,7 +68,7 @@ class Guestbook extends DataObject implements GuestbookInterface
     /**
      * @return int
      */
-    public function getProfileId(): int
+    public function getProfileId(): ?int
     {
         return $this->getData(GuestbookInterface::COLUMN_PROFILE_ID);
     }
@@ -78,7 +78,7 @@ class Guestbook extends DataObject implements GuestbookInterface
      *
      * @return Guestbook
      */
-    public function setProfileId(int $profile_id): Guestbook
+    public function setProfileId(?int $profile_id): Guestbook
     {
         return $this->setData(GuestbookInterface::COLUMN_PROFILE_ID, $profile_id);
     }
@@ -86,7 +86,7 @@ class Guestbook extends DataObject implements GuestbookInterface
     /**
      * @return int
      */
-    public function getGuildId(): int
+    public function getGuildId(): ?int
     {
         return $this->getData(GuestbookInterface::COLUMN_GUILD_ID);
     }
@@ -96,7 +96,7 @@ class Guestbook extends DataObject implements GuestbookInterface
      *
      * @return Guestbook
      */
-    public function setGuildId(int $guild_id): Guestbook
+    public function setGuildId(?int $guild_id): Guestbook
     {
         return $this->setData(GuestbookInterface::COLUMN_GUILD_ID, $guild_id);
     }
