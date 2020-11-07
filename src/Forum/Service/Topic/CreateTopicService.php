@@ -82,6 +82,7 @@ class CreateTopicService
         return $topic
             ->setTitle($data['title'])
             ->setSlug($this->slug->slugify($data['title']))
-            ->setDescription($data['description']);
+            ->setDescription($data['description'])
+            ->setCreatedAt(new \DateTime());
     }
 }

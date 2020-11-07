@@ -103,6 +103,7 @@ class CreateThreadService
             ->setDescription($data['description'])
             ->setContent($data['content'])
             ->setLikes(0)
-            ->setDislikes(0);
+            ->setDislikes(0)
+            ->setCreatedAt(new \DateTime());
     }
 }

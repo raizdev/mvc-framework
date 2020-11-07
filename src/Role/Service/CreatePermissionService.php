@@ -76,7 +76,8 @@ class CreatePermissionService
 
         $permission
             ->setName($data['name'])
-            ->setDescription($data['description']);
+            ->setDescription($data['description'])
+            ->setCreatedAt(new \DateTime());
 
         return $permission;
     }

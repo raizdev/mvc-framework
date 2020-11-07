@@ -81,7 +81,8 @@ class EditThreadService
         $thread
             ->setTitle($title)
             ->setDescription($description)
-            ->setContent($content);
+            ->setContent($content)
+            ->setUpdatedAt(new \DateTime());
 
         /** @var Thread $thread */
         $thread = $this->threadRepository->save($thread);

@@ -89,6 +89,7 @@ class CreateCommentService
             ->setContent($data['content'])
             ->setIsEdited(0)
             ->setLikes(0)
-            ->setDislikes(0);
+            ->setDislikes(0)
+            ->setCreatedAt(new \DateTime());
     }
 }

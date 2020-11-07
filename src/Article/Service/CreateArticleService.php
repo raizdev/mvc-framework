@@ -95,6 +95,7 @@ class CreateArticleService
             ->setHidden($data['hidden'])
             ->setPinned($data['pinned'])
             ->setLikes(0)
-            ->setDislikes(0);
+            ->setDislikes(0)
+            ->setCreatedAt(new \DateTime());
     }
 }

@@ -63,7 +63,8 @@ class EditTopicService
 
         $topic
             ->setTitle($title)
-            ->setDescription($description);
+            ->setDescription($description)
+            ->setUpdatedAt(new \DateTime());
 
         /** @var Topic $topic */
         $topic = $this->topicRepository->save($topic);

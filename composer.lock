@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8808032a8f5107e3135f32097e7276f6",
+    "content-hash": "2fc11956bf918d912cbbf1a5b55f1354",
     "packages": [
         {
             "name": "cocur/slugify",
@@ -159,12 +159,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Domexx/Ares-Core.git",
-                "reference": "3c6e3a06dadb2794cae357f0f4e3ec6b2cc767f0"
+                "reference": "e727cfc3095a6c041618bb322116dbb72788626e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Domexx/Ares-Core/zipball/3c6e3a06dadb2794cae357f0f4e3ec6b2cc767f0",
-                "reference": "3c6e3a06dadb2794cae357f0f4e3ec6b2cc767f0",
+                "url": "https://api.github.com/repos/Domexx/Ares-Core/zipball/e727cfc3095a6c041618bb322116dbb72788626e",
+                "reference": "e727cfc3095a6c041618bb322116dbb72788626e",
                 "shasum": ""
             },
             "require": {
@@ -181,11 +181,16 @@
                 "rbdwllr/psr-jwt": "^1.0",
                 "slim/psr7": "^0.5.0",
                 "slim/slim": "^4.5.0",
-                "statical/statical": "^1.1",
+                "statical/statical": "dev-master",
                 "tuupola/cors-middleware": "^1.2",
                 "vlucas/phpdotenv": "^5.0@dev"
             },
             "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Ares\\Framework\\": "src/"
+                }
+            },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
@@ -206,7 +211,7 @@
                 "php",
                 "slim"
             ],
-            "time": "2020-11-06T22:34:04+00:00"
+            "time": "2020-11-07T01:15:54+00:00"
         },
         {
             "name": "fig/http-message-util",
@@ -2127,7 +2132,7 @@
         },
         {
             "name": "statical/statical",
-            "version": "v1.1.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/johnstevenson/statical.git",
@@ -3405,7 +3410,8 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "ext-sockets": "*"
+        "ext-sockets": "*",
+        "ext-json": "*"
     },
     "platform-dev": [],
     "platform-overrides": {

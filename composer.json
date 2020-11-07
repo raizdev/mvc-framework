@@ -20,6 +20,7 @@
     ],
     "require": {
         "ext-sockets": "*",
+        "ext-json": "*",
         "domexx/ares-core": "dev-master"
     },
     "config": {

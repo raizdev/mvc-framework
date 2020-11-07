@@ -160,7 +160,8 @@ class RegisterService
             ->setIpCurrent($data['ip_current'])
             ->setLastLogin(time())
             ->setRank(1)
-            ->setAuthTicket($this->ticketService->hash($user));
+            ->setAuthTicket($this->ticketService->hash($user))
+            ->setCreatedAt(new \DateTime());
     }
 
     /**

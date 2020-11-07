@@ -112,7 +112,8 @@ class AssignUserToRoleService
 
         $roleUser
             ->setUserId($userId)
-            ->setRoleId($roleId);
+            ->setRoleId($roleId)
+            ->setCreatedAt(new \DateTime());
 
         return $roleUser;
     }

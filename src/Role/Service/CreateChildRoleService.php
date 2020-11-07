@@ -101,7 +101,8 @@ class CreateChildRoleService
 
         $roleHierarchy
             ->setParentRoleId($parentRoleId)
-            ->setChildRoleId($childRoleId);
+            ->setChildRoleId($childRoleId)
+            ->setCreatedAt(new \DateTime());
 
         return $roleHierarchy;
     }

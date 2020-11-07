@@ -96,6 +96,7 @@ class CreateCommentService
             ->setDislikes(0)
             ->setArticleId($article->getId())
             ->setLikes(0)
-            ->setDislikes(0);
+            ->setDislikes(0)
+            ->setCreatedAt(new \DateTime());
     }
 }

@@ -113,7 +113,8 @@ class CreateRolePermissionService
 
         $rolePermission
             ->setRoleId($roleId)
-            ->setPermissionId($permissionId);
+            ->setPermissionId($permissionId)
+            ->setCreatedAt(new \DateTime());
 
         return $rolePermission;
     }

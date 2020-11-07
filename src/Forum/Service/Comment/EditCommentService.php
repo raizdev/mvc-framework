@@ -60,7 +60,8 @@ class EditCommentService
 
         $comment
             ->setContent($content)
-            ->setIsEdited(1);
+            ->setIsEdited(1)
+            ->setUpdatedAt(new \DateTime());
 
         /** @var Comment $comment */
         $comment = $this->commentRepository->save($comment);
