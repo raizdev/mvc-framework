@@ -21,5 +21,4 @@ interface PhotoInterface
     public const COLUMN_URL = 'url';
     public const COLUMN_LIKES = 'likes';
     public const COLUMN_DISLIKES = 'dislikes';
-
 }
