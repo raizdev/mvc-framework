@@ -72,6 +72,10 @@ class ChangeUserOfTheHotelService
 
             /** @var UserOfTheHotel $nextUserOfTheHotel */
             $nextUserOfTheHotel = $this->userOfTheHotelRepository->save($nextUserOfTheHotel);
+
+            if (!$nextUserOfTheHotel) {
+                throw new UserException(__('No eligible User found'));
+            }
             $nextUserOfTheHotel->getUser();
 
             return response()
