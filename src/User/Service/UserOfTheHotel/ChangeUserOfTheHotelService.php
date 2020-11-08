@@ -12,6 +12,7 @@ use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\User\Entity\User;
 use Ares\User\Entity\UserOfTheHotel;
 use Ares\User\Entity\UserSetting;
+use Ares\User\Exception\UserException;
 use Ares\User\Repository\UserOfTheHotelRepository;
 use Ares\User\Repository\UserRepository;
 use Ares\User\Repository\UserSettingRepository;
@@ -59,6 +60,7 @@ class ChangeUserOfTheHotelService
      * @return CustomResponseInterface
      *
      * @throws DataObjectManagerException
+     * @throws UserException
      */
     public function execute(): CustomResponseInterface
     {
@@ -84,11 +86,16 @@ class ChangeUserOfTheHotelService
      * @return UserOfTheHotel
      *
      * @throws DataObjectManagerException
+     * @throws UserException
      */
     private function getNewUserOfTheHotel(): UserOfTheHotel
     {
         /** @var UserSetting $eligibleUser */
         $eligibleUser = $this->userSettingRepository->getUserWithMostRespects();
+
+        if (!$eligibleUser) {
+            throw new UserException(__('No eligible User found'));
+        }
 
         /** @var User $userData */
         $userData = $this->userRepository->get($eligibleUser->getUserId());
