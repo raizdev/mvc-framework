@@ -127,6 +127,10 @@ class Rcon extends DataObject implements RconInterface
             return $permission;
         }
 
+        if (!isset($this)) {
+            return null;
+        }
+
         /** @var RconRepository $rconRepository */
         $rconRepository = repository(RconRepository::class);
 

@@ -208,6 +208,10 @@ class Room extends DataObject implements RoomInterface
             return $user;
         }
 
+        if (!isset($this)) {
+            return null;
+        }
+
         /** @var RoomRepository $roomRepository */
         $roomRepository = repository(RoomRepository::class);
 

@@ -169,6 +169,10 @@ class Photo extends DataObject implements PhotoInterface
             return $user;
         }
 
+        if (!isset($this)) {
+            return null;
+        }
+
         /** @var PhotoRepository $photoRepository */
         $photoRepository = repository(PhotoRepository::class);
 

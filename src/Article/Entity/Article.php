@@ -277,6 +277,10 @@ class Article extends DataObject implements ArticleInterface
             return $user;
         }
 
+        if (!isset($this)) {
+            return null;
+        }
+
         /** @var ArticleRepository $articleRepository */
         $articleRepository = repository(ArticleRepository::class);
 

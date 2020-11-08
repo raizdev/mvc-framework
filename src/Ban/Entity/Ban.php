@@ -223,6 +223,10 @@ class Ban extends DataObject implements BanInterface
             return $user;
         }
 
+        if (!isset($this)) {
+            return null;
+        }
+
         /** @var BanRepository $banRepository */
         $banRepository = repository(BanRepository::class);
 

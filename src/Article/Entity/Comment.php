@@ -205,6 +205,10 @@ class Comment extends DataObject implements CommentInterface
             return $user;
         }
 
+        if (!isset($this)) {
+            return null;
+        }
+
         /** @var CommentRepository $commentRepository */
         $commentRepository = repository(CommentRepository::class);
 

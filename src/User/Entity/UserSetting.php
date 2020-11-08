@@ -257,6 +257,10 @@ class UserSetting extends DataObject implements UserSettingInterface
             return $user;
         }
 
+        if (!isset($this)) {
+            return null;
+        }
+
         /** @var UserSettingRepository $userSettingRepository */
         $userSettingRepository = repository(UserSettingRepository::class);
 

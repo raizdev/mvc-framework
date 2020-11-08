@@ -205,6 +205,10 @@ class Guestbook extends DataObject implements GuestbookInterface
             return $user;
         }
 
+        if (!isset($this)) {
+            return null;
+        }
+
         /** @var GuestbookRepository $guestBookRepository */
         $guestBookRepository = repository(GuestbookRepository::class);
 

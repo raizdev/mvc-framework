@@ -136,6 +136,10 @@ class GuildMember extends DataObject implements GuildMemberInterface
             return $user;
         }
 
+        if (!isset($this)) {
+            return null;
+        }
+
         /** @var GuildMemberRepository $guildMemberRepository */
         $guildMemberRepository = repository(GuildMemberRepository::class);
 
@@ -178,6 +182,10 @@ class GuildMember extends DataObject implements GuildMemberInterface
 
         if ($guilds) {
             return $guilds;
+        }
+
+        if (!isset($this)) {
+            return null;
         }
 
         /** @var GuildMemberRepository $guildMemberRepository */

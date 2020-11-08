@@ -236,6 +236,10 @@ class Thread extends DataObject implements ThreadInterface
             return $user;
         }
 
+        if (!isset($this)) {
+            return null;
+        }
+
         /** @var ThreadRepository $threadRepository */
         $threadRepository = repository(ThreadRepository::class);
 

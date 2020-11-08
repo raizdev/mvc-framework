@@ -131,6 +131,10 @@ class MessengerFriendship extends DataObject implements MessengerFriendshipInter
             return $user;
         }
 
+        if (!isset($this)) {
+            return null;
+        }
+
         /** @var MessengerRepository $messengerRepository */
         $messengerRepository = repository(MessengerRepository::class);
 

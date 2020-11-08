@@ -133,6 +133,10 @@ class Payment extends DataObject implements PaymentInterface
             return $user;
         }
 
+        if (!isset($this)) {
+            return null;
+        }
+
         /** @var PaymentRepository $paymentRepository **/
         $paymentRepository = repository(PaymentRepository::class);
 

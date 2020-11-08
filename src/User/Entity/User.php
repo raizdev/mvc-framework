@@ -378,6 +378,10 @@ class User extends DataObject implements UserInterface
             return $roles;
         }
 
+        if (!isset($this)) {
+            return null;
+        }
+
         /** @var UserRepository $userRepository */
         $userRepository = repository(UserRepository::class);
 
@@ -422,6 +426,10 @@ class User extends DataObject implements UserInterface
 
         if ($currencies) {
             return $currencies;
+        }
+
+        if (!isset($this)) {
+            return null;
         }
 
         /** @var UserRepository $userRepository */

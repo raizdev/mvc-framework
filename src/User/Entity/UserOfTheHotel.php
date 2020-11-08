@@ -114,6 +114,10 @@ class UserOfTheHotel extends DataObject implements UserOfTheHotelInterface
             return $user;
         }
 
+        if (!isset($this)) {
+            return null;
+        }
+
         /** @var UserOfTheHotelRepository $userOfTheWeekRepository */
         $userOfTheWeekRepository = repository(UserOfTheHotelRepository::class);
 
