@@ -21,7 +21,7 @@ return function (App $app) {
             // User
             $group->group('/user', function ($group) {
                 $group->get('', \Ares\User\Controller\UserController::class . ':user');
-                $group->put('/ticket', \Ares\User\Controller\AuthController::class . ':ticket');
+                $group->get('/ticket', \Ares\User\Controller\AuthController::class . ':ticket');
                 $group->put('/locale', \Ares\User\Controller\UserController::class . ':updateLocale');
                 $group->get('/gift', \Ares\User\Controller\Gift\DailyGiftController::class . ':pick');
                 $group->post('/currency', \Ares\User\Controller\UserCurrencyController::class . ':update');
