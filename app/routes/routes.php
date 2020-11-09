@@ -37,6 +37,8 @@ return function (App $app) {
             $group->group('/articles', function ($group) {
                 $group->post('/create', \Ares\Article\Controller\ArticleController::class . ':create')
                     ->setName('create-article');
+                $group->put('/edit', \Ares\Article\Controller\ArticleController::class . ':editArticle')
+                    ->setName('edit-article');
                 $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}',
                     \Ares\Article\Controller\ArticleController::class . ':list');
                 $group->get('/pinned', \Ares\Article\Controller\ArticleController::class . ':pinned');

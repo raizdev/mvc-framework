@@ -8,6 +8,7 @@
 namespace Ares\Article\Controller;
 
 use Ares\Article\Service\CreateArticleService;
+use Ares\Article\Service\EditArticleService;
 use Ares\Framework\Controller\BaseController;
 use Ares\Article\Entity\Article;
 use Ares\Article\Exception\ArticleException;
@@ -44,19 +45,27 @@ class ArticleController extends BaseController
     private ValidationService $validationService;
 
     /**
+     * @var EditArticleService
+     */
+    private EditArticleService $editArticleService;
+
+    /**
      * NewsController constructor.
      *
-     * @param   ArticleRepository       $articleRepository
-     * @param   CreateArticleService    $createArticleService
-     * @param   ValidationService       $validationService
+     * @param ArticleRepository    $articleRepository
+     * @param CreateArticleService $createArticleService
+     * @param EditArticleService   $editArticleService
+     * @param ValidationService    $validationService
      */
     public function __construct(
         ArticleRepository $articleRepository,
         CreateArticleService $createArticleService,
+        EditArticleService $editArticleService,
         ValidationService $validationService
     ) {
         $this->articleRepository    = $articleRepository;
         $this->createArticleService = $createArticleService;
+        $this->editArticleService   = $editArticleService;
         $this->validationService    = $validationService;
     }
 
@@ -123,6 +132,38 @@ class ArticleController extends BaseController
             $response,
             response()
                 ->setData($article)
+        );
+    }
+
+    /**
+     * @param Request  $request
+     * @param Response $response
+     *
+     * @return Response
+     * @throws ArticleException
+     * @throws DataObjectManagerException
+     * @throws ValidationException
+     */
+    public function editArticle(Request $request, Response $response): Response
+    {
+        /** @var array $parsedData */
+        $parsedData = $request->getParsedBody();
+
+        $this->validationService->validate($parsedData, [
+            'article_id'  => 'required|numeric',
+            'title'       => 'required',
+            'description' => 'required',
+            'content'     => 'required',
+            'image'       => 'required',
+            'hidden'      => 'required|numeric',
+            'pinned'      => 'required|numeric'
+        ]);
+
+        $customResponse = $this->editArticleService->execute($parsedData);
+
+        return $this->respond(
+            $response,
+            $customResponse
         );
     }
 
