@@ -24,7 +24,8 @@ return function (App $app) {
                 $group->get('/ticket', \Ares\User\Controller\AuthController::class . ':ticket');
                 $group->put('/locale', \Ares\User\Controller\UserController::class . ':updateLocale');
                 $group->get('/gift', \Ares\User\Controller\Gift\DailyGiftController::class . ':pick');
-                $group->post('/currency', \Ares\User\Controller\UserCurrencyController::class . ':update');
+                $group->put('/currency', \Ares\User\Controller\UserCurrencyController::class . ':update')
+                    ->setName('update-currency');
                 $group->group('/settings', function ($group) {
                     $group->put('/change_general_settings', \Ares\User\Controller\Settings\UserSettingsController::class . ':changeGeneralSettings');
                     $group->put('/change_password', \Ares\User\Controller\Settings\UserSettingsController::class . ':changePassword');
