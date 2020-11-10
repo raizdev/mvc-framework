@@ -71,7 +71,8 @@ class GuildRepository extends BaseRepository
                 '=',
                 'guilds_members.guild_id'
             )->groupBy('guilds.id')
-            ->orderBy('member_count', 'DESC');
+            ->orderBy('member_count', 'DESC')
+            ->limit(1);
 
         return $this->getList($searchCriteria)->first();
     }
@@ -123,7 +124,8 @@ class GuildRepository extends BaseRepository
                 'guilds_members.guild_id'
             )->groupBy('guilds.id')
             ->addRelation('user')
-            ->addRelation('room');
+            ->addRelation('room')
+            ->limit(1);
 
         return $this->getList($searchCriteria)->first();
     }

@@ -57,7 +57,7 @@ class RolePermissionRepository extends BaseRepository
             ->where([
                 'role_id' => $roleId,
                 'permission_id' => $permissionId
-            ]);
+            ])->limit(1);
 
         return $this->getList($searchCriteria)->first();
     }

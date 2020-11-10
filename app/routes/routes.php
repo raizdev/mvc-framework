@@ -154,6 +154,7 @@ return function (App $app) {
 
             // Roles, Permissions
             $group->group('/roles', function ($group) {
+                $group->get('/user/permissions', \Ares\Role\Controller\RolePermissionController::class . ':userPermissions');
                 $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}',
                     \Ares\Role\Controller\RoleController::class . ':list')
                     ->setName('list-all-roles');

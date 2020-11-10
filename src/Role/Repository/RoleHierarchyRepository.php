@@ -33,15 +33,14 @@ class RoleHierarchyRepository extends BaseRepository
      * @return array
      * @throws QueryException
      */
-    private function getChildIds(array $parentIds): array
+    private function getChildIds(array $parentIds): ?array
     {
-        $searchCriteria = $this
-            ->getDataObjectManager()
+        $searchCriteria = $this->getDataObjectManager()
             ->whereIn('parent_role_id', $parentIds);
 
-        $childRoleIds = $this->getList($searchCriteria)->toArray();
+        $childRoleIds = $this->getList($searchCriteria)->get('child_role_id');
 
-        return array_keys($childRoleIds);
+        return $childRoleIds;
     }
 
     /**
@@ -56,6 +55,11 @@ class RoleHierarchyRepository extends BaseRepository
 
         while (count($parentIds) > 0) {
             $parentIds = $this->getChildIds($parentIds);
+
+            if (!$parentIds) {
+                break;
+            }
+
             $allChildIds = array_merge($allChildIds, $parentIds);
         }
 
@@ -80,7 +84,7 @@ class RoleHierarchyRepository extends BaseRepository
             }
 
             foreach ($childIds as $childId) {
-                if ($this->hasChildRoleId($childId, $findingChildId) === true) {
+                if ($this->hasChildRoleId($childId, $findingChildId)) {
                     return true;
                 }
             }

@@ -7,8 +7,13 @@
 
 namespace Ares\Role\Entity;
 
+use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Model\DataObject;
 use Ares\Role\Entity\Contract\RoleUserInterface;
+use Ares\Role\Repository\RoleUserRepository;
+use Ares\User\Entity\User;
+use Ares\User\Repository\UserRepository;
+use DateTime;
 
 /**
  * Class RoleUser
@@ -19,6 +24,11 @@ class RoleUser extends DataObject implements RoleUserInterface
 {
     /** @var string */
     public const TABLE = 'ares_roles_user';
+
+    /** @var array */
+    public const RELATIONS = [
+      'user' => 'getUser'
+    ];
 
     /**
      * @return int
@@ -75,20 +85,69 @@ class RoleUser extends DataObject implements RoleUserInterface
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getCreatedAt(): \DateTime
+    public function getCreatedAt(): DateTime
     {
         return $this->getData(RoleUserInterface::COLUMN_CREATED_AT);
     }
 
     /**
-     * @param \DateTime $created_at
+     * @param DateTime $created_at
      *
      * @return RoleUser
      */
-    public function setCreatedAt(\DateTime $created_at)
+    public function setCreatedAt(DateTime $created_at)
     {
         return $this->setData(RoleUserInterface::COLUMN_CREATED_AT, $created_at);
+    }
+
+    /**
+     * @return User|null
+     *
+     * @throws DataObjectManagerException
+     */
+    public function getUser(): ?User
+    {
+        $user = $this->getData('user');
+
+        if ($user) {
+            return $user;
+        }
+
+        if (!isset($this)) {
+            return null;
+        }
+
+        /** @var RoleUserRepository $roleUserRepository */
+        $roleUserRepository = repository(RoleUserRepository::class);
+
+        /** @var UserRepository $userRepository */
+        $userRepository = repository(UserRepository::class);
+
+        /** @var User $user */
+        $user = $roleUserRepository->getOneToOne(
+            $userRepository,
+            $this->getUserId(),
+            'id'
+        );
+
+        if (!$user) {
+            return null;
+        }
+
+        $this->setUser($user);
+
+        return $user;
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return RoleUser
+     */
+    public function setUser(User $user): RoleUser
+    {
+        return $this->setData('user', $user);
     }
 }

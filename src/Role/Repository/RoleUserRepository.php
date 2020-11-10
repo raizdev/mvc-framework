@@ -54,8 +54,38 @@ class RoleUserRepository extends BaseRepository
             ->where([
                 'role_id' => $roleId,
                 'user_id' => $userId
-            ]);
+            ])->limit(1);
 
         return $this->getList($searchCriteria)->first();
+    }
+
+    /**
+     * @param array $allUserRoleIds
+     *
+     * @return array|null
+     */
+    public function getUserPermissions(array $allUserRoleIds): ?array
+    {
+        $searchCriteria = $this->getDataObjectManager()
+            ->select([
+                'ares_roles_permission.id',
+                'ares_roles_permission.role_id',
+                'ares_roles_permission.permission_id'
+            ])->from('ares_roles_permission')
+            ->leftJoin(
+                'ares_permissions',
+                'ares_permissions.id',
+                '=',
+                'ares_roles_permission.permission_id'
+            )->whereIn(
+                'ares_roles_permission.role_id',
+                $allUserRoleIds
+            )->select('ares_permissions.name');
+
+        return array_values(
+            array_unique(
+                $this->getList($searchCriteria)->get('name')
+            )
+        );
     }
 }

@@ -8,6 +8,7 @@
 namespace Ares\Role\Controller;
 
 use Ares\Framework\Controller\BaseController;
+use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\ValidationException as ValidationExceptionAlias;
 use Ares\Framework\Service\ValidationService;
@@ -15,6 +16,7 @@ use Ares\Role\Exception\RoleException;
 use Ares\Role\Repository\PermissionRepository;
 use Ares\Role\Service\CreateRolePermissionService;
 use Ares\Role\Service\CreatePermissionService;
+use Ares\Role\Service\FetchUserPermissionService;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -46,22 +48,30 @@ class RolePermissionController extends BaseController
     private CreateRolePermissionService $createRolePermissionService;
 
     /**
+     * @var FetchUserPermissionService
+     */
+    private FetchUserPermissionService $fetchUserPermissionService;
+
+    /**
      * RolePermissionController constructor.
      *
      * @param PermissionRepository        $permissionRepository
      * @param CreatePermissionService     $createPermissionService
      * @param CreateRolePermissionService $createRolePermissionService
+     * @param FetchUserPermissionService  $fetchUserPermissionService
      * @param ValidationService           $validationService
      */
     public function __construct(
         PermissionRepository $permissionRepository,
         CreatePermissionService $createPermissionService,
         CreateRolePermissionService $createRolePermissionService,
+        FetchUserPermissionService $fetchUserPermissionService,
         ValidationService $validationService
     ) {
         $this->permissionRepository = $permissionRepository;
         $this->createPermissionService = $createPermissionService;
         $this->createRolePermissionService = $createRolePermissionService;
+        $this->fetchUserPermissionService = $fetchUserPermissionService;
         $this->validationService = $validationService;
     }
 
@@ -91,6 +101,26 @@ class RolePermissionController extends BaseController
             $response,
             response()
                 ->setData($permissions)
+        );
+    }
+
+    /**
+     * @param Request  $request
+     * @param Response $response
+     *
+     * @return Response
+     * @throws AuthenticationException
+     */
+    public function userPermissions(Request $request, Response $response): Response
+    {
+        /** @var int $userId */
+        $userId = user($request)->getId();
+
+        $customResponse = $this->fetchUserPermissionService->execute($userId);
+
+        return $this->respond(
+            $response,
+            $customResponse
         );
     }
 
