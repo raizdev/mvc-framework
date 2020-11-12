@@ -73,7 +73,7 @@ class ExecuteRconCommandService
         $existingCommand = $this->rconRepository->get($data['command'], 'command');
 
         if (!$existingCommand) {
-            throw new RconException(__('Could not found the given command to execute'), 404);
+            throw new RconException(__('No Command was found'), 404);
         }
 
         if (!$fromSystem && $existingCommand->getPermission() !== null) {

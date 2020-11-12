@@ -78,7 +78,7 @@ class AssignUserToRoleService
         $user = $this->userRepository->get($roleId);
 
         if (!$role || !$user) {
-            throw new RoleException(__('Could not find called Role or User'));
+            throw new RoleException(__('Could not find provided Role or User'));
         }
 
         /** @var RoleUser $isRoleAlreadyAssigned */

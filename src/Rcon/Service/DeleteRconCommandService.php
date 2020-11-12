@@ -49,7 +49,7 @@ class DeleteRconCommandService
         $command = $this->rconRepository->get($data['command'], 'command');
 
         if (!$command) {
-            throw new RconException(__('Command could not be found'));
+            throw new RconException(__('No Command was found'));
         }
 
         $deleted = $this->rconRepository->delete($command->getId());

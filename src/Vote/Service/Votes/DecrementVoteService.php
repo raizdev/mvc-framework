@@ -58,7 +58,7 @@ class DecrementVoteService
         $entity = $entityRepository->get($entityId);
 
         if (!$entity) {
-            throw new VoteException(__('Related Entity could not be found'));
+            throw new VoteException(__('Entity was not found'));
         }
 
         if ($voteType === VoteTypeInterface::VOTE_LIKE) {

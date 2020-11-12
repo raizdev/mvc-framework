@@ -104,7 +104,7 @@ class GetVoteEntityService
             case $entity === VoteEntityInterface::PHOTO_VOTE_ENTITY:
                 return $this->photoRepository;
             default:
-                throw new VoteException(__('Entity with id %s does not exist.', [$entity]), 404);
+                throw new VoteException(__('Entity with id %s does not exist', [$entity]), 404);
         }
     }
 }

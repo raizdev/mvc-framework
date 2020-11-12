@@ -177,7 +177,7 @@ class CommentController extends BaseController
         $deleted = $this->commentRepository->delete((int) $id);
 
         if (!$deleted) {
-            throw new CommentException(__('Comment could not be deleted.'), 409);
+            throw new CommentException(__('Comment could not be deleted'), 409);
         }
 
         return $this->respond(

@@ -237,7 +237,7 @@ class ArticleController extends BaseController
         $deleted = $this->articleRepository->delete((int) $id);
 
         if (!$deleted) {
-            throw new ArticleException(__('Article could not be deleted.'), 409);
+            throw new ArticleException(__('Article could not be deleted'), 409);
         }
 
         return $this->respond(

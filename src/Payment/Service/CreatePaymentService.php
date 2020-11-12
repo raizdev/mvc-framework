@@ -53,7 +53,7 @@ class CreatePaymentService
         $existingPayment = $this->paymentRepository->getExistingPayment($payment->getUserId());
 
         if ($existingPayment) {
-            throw new PaymentException(__('You already have an ongoing payment, wait till its processed'));
+            throw new PaymentException(__('You already have an ongoing payment'));
         }
 
         /** @var Payment $payment */

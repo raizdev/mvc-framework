@@ -95,7 +95,7 @@ class RegisterService
             );
 
         if ($isAlreadyRegistered) {
-            throw new RegisterException(__('register.already.exists'), 422);
+            throw new RegisterException(__('Username or E-Mail is already taken'), 422);
         }
 
         $this->isEligible($data);

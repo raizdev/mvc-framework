@@ -63,22 +63,22 @@ class ChangeUsernameService
         $userSetting = $this->userSettingRepository->get($user->getId(), 'user_id');
 
         if (!password_verify($password, $user->getPassword())) {
-            throw new UserSettingsException(__('Given old password does not match the current password.'));
+            throw new UserSettingsException(__('Given old password does not match the current password'));
         }
 
         if (!$userSetting) {
-            throw new UserSettingsException(__('Settings for given user does not exist.'));
+            throw new UserSettingsException(__('Settings for given user does not exist'));
         }
 
         if (!$userSetting->getCanChangeName()) {
-            throw new UserSettingsException(__('User is not allowed to change username.'));
+            throw new UserSettingsException(__('User is not allowed to change the Username'));
         }
 
         /** @var User $usernameExists */
         $usernameExists = $this->userRepository->get($username, 'username');
 
         if ($usernameExists) {
-            throw new UserSettingsException(__('User with given username already exists.'));
+            throw new UserSettingsException(__('User with given username already exists'));
         }
 
         /** @var User $user */

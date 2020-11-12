@@ -120,7 +120,7 @@ class ThreadController extends BaseController
             );
 
         if (!$thread) {
-            throw new ThreadException(__('No specific Thread found'), 404);
+            throw new ThreadException(__('No Thread was found'), 404);
         }
 
         return $this->respond(

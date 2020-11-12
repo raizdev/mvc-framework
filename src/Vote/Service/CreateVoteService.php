@@ -62,7 +62,7 @@ class CreateVoteService
         $existingVote = $this->voteRepository->getExistingVote($vote, $userId);
 
         if ($existingVote) {
-            throw new VoteException(__('User already voted for this entity.'), 422);
+            throw new VoteException(__('User already voted for this entity'), 422);
         }
 
         $entityRepository = $this->getVoteEntityService->execute($vote->getVoteEntity());
@@ -75,7 +75,7 @@ class CreateVoteService
         $entity = $entityRepository->get($vote->getEntityId());
 
         if (!$entity) {
-            throw new VoteException(__('The related vote entity has no existing data.'), 404);
+            throw new VoteException(__('The related vote entity has no existing data'), 404);
         }
 
         $vote = $this->voteRepository->save($vote);

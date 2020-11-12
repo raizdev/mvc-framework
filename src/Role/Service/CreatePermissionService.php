@@ -45,15 +45,11 @@ class CreatePermissionService
      */
     public function execute(array $data): CustomResponseInterface
     {
-        $searchCriteria = $this->permissionRepository
-            ->getDataObjectManager()
-            ->where('name', $data['name']);
-
         /** @var Permission $existingPermission */
         $existingPermission = $this->permissionRepository->get($data['name'], 'name');
 
         if ($existingPermission) {
-            throw new RoleException(__('There is already a Permission with that name'));
+            throw new RoleException(__('Permission %s already exists', [$existingPermission->getName()]));
         }
 
         $permission = $this->getNewPermission($data);

@@ -49,7 +49,7 @@ class CreateRconCommandService
         $existingCommand = $this->rconRepository->get($data['command'], 'command');
 
         if ($existingCommand) {
-            throw new RconException(__('There is already an existing Command'));
+            throw new RconException(__('The command %s already exists'), [$existingCommand->getCommand()]);
         }
 
         $command = $this->getNewCommand($data);

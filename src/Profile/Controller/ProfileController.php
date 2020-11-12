@@ -100,7 +100,7 @@ class ProfileController extends BaseController
         $profile = $this->userRepository->get((int) $profileId);
 
         if (!$profile) {
-            throw new ProfileException(__('No associated Profile was found'), 404);
+            throw new ProfileException(__('No Profile was found'), 404);
         }
 
         $badges = $this->userBadgeRepository
@@ -139,7 +139,7 @@ class ProfileController extends BaseController
         $profile = $this->userRepository->get((int) $profileId);
 
         if (!$profile) {
-            throw new ProfileException(__('No associated Profile was found'), 404);
+            throw new ProfileException(__('No Profile was found'), 404);
         }
 
         $badges = $this->userBadgeRepository
@@ -179,7 +179,7 @@ class ProfileController extends BaseController
         $profile = $this->userRepository->get((int) $profileId);
 
         if (!$profile) {
-            throw new ProfileException(__('No associated Profile was found'), 404);
+            throw new ProfileException(__('No Profile was found'), 404);
         }
 
         $friends = $this->messengerRepository
@@ -220,7 +220,7 @@ class ProfileController extends BaseController
         $profile = $this->userRepository->get((int)$profileId);
 
         if (!$profile) {
-            throw new ProfileException(__('No associated Profile was found'), 404);
+            throw new ProfileException(__('No Profile was found'), 404);
         }
 
         $rooms = $this->roomRepository
@@ -261,7 +261,7 @@ class ProfileController extends BaseController
         $profile = $this->userRepository->get((int) $profileId);
 
         if (!$profile) {
-            throw new ProfileException(__('No associated Profile was found'), 404);
+            throw new ProfileException(__('No Profile was found'), 404);
         }
 
         $guilds = $this->guildMemberRepository
@@ -302,7 +302,7 @@ class ProfileController extends BaseController
         $profile = $this->userRepository->get((int) $profileId);
 
         if (!$profile) {
-            throw new ProfileException(__('No associated Profile was found'), 404);
+            throw new ProfileException(__('No Profile was found'), 404);
         }
 
         $photos = $this->photoRepository

@@ -55,7 +55,7 @@ class EditCommentService
         $comment = $this->commentRepository->get($commentId);
 
         if (!$comment) {
-            throw new CommentException(__('Comment not found'));
+            throw new CommentException(__('No Comment was found'));
         }
 
         $comment

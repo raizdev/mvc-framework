@@ -80,7 +80,7 @@ class CreateCommentService
         $thread = $this->threadRepository->get($data['thread_id']);
 
         if (!$thread) {
-            throw new CommentException(__('Related Thread was not found.'), 404);
+            throw new CommentException(__('No Thread was found'), 404);
         }
 
         return $comment

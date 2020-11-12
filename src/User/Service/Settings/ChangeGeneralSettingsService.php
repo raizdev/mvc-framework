@@ -68,7 +68,7 @@ class ChangeGeneralSettingsService
         $userSetting = $this->userSettingRepository->get($user->getId(), 'user_id');
 
         if (!$userSetting) {
-            throw new UserSettingsException(__('Settings for given user does not exist.'));
+            throw new UserSettingsException(__('Settings for given user does not exist'));
         }
 
         /** @var UserSetting $userSetting */

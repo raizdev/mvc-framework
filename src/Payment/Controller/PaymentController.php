@@ -111,7 +111,7 @@ class PaymentController extends BaseController
         $payment = $this->paymentRepository->get((int) $id);
 
         if (!$payment) {
-            throw new PaymentException(__('No specific Payment found'), 404);
+            throw new PaymentException(__('No Payment was found'), 404);
         }
 
         return $this->respond(
@@ -167,7 +167,7 @@ class PaymentController extends BaseController
         $deleted = $this->paymentRepository->delete((int) $id);
 
         if (!$deleted) {
-            throw new PaymentException(__('Payment could not be deleted.'), 409);
+            throw new PaymentException(__('Payment could not be deleted'), 409);
         }
 
         return $this->respond(

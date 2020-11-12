@@ -60,7 +60,7 @@ class CreateTopicService
         $existingTopic = $this->topicRepository->get($topic->getTitle(), 'title');
 
         if ($existingTopic) {
-            throw new TopicException(__('There is already a Topic with that title'));
+            throw new TopicException(__('Topic with the title %s already exists', [$existingTopic->getTitle()]));
         }
 
         /** @var Topic $topic */

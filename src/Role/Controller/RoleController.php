@@ -200,7 +200,7 @@ class RoleController extends BaseController
         $deleted = $this->roleRepository->delete((int) $id);
 
         if (!$deleted) {
-            throw new RoleException(__('Role could not be deleted.'), 409);
+            throw new RoleException(__('Role could not be deleted'), 409);
         }
 
         return $this->respond(

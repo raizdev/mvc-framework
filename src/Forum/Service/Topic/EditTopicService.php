@@ -48,17 +48,17 @@ class EditTopicService
         /** @var string $title */
         $title = $data['title'];
 
-        /** @var int $topic */
-        $topic_id = $data['topic_id'];
+        /** @var int $topicId */
+        $topicId = $data['topic_id'];
 
         /** @var string $description */
         $description = $data['description'];
 
         /** @var Topic $topic */
-        $topic = $this->topicRepository->get($topic_id);
+        $topic = $this->topicRepository->get($topicId);
 
         if (!$topic) {
-            throw new TopicException(__('Topic not found'));
+            throw new TopicException(__('No Topic was found'));
         }
 
         $topic

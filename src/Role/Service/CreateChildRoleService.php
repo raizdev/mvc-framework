@@ -74,7 +74,7 @@ class CreateChildRoleService
         $childRole = $this->roleRepository->get($childRoleId);
 
         if (!$parentRole || !$childRole) {
-            throw new RoleException(__('Could not found given Roles'));
+            throw new RoleException(__('No Roles were found'));
         }
 
         $newChildRole = $this->getNewChildRole(

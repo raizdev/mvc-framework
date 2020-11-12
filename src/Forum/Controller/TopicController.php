@@ -169,7 +169,7 @@ class TopicController extends BaseController
         $deleted = $this->topicRepository->delete((int) $id);
 
         if (!$deleted) {
-            throw new TopicException(__('Topic could not be deleted.'), 409);
+            throw new TopicException(__('Topic could not be deleted'), 409);
         }
 
         return $this->respond(

@@ -52,18 +52,18 @@ class ChangeEmailService
         $currentEmail = $user->getMail();
 
         if (!password_verify($password, $user->getPassword())) {
-            throw new UserSettingsException(__('Given old password does not match the current password.'));
+            throw new UserSettingsException(__('Given old password does not match the current password'));
         }
 
         if ($currentEmail === $email) {
-            throw new UserSettingsException(__('Given email should be different to current email.'));
+            throw new UserSettingsException(__('Given E-Mail should be different to current E-Mail'));
         }
 
         /** @var User $emailExists */
         $emailExists = $this->userRepository->get($email, 'mail');
 
         if ($emailExists) {
-            throw new UserSettingsException(__('User with given email already exists.'));
+            throw new UserSettingsException(__('User with given E-Mail already exists'));
         }
 
         $this->userRepository->save($user->setMail($email));

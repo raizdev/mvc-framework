@@ -83,14 +83,14 @@ class LoginService
         $user = $this->userRepository->get($data['username'], 'username');
 
         if ($user === null || !password_verify($data['password'], $user->getPassword())) {
-            throw new LoginException(__('general.failed'), 403);
+            throw new LoginException(__('Data combination was not found'), 403);
         }
 
         /** @var Ban $isBanned */
         $isBanned = $this->banRepository->get($user->getId(), 'user_id');
 
         if ($isBanned && $isBanned->getBanExpire() > time()) {
-            throw new BanException(__('general.banned', [$isBanned->getBanReason()]), 401);
+            throw new BanException(__('You are banned because of %s', [$isBanned->getBanReason()]), 401);
         }
 
         $user->setLastLogin(time());

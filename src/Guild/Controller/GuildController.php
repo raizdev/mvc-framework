@@ -64,7 +64,7 @@ class GuildController extends BaseController
         $guild = $this->guildRepository->getGuild((int) $id);
 
         if (!$guild) {
-            throw new GuildException(__('No specific Guild found'));
+            throw new GuildException(__('No Guild was found'));
         }
 
         return $this->respond(

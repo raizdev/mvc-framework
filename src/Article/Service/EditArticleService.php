@@ -52,7 +52,7 @@ class EditArticleService
         $article = $this->articleRepository->get($articleId);
 
         if (!$article) {
-            throw new ArticleException(__('Related article could not be found'));
+            throw new ArticleException(__('No Article was found'));
         }
 
         $article

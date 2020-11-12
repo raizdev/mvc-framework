@@ -193,7 +193,7 @@ class RolePermissionController extends BaseController
         $deleted = $this->permissionRepository->delete((int) $id);
 
         if (!$deleted) {
-            throw new RoleException(__('Permission could not be deleted.'), 409);
+            throw new RoleException(__('Permission could not be deleted'), 409);
         }
 
         return $this->respond(

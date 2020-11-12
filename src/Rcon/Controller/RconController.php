@@ -8,6 +8,7 @@
 namespace Ares\Rcon\Controller;
 
 use Ares\Framework\Controller\BaseController;
+use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
@@ -17,6 +18,7 @@ use Ares\Rcon\Service\DeleteRconCommandService;
 use Ares\Rcon\Service\ExecuteRconCommandService;
 use Ares\Role\Exception\RoleException;
 use Ares\User\Entity\User;
+use JsonException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -72,11 +74,11 @@ class RconController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws \JsonException
+     * @throws JsonException
      * @throws RconException
      * @throws RoleException
      * @throws ValidationException
-     * @throws DataObjectManagerException
+     * @throws DataObjectManagerException|AuthenticationException
      */
     public function executeCommand(Request $request, Response $response): Response
     {

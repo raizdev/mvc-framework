@@ -86,7 +86,7 @@ class PickGiftService
         $pickTime = $dailyGift->getPickTime();
 
         if (time() <= $pickTime) {
-            throw new DailyGiftException(__('User already picked the daily gift.'), 409);
+            throw new DailyGiftException(__('Gift was already taken'), 409);
         }
 
         $this->applyGift($dailyGift, $user, $dailyGift->getAmount());

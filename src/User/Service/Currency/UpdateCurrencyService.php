@@ -49,7 +49,7 @@ class UpdateCurrencyService
         $currencies = $this->userCurrencyRepository->getUserCurrency($userId, $type);
 
         if (!$currencies) {
-            throw new UserCurrencyException(__('Currencies was not found.'), 404);
+            throw new UserCurrencyException(__('No Currencies were found'), 404);
         }
 
         foreach ($currencies as $currency) {
@@ -57,7 +57,7 @@ class UpdateCurrencyService
             try {
                 $this->userCurrencyRepository->save($currency);
             } catch (Exception $exception) {
-                throw new UserCurrencyException(__('Currency could not be updated.'), 422);
+                throw new UserCurrencyException(__('Currency could not be updated'), 422);
             }
         }
     }
