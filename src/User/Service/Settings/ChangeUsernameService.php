@@ -23,28 +23,15 @@ use Ares\User\Repository\UserSettingRepository;
 class ChangeUsernameService
 {
     /**
-     * @var UserRepository
-     */
-    private UserRepository $userRepository;
-
-    /**
-     * @var UserSettingRepository
-     */
-    private UserSettingRepository $userSettingRepository;
-
-    /**
      * ChangeUsernameService constructor.
      *
      * @param UserRepository $userRepository
      * @param UserSettingRepository $userSettingRepository
      */
     public function __construct(
-        UserRepository $userRepository,
-        UserSettingRepository $userSettingRepository
-    ) {
-        $this->userRepository = $userRepository;
-        $this->userSettingRepository = $userSettingRepository;
-    }
+        private UserRepository $userRepository,
+        private UserSettingRepository $userSettingRepository
+    ) {}
 
     /**
      * Changes user name by given data.

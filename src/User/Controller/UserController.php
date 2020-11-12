@@ -23,20 +23,13 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class UserController extends BaseController
 {
     /**
-     * @var UserRepository Gets the current UserRepository
-     */
-    private UserRepository $userRepository;
-
-    /**
      * UserController constructor.
      *
      * @param   UserRepository  $userRepository
      */
     public function __construct(
-        UserRepository $userRepository
-    ) {
-        $this->userRepository = $userRepository;
-    }
+        private UserRepository $userRepository
+    ) {}
 
     /**
      * Retrieves the logged in User via JWT - Token

@@ -23,20 +23,13 @@ class Rcon
     private $socket;
 
     /**
-     * @var RconHelper
-     */
-    private RconHelper $rconHelper;
-
-    /**
      * Rcon constructor.
      *
      * @param RconHelper $rconHelper
      */
     public function __construct(
-        RconHelper $rconHelper
-    ) {
-        $this->rconHelper = $rconHelper;
-    }
+        private RconHelper $rconHelper
+    ) {}
 
     /**
      * @return RconHelper

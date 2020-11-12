@@ -21,20 +21,13 @@ use Ares\User\Repository\UserRepository;
 class ChangePasswordService
 {
     /**
-     * @var UserRepository
-     */
-    private UserRepository $userRepository;
-
-    /**
      * ChangePasswordService constructor.
      *
      * @param UserRepository $userRepository
      */
     public function __construct(
-        UserRepository $userRepository
-    ) {
-        $this->userRepository = $userRepository;
-    }
+        private UserRepository $userRepository
+    ) {}
 
     /**
      * Changes user password.

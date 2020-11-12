@@ -30,26 +30,6 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class ArticleController extends BaseController
 {
     /**
-     * @var ArticleRepository
-     */
-    private ArticleRepository $articleRepository;
-
-    /**
-     * @var CreateArticleService
-     */
-    private CreateArticleService $createArticleService;
-
-    /**
-     * @var ValidationService
-     */
-    private ValidationService $validationService;
-
-    /**
-     * @var EditArticleService
-     */
-    private EditArticleService $editArticleService;
-
-    /**
      * NewsController constructor.
      *
      * @param ArticleRepository    $articleRepository
@@ -58,16 +38,11 @@ class ArticleController extends BaseController
      * @param ValidationService    $validationService
      */
     public function __construct(
-        ArticleRepository $articleRepository,
-        CreateArticleService $createArticleService,
-        EditArticleService $editArticleService,
-        ValidationService $validationService
-    ) {
-        $this->articleRepository    = $articleRepository;
-        $this->createArticleService = $createArticleService;
-        $this->editArticleService   = $editArticleService;
-        $this->validationService    = $validationService;
-    }
+        private ArticleRepository $articleRepository,
+        private CreateArticleService $createArticleService,
+        private EditArticleService $editArticleService,
+        private ValidationService $validationService
+    ) {}
 
     /**
      * Creates new article.

@@ -26,21 +26,6 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class SettingsController extends BaseController
 {
     /**
-     * @var ValidationService
-     */
-    private ValidationService $validationService;
-
-    /**
-     * @var SettingsRepository
-     */
-    private SettingsRepository $settingsRepository;
-
-    /**
-     * @var UpdateSettingsService
-     */
-    private UpdateSettingsService $updateSettingsService;
-
-    /**
      * SettingsController constructor.
      *
      * @param   ValidationService       $validationService
@@ -48,14 +33,10 @@ class SettingsController extends BaseController
      * @param   UpdateSettingsService   $updateSettingsService
      */
     public function __construct(
-        ValidationService $validationService,
-        SettingsRepository $settingsRepository,
-        UpdateSettingsService $updateSettingsService
-    ) {
-        $this->validationService     = $validationService;
-        $this->settingsRepository    = $settingsRepository;
-        $this->updateSettingsService = $updateSettingsService;
-    }
+        private ValidationService $validationService,
+        private SettingsRepository $settingsRepository,
+        private UpdateSettingsService $updateSettingsService
+    ) {}
 
     /**
      * @param Request  $request

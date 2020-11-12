@@ -24,20 +24,13 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class DailyGiftController extends BaseController
 {
     /**
-     * @var PickGiftService
-     */
-    private PickGiftService $pickGiftService;
-
-    /**
      * DailyGiftController constructor.
      *
      * @param PickGiftService $pickGiftService
      */
     public function __construct(
-        PickGiftService $pickGiftService
-    ) {
-        $this->pickGiftService = $pickGiftService;
-    }
+        private PickGiftService $pickGiftService
+    ) {}
 
     /**
      * Pick daily gift route.

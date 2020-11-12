@@ -22,28 +22,15 @@ use Cocur\Slugify\Slugify;
 class CreateArticleService
 {
     /**
-     * @var ArticleRepository
-     */
-    private ArticleRepository $articleRepository;
-
-    /**
-     * @var Slugify
-     */
-    private Slugify $slug;
-
-    /**
      * CreateArticleService constructor.
      *
      * @param ArticleRepository $articleRepository
      * @param Slugify           $slug
      */
     public function __construct(
-        ArticleRepository $articleRepository,
-        Slugify $slug
-    ) {
-        $this->articleRepository = $articleRepository;
-        $this->slug = $slug;
-    }
+        private ArticleRepository $articleRepository,
+        private Slugify $slug
+    ) {}
 
     /**
      * Creates new article with given data.

@@ -20,20 +20,13 @@ use Ares\User\Repository\UserCurrencyRepository;
 class CreateCurrencyService
 {
     /**
-     * @var UserCurrencyRepository
-     */
-    private UserCurrencyRepository $userCurrencyRepository;
-
-    /**
      * CreateCurrencyService constructor.
      *
      * @param   UserCurrencyRepository  $userCurrencyRepository
      */
     public function __construct(
-        UserCurrencyRepository $userCurrencyRepository
-    ) {
-        $this->userCurrencyRepository = $userCurrencyRepository;
-    }
+        private UserCurrencyRepository $userCurrencyRepository
+    ) {}
 
     /**
      * Creates new user currency by given data.

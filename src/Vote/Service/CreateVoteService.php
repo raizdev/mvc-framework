@@ -22,28 +22,15 @@ use Ares\Vote\Repository\VoteRepository;
 class CreateVoteService
 {
     /**
-     * @var VoteRepository
-     */
-    private VoteRepository $voteRepository;
-
-    /**
-     * @var GetVoteEntityService
-     */
-    private GetVoteEntityService $getVoteEntityService;
-
-    /**
      * CreateVoteService constructor.
      *
      * @param VoteRepository $voteRepository
      * @param GetVoteEntityService $getVoteEntityService
      */
     public function __construct(
-        VoteRepository $voteRepository,
-        GetVoteEntityService $getVoteEntityService
-    ) {
-        $this->voteRepository = $voteRepository;
-        $this->getVoteEntityService = $getVoteEntityService;
-    }
+        private VoteRepository $voteRepository,
+        private GetVoteEntityService $getVoteEntityService
+    ) {}
 
     /**
      * Create new vote with given data.

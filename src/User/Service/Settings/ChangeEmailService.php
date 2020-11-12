@@ -21,20 +21,13 @@ use Ares\User\Repository\UserRepository;
 class ChangeEmailService
 {
     /**
-     * @var UserRepository
-     */
-    private UserRepository $userRepository;
-
-    /**
      * ChangeEmailService constructor.
      *
      * @param UserRepository $userRepository
      */
     public function __construct(
-        UserRepository $userRepository
-    ) {
-        $this->userRepository = $userRepository;
-    }
+        private UserRepository $userRepository
+    ) {}
 
     /**
      * Changes email by given data.

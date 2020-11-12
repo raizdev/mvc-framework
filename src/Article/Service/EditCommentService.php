@@ -21,20 +21,13 @@ use Ares\Framework\Interfaces\CustomResponseInterface;
 class EditCommentService
 {
     /**
-     * @var CommentRepository
-     */
-    private CommentRepository $commentRepository;
-
-    /**
      * EditCommentService constructor.
      *
      * @param CommentRepository $commentRepository
      */
     public function __construct(
-        CommentRepository $commentRepository
-    ) {
-        $this->commentRepository = $commentRepository;
-    }
+        private CommentRepository $commentRepository
+    ) {}
 
     /**
      * @param array $data

@@ -21,20 +21,13 @@ use Ares\Rcon\Repository\RconRepository;
 class CreateRconCommandService
 {
     /**
-     * @var RconRepository
-     */
-    private RconRepository $rconRepository;
-
-    /**
      * CreateRconCommandService constructor.
      *
      * @param RconRepository $rconRepository
      */
     public function __construct(
-        RconRepository $rconRepository
-    ) {
-        $this->rconRepository = $rconRepository;
-    }
+        private RconRepository $rconRepository
+    ) {}
 
     /**
      * @param array $data

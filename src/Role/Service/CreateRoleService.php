@@ -21,20 +21,13 @@ use Ares\Role\Repository\RoleRepository;
 class CreateRoleService
 {
     /**
-     * @var RoleRepository
-     */
-    private RoleRepository $roleRepository;
-
-    /**
      * CreateRoleService constructor.
      *
      * @param RoleRepository $roleRepository
      */
     public function __construct(
-        RoleRepository $roleRepository
-    ) {
-        $this->roleRepository = $roleRepository;
-    }
+        private RoleRepository $roleRepository
+    ) {}
 
     /**
      * @param array $data

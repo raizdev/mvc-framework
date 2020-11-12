@@ -23,28 +23,15 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class UserCurrencyController extends BaseController
 {
     /**
-     * @var ValidationService
-     */
-    private ValidationService $validationService;
-
-    /**
-     * @var UpdateCurrencyService
-     */
-    private UpdateCurrencyService $updateCurrencyService;
-
-    /**
      * UserCurrencyController constructor.
      *
      * @param   ValidationService      $validationService
      * @param   UpdateCurrencyService  $updateCurrencyService
      */
     public function __construct(
-        ValidationService $validationService,
-        UpdateCurrencyService $updateCurrencyService
-    ) {
-        $this->validationService     = $validationService;
-        $this->updateCurrencyService = $updateCurrencyService;
-    }
+        private ValidationService $validationService,
+        private UpdateCurrencyService $updateCurrencyService
+    ) {}
 
     /**
      * Updates user currency by given data.

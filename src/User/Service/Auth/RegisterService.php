@@ -27,31 +27,6 @@ use ReallySimpleJWT\Exception\ValidateException;
 class RegisterService
 {
     /**
-     * @var UserRepository
-     */
-    private UserRepository $userRepository;
-
-    /**
-     * @var TokenService
-     */
-    private TokenService $tokenService;
-
-    /**
-     * @var Config
-     */
-    private Config $config;
-
-    /**
-     * @var TicketService
-     */
-    private TicketService $ticketService;
-
-    /**
-     * @var CreateCurrencyService
-     */
-    private CreateCurrencyService $createCurrencyService;
-
-    /**
      * LoginService constructor.
      *
      * @param   UserRepository         $userRepository
@@ -61,18 +36,12 @@ class RegisterService
      * @param   CreateCurrencyService  $createCurrencyService
      */
     public function __construct(
-        UserRepository $userRepository,
-        TokenService $tokenService,
-        TicketService $ticketService,
-        Config $config,
-        CreateCurrencyService $createCurrencyService
-    ) {
-        $this->userRepository        = $userRepository;
-        $this->tokenService          = $tokenService;
-        $this->ticketService         = $ticketService;
-        $this->config                = $config;
-        $this->createCurrencyService = $createCurrencyService;
-    }
+        private UserRepository $userRepository,
+        private TokenService $tokenService,
+        private TicketService $ticketService,
+        private Config $config,
+        private CreateCurrencyService $createCurrencyService
+    ) {}
 
     /**
      * Registers a new User.

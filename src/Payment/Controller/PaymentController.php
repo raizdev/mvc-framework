@@ -28,21 +28,6 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class PaymentController extends BaseController
 {
     /**
-     * @var PaymentRepository
-     */
-    private PaymentRepository $paymentRepository;
-
-    /**
-     * @var CreatePaymentService
-     */
-    private CreatePaymentService $createPaymentService;
-
-    /**
-     * @var ValidationService
-     */
-    private ValidationService $validationService;
-
-    /**
      * PaymentController constructor.
      *
      * @param   PaymentRepository       $paymentRepository
@@ -50,14 +35,10 @@ class PaymentController extends BaseController
      * @param   ValidationService       $validationService
      */
     public function __construct(
-        PaymentRepository $paymentRepository,
-        CreatePaymentService $createPaymentService,
-        ValidationService $validationService
-    ) {
-        $this->paymentRepository = $paymentRepository;
-        $this->createPaymentService = $createPaymentService;
-        $this->validationService = $validationService;
-    }
+        private PaymentRepository $paymentRepository,
+        private CreatePaymentService $createPaymentService,
+        private ValidationService $validationService
+    ) {}
 
     /**
      * @param Request $request

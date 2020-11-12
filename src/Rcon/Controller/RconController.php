@@ -8,6 +8,7 @@
 namespace Ares\Rcon\Controller;
 
 use Ares\Framework\Controller\BaseController;
+use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
@@ -17,6 +18,7 @@ use Ares\Rcon\Service\DeleteRconCommandService;
 use Ares\Rcon\Service\ExecuteRconCommandService;
 use Ares\Role\Exception\RoleException;
 use Ares\User\Entity\User;
+use JsonException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -28,26 +30,6 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class RconController extends BaseController
 {
     /**
-     * @var ExecuteRconCommandService
-     */
-    private ExecuteRconCommandService $executeRconCommandService;
-
-    /**
-     * @var DeleteRconCommandService
-     */
-    private DeleteRconCommandService $deleteRconCommandService;
-
-    /**
-     * @var CreateRconCommandService
-     */
-    private CreateRconCommandService $createRconCommandService;
-
-    /**
-     * @var ValidationService
-     */
-    private ValidationService $validationService;
-
-    /**
      * RconController constructor.
      *
      * @param ExecuteRconCommandService $executeRconCommandService
@@ -56,27 +38,23 @@ class RconController extends BaseController
      * @param ValidationService         $validationService
      */
     public function __construct(
-        ExecuteRconCommandService $executeRconCommandService,
-        DeleteRconCommandService $deleteRconCommandService,
-        CreateRconCommandService $createRconCommandService,
-        ValidationService $validationService
-    ) {
-        $this->executeRconCommandService = $executeRconCommandService;
-        $this->deleteRconCommandService = $deleteRconCommandService;
-        $this->createRconCommandService = $createRconCommandService;
-        $this->validationService = $validationService;
-    }
+        private ExecuteRconCommandService $executeRconCommandService,
+        private DeleteRconCommandService $deleteRconCommandService,
+        private CreateRconCommandService $createRconCommandService,
+        private ValidationService $validationService
+    ) {}
 
     /**
-     * @param Request  $request
-     * @param Response $response
+     * @param   Request   $request
+     * @param   Response  $response
      *
      * @return Response
-     * @throws \JsonException
+     * @throws DataObjectManagerException
      * @throws RconException
      * @throws RoleException
      * @throws ValidationException
-     * @throws DataObjectManagerException
+     * @throws AuthenticationException
+     * @throws JsonException
      */
     public function executeCommand(Request $request, Response $response): Response
     {

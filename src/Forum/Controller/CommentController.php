@@ -31,26 +31,6 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class CommentController extends BaseController
 {
     /**
-     * @var CommentRepository
-     */
-    private CommentRepository $commentRepository;
-
-    /**
-     * @var CreateCommentService
-     */
-    private CreateCommentService $createCommentService;
-
-    /**
-     * @var EditCommentService
-     */
-    private EditCommentService $editCommentService;
-
-    /**
-     * @var ValidationService
-     */
-    private ValidationService $validationService;
-
-    /**
      * CommentController constructor.
      *
      * @param   CommentRepository       $commentRepository
@@ -59,16 +39,11 @@ class CommentController extends BaseController
      * @param   ValidationService       $validationService
      */
     public function __construct(
-        CommentRepository $commentRepository,
-        CreateCommentService $createCommentService,
-        EditCommentService $editCommentService,
-        ValidationService $validationService
-    ) {
-        $this->commentRepository    = $commentRepository;
-        $this->createCommentService = $createCommentService;
-        $this->editCommentService   = $editCommentService;
-        $this->validationService    = $validationService;
-    }
+        private CommentRepository $commentRepository,
+        private CreateCommentService $createCommentService,
+        private EditCommentService $editCommentService,
+        private ValidationService $validationService
+    ) {}
 
     /**
      * @param Request $request

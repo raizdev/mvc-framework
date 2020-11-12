@@ -27,31 +27,6 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class RoleController extends BaseController
 {
     /**
-     * @var CreateRoleService
-     */
-    private CreateRoleService $createRoleService;
-
-    /**
-     * @var CreateChildRoleService
-     */
-    private CreateChildRoleService $createChildRoleService;
-
-    /**
-     * @var ValidationService
-     */
-    private ValidationService $validationService;
-
-    /**
-     * @var RoleRepository
-     */
-    private RoleRepository $roleRepository;
-
-    /**
-     * @var AssignUserToRoleService
-     */
-    private AssignUserToRoleService $assignUserToRoleService;
-
-    /**
      * RoleController constructor.
      *
      * @param CreateRoleService       $createRoleService
@@ -61,18 +36,12 @@ class RoleController extends BaseController
      * @param RoleRepository          $roleRepository
      */
     public function __construct(
-        CreateRoleService $createRoleService,
-        CreateChildRoleService $createChildRoleService,
-        AssignUserToRoleService $assignUserToRoleService,
-        ValidationService $validationService,
-        RoleRepository $roleRepository
-    ) {
-        $this->createRoleService = $createRoleService;
-        $this->createChildRoleService = $createChildRoleService;
-        $this->assignUserToRoleService = $assignUserToRoleService;
-        $this->validationService = $validationService;
-        $this->roleRepository = $roleRepository;
-    }
+        private CreateRoleService $createRoleService,
+        private CreateChildRoleService $createChildRoleService,
+        private AssignUserToRoleService $assignUserToRoleService,
+        private ValidationService $validationService,
+        private RoleRepository $roleRepository
+    ) {}
 
     /**
      * @param Request  $request

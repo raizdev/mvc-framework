@@ -21,20 +21,13 @@ use Ares\Settings\Repository\SettingsRepository;
 class UpdateSettingsService
 {
     /**
-     * @var SettingsRepository
-     */
-    private SettingsRepository $settingsRepository;
-
-    /**
      * UpdateSettingsService constructor.
      *
      * @param   SettingsRepository  $settingsRepository
      */
     public function __construct(
-        SettingsRepository $settingsRepository
-    ) {
-        $this->settingsRepository = $settingsRepository;
-    }
+        private SettingsRepository $settingsRepository
+    ) {}
 
     /**
      * @param $data

@@ -19,20 +19,13 @@ use Exception;
 class UpdateCurrencyService
 {
     /**
-     * @var UserCurrencyRepository
-     */
-    private UserCurrencyRepository $userCurrencyRepository;
-
-    /**
      * UpdateCurrencyService constructor.
      *
      * @param UserCurrencyRepository $userCurrencyRepository
      */
     public function __construct(
-        UserCurrencyRepository $userCurrencyRepository
-    ) {
-        $this->userCurrencyRepository = $userCurrencyRepository;
-    }
+        private UserCurrencyRepository $userCurrencyRepository
+    ) {}
 
     /**
      * Updates currency by given data.

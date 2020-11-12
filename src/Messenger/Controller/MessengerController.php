@@ -23,20 +23,13 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class MessengerController extends BaseController
 {
     /**
-     * @var MessengerRepository
-     */
-    private MessengerRepository $messengerRepository;
-
-    /**
      * MessengerController constructor.
      *
      * @param MessengerRepository    $messengerRepository
      */
     public function __construct(
-        MessengerRepository $messengerRepository
-    ) {
-        $this->messengerRepository = $messengerRepository;
-    }
+        private MessengerRepository $messengerRepository
+    ) {}
 
     /**
      * @param Request $request

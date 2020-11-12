@@ -24,28 +24,15 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class GuildController extends BaseController
 {
     /**
-     * @var GuildRepository
-     */
-    private GuildRepository $guildRepository;
-
-    /**
-     * @var GuildMemberRepository
-     */
-    private GuildMemberRepository $guildMemberRepository;
-
-    /**
      * RoomController constructor.
      *
      * @param   GuildRepository         $guildRepository
      * @param   GuildMemberRepository   $guildMemberRepository
      */
     public function __construct(
-        GuildRepository $guildRepository,
-        GuildMemberRepository $guildMemberRepository
-    ) {
-        $this->guildRepository       = $guildRepository;
-        $this->guildMemberRepository = $guildMemberRepository;
-    }
+        private GuildRepository $guildRepository,
+        private GuildMemberRepository $guildMemberRepository
+    ) {}
 
     /**
      * @param Request     $request

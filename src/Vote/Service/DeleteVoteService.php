@@ -21,20 +21,13 @@ use Ares\Vote\Repository\VoteRepository;
 class DeleteVoteService
 {
     /**
-     * @var VoteRepository
-     */
-    private VoteRepository $voteRepository;
-
-    /**
      * DeleteVoteService constructor.
      *
      * @param VoteRepository $voteRepository
      */
     public function __construct(
-        VoteRepository $voteRepository
-    ) {
-        $this->voteRepository = $voteRepository;
-    }
+        private VoteRepository $voteRepository
+    ) {}
 
     /**
      * Deletes vote by given data.

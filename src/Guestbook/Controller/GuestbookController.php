@@ -31,31 +31,6 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class GuestbookController extends BaseController
 {
     /**
-     * @var GuestbookRepository
-     */
-    private GuestbookRepository $guestbookRepository;
-
-    /**
-     * @var UserRepository
-     */
-    private UserRepository $userRepository;
-
-    /**
-     * @var ValidationService
-     */
-    private ValidationService $validationService;
-
-    /**
-     * @var CreateGuestbookEntryService
-     */
-    private CreateGuestbookEntryService $createGuestbookEntryService;
-
-    /**
-     * @var GuildRepository
-     */
-    private GuildRepository $guildRepository;
-
-    /**
      * GuestbookController constructor.
      *
      * @param GuestbookRepository         $guestbookRepository
@@ -65,18 +40,12 @@ class GuestbookController extends BaseController
      * @param CreateGuestbookEntryService $createGuestbookEntryService
      */
     public function __construct(
-        GuestbookRepository $guestbookRepository,
-        UserRepository $userRepository,
-        GuildRepository $guildRepository,
-        ValidationService $validationService,
-        CreateGuestbookEntryService $createGuestbookEntryService
-    ) {
-        $this->guestbookRepository = $guestbookRepository;
-        $this->userRepository = $userRepository;
-        $this->guildRepository = $guildRepository;
-        $this->validationService = $validationService;
-        $this->createGuestbookEntryService = $createGuestbookEntryService;
-    }
+        private GuestbookRepository $guestbookRepository,
+        private UserRepository $userRepository,
+        private GuildRepository $guildRepository,
+        private ValidationService $validationService,
+        private CreateGuestbookEntryService $createGuestbookEntryService
+    ) {}
 
     /**
      * @param Request $request

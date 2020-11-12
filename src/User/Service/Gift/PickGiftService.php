@@ -28,21 +28,6 @@ use PHLAK\Config\Config;
 class PickGiftService
 {
     /**
-     * @var DailyGiftRepository
-     */
-    private DailyGiftRepository $dailyGiftRepository;
-
-    /**
-     * @var ExecuteRconCommandService
-     */
-    private ExecuteRconCommandService $executeRconCommandService;
-
-    /**
-     * @var Config
-     */
-    private Config $config;
-
-    /**
      * PickGiftService constructor.
      *
      * @param DailyGiftRepository       $dailyGiftRepository
@@ -50,14 +35,10 @@ class PickGiftService
      * @param Config                    $config
      */
     public function __construct(
-        DailyGiftRepository $dailyGiftRepository,
-        ExecuteRconCommandService $executeRconCommandService,
-        Config $config
-    ) {
-        $this->dailyGiftRepository = $dailyGiftRepository;
-        $this->executeRconCommandService = $executeRconCommandService;
-        $this->config = $config;
-    }
+        private DailyGiftRepository $dailyGiftRepository,
+        private ExecuteRconCommandService $executeRconCommandService,
+        private Config $config
+    ) {}
 
     /**
      * Checks and fetches user daily gift.

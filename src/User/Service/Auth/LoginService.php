@@ -27,26 +27,6 @@ use ReallySimpleJWT\Exception\ValidateException;
 class LoginService
 {
     /**
-     * @var UserRepository
-     */
-    private UserRepository $userRepository;
-
-    /**
-     * @var TokenService
-     */
-    private TokenService $tokenService;
-
-    /**
-     * @var BanRepository
-     */
-    private BanRepository $banRepository;
-
-    /**
-     * @var DataObjectManagerFactory
-     */
-    private DataObjectManagerFactory $dataObjectManagerFactory;
-
-    /**
      * LoginService constructor.
      *
      * @param UserRepository           $userRepository
@@ -55,16 +35,11 @@ class LoginService
      * @param DataObjectManagerFactory $dataObjectManagerFactory
      */
     public function __construct(
-        UserRepository $userRepository,
-        BanRepository $banRepository,
-        TokenService $tokenService,
-        DataObjectManagerFactory $dataObjectManagerFactory
-    ) {
-        $this->userRepository = $userRepository;
-        $this->banRepository  = $banRepository;
-        $this->tokenService   = $tokenService;
-        $this->dataObjectManagerFactory = $dataObjectManagerFactory;
-    }
+        private UserRepository $userRepository,
+        private BanRepository $banRepository,
+        private TokenService $tokenService,
+        private DataObjectManagerFactory $dataObjectManagerFactory
+    ) {}
 
     /**
      * Login user.

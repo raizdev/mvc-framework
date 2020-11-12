@@ -21,20 +21,13 @@ use Ares\Framework\Interfaces\CustomResponseInterface;
 class EditArticleService
 {
     /**
-     * @var ArticleRepository
-     */
-    private ArticleRepository $articleRepository;
-
-    /**
      * EditArticleService constructor.
      *
      * @param ArticleRepository $articleRepository
      */
     public function __construct(
-        ArticleRepository $articleRepository
-    ) {
-        $this->articleRepository = $articleRepository;
-    }
+        private ArticleRepository $articleRepository
+    ) {}
 
     /**
      * @param array $data

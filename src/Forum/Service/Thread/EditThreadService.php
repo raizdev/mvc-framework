@@ -23,20 +23,13 @@ use Ares\User\Entity\User;
 class EditThreadService
 {
     /**
-     * @var ThreadRepository
-     */
-    private ThreadRepository $threadRepository;
-
-    /**
      * EditThreadService constructor.
      *
      * @param   ThreadRepository  $threadRepository
      */
     public function __construct(
-        ThreadRepository $threadRepository
-    ) {
-        $this->threadRepository = $threadRepository;
-    }
+        private ThreadRepository $threadRepository
+    ) {}
 
     /**
      * @param Topic $topic

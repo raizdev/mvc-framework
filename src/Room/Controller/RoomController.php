@@ -23,20 +23,13 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class RoomController extends BaseController
 {
     /**
-     * @var RoomRepository
-     */
-    private RoomRepository $roomRepository;
-
-    /**
      * RoomController constructor.
      *
      * @param RoomRepository $roomRepository
      */
     public function __construct(
-        RoomRepository $roomRepository
-    ) {
-        $this->roomRepository = $roomRepository;
-    }
+        private RoomRepository $roomRepository
+    ) {}
 
     /**
      * @param Request  $request

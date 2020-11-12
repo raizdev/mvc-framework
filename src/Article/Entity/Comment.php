@@ -13,6 +13,7 @@ use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Model\DataObject;
 use Ares\User\Entity\User;
 use Ares\User\Repository\UserRepository;
+use JetBrains\PhpStorm\Pure;
 
 /**
  * Class Article

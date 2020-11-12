@@ -34,36 +34,6 @@ use ReallySimpleJWT\Exception\ValidateException;
 class AuthController extends BaseController
 {
     /**
-     * @var ValidationService
-     */
-    private ValidationService $validationService;
-
-    /**
-     * @var LoginService
-     */
-    private LoginService $loginService;
-
-    /**
-     * @var RegisterService
-     */
-    private RegisterService $registerService;
-
-    /**
-     * @var TicketService
-     */
-    private TicketService $ticketService;
-
-    /**
-     * @var DetermineIpService
-     */
-    private DetermineIpService $determineIpService;
-
-    /**
-     * @var Config
-     */
-    private Config $config;
-
-    /**
      * AuthController constructor.
      *
      * @param ValidationService $validationService
@@ -74,20 +44,13 @@ class AuthController extends BaseController
      * @param Config $config
      */
     public function __construct(
-        ValidationService $validationService,
-        LoginService $loginService,
-        RegisterService $registerService,
-        TicketService $ticketService,
-        DetermineIpService $determineIpService,
-        Config $config
-    ) {
-        $this->validationService = $validationService;
-        $this->loginService = $loginService;
-        $this->registerService = $registerService;
-        $this->ticketService = $ticketService;
-        $this->determineIpService = $determineIpService;
-        $this->config = $config;
-    }
+        private ValidationService $validationService,
+        private LoginService $loginService,
+        private RegisterService $registerService,
+        private TicketService $ticketService,
+        private DetermineIpService $determineIpService,
+        private Config $config
+    ) {}
 
     /**
      * Logs the User in and parses a generated Token into response

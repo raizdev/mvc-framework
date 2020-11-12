@@ -21,20 +21,13 @@ use Ares\Framework\Interfaces\CustomResponseInterface;
 class EditTopicService
 {
     /**
-     * @var TopicRepository
-     */
-    private TopicRepository $topicRepository;
-
-    /**
      * EditTopicService constructor.
      *
      * @param   TopicRepository  $topicRepository
      */
     public function __construct(
-        TopicRepository $topicRepository
-    ) {
-        $this->topicRepository = $topicRepository;
-    }
+        private TopicRepository $topicRepository
+    ) {}
 
     /**
      * @param array $data

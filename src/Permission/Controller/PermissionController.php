@@ -21,20 +21,13 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class PermissionController extends BaseController
 {
     /**
-     * @var PermissionRepository
-     */
-    private PermissionRepository $permissionRepository;
-
-    /**
      * PermissionController constructor.
      *
      * @param PermissionRepository   $permissionRepository
      */
     public function __construct(
-        PermissionRepository $permissionRepository
-    ) {
-        $this->permissionRepository = $permissionRepository;
-    }
+        private PermissionRepository $permissionRepository
+    ) {}
 
     /**
      * @param Request     $request

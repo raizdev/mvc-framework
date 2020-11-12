@@ -30,36 +30,6 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class VoteController extends BaseController
 {
     /**
-     * @var VoteRepository
-     */
-    private VoteRepository $voteRepository;
-
-    /**
-     * @var ValidationService
-     */
-    private ValidationService $validationService;
-
-    /**
-     * @var CreateVoteService
-     */
-    private CreateVoteService $createVoteService;
-
-    /**
-     * @var DeleteVoteService
-     */
-    private DeleteVoteService $deleteVoteService;
-
-    /**
-     * @var IncrementVoteService
-     */
-    private IncrementVoteService $incrementVoteService;
-
-    /**
-     * @var DecrementVoteService
-     */
-    private DecrementVoteService $decrementVoteService;
-
-    /**
      * VoteController constructor.
      *
      * @param   VoteRepository          $voteRepository
@@ -70,20 +40,13 @@ class VoteController extends BaseController
      * @param   DecrementVoteService    $decrementVoteService
      */
     public function __construct(
-        VoteRepository $voteRepository,
-        ValidationService $validationService,
-        CreateVoteService $createVoteService,
-        DeleteVoteService $deleteVoteService,
-        IncrementVoteService $incrementVoteService,
-        DecrementVoteService $decrementVoteService
-    ) {
-        $this->voteRepository         = $voteRepository;
-        $this->validationService      = $validationService;
-        $this->createVoteService      = $createVoteService;
-        $this->deleteVoteService      = $deleteVoteService;
-        $this->incrementVoteService   = $incrementVoteService;
-        $this->decrementVoteService   = $decrementVoteService;
-    }
+        private VoteRepository $voteRepository,
+        private ValidationService $validationService,
+        private CreateVoteService $createVoteService,
+        private DeleteVoteService $deleteVoteService,
+        private IncrementVoteService $incrementVoteService,
+        private DecrementVoteService $decrementVoteService
+    ) {}
 
     /**
      * Create new vote.

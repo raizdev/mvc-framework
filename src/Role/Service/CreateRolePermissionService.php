@@ -25,21 +25,6 @@ use Ares\Role\Repository\RoleRepository;
 class CreateRolePermissionService
 {
     /**
-     * @var RolePermissionRepository
-     */
-    private RolePermissionRepository $rolePermissionRepository;
-
-    /**
-     * @var PermissionRepository
-     */
-    private PermissionRepository $permissionRepository;
-
-    /**
-     * @var RoleRepository
-     */
-    private RoleRepository $roleRepository;
-
-    /**
      * CreateChildPermission constructor.
      *
      * @param RolePermissionRepository $rolePermissionRepository
@@ -47,14 +32,10 @@ class CreateRolePermissionService
      * @param RoleRepository           $roleRepository
      */
     public function __construct(
-        RolePermissionRepository $rolePermissionRepository,
-        PermissionRepository $permissionRepository,
-        RoleRepository $roleRepository
-    ) {
-        $this->rolePermissionRepository = $rolePermissionRepository;
-        $this->permissionRepository = $permissionRepository;
-        $this->roleRepository = $roleRepository;
-    }
+        private RolePermissionRepository $rolePermissionRepository,
+        private PermissionRepository $permissionRepository,
+        private RoleRepository $roleRepository
+    ) {}
 
     /**
      * @param array $data

@@ -24,21 +24,6 @@ use JsonException;
 class ExecuteRconCommandService
 {
     /**
-     * @var RconRepository
-     */
-    private RconRepository $rconRepository;
-
-    /**
-     * @var Rcon
-     */
-    private Rcon $rcon;
-
-    /**
-     * @var CheckAccessService
-     */
-    private CheckAccessService $checkAccessService;
-
-    /**
      * ExecuteRconCommandService constructor.
      *
      * @param RconRepository     $rconRepository
@@ -46,14 +31,10 @@ class ExecuteRconCommandService
      * @param CheckAccessService $checkAccessService
      */
     public function __construct(
-        RconRepository $rconRepository,
-        Rcon $rcon,
-        CheckAccessService $checkAccessService
-    ) {
-        $this->rconRepository = $rconRepository;
-        $this->rcon = $rcon;
-        $this->checkAccessService = $checkAccessService;
-    }
+        private RconRepository $rconRepository,
+        private Rcon $rcon,
+        private CheckAccessService $checkAccessService
+    ) {}
 
     /**
      * @param int   $userId

@@ -23,28 +23,15 @@ use Ares\Role\Repository\RoleRepository;
 class CreateChildRoleService
 {
     /**
-     * @var RoleHierarchyRepository
-     */
-    private RoleHierarchyRepository $roleHierarchyRepository;
-
-    /**
-     * @var RoleRepository
-     */
-    private RoleRepository $roleRepository;
-
-    /**
      * CreateChildRoleService constructor.
      *
      * @param RoleHierarchyRepository $roleHierarchyRepository
      * @param RoleRepository          $roleRepository
      */
     public function __construct(
-        RoleHierarchyRepository $roleHierarchyRepository,
-        RoleRepository $roleRepository
-    ) {
-        $this->roleHierarchyRepository = $roleHierarchyRepository;
-        $this->roleRepository = $roleRepository;
-    }
+        private RoleHierarchyRepository $roleHierarchyRepository,
+        private RoleRepository $roleRepository
+    ) {}
 
     /**
      * @param array $data

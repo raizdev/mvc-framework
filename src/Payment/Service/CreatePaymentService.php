@@ -20,22 +20,14 @@ use Ares\Payment\Repository\PaymentRepository;
  */
 class CreatePaymentService
 {
-
-    /**
-     * @var PaymentRepository
-     */
-    private PaymentRepository $paymentRepository;
-
     /**
      * CreatePaymentService constructor.
      *
      * @param   PaymentRepository  $paymentRepository
      */
     public function __construct(
-        PaymentRepository $paymentRepository
-    ) {
-        $this->paymentRepository = $paymentRepository;
-    }
+        private PaymentRepository $paymentRepository
+    ) {}
 
     /**
      * @param int   $userId

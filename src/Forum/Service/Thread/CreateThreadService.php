@@ -24,21 +24,6 @@ use Cocur\Slugify\Slugify;
 class CreateThreadService
 {
     /**
-     * @var ThreadRepository
-     */
-    private ThreadRepository $threadRepository;
-
-    /**
-     * @var TopicRepository
-     */
-    private TopicRepository $topicRepository;
-
-    /**
-     * @var Slugify
-     */
-    private Slugify $slug;
-
-    /**
      * CreateThreadService constructor.
      *
      * @param ThreadRepository $threadRepository
@@ -46,14 +31,10 @@ class CreateThreadService
      * @param Slugify          $slug
      */
     public function __construct(
-        ThreadRepository $threadRepository,
-        TopicRepository $topicRepository,
-        Slugify $slug
-    ) {
-        $this->threadRepository = $threadRepository;
-        $this->topicRepository = $topicRepository;
-        $this->slug = $slug;
-    }
+        private ThreadRepository $threadRepository,
+        private TopicRepository $topicRepository,
+        private Slugify $slug
+    ) {}
 
     /**
      * @param int   $userId

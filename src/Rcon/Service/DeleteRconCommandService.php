@@ -21,20 +21,13 @@ use Ares\Rcon\Repository\RconRepository;
 class DeleteRconCommandService
 {
     /**
-     * @var RconRepository
-     */
-    private RconRepository $rconRepository;
-
-    /**
      * DeleteRconCommandService constructor.
      *
      * @param RconRepository $rconRepository
      */
     public function __construct(
-        RconRepository $rconRepository
-    ) {
-        $this->rconRepository = $rconRepository;
-    }
+        private RconRepository $rconRepository
+    ) {}
 
     /**
      * @param array $data

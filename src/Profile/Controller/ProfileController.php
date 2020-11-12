@@ -28,36 +28,6 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class ProfileController extends BaseController
 {
     /**
-     * @var UserRepository
-     */
-    private UserRepository $userRepository;
-
-    /**
-     * @var RoomRepository
-     */
-    private RoomRepository $roomRepository;
-
-    /**
-     * @var GuildMemberRepository
-     */
-    private GuildMemberRepository $guildMemberRepository;
-
-    /**
-     * @var MessengerRepository
-     */
-    private MessengerRepository $messengerRepository;
-
-    /**
-     * @var PhotoRepository
-     */
-    private PhotoRepository $photoRepository;
-
-    /**
-     * @var UserBadgeRepository
-     */
-    private UserBadgeRepository $userBadgeRepository;
-
-    /**
      * ProfileController constructor.
      *
      * @param UserRepository        $userRepository
@@ -68,20 +38,13 @@ class ProfileController extends BaseController
      * @param UserBadgeRepository   $userBadgeRepository
      */
     public function __construct(
-        UserRepository $userRepository,
-        RoomRepository $roomRepository,
-        GuildMemberRepository $guildMemberRepository,
-        MessengerRepository $messengerRepository,
-        PhotoRepository $photoRepository,
-        UserBadgeRepository $userBadgeRepository
-    ) {
-        $this->userRepository = $userRepository;
-        $this->roomRepository = $roomRepository;
-        $this->guildMemberRepository = $guildMemberRepository;
-        $this->messengerRepository = $messengerRepository;
-        $this->photoRepository = $photoRepository;
-        $this->userBadgeRepository = $userBadgeRepository;
-    }
+        private UserRepository $userRepository,
+        private RoomRepository $roomRepository,
+        private GuildMemberRepository $guildMemberRepository,
+        private MessengerRepository $messengerRepository,
+        private PhotoRepository $photoRepository,
+        private UserBadgeRepository $userBadgeRepository
+    ) {}
 
     /**
      * @param Request     $request

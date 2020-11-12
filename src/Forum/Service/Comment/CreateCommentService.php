@@ -23,28 +23,15 @@ use Ares\Framework\Interfaces\CustomResponseInterface;
 class CreateCommentService
 {
     /**
-     * @var CommentRepository
-     */
-    private CommentRepository $commentRepository;
-
-    /**
-     * @var ThreadRepository
-     */
-    private ThreadRepository $threadRepository;
-
-    /**
      * CreateCommentService constructor.
      *
      * @param   CommentRepository  $commentRepository
      * @param   ThreadRepository   $threadRepository
      */
     public function __construct(
-        CommentRepository $commentRepository,
-        ThreadRepository $threadRepository
-    ) {
-        $this->commentRepository = $commentRepository;
-        $this->threadRepository = $threadRepository;
-    }
+        private CommentRepository $commentRepository,
+        private ThreadRepository $threadRepository
+    ) {}
 
     /**
      * @param int   $userId

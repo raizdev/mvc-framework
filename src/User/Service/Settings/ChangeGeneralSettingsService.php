@@ -26,28 +26,15 @@ use JsonException;
 class ChangeGeneralSettingsService
 {
     /**
-     * @var UserSettingRepository
-     */
-    private UserSettingRepository $userSettingRepository;
-
-    /**
-     * @var ExecuteRconCommandService
-     */
-    private ExecuteRconCommandService $executeRconCommandService;
-
-    /**
      * ChangeGeneralSettingsService constructor.
      *
      * @param UserSettingRepository     $userSettingRepository
      * @param ExecuteRconCommandService $executeRconCommandService
      */
     public function __construct(
-        UserSettingRepository $userSettingRepository,
-        ExecuteRconCommandService $executeRconCommandService
-    ) {
-        $this->userSettingRepository = $userSettingRepository;
-        $this->executeRconCommandService = $executeRconCommandService;
-    }
+        private UserSettingRepository $userSettingRepository,
+        private ExecuteRconCommandService $executeRconCommandService
+    ) {}
 
     /**
      * Changes user general settings by given user.

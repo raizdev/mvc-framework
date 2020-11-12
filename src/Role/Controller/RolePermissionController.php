@@ -28,31 +28,6 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class RolePermissionController extends BaseController
 {
     /**
-     * @var PermissionRepository
-     */
-    private PermissionRepository $permissionRepository;
-
-    /**
-     * @var CreatePermissionService
-     */
-    private CreatePermissionService $createPermissionService;
-
-    /**
-     * @var ValidationService
-     */
-    private ValidationService $validationService;
-
-    /**
-     * @var CreateRolePermissionService
-     */
-    private CreateRolePermissionService $createRolePermissionService;
-
-    /**
-     * @var FetchUserPermissionService
-     */
-    private FetchUserPermissionService $fetchUserPermissionService;
-
-    /**
      * RolePermissionController constructor.
      *
      * @param PermissionRepository        $permissionRepository
@@ -62,18 +37,12 @@ class RolePermissionController extends BaseController
      * @param ValidationService           $validationService
      */
     public function __construct(
-        PermissionRepository $permissionRepository,
-        CreatePermissionService $createPermissionService,
-        CreateRolePermissionService $createRolePermissionService,
-        FetchUserPermissionService $fetchUserPermissionService,
-        ValidationService $validationService
-    ) {
-        $this->permissionRepository = $permissionRepository;
-        $this->createPermissionService = $createPermissionService;
-        $this->createRolePermissionService = $createRolePermissionService;
-        $this->fetchUserPermissionService = $fetchUserPermissionService;
-        $this->validationService = $validationService;
-    }
+        private PermissionRepository $permissionRepository,
+        private CreatePermissionService $createPermissionService,
+        private CreateRolePermissionService $createRolePermissionService,
+        private FetchUserPermissionService $fetchUserPermissionService,
+        private ValidationService $validationService
+    ) {}
 
     /**
      * @param Request  $request

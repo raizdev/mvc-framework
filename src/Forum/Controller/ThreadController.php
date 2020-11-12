@@ -24,26 +24,6 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class ThreadController extends BaseController
 {
     /**
-     * @var ThreadRepository
-     */
-    private ThreadRepository $threadRepository;
-
-    /**
-     * @var ValidationService
-     */
-    private ValidationService $validationService;
-
-    /**
-     * @var CreateThreadService
-     */
-    private CreateThreadService $createThreadService;
-
-    /**
-     * @var EditThreadService
-     */
-    private EditThreadService $editThreadService;
-
-    /**
      * CommentController constructor.
      *
      * @param   ThreadRepository        $threadRepository
@@ -52,16 +32,11 @@ class ThreadController extends BaseController
      * @param   ValidationService       $validationService
      */
     public function __construct(
-        ThreadRepository $threadRepository,
-        CreateThreadService $createThreadService,
-        EditThreadService $editThreadService,
-        ValidationService $validationService
-    ) {
-        $this->threadRepository    = $threadRepository;
-        $this->createThreadService = $createThreadService;
-        $this->editThreadService   = $editThreadService;
-        $this->validationService   = $validationService;
-    }
+        private ThreadRepository $threadRepository,
+        private CreateThreadService $createThreadService,
+        private EditThreadService $editThreadService,
+        private ValidationService $validationService
+    ) {}
 
     /**
      * @param Request $request

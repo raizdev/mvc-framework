@@ -27,21 +27,6 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class PhotoController extends BaseController
 {
     /**
-     * @var PhotoRepository
-     */
-    private PhotoRepository $photoRepository;
-
-    /**
-     * @var ValidationService
-     */
-    private ValidationService $validationService;
-
-    /**
-     * @var UserRepository
-     */
-    private UserRepository $userRepository;
-
-    /**
      * PhotoController constructor.
      *
      * @param   PhotoRepository         $photoRepository
@@ -49,14 +34,10 @@ class PhotoController extends BaseController
      * @param   ValidationService       $validationService
      */
     public function __construct(
-        PhotoRepository $photoRepository,
-        UserRepository $userRepository,
-        ValidationService $validationService
-    ) {
-        $this->photoRepository   = $photoRepository;
-        $this->validationService = $validationService;
-        $this->userRepository    = $userRepository;
-    }
+        private PhotoRepository $photoRepository,
+        private UserRepository $userRepository,
+        private ValidationService $validationService
+    ) {}
 
     /**
      * @param Request  $request

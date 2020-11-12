@@ -27,26 +27,6 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class TopicController extends BaseController
 {
     /**
-     * @var TopicRepository
-     */
-    private TopicRepository $topicRepository;
-
-    /**
-     * @var CreateTopicService
-     */
-    private CreateTopicService $createTopicService;
-
-    /**
-     * @var ValidationService
-     */
-    private ValidationService $validationService;
-
-    /**
-     * @var EditTopicService
-     */
-    private EditTopicService $editTopicService;
-
-    /**
      * TopicController constructor.
      *
      * @param   TopicRepository         $topicRepository
@@ -55,16 +35,11 @@ class TopicController extends BaseController
      * @param   ValidationService       $validationService
      */
     public function __construct(
-        TopicRepository $topicRepository,
-        CreateTopicService $createTopicService,
-        EditTopicService $editTopicService,
-        ValidationService $validationService
-    ) {
-        $this->topicRepository    = $topicRepository;
-        $this->createTopicService = $createTopicService;
-        $this->editTopicService   = $editTopicService;
-        $this->validationService  = $validationService;
-    }
+        private TopicRepository $topicRepository,
+        private CreateTopicService $createTopicService,
+        private EditTopicService $editTopicService,
+        private ValidationService $validationService
+    ) {}
 
     /**
      * @param Request  $request

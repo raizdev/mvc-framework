@@ -21,20 +21,13 @@ use Ares\Role\Repository\PermissionRepository;
 class CreatePermissionService
 {
     /**
-     * @var PermissionRepository
-     */
-    private PermissionRepository $permissionRepository;
-
-    /**
      * CreatePermissionService constructor.
      *
      * @param PermissionRepository $permissionRepository
      */
     public function __construct(
-        PermissionRepository $permissionRepository
-    ) {
-        $this->permissionRepository = $permissionRepository;
-    }
+        private PermissionRepository $permissionRepository
+    ) {}
 
     /**
      * @param array $data
@@ -45,10 +38,6 @@ class CreatePermissionService
      */
     public function execute(array $data): CustomResponseInterface
     {
-        $searchCriteria = $this->permissionRepository
-            ->getDataObjectManager()
-            ->where('name', $data['name']);
-
         /** @var Permission $existingPermission */
         $existingPermission = $this->permissionRepository->get($data['name'], 'name');
 

@@ -25,21 +25,6 @@ use Ares\User\Repository\UserRepository;
 class AssignUserToRoleService
 {
     /**
-     * @var RoleUserRepository
-     */
-    private RoleUserRepository $roleUserRepository;
-
-    /**
-     * @var RoleRepository
-     */
-    private RoleRepository $roleRepository;
-
-    /**
-     * @var UserRepository
-     */
-    private UserRepository $userRepository;
-
-    /**
      * AssignUserToRoleService constructor.
      *
      * @param RoleUserRepository $roleUserRepository
@@ -47,14 +32,10 @@ class AssignUserToRoleService
      * @param UserRepository     $userRepository
      */
     public function __construct(
-        RoleUserRepository $roleUserRepository,
-        RoleRepository $roleRepository,
-        UserRepository $userRepository
-    ) {
-        $this->roleUserRepository = $roleUserRepository;
-        $this->roleRepository = $roleRepository;
-        $this->userRepository = $userRepository;
-    }
+        private RoleUserRepository $roleUserRepository,
+        private RoleRepository $roleRepository,
+        private UserRepository $userRepository
+    ) {}
 
     /**
      * @param array $data

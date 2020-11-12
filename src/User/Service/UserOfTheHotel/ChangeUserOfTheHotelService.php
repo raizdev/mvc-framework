@@ -24,21 +24,6 @@ use Ares\User\Repository\UserSettingRepository;
 class ChangeUserOfTheHotelService
 {
     /**
-     * @var UserSettingRepository
-     */
-    private UserSettingRepository $userSettingRepository;
-
-    /**
-     * @var UserOfTheHotelRepository
-     */
-    private UserOfTheHotelRepository $userOfTheHotelRepository;
-
-    /**
-     * @var UserRepository
-     */
-    private UserRepository $userRepository;
-
-    /**
      * ChangeUserOfTheHotelService constructor.
      *
      * @param UserSettingRepository    $userSettingRepository
@@ -46,14 +31,10 @@ class ChangeUserOfTheHotelService
      * @param UserRepository           $userRepository
      */
     public function __construct(
-        UserSettingRepository $userSettingRepository,
-        UserOfTheHotelRepository $userOfTheHotelRepository,
-        UserRepository $userRepository
-    ) {
-        $this->userSettingRepository = $userSettingRepository;
-        $this->userOfTheHotelRepository = $userOfTheHotelRepository;
-        $this->userRepository = $userRepository;
-    }
+        private UserSettingRepository $userSettingRepository,
+        private UserOfTheHotelRepository $userOfTheHotelRepository,
+        private UserRepository $userRepository
+    ) {}
 
     /**
      * @return CustomResponseInterface

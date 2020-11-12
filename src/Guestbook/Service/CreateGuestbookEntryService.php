@@ -20,20 +20,13 @@ use Ares\Guestbook\Repository\GuestbookRepository;
 class CreateGuestbookEntryService
 {
     /**
-     * @var GuestbookRepository
-     */
-    private GuestbookRepository $guestbookRepository;
-
-    /**
      * CreateGuestbookEntryService constructor.
      *
      * @param   GuestbookRepository  $guestbookRepository
      */
     public function __construct(
-        GuestbookRepository $guestbookRepository
-    ) {
-        $this->guestbookRepository = $guestbookRepository;
-    }
+        private GuestbookRepository $guestbookRepository
+    ) {}
 
     /**
      * @param int   $userId

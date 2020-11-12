@@ -22,28 +22,15 @@ use Cocur\Slugify\Slugify;
 class CreateTopicService
 {
     /**
-     * @var TopicRepository
-     */
-    private TopicRepository $topicRepository;
-
-    /**
-     * @var Slugify
-     */
-    private Slugify $slug;
-
-    /**
      * CreateTopicService constructor.
      *
      * @param TopicRepository $topicRepository
      * @param Slugify         $slug
      */
     public function __construct(
-        TopicRepository $topicRepository,
-        Slugify $slug
-    ) {
-        $this->topicRepository = $topicRepository;
-        $this->slug = $slug;
-    }
+        private TopicRepository $topicRepository,
+        private Slugify $slug
+    ) {}
 
     /**
      * @param array $data

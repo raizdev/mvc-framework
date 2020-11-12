@@ -28,31 +28,6 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class UserSettingsController extends BaseController
 {
     /**
-     * @var ValidationService
-     */
-    private ValidationService $validationService;
-
-    /**
-     * @var ChangeGeneralSettingsService
-     */
-    private ChangeGeneralSettingsService $changeGeneralSettingsService;
-
-    /**
-     * @var ChangePasswordService
-     */
-    private ChangePasswordService $changePasswordService;
-
-    /**
-     * @var ChangeEmailService
-     */
-    private ChangeEmailService $changeEmailService;
-
-    /**
-     * @var ChangeUsernameService
-     */
-    private ChangeUsernameService $changeUsernameService;
-
-    /**
      * UserSettingsController constructor.
      *
      * @param ValidationService            $validationService
@@ -62,18 +37,12 @@ class UserSettingsController extends BaseController
      * @param ChangeUsernameService        $changeUsernameService
      */
     public function __construct(
-        ValidationService $validationService,
-        ChangeGeneralSettingsService $changeGeneralSettingsService,
-        ChangePasswordService $changePasswordService,
-        ChangeEmailService $changeEmailService,
-        ChangeUsernameService $changeUsernameService
-    ) {
-        $this->validationService = $validationService;
-        $this->changeGeneralSettingsService = $changeGeneralSettingsService;
-        $this->changePasswordService = $changePasswordService;
-        $this->changeEmailService = $changeEmailService;
-        $this->changeUsernameService = $changeUsernameService;
-    }
+        private ValidationService $validationService,
+        private ChangeGeneralSettingsService $changeGeneralSettingsService,
+        private ChangePasswordService $changePasswordService,
+        private ChangeEmailService $changeEmailService,
+        private ChangeUsernameService $changeUsernameService
+    ) {}
 
     /**
      * @param Request  $request
