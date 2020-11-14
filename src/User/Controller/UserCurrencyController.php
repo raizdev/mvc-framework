@@ -43,7 +43,7 @@ class UserCurrencyController extends BaseController
      * @throws UserCurrencyException
      * @throws ValidationException
      */
-    public function update(Request $request, Response $response)
+    public function update(Request $request, Response $response): Response
     {
         /** @var array $parsedData */
         $parsedData = $request->getParsedBody();
