@@ -45,9 +45,6 @@ class ChangeGeneralSettingsService
      * @return CustomResponseInterface
      * @throws DataObjectManagerException
      * @throws UserSettingsException
-     * @throws RconException
-     * @throws RoleException
-     * @throws JsonException
      */
     public function execute(User $user, array $data): CustomResponseInterface
     {
@@ -61,20 +58,28 @@ class ChangeGeneralSettingsService
         /** @var UserSetting $userSetting */
         $userSetting = $this->userSettingRepository->save($this->getUpdatedUserSettings($userSetting, $data));
 
-        $this->executeRconCommandService->execute(
-            $user->getId(),
-            [
-                'command' => 'updateuser',
-                'params' => [
-                    'user_id' => $user->getId(),
-                    'block_following' => $userSetting->getBlockFollowing(),
-                    'block_friendrequests' => $userSetting->getBlockFriendRequests(),
-                    'block_roominvites' => $userSetting->getBlockRoomInvites(),
-                    'block_camera_follow' => $userSetting->getBlockCameraFollow()
-                ]
-            ],
-            true
-        );
+        try {
+            $this->executeRconCommandService->execute(
+                $user->getId(),
+                [
+                    'command' => 'updateuser',
+                    'params' => [
+                        'user_id' => $user->getId(),
+                        'block_following' => $userSetting->getBlockFollowing(),
+                        'block_friendrequests' => $userSetting->getBlockFriendRequests(),
+                        'block_roominvites' => $userSetting->getBlockRoomInvites(),
+                        'block_camera_follow' => $userSetting->getBlockCameraFollow()
+                    ]
+                ],
+                true
+            );
+        } catch (\Exception $exception) {
+            throw new UserSettingsException(
+                $exception->getMessage(),
+                500,
+                $exception
+            );
+        }
 
         return response()
             ->setData($userSetting);

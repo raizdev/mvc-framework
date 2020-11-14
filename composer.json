@@ -19,9 +19,8 @@
         }
     ],
     "require": {
-        "php": "^8.0.*",
         "ext-sockets": "*",
-        "domexx/ares-core": "dev-master"
+        "domexx/ares-core": "1.0.1"
     },
     "config": {
         "sort-packages": true,

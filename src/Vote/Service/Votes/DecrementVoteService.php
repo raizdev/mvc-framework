@@ -77,7 +77,7 @@ class DecrementVoteService
             $entityRepository->save($entity);
 
             return true;
-        } catch (Exception $exception) {
+        } catch (Exception) {
             return false;
         }
     }

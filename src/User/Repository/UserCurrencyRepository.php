@@ -11,6 +11,7 @@ use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Model\Query\Collection;
 use Ares\Framework\Repository\BaseRepository;
 use Ares\User\Entity\UserCurrency;
+use Ares\User\Interfaces\UserCurrencyTypeInterface;
 
 /**
  * Class UserCurrencyRepository
@@ -38,7 +39,7 @@ class UserCurrencyRepository extends BaseRepository
         $searchCriteria = $this->getDataObjectManager()
             ->addRelation('user')
             ->orderBy('amount', 'DESC')
-            ->where('type', 5)
+            ->where('type', UserCurrencyTypeInterface::CURRENCY_TYPE_POINTS)
             ->limit(3);
 
         return $this->getList($searchCriteria);
@@ -54,7 +55,7 @@ class UserCurrencyRepository extends BaseRepository
         $searchCriteria = $this->getDataObjectManager()
             ->addRelation('user')
             ->orderBy('amount', 'DESC')
-            ->where('type', 0)
+            ->where('type', UserCurrencyTypeInterface::CURRENCY_TYPE_PIXELS)
             ->limit(3);
 
         return $this->getList($searchCriteria);

@@ -30,8 +30,7 @@ class RoleHierarchyRepository extends BaseRepository
     /**
      * @param array $parentIds
      *
-     * @return array
-     * @throws QueryException
+     * @return array|null
      */
     private function getChildIds(array $parentIds): ?array
     {

@@ -61,7 +61,7 @@ class ArticleRepository extends BaseRepository
     }
 
     /**
-     * @return Collection
+     * @return Collection|null
      * @throws DataObjectManagerException
      */
     public function getPinnedArticles(): ?Collection

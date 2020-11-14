@@ -47,30 +47,33 @@ class PickGiftService
      *
      * @return CustomResponseInterface
      * @throws DailyGiftException
-     * @throws DataObjectManagerException
-     * @throws JsonException
-     * @throws RconException
-     * @throws RoleException
      */
     public function execute(User $user): CustomResponseInterface
     {
         /** @var DailyGift $dailyGift */
         $dailyGift = $this->dailyGiftRepository->get($user->getId(), 'user_id');
 
-        if (!$dailyGift) {
-            $dailyGift = $this->getNewDailyGift($user);
+        try {
+            if (!$dailyGift) {
+                $dailyGift = $this->getNewDailyGift($user);
 
-            return response()
-                ->setData($dailyGift);
+                return response()
+                    ->setData($dailyGift);
+            }
+
+            $pickTime = $dailyGift->getPickTime();
+
+            if (time() <= $pickTime) {
+                throw new DailyGiftException(__('User already picked the daily gift.'), 409);
+            }
+            $this->applyGift($dailyGift, $user, $dailyGift->getAmount());
+        } catch (Exception $exception) {
+            throw new DailyGiftException(
+                $exception->getMessage(),
+                500,
+                $exception
+            );
         }
-
-        $pickTime = $dailyGift->getPickTime();
-
-        if (time() <= $pickTime) {
-            throw new DailyGiftException(__('User already picked the daily gift.'), 409);
-        }
-
-        $this->applyGift($dailyGift, $user, $dailyGift->getAmount());
 
         return response()
             ->setData($dailyGift);
@@ -97,26 +100,32 @@ class PickGiftService
      * @param User      $user
      * @param int       $amount
      *
+     * @throws DailyGiftException
      * @throws DataObjectManagerException
-     * @throws JsonException
-     * @throws RconException
-     * @throws RoleException
      */
     private function applyGift(DailyGift $dailyGift, User $user, int $amount): void
     {
         $dailyGift->setPickTime(strtotime('+1 day'));
 
-        $this->executeRconCommandService->execute(
-            $user->getId(),
-            [
-                'command' => 'givecredits',
-                'params' => [
-                    'user_id' => $user->getId(),
-                    'credits' => $amount
-                ]
-            ],
-            true
-        );
+        try {
+            $this->executeRconCommandService->execute(
+                $user->getId(),
+                [
+                    'command' => 'givecredits',
+                    'params' => [
+                        'user_id' => $user->getId(),
+                        'credits' => $amount
+                    ]
+                ],
+                true
+            );
+        } catch (Exception $exception) {
+            throw new DailyGiftException(
+                $exception->getMessage(),
+                500,
+                $exception
+            );
+        }
 
         $this->dailyGiftRepository->save($dailyGift);
     }

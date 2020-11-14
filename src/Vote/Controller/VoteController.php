@@ -107,7 +107,7 @@ class VoteController extends BaseController
      * @return Response
      * @throws AuthenticationException
      */
-    public function getTotalVotes(Request $request, Response $response)
+    public function getTotalVotes(Request $request, Response $response): Response
     {
         /** @var User $user */
         $user = user($request);

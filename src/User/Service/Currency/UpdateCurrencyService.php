@@ -49,7 +49,7 @@ class UpdateCurrencyService
             $currency->setAmount($amount);
             try {
                 $this->userCurrencyRepository->save($currency);
-            } catch (Exception $exception) {
+            } catch (Exception) {
                 throw new UserCurrencyException(__('Currency could not be updated.'), 422);
             }
         }

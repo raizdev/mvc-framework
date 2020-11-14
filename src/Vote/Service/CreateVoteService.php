@@ -74,12 +74,12 @@ class CreateVoteService
     /**
      * Return new vote.
      *
-     * @param int   $user_id
+     * @param int   $userId
      * @param array $data
      *
      * @return Vote
      */
-    private function getNewVote(int $user_id, array $data): Vote
+    private function getNewVote(int $userId, array $data): Vote
     {
         $vote = new Vote();
 
@@ -87,6 +87,6 @@ class CreateVoteService
             ->setEntityId($data['entity_id'])
             ->setVoteEntity($data['vote_entity'])
             ->setVoteType($data['vote_type'])
-            ->setUserId($user_id);
+            ->setUserId($userId);
     }
 }

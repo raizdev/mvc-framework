@@ -8,6 +8,7 @@
 namespace Ares\User\Controller\Gift;
 
 use Ares\Framework\Controller\BaseController;
+use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\User\Entity\User;
 use Ares\User\Exception\Gift\DailyGiftException;
@@ -39,8 +40,8 @@ class DailyGiftController extends BaseController
      * @param Response $response
      *
      * @return Response
+     * @throws AuthenticationException
      * @throws DailyGiftException
-     * @throws DataObjectManagerException
      */
     public function pick(Request $request, Response $response): ResponseInterface
     {

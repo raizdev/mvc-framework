@@ -31,20 +31,20 @@ class CreateCurrencyService
     /**
      * Creates new user currency by given data.
      *
-     * @param int $user_id
+     * @param int $userId
      * @param int $type
      * @param int $amount
      *
      * @return CustomResponseInterface
      * @throws DataObjectManagerException
      */
-    public function execute(int $user_id, int $type, int $amount): CustomResponseInterface
+    public function execute(int $userId, int $type, int $amount): CustomResponseInterface
     {
         /** @var UserCurrency $userCurrency */
         $userCurrency = $this->userCurrencyRepository
             ->save(
                 $this->getNewUserCurrency(
-                    $user_id,
+                    $userId,
                     $type,
                     $amount
                 )
@@ -57,18 +57,18 @@ class CreateCurrencyService
     /**
      * Returns new user currency object.
      *
-     * @param int $user_id
+     * @param int $userId
      * @param int $type
      * @param int $amount
      *
      * @return UserCurrency
      */
-    private function getNewUserCurrency(int $user_id, int $type, int $amount): UserCurrency
+    private function getNewUserCurrency(int $userId, int $type, int $amount): UserCurrency
     {
         $userCurrency = new UserCurrency();
 
         return $userCurrency
-            ->setUserId($user_id)
+            ->setUserId($userId)
             ->setType($type)
             ->setAmount($amount);
     }
