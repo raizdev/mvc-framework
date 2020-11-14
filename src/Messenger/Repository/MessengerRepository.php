@@ -8,8 +8,10 @@
 namespace Ares\Messenger\Repository;
 
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Model\Query\PaginatedCollection;
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Messenger\Entity\MessengerFriendship;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 /**
  * Class MessengerRepository
@@ -32,40 +34,29 @@ class MessengerRepository extends BaseRepository
      * @param int $page
      * @param int $resultPerPage
      *
-     * @return array|null
+     * @return LengthAwarePaginator
      * @throws DataObjectManagerException
      */
-    public function getPaginatedMessengerFriends(int $userId, int $page, int $resultPerPage): ?array
+    public function getPaginatedMessengerFriends(int $userId, int $page, int $resultPerPage): LengthAwarePaginator
     {
         $searchCriteria = $this->getDataObjectManager()
-            ->where('user_one_id', $userId)
-            ->orderBy('id', 'DESC')
-            ->addRelation('user');
+            ->select([
+                'messenger_friendships.id',
+                'messenger_friendships.relation',
+                'messenger_friendships.friends_since',
+                'users.id',
+                'users.username',
+                'users.motto',
+                'users.look',
+                'users.online'
+            ])->leftJoin(
+                'users',
+                'messenger_friendships.user_two_id',
+                '=',
+                'users.id'
+            )->where('messenger_friendships.user_one_id', $userId)
+            ->orderBy('users.online', 'DESC');
 
-        $list = $this->getPaginatedList($searchCriteria, $page, $resultPerPage)->items();
-
-        return $this->sortFriends($list);
-    }
-
-    /**
-     * Sorts our friend list by online in our user relation subarray
-     *
-     * @param $list
-     *
-     * @return array|null
-     */
-    private function sortFriends(?array $list): ?array
-    {
-        $mappedArray = array_map(function ($list) {
-            return $list->user->online;
-        }, $list);
-
-        array_multisort(
-            $mappedArray,
-            SORT_DESC,
-            $list
-        );
-
-        return $list;
+        return $this->getPaginatedList($searchCriteria, $page, $resultPerPage);
     }
 }
