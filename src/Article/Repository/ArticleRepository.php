@@ -117,4 +117,31 @@ class ArticleRepository extends BaseRepository
 
         return $this->getPaginatedList($searchCriteria, $page, $resultPerPage);
     }
+
+    /**
+     * @param string $slug
+     *
+     * @return Article|null
+     * @throws DataObjectManagerException
+     */
+    public function getArticleWithCommentCount(string $slug): ?Article
+    {
+        $searchCriteria = $this->getDataObjectManager()
+            ->select([
+                'ares_articles.id', 'ares_articles.author_id', 'ares_articles.title', 'ares_articles.slug',
+                'ares_articles.description', 'ares_articles.image', 'ares_articles.likes', 'ares_articles.dislikes',
+                'ares_articles.created_at'
+            ])->selectRaw(
+                'count(ares_articles_comments.article_id) as comments'
+            )->leftJoin(
+                'ares_articles_comments',
+                'ares_articles.id',
+                '=',
+                'ares_articles_comments.article_id'
+            )->groupBy('ares_articles.id')
+            ->where('slug', $slug)
+            ->addRelation('user');
+
+        return $this->getList($searchCriteria)->first();
+    }
 }

@@ -121,7 +121,7 @@ class ArticleController extends BaseController
         $slug = $args['slug'];
 
         /** @var Article $article */
-        $article = $this->articleRepository->get((string) $slug, 'slug');
+        $article = $this->articleRepository->getArticleWithCommentCount((string) $slug);
 
         if (!$article) {
             throw new ArticleException(__('No specific Article found'), 404);
