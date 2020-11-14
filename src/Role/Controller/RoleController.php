@@ -61,8 +61,8 @@ class RoleController extends BaseController
 
         $roles = $this->roleRepository
             ->getPaginatedRoles(
-                (int) $page,
-                (int) $resultPerPage
+                $page,
+                $resultPerPage
             );
 
         return $this->respond(
@@ -166,7 +166,7 @@ class RoleController extends BaseController
         /** @var int $id */
         $id = $args['id'];
 
-        $deleted = $this->roleRepository->delete((int) $id);
+        $deleted = $this->roleRepository->delete($id);
 
         if (!$deleted) {
             throw new RoleException(__('Role could not be deleted.'), 409);

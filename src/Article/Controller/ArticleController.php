@@ -96,7 +96,7 @@ class ArticleController extends BaseController
         $slug = $args['slug'];
 
         /** @var Article $article */
-        $article = $this->articleRepository->get((string) $slug, 'slug');
+        $article = $this->articleRepository->get($slug, 'slug');
 
         if (!$article) {
             throw new ArticleException(__('No specific Article found'), 404);
@@ -182,8 +182,8 @@ class ArticleController extends BaseController
         /** @var LengthAwarePaginator $articles */
         $articles = $this->articleRepository
             ->getPaginatedArticleList(
-                (int) $page,
-                (int) $resultPerPage
+                $page,
+                $resultPerPage
             );
 
         return $this->respond(
@@ -209,7 +209,7 @@ class ArticleController extends BaseController
         /** @var int $id */
         $id = $args['id'];
 
-        $deleted = $this->articleRepository->delete((int) $id);
+        $deleted = $this->articleRepository->delete($id);
 
         if (!$deleted) {
             throw new ArticleException(__('Article could not be deleted.'), 409);

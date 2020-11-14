@@ -59,8 +59,8 @@ class RegisterService
         /** @var User $isAlreadyRegistered */
         $isAlreadyRegistered = $this->userRepository
             ->getRegisteredUser(
-                (string) $data['username'],
-                (string) $data['mail']
+                $data['username'],
+                $data['mail']
             );
 
         if ($isAlreadyRegistered) {
@@ -82,13 +82,13 @@ class RegisterService
             $this->createCurrencyService->execute(
                 $user->getId(),
                 UserCurrencyTypeInterface::CURRENCY_TYPE_POINTS,
-                (int) $this->config->get('hotel_settings.start_points')
+                $this->config->get('hotel_settings.start_points')
             );
 
             $this->createCurrencyService->execute(
                 $user->getId(),
                 UserCurrencyTypeInterface::CURRENCY_TYPE_PIXELS,
-                (int) $this->config->get('hotel_settings.start_pixels')
+                $this->config->get('hotel_settings.start_pixels')
             );
         } catch (Exception $exception) {
             throw new RegisterException($exception->getMessage(), $exception->getCode());

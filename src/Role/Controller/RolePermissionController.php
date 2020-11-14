@@ -62,8 +62,8 @@ class RolePermissionController extends BaseController
 
         $permissions = $this->permissionRepository
             ->getPaginatedPermissionList(
-                (int) $page,
-                (int) $resultPerPage
+                $page,
+                $resultPerPage
             );
 
         return $this->respond(
@@ -159,7 +159,7 @@ class RolePermissionController extends BaseController
         /** @var int $id */
         $id = $args['id'];
 
-        $deleted = $this->permissionRepository->delete((int) $id);
+        $deleted = $this->permissionRepository->delete($id);
 
         if (!$deleted) {
             throw new RoleException(__('Permission could not be deleted.'), 409);

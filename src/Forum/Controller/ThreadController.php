@@ -90,8 +90,8 @@ class ThreadController extends BaseController
         /** @var Thread $thread */
         $thread = $this->threadRepository
             ->getSingleThread(
-                (int) $topicId,
-                (string) $slug
+                $topicId,
+                $slug
             );
 
         if (!$thread) {
@@ -126,9 +126,9 @@ class ThreadController extends BaseController
 
         $threads = $this->threadRepository
             ->getPaginatedThreadList(
-                (int) $topicId,
-                (int) $page,
-                (int) $resultPerPage
+                $topicId,
+                $page,
+                $resultPerPage
             );
 
         return $this->respond(
@@ -152,7 +152,7 @@ class ThreadController extends BaseController
         /** @var int $id */
         $id = $args['id'];
 
-        $deleted = $this->threadRepository->delete((int) $id);
+        $deleted = $this->threadRepository->delete($id);
 
         if (!$deleted) {
             throw new ThreadException(__('Thread could not be deleted.'), 409);

@@ -116,8 +116,8 @@ class TopicController extends BaseController
 
         $topics = $this->topicRepository
             ->getPaginatedTopicList(
-                (int) $page,
-                (int) $resultPerPage
+                $page,
+                $resultPerPage
             );
 
         return $this->respond(
@@ -141,7 +141,7 @@ class TopicController extends BaseController
         /** @var int $id */
         $id = $args['id'];
 
-        $deleted = $this->topicRepository->delete((int) $id);
+        $deleted = $this->topicRepository->delete($id);
 
         if (!$deleted) {
             throw new TopicException(__('Topic could not be deleted.'), 409);

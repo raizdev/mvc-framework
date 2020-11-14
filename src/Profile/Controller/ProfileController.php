@@ -60,7 +60,7 @@ class ProfileController extends BaseController
         $profileId = $args['profile_id'];
 
         /** @var User $profile */
-        $profile = $this->userRepository->get((int) $profileId);
+        $profile = $this->userRepository->get($profileId);
 
         if (!$profile) {
             throw new ProfileException(__('No associated Profile was found'), 404);
@@ -99,7 +99,7 @@ class ProfileController extends BaseController
         $resultPerPage = $args['rpp'];
 
         /** @var User $profile */
-        $profile = $this->userRepository->get((int) $profileId);
+        $profile = $this->userRepository->get($profileId);
 
         if (!$profile) {
             throw new ProfileException(__('No associated Profile was found'), 404);
@@ -107,8 +107,8 @@ class ProfileController extends BaseController
 
         $badges = $this->userBadgeRepository
             ->getPaginatedBadgeList(
-                (int) $page,
-                (int) $resultPerPage
+                $page,
+                $resultPerPage
             );
 
         return $this->respond(
@@ -139,7 +139,7 @@ class ProfileController extends BaseController
         $resultPerPage = $args['rpp'];
 
         /** @var User $profile */
-        $profile = $this->userRepository->get((int) $profileId);
+        $profile = $this->userRepository->get($profileId);
 
         if (!$profile) {
             throw new ProfileException(__('No associated Profile was found'), 404);
@@ -148,8 +148,8 @@ class ProfileController extends BaseController
         $friends = $this->messengerRepository
             ->getPaginatedMessengerFriends(
                 $profile->getId(),
-                (int) $page,
-                (int) $resultPerPage
+                $page,
+                $resultPerPage
             );
 
         return $this->respond(
@@ -189,8 +189,8 @@ class ProfileController extends BaseController
         $rooms = $this->roomRepository
             ->getUserRoomsPaginatedList(
                 $profile->getId(),
-                (int) $page,
-                (int) $resultPerPage
+                $page,
+                $resultPerPage
             );
 
         return $this->respond(
@@ -221,7 +221,7 @@ class ProfileController extends BaseController
         $resultPerPage = $args['rpp'];
 
         /** @var User $profile */
-        $profile = $this->userRepository->get((int) $profileId);
+        $profile = $this->userRepository->get($profileId);
 
         if (!$profile) {
             throw new ProfileException(__('No associated Profile was found'), 404);
@@ -229,9 +229,9 @@ class ProfileController extends BaseController
 
         $guilds = $this->guildMemberRepository
             ->getPaginatedProfileGuilds(
-                (int) $profile->getId(),
-                (int) $page,
-                (int) $resultPerPage
+                $profile->getId(),
+                $page,
+                $resultPerPage
             );
 
         return $this->respond(
@@ -262,7 +262,7 @@ class ProfileController extends BaseController
         $resultPerPage = $args['rpp'];
 
         /** @var User $profile */
-        $profile = $this->userRepository->get((int) $profileId);
+        $profile = $this->userRepository->get($profileId);
 
         if (!$profile) {
             throw new ProfileException(__('No associated Profile was found'), 404);
@@ -271,8 +271,8 @@ class ProfileController extends BaseController
         $photos = $this->photoRepository
             ->getPaginatedUserPhotoList(
                 $profile->getId(),
-                (int) $page,
-                (int) $resultPerPage
+                $page,
+                $resultPerPage
             );
 
         return $this->respond(

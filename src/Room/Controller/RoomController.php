@@ -46,7 +46,7 @@ class RoomController extends BaseController
         $id = $args['id'];
 
         /** @var Room $room */
-        $room = $this->roomRepository->get((int) $id);
+        $room = $this->roomRepository->get($id);
 
         if (!$room) {
             throw new RoomException(__('No specific Room found'), 404);
@@ -80,8 +80,8 @@ class RoomController extends BaseController
 
         $rooms = $this->roomRepository
             ->getPaginatedRoomList(
-                (int) $page,
-                (int) $resultPerPage
+                $page,
+                $resultPerPage
             );
 
         return $this->respond(

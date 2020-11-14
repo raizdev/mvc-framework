@@ -78,10 +78,10 @@ class GuestbookController extends BaseController
         $user = user($request);
 
         /** @var User $profile */
-        $profile = $this->userRepository->get((int) $profileId);
+        $profile = $this->userRepository->get($profileId);
 
         /** @var Guild $guild */
-        $guild = $this->guildRepository->get((int) $guildId);
+        $guild = $this->guildRepository->get($guildId);
 
         if (!$profile && !$guild) {
             throw new GuestbookException(__('The associated Entities could not be found'));
@@ -123,9 +123,9 @@ class GuestbookController extends BaseController
 
         $entries = $this->guestbookRepository
             ->getPaginatedProfileEntries(
-                (int) $profileId,
-                (int) $page,
-                (int) $resultPerPage
+                $profileId,
+                $page,
+                $resultPerPage
             );
 
         return $this->respond(
@@ -156,9 +156,9 @@ class GuestbookController extends BaseController
 
         $entries = $this->guestbookRepository
             ->getPaginatedGuildEntries(
-                (int) $guildId,
-                (int) $page,
-                (int) $resultPerPage
+                $guildId,
+                $page,
+                $resultPerPage
             );
 
         return $this->respond(
@@ -182,7 +182,7 @@ class GuestbookController extends BaseController
         /** @var int $id */
         $id = $args['id'];
 
-        $deleted = $this->guestbookRepository->delete((int) $id);
+        $deleted = $this->guestbookRepository->delete($id);
 
         if (!$deleted) {
             throw new GuestbookException(__('Guestbook Entry could not be deleted.'), 409);

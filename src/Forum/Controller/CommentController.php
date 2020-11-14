@@ -127,9 +127,9 @@ class CommentController extends BaseController
         /** @var LengthAwarePaginator $comments */
         $comments = $this->commentRepository
             ->getPaginatedThreadCommentList(
-                (int) $threadId,
-                (int) $page,
-                (int) $resultPerPage
+                $threadId,
+                $page,
+                $resultPerPage
             );
 
         return $this->respond(
@@ -153,7 +153,7 @@ class CommentController extends BaseController
         /** @var int $id */
         $id = $args['id'];
 
-        $deleted = $this->commentRepository->delete((int) $id);
+        $deleted = $this->commentRepository->delete($id);
 
         if (!$deleted) {
             throw new CommentException(__('Comment could not be deleted.'), 409);

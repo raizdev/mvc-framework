@@ -104,9 +104,9 @@ class GuildRepository extends BaseRepository
     }
 
     /**
-     * @param int $id
+     * @param int  $id
      *
-     * @return mixed
+     * @return Guild|null
      * @throws DataObjectManagerException
      */
     public function getGuild(int $id): ?Guild

@@ -54,7 +54,7 @@ class PhotoController extends BaseController
         $id = $args['id'];
 
         /** @var Photo $photo */
-        $photo = $this->photoRepository->get((int) $id);
+        $photo = $this->photoRepository->get($id);
 
         if (!$photo) {
             throw new PhotoException(__('No Photo was found'), 404);
@@ -89,7 +89,7 @@ class PhotoController extends BaseController
         $username = $parsedData['username'];
 
         /** @var User $user */
-        $user = $this->userRepository->get((string) $username, 'username');
+        $user = $this->userRepository->get($username, 'username');
 
         /** @var Photo $photo */
         $photo = $this->photoRepository->get($user->getId(), 'user_id');
@@ -123,8 +123,8 @@ class PhotoController extends BaseController
 
         $photos = $this->photoRepository
             ->getPaginatedPhotoList(
-                (int) $page,
-                (int) $resultPerPage
+                $page,
+                $resultPerPage
             );
 
         return $this->respond(
@@ -148,7 +148,7 @@ class PhotoController extends BaseController
         /** @var int $id */
         $id = $args['id'];
 
-        $photo = $this->photoRepository->delete((int) $id);
+        $photo = $this->photoRepository->delete($id);
 
         if (!$photo) {
             throw new PhotoException(__('Photo could not be deleted'));

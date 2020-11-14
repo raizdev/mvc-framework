@@ -92,8 +92,8 @@ class SettingsController extends BaseController
         $settings = $this->settingsRepository
             ->getPaginatedList(
                 $this->settingsRepository->getDataObjectManager(),
-                (int) $page,
-                (int) $resultPerPage
+                $page,
+                $resultPerPage
             );
 
         return $this->respond(

@@ -54,7 +54,7 @@ class RolePermissionMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         }
 
-        $userId = (int) $this->fetchUserId($request);
+        $userId = $this->fetchUserId($request);
 
         $isPermitted = $this->checkAccessService->execute($userId, $permissionName);
 

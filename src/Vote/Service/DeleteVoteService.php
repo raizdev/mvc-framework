@@ -43,9 +43,9 @@ class DeleteVoteService
     {
         /** @var Vote $vote */
         $vote = $this->voteRepository->getVoteForDeletion(
-            (int) $data['entity_id'],
-            (int) $data['vote_entity'],
-            (int) $data['vote_type'],
+            $data['entity_id'],
+            $data['vote_entity'],
+            $data['vote_type'],
             $userId
         );
 

@@ -89,7 +89,7 @@ class PaymentController extends BaseController
         $id = $args['id'];
 
         /** @var Payment $payment */
-        $payment = $this->paymentRepository->get((int) $id);
+        $payment = $this->paymentRepository->get($id);
 
         if (!$payment) {
             throw new PaymentException(__('No specific Payment found'), 404);
@@ -120,8 +120,8 @@ class PaymentController extends BaseController
 
         $payments = $this->paymentRepository
             ->getPaginatedPayments(
-                (int) $page,
-                (int) $resultPerPage
+                $page,
+                $resultPerPage
             );
 
         return $this->respond(
@@ -145,7 +145,7 @@ class PaymentController extends BaseController
         /** @var int $id */
         $id = $args['id'];
 
-        $deleted = $this->paymentRepository->delete((int) $id);
+        $deleted = $this->paymentRepository->delete($id);
 
         if (!$deleted) {
             throw new PaymentException(__('Payment could not be deleted.'), 409);

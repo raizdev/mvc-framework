@@ -55,9 +55,9 @@ class UserCurrencyController extends BaseController
         ]);
 
         $this->updateCurrencyService->execute(
-            (int) $parsedData['user_id'],
-            (int) $parsedData['type'],
-            (int) $parsedData['amount']
+            $parsedData['user_id'],
+            $parsedData['type'],
+            $parsedData['amount']
         );
 
         return $this->respond(

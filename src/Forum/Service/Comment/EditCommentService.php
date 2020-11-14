@@ -45,7 +45,7 @@ class EditCommentService
         $content = $data['content'];
 
         /** @var Comment $comment */
-        $comment = $this->commentRepository->get((int) $comment_id);
+        $comment = $this->commentRepository->get($comment_id);
 
         if (!$comment) {
             throw new CommentException(__('Comment not found'));

@@ -48,7 +48,7 @@ class GuildController extends BaseController
         $id = $args['id'];
 
         /** @var Guild $guild */
-        $guild = $this->guildRepository->getGuild((int) $id);
+        $guild = $this->guildRepository->getGuild($id);
 
         if (!$guild) {
             throw new GuildException(__('No specific Guild found'));
@@ -80,8 +80,8 @@ class GuildController extends BaseController
 
         $guilds = $this->guildRepository
             ->getPaginatedGuildList(
-                (int) $page,
-                (int) $resultPerPage
+                $page,
+                $resultPerPage
             );
 
         return $this->respond(
@@ -113,9 +113,9 @@ class GuildController extends BaseController
 
         $members = $this->guildMemberRepository
             ->getPaginatedGuildMembers(
-                (int) $guildId,
-                (int) $page,
-                (int) $resultPerPage
+                $guildId,
+                $page,
+                $resultPerPage
             );
 
         return $this->respond(

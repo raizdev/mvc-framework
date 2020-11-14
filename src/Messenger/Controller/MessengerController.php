@@ -55,8 +55,8 @@ class MessengerController extends BaseController
         $friends = $this->messengerRepository
             ->getPaginatedMessengerFriends(
                 $user->getId(),
-                (int) $page,
-                (int) $resultPerPage
+                $page,
+                $resultPerPage
             );
 
         return $this->respond(

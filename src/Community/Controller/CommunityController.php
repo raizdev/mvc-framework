@@ -59,8 +59,8 @@ class CommunityController extends BaseController
         $rooms = $this->roomRepository
             ->searchRooms(
                 $term,
-                (int) $page,
-                (int) $resultPerPage
+                $page,
+                $resultPerPage
             );
 
         return $this->respond(
@@ -94,8 +94,8 @@ class CommunityController extends BaseController
         $guilds = $this->guildRepository
             ->searchGuilds(
                 $term,
-                (int) $page,
-                (int) $resultPerPage
+                $page,
+                $resultPerPage
             );
 
         return $this->respond(
@@ -129,8 +129,8 @@ class CommunityController extends BaseController
         $articles = $this->articleRepository
             ->searchArticles(
                 $term,
-                (int) $page,
-                (int) $resultPerPage
+                $page,
+                $resultPerPage
             );
 
         return $this->respond(
