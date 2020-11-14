@@ -56,10 +56,15 @@ class MessengerRepository extends BaseRepository
      */
     private function sortFriends(?array $list): ?array
     {
+        $mappedArray = array_map(function ($list) {
+            return $list->user->online;
+        }, $list);
+
         array_multisort(
-            array_map(function($user) {
-                return $user->user->online;
-            }, $list), SORT_DESC, $list);
+            $mappedArray,
+            SORT_DESC,
+            $list
+        );
 
         return $list;
     }
