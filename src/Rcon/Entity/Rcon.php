@@ -105,13 +105,13 @@ class Rcon extends DataObject implements RconInterface
     }
 
     /**
-     * @param int $permission_id
+     * @param int $permissionId
      *
      * @return Rcon
      */
-    public function setPermissionId(int $permission_id): Rcon
+    public function setPermissionId(int $permissionId): Rcon
     {
-        return $this->setData(RconInterface::COLUMN_PERMISSION_ID, $permission_id);
+        return $this->setData(RconInterface::COLUMN_PERMISSION_ID, $permissionId);
     }
 
     /**

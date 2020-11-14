@@ -56,13 +56,13 @@ class Payment extends DataObject implements PaymentInterface
     }
 
     /**
-     * @param int $user_id
+     * @param int $userId
      *
      * @return Payment
      */
-    public function setUserId(int $user_id): Payment
+    public function setUserId(int $userId): Payment
     {
-        return $this->setData(PaymentInterface::COLUMN_USER_ID, $user_id);
+        return $this->setData(PaymentInterface::COLUMN_USER_ID, $userId);
     }
 
     /**

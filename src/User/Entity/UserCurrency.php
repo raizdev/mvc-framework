@@ -40,13 +40,13 @@ class UserCurrency extends DataObject implements UserCurrencyInterface
     }
 
     /**
-     * @param int $user_id
+     * @param int $userId
      *
      * @return UserCurrency
      */
-    public function setUserId(int $user_id): UserCurrency
+    public function setUserId(int $userId): UserCurrency
     {
-        return $this->setData(UserCurrencyInterface::COLUMN_USER_ID, $user_id);
+        return $this->setData(UserCurrencyInterface::COLUMN_USER_ID, $userId);
     }
 
     /**

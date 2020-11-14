@@ -56,13 +56,13 @@ class Permission extends DataObject implements PermissionInterface
     }
 
     /**
-     * @param string $rank_name
+     * @param string $rankName
      *
      * @return Permission
      */
-    public function setRankName(string $rank_name): Permission
+    public function setRankName(string $rankName): Permission
     {
-        return $this->setData(PermissionInterface::COLUMN_RANK_NAME, $rank_name);
+        return $this->setData(PermissionInterface::COLUMN_RANK_NAME, $rankName);
     }
 
     /**
@@ -128,13 +128,13 @@ class Permission extends DataObject implements PermissionInterface
     }
 
     /**
-     * @param string $prefix_color
+     * @param string $prefixColor
      *
      * @return Permission
      */
-    public function setPrefixColor(string $prefix_color): Permission
+    public function setPrefixColor(string $prefixColor): Permission
     {
-        return $this->setData(PermissionInterface::COLUMN_PREFIX_COLOR, $prefix_color);
+        return $this->setData(PermissionInterface::COLUMN_PREFIX_COLOR, $prefixColor);
     }
 
     /**
@@ -148,6 +148,10 @@ class Permission extends DataObject implements PermissionInterface
 
         if ($users) {
             return $users;
+        }
+
+        if (!isset($this)) {
+            return null;
         }
 
         /** @var PermissionRepository $permissionRepository */

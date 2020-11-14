@@ -77,13 +77,13 @@ class GuildMember extends DataObject implements GuildMemberInterface
     }
 
     /**
-     * @param int $user_id
+     * @param int $userId
      *
      * @return GuildMember
      */
-    public function setUserId(int $user_id): GuildMember
+    public function setUserId(int $userId): GuildMember
     {
-        return $this->setData(GuildMemberInterface::COLUMN_USER_ID, $user_id);
+        return $this->setData(GuildMemberInterface::COLUMN_USER_ID, $userId);
     }
 
     /**

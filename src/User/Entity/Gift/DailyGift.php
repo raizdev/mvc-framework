@@ -47,13 +47,13 @@ class DailyGift extends DataObject implements DailyGiftInterface
     }
 
     /**
-     * @param int $user_id
+     * @param int $userId
      *
      * @return DailyGift
      */
-    public function setUserId(int $user_id): DailyGift
+    public function setUserId(int $userId): DailyGift
     {
-        return $this->setData(DailyGiftInterface::COLUMN_USER_ID, $user_id);
+        return $this->setData(DailyGiftInterface::COLUMN_USER_ID, $userId);
     }
 
     /**
