@@ -90,8 +90,8 @@ class PickGiftService
     private function getRandomGiftAmount(): int
     {
         return random_int(
-            $this->config->get('hotel_settings.gift.minAmount'),
-            $this->config->get('hotel_settings.gift.maxAmount')
+            $this->config->get('hotel_settings.gift.min_amount'),
+            $this->config->get('hotel_settings.gift.max_amount')
         );
     }
 
