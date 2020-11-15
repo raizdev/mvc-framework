@@ -50,11 +50,11 @@ class ChangePasswordService
         );
 
         if (!password_verify($oldPassword, $passwordHashed)) {
-            throw new UserSettingsException(__('Given old password does not match the current password.'));
+            throw new UserSettingsException(__('Given old password does not match the current password'));
         }
 
         if (password_verify($password, $currentPassword)) {
-            throw new UserSettingsException(__('Given password should be a different password than the current.'));
+            throw new UserSettingsException(__('Given password should be a different password than the current'));
         }
 
         /** @var User $user */

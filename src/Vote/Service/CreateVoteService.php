@@ -51,7 +51,7 @@ class CreateVoteService
         $existingVote = $this->voteRepository->getExistingVote($vote, $userId);
 
         if ($existingVote) {
-            throw new VoteException(__('User already voted for this entity.'), 422);
+            throw new VoteException(__('User already voted for this entity'), 422);
         }
 
         $entityRepository = $this->getVoteEntityService->execute($vote->getVoteEntity());

@@ -50,7 +50,7 @@ class DeleteVoteService
         );
 
         if (!$vote) {
-            throw new VoteException(__('Vote could not be found by given data.'), 404);
+            throw new VoteException(__('No Vote was found'), 404);
         }
 
         $deleted = $this->voteRepository->delete($vote->getId());

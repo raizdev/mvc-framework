@@ -54,7 +54,7 @@ class GuildController extends BaseController
          * @TODO UJEFU
          */
         if (!$guild) {
-            throw new GuildException(__('No specific Guild found'));
+            throw new GuildException(__('No Guild was found'));
         }
 
         return $this->respond(

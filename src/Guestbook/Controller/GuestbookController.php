@@ -186,7 +186,7 @@ class GuestbookController extends BaseController
         $deleted = $this->guestbookRepository->delete($id);
 
         if (!$deleted) {
-            throw new GuestbookException(__('Guestbook Entry could not be deleted.'), 409);
+            throw new GuestbookException(__('Guestbook entry could not be deleted'), 409);
         }
 
         return $this->respond(

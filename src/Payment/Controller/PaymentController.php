@@ -146,7 +146,7 @@ class PaymentController extends BaseController
         $deleted = $this->paymentRepository->delete($id);
 
         if (!$deleted) {
-            throw new PaymentException(__('Payment could not be deleted.'), 409);
+            throw new PaymentException(__('Payment could not be deleted'), 409);
         }
 
         return $this->respond(

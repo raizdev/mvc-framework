@@ -67,7 +67,7 @@ class LoginService
         $isBanned = $this->banRepository->get($user->getId(), 'user_id', true);
 
         if ($isBanned && $isBanned->getBanExpire() > time()) {
-            throw new BanException(__('general.banned', [$isBanned->getBanReason()]), 401);
+            throw new BanException(__('You are banned because of %s', [$isBanned->getBanReason()]), 401);
         }
 
         $user->setLastLogin(time());

@@ -91,7 +91,7 @@ class VoteController extends BaseController
 
         if (!$result) {
             $this->deleteVoteService->execute($user->getId(), $parsedData);
-            throw new VoteException(__('The entity could not be incremented.'), 500);
+            throw new VoteException(__('The entity could not be incremented'), 500);
         }
 
         return $this->respond(
@@ -154,7 +154,7 @@ class VoteController extends BaseController
         $customResponse = $this->deleteVoteService->execute($user->getId(), $parsedData);
 
         if (!$customResponse->getData()) {
-            throw new VoteException(__('Vote could not be deleted.'), 409);
+            throw new VoteException(__('Vote could not be deleted'), 409);
         }
 
         $result = $this->decrementVoteService
@@ -166,7 +166,7 @@ class VoteController extends BaseController
 
         if (!$result) {
             $this->createVoteService->execute($user->getId(), $parsedData);
-            throw new VoteException(__('The entity could not be incremented.'), 500);
+            throw new VoteException(__('The entity could not be incremented'), 500);
         }
 
         return $this->respond(

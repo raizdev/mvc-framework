@@ -101,7 +101,7 @@ class RoomController extends BaseController
         $room = $this->roomRepository->getMostVisitedRoom();
 
         if (!$room) {
-            throw new RoomException(__('No Room found'), 404);
+            throw new RoomException(__('No Room was found'), 404);
         }
 
         return $this->respond(

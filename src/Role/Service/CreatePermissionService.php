@@ -45,7 +45,7 @@ class CreatePermissionService
         $existingPermission = $this->permissionRepository->get($data['name'], 'name', true);
 
         if ($existingPermission) {
-            throw new RoleException(__('There is already a Permission with that name'));
+            throw new RoleException(__('Permission %s already exists', [$existingPermission->getName()]));
         }
 
         $permission = $this->getNewPermission($data);

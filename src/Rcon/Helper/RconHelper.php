@@ -46,7 +46,7 @@ class RconHelper
         $executor = socket_write($socket, $encodedData, strlen($encodedData));
 
         if (!$executor) {
-            throw new RconException(__('Could not send the Command'));
+            throw new RconException(__('Could not send the provided Command'));
         }
 
         return json_decode(
@@ -73,7 +73,7 @@ class RconHelper
         $isConnectionEstablished = $this->connectToSocket($socket, $host, $port);
 
         if (!$isConnectionEstablished) {
-            throw new RconException(__('Could not establish connection'));
+            throw new RconException(__('Could not establish a connection to the rcon server'));
         }
 
         return $this;
@@ -108,7 +108,7 @@ class RconHelper
         );
 
         if (!$socket) {
-            throw new RconException(__('Could not create the Socket'), 409);
+            throw new RconException(__('Could not create the socket'), 409);
         }
 
         return $socket;

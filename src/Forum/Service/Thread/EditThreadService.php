@@ -71,7 +71,7 @@ class EditThreadService
             ->first();
 
         if (!$thread) {
-            throw new ThreadException(__('Thread not found'));
+            throw new ThreadException(__('No Thread was found'));
         }
 
         $thread

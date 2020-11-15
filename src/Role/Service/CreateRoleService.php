@@ -45,7 +45,7 @@ class CreateRoleService
         $existingRole = $this->roleRepository->get($data['name'], 'name', true);
 
         if ($existingRole) {
-            throw new RoleException(__('There is already a Role with that name'));
+            throw new RoleException(__('Role %s already exists', [$existingRole->getName()]));
         }
 
         $role = $this->getNewRole($data);

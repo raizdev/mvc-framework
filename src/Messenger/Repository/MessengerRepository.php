@@ -39,9 +39,22 @@ class MessengerRepository extends BaseRepository
     public function getPaginatedMessengerFriends(int $userId, int $page, int $resultPerPage): PaginatedCollection
     {
         $searchCriteria = $this->getDataObjectManager()
-            ->where('user_one_id', $userId)
-            ->orderBy('id', 'DESC')
-            ->addRelation('user');
+            ->select([
+                'messenger_friendships.id',
+                'messenger_friendships.relation',
+                'messenger_friendships.friends_since',
+                'users.id',
+                'users.username',
+                'users.motto',
+                'users.look',
+                'users.online'
+            ])->leftJoin(
+                'users',
+                'messenger_friendships.user_two_id',
+                '=',
+                'users.id'
+            )->where('messenger_friendships.user_one_id', $userId)
+            ->orderBy('users.online', 'DESC');
 
         return $this->getPaginatedList($searchCriteria, $page, $resultPerPage);
     }
