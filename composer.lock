@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2fc11956bf918d912cbbf1a5b55f1354",
+    "content-hash": "c44f241eb2eb429ad6c2257f6a86ca0d",
     "packages": [
         {
             "name": "cocur/slugify",
@@ -155,16 +155,16 @@
         },
         {
             "name": "domexx/ares-core",
-            "version": "dev-master",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/Domexx/Ares-Core.git",
-                "reference": "e727cfc3095a6c041618bb322116dbb72788626e"
+                "url": "https://github.com/Domexx/ares-core.git",
+                "reference": "c44e4c0c65fd0c6172ddf57bcaa516315ed35bfd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Domexx/Ares-Core/zipball/e727cfc3095a6c041618bb322116dbb72788626e",
-                "reference": "e727cfc3095a6c041618bb322116dbb72788626e",
+                "url": "https://api.github.com/repos/Domexx/ares-core/zipball/c44e4c0c65fd0c6172ddf57bcaa516315ed35bfd",
+                "reference": "c44e4c0c65fd0c6172ddf57bcaa516315ed35bfd",
                 "shasum": ""
             },
             "require": {
@@ -211,7 +211,7 @@
                 "php",
                 "slim"
             ],
-            "time": "2020-11-07T01:15:54+00:00"
+            "time": "2020-11-15T13:09:25+00:00"
         },
         {
             "name": "fig/http-message-util",
@@ -459,12 +459,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/database.git",
-                "reference": "60cd71b60523b00aaddabf2241a985a5e7e1736d"
+                "reference": "f33fc16da73fd7e80cf271980df49f4c34c82228"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/database/zipball/60cd71b60523b00aaddabf2241a985a5e7e1736d",
-                "reference": "60cd71b60523b00aaddabf2241a985a5e7e1736d",
+                "url": "https://api.github.com/repos/illuminate/database/zipball/f33fc16da73fd7e80cf271980df49f4c34c82228",
+                "reference": "f33fc16da73fd7e80cf271980df49f4c34c82228",
                 "shasum": ""
             },
             "require": {
@@ -515,7 +515,7 @@
                 "orm",
                 "sql"
             ],
-            "time": "2020-11-06T14:40:24+00:00"
+            "time": "2020-11-13T14:14:08+00:00"
         },
         {
             "name": "illuminate/macroable",
@@ -872,12 +872,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/briannesbitt/Carbon.git",
-                "reference": "a5cc12808d05d6b855ae049b62c24c3364957a9b"
+                "reference": "7826c3ae86da681dba45709cca5690923fe2c9eb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/a5cc12808d05d6b855ae049b62c24c3364957a9b",
-                "reference": "a5cc12808d05d6b855ae049b62c24c3364957a9b",
+                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/7826c3ae86da681dba45709cca5690923fe2c9eb",
+                "reference": "7826c3ae86da681dba45709cca5690923fe2c9eb",
                 "shasum": ""
             },
             "require": {
@@ -892,7 +892,7 @@
                 "kylekatarnls/multi-tester": "^2.0",
                 "phpmd/phpmd": "^2.9",
                 "phpstan/extension-installer": "^1.0",
-                "phpstan/phpstan": "^0.12.35",
+                "phpstan/phpstan": "^0.12.54",
                 "phpunit/phpunit": "^7.5 || ^8.0",
                 "squizlabs/php_codesniffer": "^3.4"
             },
@@ -943,7 +943,7 @@
                 "datetime",
                 "time"
             ],
-            "time": "2020-11-05T22:25:23+00:00"
+            "time": "2020-11-08T12:37:00+00:00"
         },
         {
             "name": "nikic/fast-route",
@@ -993,16 +993,16 @@
         },
         {
             "name": "nyholm/psr7",
-            "version": "1.3.1",
+            "version": "1.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Nyholm/psr7.git",
-                "reference": "21b71a31eab5c0c2caf967b9c0fd97020254ed75"
+                "reference": "a272953743c454ac4af9626634daaf5ab3ce1173"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Nyholm/psr7/zipball/21b71a31eab5c0c2caf967b9c0fd97020254ed75",
-                "reference": "21b71a31eab5c0c2caf967b9c0fd97020254ed75",
+                "url": "https://api.github.com/repos/Nyholm/psr7/zipball/a272953743c454ac4af9626634daaf5ab3ce1173",
+                "reference": "a272953743c454ac4af9626634daaf5ab3ce1173",
                 "shasum": ""
             },
             "require": {
@@ -1016,9 +1016,9 @@
                 "psr/http-message-implementation": "1.0"
             },
             "require-dev": {
-                "http-interop/http-factory-tests": "dev-master",
+                "http-interop/http-factory-tests": "^0.8",
                 "php-http/psr7-integration-tests": "^1.0",
-                "phpunit/phpunit": "^7.5",
+                "phpunit/phpunit": "^7.5 || 8.5 || 9.4",
                 "symfony/error-handler": "^4.4"
             },
             "type": "library",
@@ -1047,12 +1047,12 @@
                 }
             ],
             "description": "A fast PHP7 implementation of PSR-7",
-            "homepage": "http://tnyholm.se",
+            "homepage": "https://tnyholm.se",
             "keywords": [
                 "psr-17",
                 "psr-7"
             ],
-            "time": "2020-06-13T15:59:10+00:00"
+            "time": "2020-11-14T17:35:34+00:00"
         },
         {
             "name": "phlak/config",
@@ -2043,12 +2043,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/slimphp/Slim.git",
-                "reference": "1b098e7d8dafb46713258e70f444d36f1133ab23"
+                "reference": "2974dc38e0d31e5e6b6b2ade7d319b83f8ebdc45"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/slimphp/Slim/zipball/1b098e7d8dafb46713258e70f444d36f1133ab23",
-                "reference": "1b098e7d8dafb46713258e70f444d36f1133ab23",
+                "url": "https://api.github.com/repos/slimphp/Slim/zipball/2974dc38e0d31e5e6b6b2ade7d319b83f8ebdc45",
+                "reference": "2974dc38e0d31e5e6b6b2ade7d319b83f8ebdc45",
                 "shasum": ""
             },
             "require": {
@@ -2065,16 +2065,16 @@
             "require-dev": {
                 "adriansuter/php-autoload-override": "^1.2",
                 "ext-simplexml": "*",
-                "guzzlehttp/psr7": "^1.6",
+                "guzzlehttp/psr7": "^1.7",
                 "http-interop/http-factory-guzzle": "^1.0",
-                "laminas/laminas-diactoros": "^2.3",
+                "laminas/laminas-diactoros": "^2.4",
                 "nyholm/psr7": "^1.3",
                 "nyholm/psr7-server": "^1.0.0",
-                "phpspec/prophecy": "^1.11",
-                "phpstan/phpstan": "^0.12.37",
+                "phpspec/prophecy": "^1.12",
+                "phpstan/phpstan": "^0.12.54",
                 "phpunit/phpunit": "^8.5",
-                "slim/http": "^1.0",
-                "slim/psr7": "^1.1",
+                "slim/http": "^1.1",
+                "slim/psr7": "^1.2",
                 "squizlabs/php_codesniffer": "^3.5"
             },
             "suggest": {
@@ -2128,7 +2128,7 @@
                 "micro",
                 "router"
             ],
-            "time": "2020-09-18T04:44:56+00:00"
+            "time": "2020-11-10T22:39:22+00:00"
         },
         {
             "name": "statical/statical",
@@ -2376,12 +2376,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-intl-grapheme.git",
-                "reference": "ee2f954ea0f9ab61dad0170eddc919ee83bef327"
+                "reference": "be092746c3ab9f9c62608c82e0f04687f8a879f9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-intl-grapheme/zipball/ee2f954ea0f9ab61dad0170eddc919ee83bef327",
-                "reference": "ee2f954ea0f9ab61dad0170eddc919ee83bef327",
+                "url": "https://api.github.com/repos/symfony/polyfill-intl-grapheme/zipball/be092746c3ab9f9c62608c82e0f04687f8a879f9",
+                "reference": "be092746c3ab9f9c62608c82e0f04687f8a879f9",
                 "shasum": ""
             },
             "require": {
@@ -2432,7 +2432,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2020-10-26T13:35:45+00:00"
+            "time": "2020-11-13T15:40:22+00:00"
         },
         {
             "name": "symfony/polyfill-intl-normalizer",
@@ -2903,12 +2903,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/translation-contracts.git",
-                "reference": "6d2dc088bc7a7dd94a85edb5de61aa810b917a26"
+                "reference": "5d449c8a6bde5ce34ce3290db5e3efa063bfa48e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/translation-contracts/zipball/6d2dc088bc7a7dd94a85edb5de61aa810b917a26",
-                "reference": "6d2dc088bc7a7dd94a85edb5de61aa810b917a26",
+                "url": "https://api.github.com/repos/symfony/translation-contracts/zipball/5d449c8a6bde5ce34ce3290db5e3efa063bfa48e",
+                "reference": "5d449c8a6bde5ce34ce3290db5e3efa063bfa48e",
                 "shasum": ""
             },
             "require": {
@@ -2957,7 +2957,7 @@
                 "interoperability",
                 "standards"
             ],
-            "time": "2020-10-14T17:08:19+00:00"
+            "time": "2020-11-04T15:35:46+00:00"
         },
         {
             "name": "symfony/yaml",
@@ -3252,23 +3252,23 @@
         },
         {
             "name": "voku/portable-ascii",
-            "version": "1.5.3",
+            "version": "1.5.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/voku/portable-ascii.git",
-                "reference": "25bcbf01678930251fd572891447d9e318a6e2b8"
+                "reference": "80953678b19901e5165c56752d087fc11526017c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/voku/portable-ascii/zipball/25bcbf01678930251fd572891447d9e318a6e2b8",
-                "reference": "25bcbf01678930251fd572891447d9e318a6e2b8",
+                "url": "https://api.github.com/repos/voku/portable-ascii/zipball/80953678b19901e5165c56752d087fc11526017c",
+                "reference": "80953678b19901e5165c56752d087fc11526017c",
                 "shasum": ""
             },
             "require": {
                 "php": ">=7.0.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "~6.0 || ~7.0"
+                "phpunit/phpunit": "~6.0 || ~7.0 || ~9.0"
             },
             "suggest": {
                 "ext-intl": "Use Intl for transliterator_transliterate() support"
@@ -3296,7 +3296,7 @@
                 "clean",
                 "php"
             ],
-            "time": "2020-07-22T23:32:04+00:00"
+            "time": "2020-11-12T00:07:28+00:00"
         },
         {
             "name": "yosymfony/parser-utils",
@@ -3404,9 +3404,7 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "domexx/ares-core": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
