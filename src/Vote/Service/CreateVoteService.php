@@ -1,7 +1,7 @@
 <?php
 /**
  * @copyright Copyright (c) Ares (https://www.ares.to)
- *  
+ *
  * @see LICENSE (MIT)
  */
 
@@ -61,7 +61,7 @@ class CreateVoteService
         }
 
         /** @var DataObject $entity */
-        $entity = $entityRepository->get($vote->getEntityId());
+        $entityRepository->get($vote->getEntityId());
 
         $vote = $this->voteRepository->save($vote);
 

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7252455f79de8e44fe674175083ceb63",
+    "content-hash": "91d4b4fc328220580d829b55ca22911f",
     "packages": [
         {
             "name": "cocur/slugify",
@@ -155,16 +155,16 @@
         },
         {
             "name": "domexx/ares-core",
-            "version": "dev-develop",
+            "version": "3.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Domexx/ares-core.git",
-                "reference": "c44e4c0c65fd0c6172ddf57bcaa516315ed35bfd"
+                "reference": "fa7a524b112e0905aba5c7313adaa1424b258c3e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Domexx/ares-core/zipball/c44e4c0c65fd0c6172ddf57bcaa516315ed35bfd",
-                "reference": "c44e4c0c65fd0c6172ddf57bcaa516315ed35bfd",
+                "url": "https://api.github.com/repos/Domexx/ares-core/zipball/fa7a524b112e0905aba5c7313adaa1424b258c3e",
+                "reference": "fa7a524b112e0905aba5c7313adaa1424b258c3e",
                 "shasum": ""
             },
             "require": {
@@ -179,8 +179,8 @@
                 "predis/predis": "^2.0@dev",
                 "rakit/validation": "^1.4",
                 "rbdwllr/psr-jwt": "^1.0",
-                "slim/psr7": "^0.5.0",
-                "slim/slim": "^4.5.0",
+                "slim/psr7": "^1.2.0",
+                "slim/slim": "^4.6.0",
                 "statical/statical": "dev-master",
                 "tuupola/cors-middleware": "^1.2",
                 "vlucas/phpdotenv": "^5.0@dev"
@@ -211,7 +211,7 @@
                 "php",
                 "slim"
             ],
-            "time": "2020-11-15T13:09:25+00:00"
+            "time": "2020-11-15T21:13:55+00:00"
         },
         {
             "name": "fig/http-message-util",
@@ -1986,35 +1986,37 @@
         },
         {
             "name": "slim/psr7",
-            "version": "0.5.0",
+            "version": "1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/slimphp/Slim-Psr7.git",
-                "reference": "99ad31f503584bc7c5a36cb0304120f1bce8983d"
+                "reference": "832912cb3c2a807d472ef0ac392552e85703a667"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/slimphp/Slim-Psr7/zipball/99ad31f503584bc7c5a36cb0304120f1bce8983d",
-                "reference": "99ad31f503584bc7c5a36cb0304120f1bce8983d",
+                "url": "https://api.github.com/repos/slimphp/Slim-Psr7/zipball/832912cb3c2a807d472ef0ac392552e85703a667",
+                "reference": "832912cb3c2a807d472ef0ac392552e85703a667",
                 "shasum": ""
             },
             "require": {
-                "fig/http-message-util": "^1.1.2",
-                "php": "^7.1",
+                "fig/http-message-util": "^1.1.4",
+                "php": "^7.2",
                 "psr/http-factory": "^1.0",
                 "psr/http-message": "^1.0",
                 "ralouphie/getallheaders": "^3"
             },
             "provide": {
+                "psr/http-factory-implementation": "1.0",
                 "psr/http-message-implementation": "1.0"
             },
             "require-dev": {
+                "adriansuter/php-autoload-override": "^1.2",
                 "ext-json": "*",
-                "http-interop/http-factory-tests": "^0.5.0",
+                "http-interop/http-factory-tests": "^0.6.0",
                 "php-http/psr7-integration-tests": "dev-master",
-                "phpstan/phpstan": "^0.10",
-                "phpunit/phpunit": "^6.0|^7.0",
-                "squizlabs/php_codesniffer": "^3.3"
+                "phpstan/phpstan": "^0.12",
+                "phpunit/phpunit": "^8.5",
+                "squizlabs/php_codesniffer": "^3.5"
             },
             "type": "library",
             "autoload": {
@@ -2055,7 +2057,7 @@
                 "psr-7",
                 "psr7"
             ],
-            "time": "2019-08-18T16:50:29+00:00"
+            "time": "2020-08-18T22:49:11+00:00"
         },
         {
             "name": "slim/slim",
@@ -2063,12 +2065,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/slimphp/Slim.git",
-                "reference": "2974dc38e0d31e5e6b6b2ade7d319b83f8ebdc45"
+                "reference": "9f6a54f70438655f8c4be63b2b442d34a0c8a142"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/slimphp/Slim/zipball/2974dc38e0d31e5e6b6b2ade7d319b83f8ebdc45",
-                "reference": "2974dc38e0d31e5e6b6b2ade7d319b83f8ebdc45",
+                "url": "https://api.github.com/repos/slimphp/Slim/zipball/9f6a54f70438655f8c4be63b2b442d34a0c8a142",
+                "reference": "9f6a54f70438655f8c4be63b2b442d34a0c8a142",
                 "shasum": ""
             },
             "require": {
@@ -2158,7 +2160,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-11-10T22:39:22+00:00"
+            "time": "2020-11-15T16:14:14+00:00"
         },
         {
             "name": "statical/statical",
@@ -3488,7 +3490,8 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "ext-sockets": "*"
+        "ext-sockets": "*",
+        "ext-json": "*"
     },
     "platform-dev": [],
     "platform-overrides": {

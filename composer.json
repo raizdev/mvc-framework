@@ -21,7 +21,7 @@
     "require": {
         "ext-sockets": "*",
         "ext-json": "*",
-        "domexx/ares-core": "3.0.0"
+        "domexx/ares-core": "3.1.0"
     },
     "config": {
         "sort-packages": true,
