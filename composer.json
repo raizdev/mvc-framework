@@ -20,7 +20,7 @@
     ],
     "require": {
         "ext-sockets": "*",
-        "domexx/ares-core": "1.0.1"
+        "domexx/ares-core": "dev-develop"
     },
     "config": {
         "sort-packages": true,

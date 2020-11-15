@@ -106,7 +106,7 @@ class SettingsController extends BaseController
      *
      * @return Response
      * @throws DataObjectManagerException
-     * @throws SettingsException
+     * @throws NoSuchEntityException
      * @throws ValidationException
      */
     public function set(Request $request, Response $response): Response

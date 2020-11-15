@@ -1,7 +1,7 @@
 <?php
 /**
  * @copyright Copyright (c) Ares (https://www.ares.to)
- *  
+ *
  * @see LICENSE (MIT)
  */
 
@@ -10,6 +10,7 @@ namespace Ares\Role\Controller;
 use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Exception\ValidationException as ValidationExceptionAlias;
 use Ares\Framework\Service\ValidationService;
 use Ares\Role\Exception\RoleException;
@@ -79,6 +80,7 @@ class RolePermissionController extends BaseController
      *
      * @return Response
      * @throws AuthenticationException
+     * @throws NoSuchEntityException
      */
     public function userPermissions(Request $request, Response $response): Response
     {
@@ -99,6 +101,7 @@ class RolePermissionController extends BaseController
      *
      * @return Response
      * @throws DataObjectManagerException
+     * @throws NoSuchEntityException
      * @throws RoleException
      * @throws ValidationExceptionAlias
      */
@@ -125,6 +128,7 @@ class RolePermissionController extends BaseController
      *
      * @return Response
      * @throws DataObjectManagerException
+     * @throws NoSuchEntityException
      * @throws RoleException
      * @throws ValidationExceptionAlias
      */

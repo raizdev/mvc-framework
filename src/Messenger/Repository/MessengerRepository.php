@@ -8,9 +8,9 @@
 namespace Ares\Messenger\Repository;
 
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Model\Query\PaginatedCollection;
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Messenger\Entity\MessengerFriendship;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 /**
  * Class MessengerRepository
@@ -33,10 +33,10 @@ class MessengerRepository extends BaseRepository
      * @param int $page
      * @param int $resultPerPage
      *
-     * @return LengthAwarePaginator
+     * @return PaginatedCollection
      * @throws DataObjectManagerException
      */
-    public function getPaginatedMessengerFriends(int $userId, int $page, int $resultPerPage): LengthAwarePaginator
+    public function getPaginatedMessengerFriends(int $userId, int $page, int $resultPerPage): PaginatedCollection
     {
         $searchCriteria = $this->getDataObjectManager()
             ->where('user_one_id', $userId)

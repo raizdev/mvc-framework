@@ -1,7 +1,7 @@
 <?php
 /**
  * @copyright Copyright (c) Ares (https://www.ares.to)
- *  
+ *
  * @see LICENSE (MIT)
  */
 
@@ -15,6 +15,7 @@ use Ares\Forum\Service\Thread\EditThreadService;
 use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
 use Ares\User\Entity\User;
@@ -39,14 +40,15 @@ class ThreadController extends BaseController
     ) {}
 
     /**
-     * @param Request $request
+     * @param Request  $request
      * @param Response $response
      *
      * @return Response
+     * @throws AuthenticationException
      * @throws DataObjectManagerException
      * @throws ThreadException
      * @throws ValidationException
-     * @throws AuthenticationException
+     * @throws NoSuchEntityException
      */
     public function create(Request $request, Response $response): Response
     {

@@ -9,6 +9,7 @@ namespace Ares\Role\Controller;
 
 use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
 use Ares\Role\Exception\RoleException;
@@ -106,6 +107,7 @@ class RoleController extends BaseController
      * @throws DataObjectManagerException
      * @throws RoleException
      * @throws ValidationException
+     * @throws NoSuchEntityException
      */
     public function createChildRole(Request $request, Response $response): Response
     {
@@ -131,6 +133,7 @@ class RoleController extends BaseController
      *
      * @return Response
      * @throws DataObjectManagerException
+     * @throws NoSuchEntityException
      * @throws RoleException
      * @throws ValidationException
      */

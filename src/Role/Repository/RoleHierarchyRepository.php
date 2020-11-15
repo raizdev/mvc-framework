@@ -37,9 +37,7 @@ class RoleHierarchyRepository extends BaseRepository
         $searchCriteria = $this->getDataObjectManager()
             ->whereIn('parent_role_id', $parentIds);
 
-        $childRoleIds = $this->getList($searchCriteria)->get('child_role_id');
-
-        return $childRoleIds;
+        return $this->getList($searchCriteria)->get('child_role_id');
     }
 
     /**

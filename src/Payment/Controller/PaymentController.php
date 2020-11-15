@@ -1,7 +1,7 @@
 <?php
 /**
  * @copyright Copyright (c) Ares (https://www.ares.to)
- *  
+ *
  * @see LICENSE (MIT)
  */
 
@@ -42,14 +42,15 @@ class PaymentController extends BaseController
     ) {}
 
     /**
-     * @param Request $request
+     * @param Request  $request
      * @param Response $response
      *
      * @return Response
+     * @throws AuthenticationException
      * @throws DataObjectManagerException
+     * @throws NoSuchEntityException
      * @throws PaymentException
      * @throws ValidationException
-     * @throws AuthenticationException
      */
     public function create(Request $request, Response $response): Response
     {

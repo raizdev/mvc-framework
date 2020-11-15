@@ -1,7 +1,7 @@
 <?php
 /**
  * @copyright Copyright (c) Ares (https://www.ares.to)
- *  
+ *
  * @see LICENSE (MIT)
  */
 
@@ -10,6 +10,7 @@ namespace Ares\Messenger\Controller;
 use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Messenger\Repository\MessengerRepository;
 use Ares\User\Entity\User;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -32,14 +33,15 @@ class MessengerController extends BaseController
     ) {}
 
     /**
-     * @param Request $request
+     * @param Request  $request
      * @param Response $response
      *
-     * @param array $args
+     * @param array    $args
      *
      * @return Response
-     * @throws DataObjectManagerException
      * @throws AuthenticationException
+     * @throws DataObjectManagerException
+     * @throws NoSuchEntityException
      */
     public function friends(Request $request, Response $response, array $args): Response
     {

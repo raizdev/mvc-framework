@@ -1,7 +1,7 @@
 <?php
 /**
  * @copyright Copyright (c) Ares (https://www.ares.to)
- *  
+ *
  * @see LICENSE (MIT)
  */
 
@@ -14,6 +14,7 @@ use Ares\Forum\Service\Topic\CreateTopicService;
 use Ares\Forum\Service\Topic\EditTopicService;
 use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -49,6 +50,7 @@ class TopicController extends BaseController
      * @throws DataObjectManagerException
      * @throws TopicException
      * @throws ValidationException
+     * @throws NoSuchEntityException
      */
     public function create(Request $request, Response $response): Response
     {
@@ -74,7 +76,7 @@ class TopicController extends BaseController
      *
      * @return Response
      * @throws DataObjectManagerException
-     * @throws TopicException
+     * @throws NoSuchEntityException
      * @throws ValidationException
      */
     public function edit(Request $request, Response $response): Response

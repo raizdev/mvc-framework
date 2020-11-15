@@ -1,7 +1,7 @@
 <?php
 /**
  * @copyright Copyright (c) Ares (https://www.ares.to)
- *  
+ *
  * @see LICENSE (MIT)
  */
 
@@ -10,6 +10,7 @@ namespace Ares\Vote\Controller;
 use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
 use Ares\User\Entity\User;
@@ -51,14 +52,15 @@ class VoteController extends BaseController
     /**
      * Create new vote.
      *
-     * @param Request $request
+     * @param Request  $request
      * @param Response $response
      *
      * @return Response
+     * @throws AuthenticationException
      * @throws DataObjectManagerException
      * @throws ValidationException
      * @throws VoteException
-     * @throws AuthenticationException
+     * @throws NoSuchEntityException
      */
     public function create(Request $request, Response $response): Response
     {
@@ -101,11 +103,12 @@ class VoteController extends BaseController
     /**
      * Returns total count of likes/dislikes for given entity.
      *
-     * @param Request $request
+     * @param Request  $request
      * @param Response $response
      *
      * @return Response
      * @throws AuthenticationException
+     * @throws NoSuchEntityException
      */
     public function getTotalVotes(Request $request, Response $response): Response
     {
@@ -124,12 +127,13 @@ class VoteController extends BaseController
     /**
      * Delete vote.
      *
-     * @param Request $request
+     * @param Request  $request
      * @param Response $response
      *
      * @return Response
      * @throws AuthenticationException
      * @throws DataObjectManagerException
+     * @throws NoSuchEntityException
      * @throws ValidationException
      * @throws VoteException
      */

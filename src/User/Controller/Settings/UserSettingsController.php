@@ -10,6 +10,7 @@ namespace Ares\User\Controller\Settings;
 use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
 use Ares\User\Entity\User;
@@ -50,10 +51,11 @@ class UserSettingsController extends BaseController
      * @param Response $response
      *
      * @return Response
+     * @throws AuthenticationException
      * @throws DataObjectManagerException
      * @throws UserSettingsException
      * @throws ValidationException
-     * @throws AuthenticationException
+     * @throws NoSuchEntityException
      */
     public function changeGeneralSettings(Request $request, Response $response): Response
     {
@@ -92,6 +94,7 @@ class UserSettingsController extends BaseController
      * @return Response
      * @throws AuthenticationException
      * @throws DataObjectManagerException
+     * @throws NoSuchEntityException
      * @throws UserSettingsException
      * @throws ValidationException
      */
@@ -128,6 +131,7 @@ class UserSettingsController extends BaseController
      * @return Response
      * @throws AuthenticationException
      * @throws DataObjectManagerException
+     * @throws NoSuchEntityException
      * @throws UserSettingsException
      * @throws ValidationException
      */
@@ -163,6 +167,7 @@ class UserSettingsController extends BaseController
      * @return Response
      * @throws AuthenticationException
      * @throws DataObjectManagerException
+     * @throws NoSuchEntityException
      * @throws UserSettingsException
      * @throws ValidationException
      */

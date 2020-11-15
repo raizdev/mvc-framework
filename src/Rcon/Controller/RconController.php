@@ -10,6 +10,7 @@ namespace Ares\Rcon\Controller;
 use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
 use Ares\Rcon\Exception\RconException;
@@ -45,16 +46,17 @@ class RconController extends BaseController
     ) {}
 
     /**
-     * @param   Request   $request
-     * @param   Response  $response
+     * @param Request  $request
+     * @param Response $response
      *
      * @return Response
+     * @throws AuthenticationException
      * @throws DataObjectManagerException
+     * @throws JsonException
      * @throws RconException
      * @throws RoleException
      * @throws ValidationException
-     * @throws AuthenticationException
-     * @throws JsonException
+     * @throws NoSuchEntityException
      */
     public function executeCommand(Request $request, Response $response): Response
     {

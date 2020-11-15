@@ -11,6 +11,7 @@ use Ares\Ban\Exception\BanException;
 use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
 use Ares\User\Entity\User;
@@ -55,15 +56,16 @@ class AuthController extends BaseController
     /**
      * Logs the User in and parses a generated Token into response
      *
-     * @param Request $request
+     * @param Request  $request
      * @param Response $response
      *
      * @return Response Returns a Response with the given Data
      * @throws BanException
      * @throws DataObjectManagerException
-     * @throws ValidationException
      * @throws LoginException
      * @throws ValidateException
+     * @throws ValidationException
+     * @throws NoSuchEntityException
      */
     public function login(Request $request, Response $response): Response
     {
@@ -167,12 +169,13 @@ class AuthController extends BaseController
     /**
      * Gets a new Ticket for the current User
      *
-     * @param Request $request
+     * @param Request  $request
      * @param Response $response
      *
      * @return Response
-     * @throws DataObjectManagerException
      * @throws AuthenticationException
+     * @throws DataObjectManagerException
+     * @throws NoSuchEntityException
      */
     public function ticket(Request $request, Response $response): Response
     {

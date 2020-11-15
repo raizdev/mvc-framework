@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 /**
  * @copyright Copyright (c) Ares (https://www.ares.to)
- *  
+ *
  * @see LICENSE (MIT)
  */
 
@@ -9,9 +9,9 @@ namespace Ares\Article\Repository;
 
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Repository\BaseRepository;
-use Ares\Article\Entity\Article;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Ares\Framework\Model\Query\Collection;
+use Ares\Framework\Model\Query\PaginatedCollection;
+use Ares\Article\Entity\Article;
 
 /**
  * Class ArticleRepository
@@ -34,10 +34,10 @@ class ArticleRepository extends BaseRepository
      * @param int    $page
      * @param int    $resultPerPage
      *
-     * @return LengthAwarePaginator
+     * @return PaginatedCollection
      * @throws DataObjectManagerException
      */
-    public function searchArticles(string $term, int $page, int $resultPerPage): LengthAwarePaginator
+    public function searchArticles(string $term, int $page, int $resultPerPage): PaginatedCollection
     {
         $searchCriteria = $this->getDataObjectManager()
             ->select([
@@ -93,10 +93,10 @@ class ArticleRepository extends BaseRepository
      * @param int $page
      * @param int $resultPerPage
      *
-     * @return LengthAwarePaginator
+     * @return PaginatedCollection
      * @throws DataObjectManagerException
      */
-    public function getPaginatedArticleList(int $page, int $resultPerPage): LengthAwarePaginator
+    public function getPaginatedArticleList(int $page, int $resultPerPage): PaginatedCollection
     {
         $searchCriteria = $this->getDataObjectManager()
             ->select([

@@ -17,9 +17,9 @@ use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Exception\ValidationException;
+use Ares\Framework\Model\Query\PaginatedCollection;
 use Ares\Framework\Service\ValidationService;
 use Ares\User\Entity\User;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -48,7 +48,7 @@ class ArticleController extends BaseController
     /**
      * Creates new article.
      *
-     * @param Request $request
+     * @param Request  $request
      * @param Response $response
      *
      * @return Response
@@ -56,6 +56,7 @@ class ArticleController extends BaseController
      * @throws DataObjectManagerException
      * @throws ValidationException
      * @throws AuthenticationException
+     * @throws NoSuchEntityException
      */
     public function create(Request $request, Response $response): Response
     {
@@ -113,8 +114,8 @@ class ArticleController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws ArticleException
      * @throws DataObjectManagerException
+     * @throws NoSuchEntityException
      * @throws ValidationException
      */
     public function editArticle(Request $request, Response $response): Response
@@ -177,7 +178,7 @@ class ArticleController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        /** @var LengthAwarePaginator $articles */
+        /** @var PaginatedCollection $articles */
         $articles = $this->articleRepository
             ->getPaginatedArticleList(
                 $page,

@@ -9,6 +9,7 @@ namespace Ares\User\Controller\Gift;
 
 use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\AuthenticationException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\User\Entity\User;
 use Ares\User\Exception\Gift\DailyGiftException;
 use Ares\User\Service\Gift\PickGiftService;
@@ -41,6 +42,7 @@ class DailyGiftController extends BaseController
      * @return Response
      * @throws AuthenticationException
      * @throws DailyGiftException
+     * @throws NoSuchEntityException
      */
     public function pick(Request $request, Response $response): ResponseInterface
     {

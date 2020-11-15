@@ -8,9 +8,9 @@
 namespace Ares\User\Repository;
 
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Model\Query\PaginatedCollection;
 use Ares\Framework\Repository\BaseRepository;
 use Ares\User\Entity\UserBadge;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Ares\Framework\Model\Query\Collection;
 
 /**
@@ -50,10 +50,10 @@ class UserBadgeRepository extends BaseRepository
      * @param int $page
      * @param int $resultPerPage
      *
-     * @return LengthAwarePaginator
+     * @return PaginatedCollection
      * @throws DataObjectManagerException
      */
-    public function getPaginatedBadgeList(int $profileId, int $page, int $resultPerPage): LengthAwarePaginator
+    public function getPaginatedBadgeList(int $profileId, int $page, int $resultPerPage): PaginatedCollection
     {
         $searchCriteria = $this->getDataObjectManager()
             ->where('user_id', $profileId)

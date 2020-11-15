@@ -1,7 +1,7 @@
 <?php
 /**
  * @copyright Copyright (c) Ares (https://www.ares.to)
- *  
+ *
  * @see LICENSE (MIT)
  */
 
@@ -33,7 +33,7 @@ class RoleUserRepository extends BaseRepository
      * @return array|null
      * @throws QueryException
      */
-    public function getUserRoleIds($userId): ?array
+    public function getUserRoleIds(int $userId): ?array
     {
         $searchCriteria = $this->getDataObjectManager()
             ->select('role_id')

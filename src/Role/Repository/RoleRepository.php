@@ -8,9 +8,9 @@
 namespace Ares\Role\Repository;
 
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Model\Query\PaginatedCollection;
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Role\Entity\Role;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 /**
  * Class RoleRepository
@@ -32,10 +32,10 @@ class RoleRepository extends BaseRepository
      * @param int $page
      * @param int $resultPerPage
      *
-     * @return LengthAwarePaginator
+     * @return PaginatedCollection
      * @throws DataObjectManagerException
      */
-    public function getPaginatedRoles(int $page, int $resultPerPage): LengthAwarePaginator
+    public function getPaginatedRoles(int $page, int $resultPerPage): PaginatedCollection
     {
         $searchCriteria = $this->getDataObjectManager()
             ->orderBy('id', 'DESC');
