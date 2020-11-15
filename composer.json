@@ -21,13 +21,13 @@
     "require": {
         "ext-sockets": "*",
         "ext-json": "*",
-        "domexx/ares-core": "2.0.0"
+        "domexx/ares-core": "3.0.0"
     },
     "config": {
         "sort-packages": true,
         "optimize-autoloader": true,
         "platform": {
-            "php": "8.0"
+            "php": "7.4"
         }
     },
     "autoload": {
