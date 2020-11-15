@@ -144,4 +144,21 @@ class ArticleRepository extends BaseRepository
 
         return $this->getList($searchCriteria)->first();
     }
+
+    /**
+     * @param string $title
+     * @param string $slug
+     *
+     * @return Article|null
+     */
+    public function getExistingArticle(string $title, string $slug): ?Article
+    {
+        $searchCriteria = $this->getDataObjectManager()
+            ->where([
+                'title' => $title,
+                'slug' => $slug
+            ]);
+
+        return $this->getList($searchCriteria)->first();
+    }
 }

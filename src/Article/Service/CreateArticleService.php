@@ -50,10 +50,10 @@ class CreateArticleService
         $article = $this->getNewArticle($userId, $data);
 
         /** @var Article $existingArticle */
-        $existingArticle = $this->articleRepository->get($article->getTitle(), 'title', true);
+        $existingArticle = $this->articleRepository->getExistingArticle($article->getTitle(), $article->getSlug());
 
         if ($existingArticle) {
-            throw new ArticleException(__('Article with given Title already exists.'), 409);
+            throw new ArticleException(__('Article with given Title and Slug already exists'), 409);
         }
 
         /** @var Article $article */
