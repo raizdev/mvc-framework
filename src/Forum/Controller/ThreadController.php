@@ -57,7 +57,7 @@ class ThreadController extends BaseController
         $parsedData = $request->getParsedBody();
 
         $this->validationService->validate($parsedData, [
-            ThreadInterface::COLUMN_TITLE => 'nullable',
+            ThreadInterface::COLUMN_TITLE => 'nullable|regex:/^[a-zA-Z0-9]+$/',
             ThreadInterface::COLUMN_DESCRIPTION => 'nullable',
             ThreadInterface::COLUMN_CONTENT => 'nullable',
             ThreadInterface::COLUMN_TOPIC_ID => 'required|numeric'

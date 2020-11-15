@@ -59,7 +59,7 @@ class TopicController extends BaseController
         $parsedData = $request->getParsedBody();
 
         $this->validationService->validate($parsedData, [
-            TopicInterface::COLUMN_TITLE => 'required',
+            TopicInterface::COLUMN_TITLE => 'required|regex:/^[a-zA-Z0-9]+$/',
             TopicInterface::COLUMN_DESCRIPTION => 'required',
         ]);
 
