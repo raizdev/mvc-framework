@@ -11,7 +11,6 @@ use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Room\Entity\Room;
-use Ares\Room\Exception\RoomException;
 use Ares\Room\Repository\RoomRepository;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
