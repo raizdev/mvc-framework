@@ -91,7 +91,6 @@ class ArticleController extends BaseController
      *
      * @return Response
      * @throws DataObjectManagerException
-     * @throws NoSuchEntityException
      */
     public function article(Request $request, Response $response, array $args): Response
     {
@@ -99,8 +98,7 @@ class ArticleController extends BaseController
         $slug = $args['slug'];
 
         /** @var Article $article */
-        $article = $this->articleRepository->get($slug, 'slug');
-        $article->getUser();
+        $article = $this->articleRepository->getArticleWithCommentCount($slug);
 
         return $this->respond(
             $response,
