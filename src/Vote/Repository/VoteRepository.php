@@ -81,6 +81,6 @@ class VoteRepository extends BaseRepository
             ]);
 
         /** @var Vote $vote */
-        return $this->getOneBy($searchCriteria);
+        return $this->getOneBy($searchCriteria, true);
     }
 }

@@ -38,7 +38,7 @@ class DeleteVoteService
      *
      * @return CustomResponseInterface
      * @throws DataObjectManagerException
-     * @throws VoteException|NoSuchEntityException
+     * @throws NoSuchEntityException
      */
     public function execute(int $userId, array $data): CustomResponseInterface
     {
@@ -50,9 +50,9 @@ class DeleteVoteService
             $userId
         );
 
-        $deleted = $this->voteRepository->delete($vote->getId());
+        $this->voteRepository->delete($vote->getId());
 
         return response()
-            ->setData($deleted);
+            ->setData(true);
     }
 }
