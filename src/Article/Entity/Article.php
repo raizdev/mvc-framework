@@ -138,7 +138,7 @@ class Article extends DataObject implements ArticleInterface
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getAuthorId(): ?int
     {
