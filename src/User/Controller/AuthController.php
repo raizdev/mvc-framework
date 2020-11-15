@@ -14,6 +14,7 @@ use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
+use Ares\User\Entity\Contract\UserInterface;
 use Ares\User\Entity\User;
 use Ares\User\Exception\LoginException;
 use Ares\User\Exception\RegisterException;
@@ -73,8 +74,8 @@ class AuthController extends BaseController
         $parsedData = $request->getParsedBody();
 
         $this->validationService->validate($parsedData, [
-            'username' => 'required',
-            'password' => 'required'
+            UserInterface::COLUMN_USERNAME => 'required',
+            UserInterface::COLUMN_PASSWORD => 'required'
         ]);
 
         /** @var string $determinedIp */
@@ -105,11 +106,11 @@ class AuthController extends BaseController
         $parsedData = $request->getParsedBody();
 
         $this->validationService->validate($parsedData, [
-            'username' => 'required|min:3|max:12',
-            'mail' => 'required|email|min:9',
-            'look' => 'required',
-            'gender' => 'required|default:M|regex:/[M.F]/',
-            'password' => 'required|min:6',
+            UserInterface::COLUMN_USERNAME => 'required|min:3|max:12',
+            UserInterface::COLUMN_MAIL => 'required|email|min:9',
+            UserInterface::COLUMN_LOOK => 'required',
+            UserInterface::COLUMN_GENDER => 'required|default:M|regex:/[M.F]/',
+            UserInterface::COLUMN_PASSWORD => 'required|min:6',
             'password_confirmation' => 'required|same:password'
         ]);
 

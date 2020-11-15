@@ -15,6 +15,7 @@ use Ares\Framework\Service\ValidationService;
 use Ares\Photo\Entity\Photo;
 use Ares\Photo\Exception\PhotoException;
 use Ares\Photo\Repository\PhotoRepository;
+use Ares\User\Entity\Contract\UserInterface;
 use Ares\User\Entity\User;
 use Ares\User\Repository\UserRepository;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -79,7 +80,7 @@ class PhotoController extends BaseController
         $parsedData = $request->getParsedBody();
 
         $this->validationService->validate($parsedData, [
-            'username' => 'required'
+            UserInterface::COLUMN_USERNAME => 'required'
         ]);
 
         /** @var string $username */

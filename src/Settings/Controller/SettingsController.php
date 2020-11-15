@@ -12,6 +12,7 @@ use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
+use Ares\Settings\Entity\Contract\SettingInterface;
 use Ares\Settings\Entity\Setting;
 use Ares\Settings\Exception\SettingsException;
 use Ares\Settings\Repository\SettingsRepository;
@@ -53,7 +54,7 @@ class SettingsController extends BaseController
         $parsedData = $request->getParsedBody();
 
         $this->validationService->validate($parsedData, [
-            'key' => 'required'
+            SettingInterface::COLUMN_KEY => 'required'
         ]);
 
         /** @var string $key */
@@ -115,8 +116,8 @@ class SettingsController extends BaseController
         $parsedData = $request->getParsedBody();
 
         $this->validationService->validate($parsedData, [
-            'key'   => 'required',
-            'value' => 'required'
+            SettingInterface::COLUMN_KEY => 'required',
+            SettingInterface::COLUMN_VALUE => 'required'
         ]);
 
         $customResponse = $this->updateSettingsService->update($parsedData);

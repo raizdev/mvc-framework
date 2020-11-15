@@ -7,6 +7,7 @@
 
 namespace Ares\Article\Controller;
 
+use Ares\Article\Entity\Contract\ArticleInterface;
 use Ares\Article\Service\CreateArticleService;
 use Ares\Article\Service\EditArticleService;
 use Ares\Framework\Controller\BaseController;
@@ -64,12 +65,12 @@ class ArticleController extends BaseController
         $parsedData = $request->getParsedBody();
 
         $this->validationService->validate($parsedData, [
-            'title'       => 'required',
-            'description' => 'required',
-            'content'     => 'required',
-            'image'       => 'required',
-            'hidden'      => 'required|numeric',
-            'pinned'      => 'required|numeric'
+            ArticleInterface::COLUMN_TITLE => 'required',
+            ArticleInterface::COLUMN_DESCRIPTION => 'required',
+            ArticleInterface::COLUMN_CONTENT => 'required',
+            ArticleInterface::COLUMN_IMAGE => 'required',
+            ArticleInterface::COLUMN_HIDDEN => 'required|numeric',
+            ArticleInterface::COLUMN_PINNED => 'required|numeric'
         ]);
 
         /** @var User $user */
@@ -122,13 +123,13 @@ class ArticleController extends BaseController
         $parsedData = $request->getParsedBody();
 
         $this->validationService->validate($parsedData, [
-            'article_id'  => 'required|numeric',
-            'title'       => 'required',
-            'description' => 'required',
-            'content'     => 'required',
-            'image'       => 'required',
-            'hidden'      => 'required|numeric',
-            'pinned'      => 'required|numeric'
+            ArticleInterface::COLUMN_ID => 'required|numeric',
+            ArticleInterface::COLUMN_TITLE => 'required',
+            ArticleInterface::COLUMN_DESCRIPTION => 'required',
+            ArticleInterface::COLUMN_CONTENT => 'required',
+            ArticleInterface::COLUMN_IMAGE => 'required',
+            ArticleInterface::COLUMN_HIDDEN => 'required|numeric',
+            ArticleInterface::COLUMN_PINNED => 'required|numeric'
         ]);
 
         $customResponse = $this->editArticleService->execute($parsedData);

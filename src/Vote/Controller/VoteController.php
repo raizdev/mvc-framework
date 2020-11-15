@@ -14,6 +14,7 @@ use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
 use Ares\User\Entity\User;
+use Ares\Vote\Entity\Contract\VoteInterface;
 use Ares\Vote\Exception\VoteException;
 use Ares\Vote\Repository\VoteRepository;
 use Ares\Vote\Service\CreateVoteService;
@@ -68,9 +69,9 @@ class VoteController extends BaseController
         $parsedData = $request->getParsedBody();
 
         $this->validationService->validate($parsedData, [
-            'entity_id'   => 'required|numeric',
-            'vote_entity' => 'required|numeric',
-            'vote_type'   => 'required|numeric'
+            VoteInterface::COLUMN_ENTITY_ID => 'required|numeric',
+            VoteInterface::COLUMN_VOTE_ENTITY => 'required|numeric',
+            VoteInterface::COLUMN_VOTE_TYPE => 'required|numeric'
         ]);
 
         /** @var User $user */
@@ -143,9 +144,9 @@ class VoteController extends BaseController
         $parsedData = $request->getParsedBody();
 
         $this->validationService->validate($parsedData, [
-            'entity_id'   => 'required|numeric',
-            'vote_entity' => 'required|numeric',
-            'vote_type'   => 'required|numeric'
+            VoteInterface::COLUMN_ENTITY_ID => 'required|numeric',
+            VoteInterface::COLUMN_VOTE_ENTITY => 'required|numeric',
+            VoteInterface::COLUMN_VOTE_TYPE => 'required|numeric'
         ]);
 
         /** @var User $user */

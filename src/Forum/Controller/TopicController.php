@@ -7,6 +7,7 @@
 
 namespace Ares\Forum\Controller;
 
+use Ares\Forum\Entity\Contract\TopicInterface;
 use Ares\Forum\Entity\Topic;
 use Ares\Forum\Exception\TopicException;
 use Ares\Forum\Repository\TopicRepository;
@@ -58,8 +59,8 @@ class TopicController extends BaseController
         $parsedData = $request->getParsedBody();
 
         $this->validationService->validate($parsedData, [
-            'title'       => 'required',
-            'description' => 'required',
+            TopicInterface::COLUMN_TITLE => 'required',
+            TopicInterface::COLUMN_DESCRIPTION => 'required',
         ]);
 
         $customResponse = $this->createTopicService->execute($parsedData);

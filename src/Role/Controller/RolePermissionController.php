@@ -13,6 +13,7 @@ use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Exception\ValidationException as ValidationExceptionAlias;
 use Ares\Framework\Service\ValidationService;
+use Ares\Role\Entity\Contract\PermissionInterface;
 use Ares\Role\Exception\RoleException;
 use Ares\Role\Repository\PermissionRepository;
 use Ares\Role\Service\CreateRolePermissionService;
@@ -111,7 +112,7 @@ class RolePermissionController extends BaseController
         $parsedData = $request->getParsedBody();
 
         $this->validationService->validate($parsedData, [
-            'name' => 'required'
+            PermissionInterface::COLUMN_NAME => 'required'
         ]);
 
         $customResponse = $this->createPermissionService->execute($parsedData);
@@ -138,7 +139,7 @@ class RolePermissionController extends BaseController
         $parsedData = $request->getParsedBody();
 
         $this->validationService->validate($parsedData, [
-            'name' => 'required'
+            PermissionInterface::COLUMN_NAME => 'required'
         ]);
 
         $customResponse = $this->createRolePermissionService->execute($parsedData);

@@ -13,6 +13,7 @@ use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
+use Ares\Rcon\Entity\Contract\RconInterface;
 use Ares\Rcon\Exception\RconException;
 use Ares\Rcon\Service\CreateRconCommandService;
 use Ares\Rcon\Service\DeleteRconCommandService;
@@ -64,7 +65,7 @@ class RconController extends BaseController
         $parsedData = $request->getParsedBody();
 
         $this->validationService->validate($parsedData, [
-            'command' => 'required'
+            RconInterface::COLUMN_COMMAND => 'required'
         ]);
 
         /** @var User $user */

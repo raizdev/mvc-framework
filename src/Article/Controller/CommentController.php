@@ -7,6 +7,7 @@
 
 namespace Ares\Article\Controller;
 
+use Ares\Article\Entity\Contract\CommentInterface;
 use Ares\Article\Exception\CommentException;
 use Ares\Article\Repository\CommentRepository;
 use Ares\Article\Service\CreateCommentService;
@@ -60,8 +61,8 @@ class CommentController extends BaseController
         $parsedData = $request->getParsedBody();
 
         $this->validationService->validate($parsedData, [
-            'content'    => 'required',
-            'article_id' => 'required|numeric'
+            CommentInterface::COLUMN_CONTENT => 'required',
+            CommentInterface::COLUMN_ARTICLE_ID => 'required|numeric'
         ]);
 
         /** @var User $user */
@@ -90,8 +91,8 @@ class CommentController extends BaseController
         $parsedData = $request->getParsedBody();
 
         $this->validationService->validate($parsedData, [
-            'comment_id' => 'required|numeric',
-            'content'    => 'required'
+            CommentInterface::COLUMN_ID => 'required|numeric',
+            CommentInterface::COLUMN_CONTENT => 'required'
         ]);
 
         $customResponse = $this->editCommentService->execute($parsedData);

@@ -12,6 +12,9 @@ use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
+use Ares\Role\Entity\Contract\RoleHierarchyInterface;
+use Ares\Role\Entity\Contract\RoleInterface;
+use Ares\Role\Entity\Contract\RoleUserInterface;
 use Ares\Role\Exception\RoleException;
 use Ares\Role\Repository\RoleRepository;
 use Ares\Role\Service\AssignUserToRoleService;
@@ -80,7 +83,7 @@ class RoleController extends BaseController
      * @return Response
      * @throws DataObjectManagerException
      * @throws RoleException
-     * @throws ValidationException
+     * @throws ValidationException|NoSuchEntityException
      */
     public function createRole(Request $request, Response $response): Response
     {
@@ -88,7 +91,7 @@ class RoleController extends BaseController
         $parsedData = $request->getParsedBody();
 
         $this->validationService->validate($parsedData, [
-            'name' => 'required'
+            RoleInterface::COLUMN_NAME => 'required'
         ]);
 
         $customResponse = $this->createRoleService->execute($parsedData);
@@ -115,8 +118,8 @@ class RoleController extends BaseController
         $parsedData = $request->getParsedBody();
 
         $this->validationService->validate($parsedData, [
-            'parent_role_id' => 'numeric|required',
-            'child_role_id' => 'numeric|required'
+            RoleHierarchyInterface::COLUMN_PARENT_ROLE_ID => 'numeric|required',
+            RoleHierarchyInterface::COLUMN_CHILD_ROLE_ID => 'numeric|required'
         ]);
 
         $customResponse = $this->createChildRoleService->execute($parsedData);
@@ -143,8 +146,8 @@ class RoleController extends BaseController
         $parsedData = $request->getParsedBody();
 
         $this->validationService->validate($parsedData, [
-            'user_id' => 'numeric|required',
-            'role_id' => 'numeric|required'
+            RoleUserInterface::COLUMN_USER_ID => 'numeric|required',
+            RoleUserInterface::COLUMN_ROLE_ID => 'numeric|required'
         ]);
 
         $customResponse = $this->assignUserToRoleService->execute($parsedData);

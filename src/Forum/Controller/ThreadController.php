@@ -7,6 +7,7 @@
 
 namespace Ares\Forum\Controller;
 
+use Ares\Forum\Entity\Contract\ThreadInterface;
 use Ares\Forum\Entity\Thread;
 use Ares\Forum\Exception\ThreadException;
 use Ares\Forum\Repository\ThreadRepository;
@@ -56,10 +57,10 @@ class ThreadController extends BaseController
         $parsedData = $request->getParsedBody();
 
         $this->validationService->validate($parsedData, [
-            'title'       => 'required',
-            'description' => 'required',
-            'content'     => 'required',
-            'topic_id'    => 'required|numeric'
+            ThreadInterface::COLUMN_TITLE => 'required',
+            ThreadInterface::COLUMN_DESCRIPTION => 'required',
+            ThreadInterface::COLUMN_CONTENT => 'required',
+            ThreadInterface::COLUMN_TOPIC_ID => 'required|numeric'
         ]);
 
         /** @var User $user */

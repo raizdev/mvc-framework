@@ -13,6 +13,7 @@ use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
+use Ares\Payment\Entity\Contract\PaymentInterface;
 use Ares\Payment\Entity\Payment;
 use Ares\Payment\Exception\PaymentException;
 use Ares\Payment\Repository\PaymentRepository;
@@ -58,8 +59,8 @@ class PaymentController extends BaseController
         $parsedData = $request->getParsedBody();
 
         $this->validationService->validate($parsedData, [
-            'code' => 'required',
-            'type' => 'required|numeric'
+            PaymentInterface::COLUMN_CODE => 'required',
+            PaymentInterface::COLUMN_TYPE => 'required|numeric'
         ]);
 
         /** @var User $user */

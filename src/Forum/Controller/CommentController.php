@@ -8,6 +8,7 @@
 namespace Ares\Forum\Controller;
 
 use Ares\Forum\Entity\Comment;
+use Ares\Forum\Entity\Contract\CommentInterface;
 use Ares\Forum\Exception\CommentException;
 use Ares\Forum\Repository\CommentRepository;
 use Ares\Forum\Service\Comment\CreateCommentService;
@@ -61,8 +62,8 @@ class CommentController extends BaseController
         $parsedData = $request->getParsedBody();
 
         $this->validationService->validate($parsedData, [
-            'thread_id' => 'required|numeric',
-            'content'   => 'required'
+            CommentInterface::COLUMN_THREAD_ID => 'required|numeric',
+            CommentInterface::COLUMN_CONTENT => 'required'
         ]);
 
         /** @var User $user */
@@ -91,8 +92,8 @@ class CommentController extends BaseController
         $parsedData = $request->getParsedBody();
 
         $this->validationService->validate($parsedData, [
-            'thread_id' => 'required|numeric',
-            'content'   => 'required'
+            CommentInterface::COLUMN_THREAD_ID => 'required|numeric',
+            CommentInterface::COLUMN_CONTENT => 'required'
         ]);
 
         /** @var Comment $comment */

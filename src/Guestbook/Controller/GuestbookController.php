@@ -13,6 +13,7 @@ use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
+use Ares\Guestbook\Entity\Contract\GuestbookInterface;
 use Ares\Guestbook\Exception\GuestbookException;
 use Ares\Guestbook\Repository\GuestbookRepository;
 use Ares\Guestbook\Service\CreateGuestbookEntryService;
@@ -64,9 +65,9 @@ class GuestbookController extends BaseController
         $parsedData = $request->getParsedBody();
 
         $this->validationService->validate($parsedData, [
-            'content' => 'required',
-            'profile_id' => 'numeric',
-            'guild_id' => 'numeric'
+            GuestbookInterface::COLUMN_CONTENT => 'required',
+            GuestbookInterface::COLUMN_PROFILE_ID => 'numeric',
+            GuestbookInterface::COLUMN_GUILD_ID => 'numeric'
         ]);
 
         /** @var int $profileId */
