@@ -128,9 +128,9 @@ class ArticleRepository extends BaseRepository
     {
         $searchCriteria = $this->getDataObjectManager()
             ->select([
-                'ares_articles.id', 'ares_articles.author_id', 'ares_articles.title', 'ares_articles.slug',
-                'ares_articles.description', 'ares_articles.image', 'ares_articles.likes', 'ares_articles.dislikes',
-                'ares_articles.created_at'
+                'ares_articles.id', 'ares_articles.author_id', 'ares_articles.content',
+                'ares_articles.title', 'ares_articles.slug', 'ares_articles.description',
+                'ares_articles.image', 'ares_articles.likes', 'ares_articles.dislikes', 'ares_articles.created_at'
             ])->selectRaw(
                 'count(ares_articles_comments.article_id) as comments'
             )->leftJoin(
