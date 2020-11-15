@@ -1,14 +1,15 @@
 <?php
 /**
- * Ares (https://ares.to)
+ * @copyright Copyright (c) Ares (https://www.ares.to)
  *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ * @see LICENSE (MIT)
  */
 
 namespace Ares\Room\Controller;
 
 use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Room\Entity\Room;
 use Ares\Room\Exception\RoomException;
 use Ares\Room\Repository\RoomRepository;
@@ -34,11 +35,11 @@ class RoomController extends BaseController
     /**
      * @param Request  $request
      * @param Response $response
-     * @param          $args
+     * @param array    $args
      *
      * @return Response
-     * @throws RoomException
      * @throws DataObjectManagerException
+     * @throws NoSuchEntityException
      */
     public function room(Request $request, Response $response, array $args): Response
     {
@@ -47,10 +48,6 @@ class RoomController extends BaseController
 
         /** @var Room $room */
         $room = $this->roomRepository->get($id);
-
-        if (!$room) {
-            throw new RoomException(__('No specific Room found'), 404);
-        }
         $room->getGuild();
         $room->getUser();
 

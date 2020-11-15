@@ -1,8 +1,8 @@
 <?php
 /**
- * Ares (https://ares.to)
- *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ * @copyright Copyright (c) Ares (https://www.ares.to)
+ *  
+ * @see LICENSE (MIT)
  */
 
 namespace Ares\Payment\Controller;
@@ -10,6 +10,7 @@ namespace Ares\Payment\Controller;
 use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
 use Ares\Payment\Entity\Payment;
@@ -76,12 +77,12 @@ class PaymentController extends BaseController
     }
 
     /**
-     * @param Request     $request
-     * @param Response    $response
-     * @param             $args
+     * @param Request  $request
+     * @param Response $response
+     * @param array    $args
      *
      * @return Response
-     * @throws PaymentException
+     * @throws NoSuchEntityException
      */
     public function payment(Request $request, Response $response, array $args): Response
     {
@@ -90,10 +91,6 @@ class PaymentController extends BaseController
 
         /** @var Payment $payment */
         $payment = $this->paymentRepository->get($id);
-
-        if (!$payment) {
-            throw new PaymentException(__('No specific Payment found'), 404);
-        }
 
         return $this->respond(
             $response,

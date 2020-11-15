@@ -1,22 +1,21 @@
 <?php
 /**
- * Ares (https://ares.to)
+ * @copyright Copyright (c) Ares (https://www.ares.to)
  *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ * @see LICENSE (MIT)
  */
 
 namespace Ares\User\Service\Settings;
 
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
-use Ares\Rcon\Exception\RconException;
 use Ares\Rcon\Service\ExecuteRconCommandService;
-use Ares\Role\Exception\RoleException;
 use Ares\User\Entity\User;
 use Ares\User\Entity\UserSetting;
 use Ares\User\Exception\UserSettingsException;
 use Ares\User\Repository\UserSettingRepository;
-use JsonException;
+use Exception;
 
 /**
  * Class ChangeGeneralSettingsService
@@ -45,15 +44,12 @@ class ChangeGeneralSettingsService
      * @return CustomResponseInterface
      * @throws DataObjectManagerException
      * @throws UserSettingsException
+     * @throws NoSuchEntityException
      */
     public function execute(User $user, array $data): CustomResponseInterface
     {
         /** @var UserSetting $userSetting */
         $userSetting = $this->userSettingRepository->get($user->getId(), 'user_id');
-
-        if (!$userSetting) {
-            throw new UserSettingsException(__('Settings for given user does not exist.'));
-        }
 
         /** @var UserSetting $userSetting */
         $userSetting = $this->userSettingRepository->save($this->getUpdatedUserSettings($userSetting, $data));
@@ -73,7 +69,7 @@ class ChangeGeneralSettingsService
                 ],
                 true
             );
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             throw new UserSettingsException(
                 $exception->getMessage(),
                 500,

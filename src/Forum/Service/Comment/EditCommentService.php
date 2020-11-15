@@ -1,17 +1,18 @@
 <?php
 /**
- * Ares (https://ares.to)
+ * @copyright Copyright (c) Ares (https://www.ares.to)
  *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ * @see LICENSE (MIT)
  */
 
 namespace Ares\Forum\Service\Comment;
 
 use Ares\Forum\Entity\Comment;
-use Ares\Forum\Exception\CommentException;
 use Ares\Forum\Repository\CommentRepository;
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
+use DateTime;
 
 /**
  * Class EditCommentService
@@ -33,8 +34,8 @@ class EditCommentService
      * @param array $data
      *
      * @return CustomResponseInterface
-     * @throws CommentException
      * @throws DataObjectManagerException
+     * @throws NoSuchEntityException
      */
     public function execute(array $data): CustomResponseInterface
     {
@@ -47,14 +48,10 @@ class EditCommentService
         /** @var Comment $comment */
         $comment = $this->commentRepository->get($comment_id);
 
-        if (!$comment) {
-            throw new CommentException(__('Comment not found'));
-        }
-
         $comment
             ->setContent($content)
             ->setIsEdited(1)
-            ->setUpdatedAt(new \DateTime());
+            ->setUpdatedAt(new DateTime());
 
         /** @var Comment $comment */
         $comment = $this->commentRepository->save($comment);

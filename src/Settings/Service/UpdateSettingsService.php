@@ -1,16 +1,16 @@
 <?php
 /**
- * Ares (https://ares.to)
+ * @copyright Copyright (c) Ares (https://www.ares.to)
  *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ * @see LICENSE (MIT)
  */
 
 namespace Ares\Settings\Service;
 
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\Settings\Entity\Setting;
-use Ares\Settings\Exception\SettingsException;
 use Ares\Settings\Repository\SettingsRepository;
 
 /**
@@ -34,7 +34,7 @@ class UpdateSettingsService
      *
      * @return CustomResponseInterface
      * @throws DataObjectManagerException
-     * @throws SettingsException
+     * @throws NoSuchEntityException
      */
     public function update($data): CustomResponseInterface
     {
@@ -46,11 +46,6 @@ class UpdateSettingsService
 
         /** @var Setting $configData */
         $configData = $this->settingsRepository->get($key, 'key');
-
-        if (!$configData) {
-            throw new SettingsException(__('Key not found in Config'));
-        }
-
         $configData->setValue($value);
         $configData = $this->settingsRepository->save($configData);
 

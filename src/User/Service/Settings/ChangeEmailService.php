@@ -1,13 +1,14 @@
 <?php
 /**
- * Ares (https://ares.to)
+ * @copyright Copyright (c) Ares (https://www.ares.to)
  *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ * @see LICENSE (MIT)
  */
 
 namespace Ares\User\Service\Settings;
 
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\User\Entity\User;
 use Ares\User\Exception\UserSettingsException;
@@ -37,8 +38,9 @@ class ChangeEmailService
      * @param string $password
      *
      * @return CustomResponseInterface
-     * @throws UserSettingsException
      * @throws DataObjectManagerException
+     * @throws UserSettingsException
+     * @throws NoSuchEntityException
      */
     public function execute(User $user, string $email, string $password): CustomResponseInterface
     {
@@ -53,7 +55,7 @@ class ChangeEmailService
         }
 
         /** @var User $emailExists */
-        $emailExists = $this->userRepository->get($email, 'mail');
+        $emailExists = $this->userRepository->get($email, 'mail', true);
 
         if ($emailExists) {
             throw new UserSettingsException(__('User with given email already exists.'));

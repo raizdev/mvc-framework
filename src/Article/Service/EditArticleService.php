@@ -1,17 +1,18 @@
 <?php
 /**
- * Ares (https://ares.to)
+ * @copyright Copyright (c) Ares (https://www.ares.to)
  *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ * @see LICENSE (MIT)
  */
 
 namespace Ares\Article\Service;
 
 use Ares\Article\Entity\Article;
-use Ares\Article\Exception\ArticleException;
 use Ares\Article\Repository\ArticleRepository;
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
+use DateTime;
 
 /**
  * Class EditArticleService
@@ -33,8 +34,8 @@ class EditArticleService
      * @param array $data
      *
      * @return CustomResponseInterface
-     * @throws ArticleException
      * @throws DataObjectManagerException
+     * @throws NoSuchEntityException
      */
     public function execute(array $data): CustomResponseInterface
     {
@@ -44,10 +45,6 @@ class EditArticleService
         /** @var Article $article */
         $article = $this->articleRepository->get($articleId);
 
-        if (!$article) {
-            throw new ArticleException(__('Related article could not be found'));
-        }
-
         $article
             ->setTitle($data['title'])
             ->setDescription($data['description'])
@@ -55,7 +52,7 @@ class EditArticleService
             ->setImage($data['image'])
             ->setHidden($data['hidden'])
             ->setPinned($data['pinned'])
-            ->setUpdatedAt(new \DateTime());
+            ->setUpdatedAt(new DateTime());
 
         /** @var Article $article */
         $article = $this->articleRepository->save($article);

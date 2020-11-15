@@ -1,8 +1,8 @@
 <?php
 /**
- * Ares (https://ares.to)
+ * @copyright Copyright (c) Ares (https://www.ares.to)
  *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ * @see LICENSE (MIT)
  */
 
 namespace Ares\Article\Controller;
@@ -15,6 +15,7 @@ use Ares\Article\Exception\ArticleException;
 use Ares\Article\Repository\ArticleRepository;
 use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
 use Ares\User\Entity\User;
@@ -82,13 +83,14 @@ class ArticleController extends BaseController
     }
 
     /**
-     * @param Request     $request
-     * @param Response    $response
+     * @param Request  $request
+     * @param Response $response
      *
-     * @param             $args
+     * @param array    $args
      *
      * @return Response
-     * @throws ArticleException|DataObjectManagerException
+     * @throws DataObjectManagerException
+     * @throws NoSuchEntityException
      */
     public function article(Request $request, Response $response, array $args): Response
     {
@@ -97,10 +99,6 @@ class ArticleController extends BaseController
 
         /** @var Article $article */
         $article = $this->articleRepository->get($slug, 'slug');
-
-        if (!$article) {
-            throw new ArticleException(__('No specific Article found'), 404);
-        }
         $article->getUser();
 
         return $this->respond(

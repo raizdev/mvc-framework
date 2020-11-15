@@ -1,13 +1,14 @@
 <?php
 /**
- * Ares (https://ares.to)
- *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ * @copyright Copyright (c) Ares (https://www.ares.to)
+ *  
+ * @see LICENSE (MIT)
  */
 
 namespace Ares\Vote\Service;
 
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\Framework\Model\DataObject;
 use Ares\Vote\Entity\Vote;
@@ -39,8 +40,9 @@ class CreateVoteService
      * @param array $data
      *
      * @return CustomResponseInterface
-     * @throws VoteException
      * @throws DataObjectManagerException
+     * @throws VoteException
+     * @throws NoSuchEntityException
      */
     public function execute(int $userId, array $data): CustomResponseInterface
     {
@@ -60,10 +62,6 @@ class CreateVoteService
 
         /** @var DataObject $entity */
         $entity = $entityRepository->get($vote->getEntityId());
-
-        if (!$entity) {
-            throw new VoteException(__('The related vote entity has no existing data.'), 404);
-        }
 
         $vote = $this->voteRepository->save($vote);
 

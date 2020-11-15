@@ -1,13 +1,14 @@
 <?php
 /**
- * Ares (https://ares.to)
+ * @copyright Copyright (c) Ares (https://www.ares.to)
  *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ * @see LICENSE (MIT)
  */
 
 namespace Ares\Role\Service;
 
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\Role\Entity\Role;
 use Ares\Role\Entity\RoleUser;
@@ -16,6 +17,7 @@ use Ares\Role\Repository\RoleRepository;
 use Ares\Role\Repository\RoleUserRepository;
 use Ares\User\Entity\User;
 use Ares\User\Repository\UserRepository;
+use DateTime;
 
 /**
  * Class AssignUserToRoleService
@@ -43,6 +45,7 @@ class AssignUserToRoleService
      * @return CustomResponseInterface
      * @throws DataObjectManagerException
      * @throws RoleException
+     * @throws NoSuchEntityException
      */
     public function execute(array $data): CustomResponseInterface
     {
@@ -57,10 +60,6 @@ class AssignUserToRoleService
 
         /** @var User $user */
         $user = $this->userRepository->get($roleId);
-
-        if (!$role || !$user) {
-            throw new RoleException(__('Could not find called Role or User'));
-        }
 
         /** @var RoleUser $isRoleAlreadyAssigned */
         $isRoleAlreadyAssigned = $this->roleUserRepository
@@ -94,7 +93,7 @@ class AssignUserToRoleService
         $roleUser
             ->setUserId($userId)
             ->setRoleId($roleId)
-            ->setCreatedAt(new \DateTime());
+            ->setCreatedAt(new DateTime());
 
         return $roleUser;
     }

@@ -1,17 +1,18 @@
 <?php
 /**
- * Ares (https://ares.to)
- *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ * @copyright Copyright (c) Ares (https://www.ares.to)
+ *  
+ * @see LICENSE (MIT)
  */
 
 namespace Ares\Forum\Service\Topic;
 
 use Ares\Forum\Entity\Topic;
-use Ares\Forum\Exception\TopicException;
 use Ares\Forum\Repository\TopicRepository;
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
+use DateTime;
 
 /**
  * Class EditTopicService
@@ -33,8 +34,8 @@ class EditTopicService
      * @param array $data
      *
      * @return CustomResponseInterface
-     * @throws TopicException
      * @throws DataObjectManagerException
+     * @throws NoSuchEntityException
      */
     public function execute(array $data): CustomResponseInterface
     {
@@ -50,14 +51,10 @@ class EditTopicService
         /** @var Topic $topic */
         $topic = $this->topicRepository->get($topic_id);
 
-        if (!$topic) {
-            throw new TopicException(__('Topic not found'));
-        }
-
         $topic
             ->setTitle($title)
             ->setDescription($description)
-            ->setUpdatedAt(new \DateTime());
+            ->setUpdatedAt(new DateTime());
 
         /** @var Topic $topic */
         $topic = $this->topicRepository->save($topic);

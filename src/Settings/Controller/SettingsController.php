@@ -1,14 +1,15 @@
 <?php
 /**
- * Ares (https://ares.to)
+ * @copyright Copyright (c) Ares (https://www.ares.to)
  *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ * @see LICENSE (MIT)
  */
 
 namespace Ares\Settings\Controller;
 
 use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
 use Ares\Settings\Entity\Setting;
@@ -43,8 +44,8 @@ class SettingsController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws SettingsException
      * @throws ValidationException
+     * @throws NoSuchEntityException
      */
     public function get(Request $request, Response $response): Response
     {
@@ -60,10 +61,6 @@ class SettingsController extends BaseController
 
         /** @var Setting $configData */
         $configData = $this->settingsRepository->get($key, 'key');
-
-        if (!$configData) {
-            throw new SettingsException(__('Key not found in Config'));
-        }
 
         return $this->respond(
             $response,

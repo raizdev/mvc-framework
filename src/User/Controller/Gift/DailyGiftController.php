@@ -1,15 +1,14 @@
 <?php
 /**
- * Ares (https://ares.to)
+ * @copyright Copyright (c) Ares (https://www.ares.to)
  *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ * @see LICENSE (MIT)
  */
 
 namespace Ares\User\Controller\Gift;
 
 use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\AuthenticationException;
-use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\User\Entity\User;
 use Ares\User\Exception\Gift\DailyGiftException;
 use Ares\User\Service\Gift\PickGiftService;

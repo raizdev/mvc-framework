@@ -1,19 +1,20 @@
 <?php
 /**
- * Ares (https://ares.to)
- *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ * @copyright Copyright (c) Ares (https://www.ares.to)
+ *  
+ * @see LICENSE (MIT)
  */
 
 namespace Ares\Article\Service;
 
 use Ares\Article\Entity\Article;
 use Ares\Article\Entity\Comment;
-use Ares\Article\Exception\CommentException;
 use Ares\Article\Repository\ArticleRepository;
 use Ares\Article\Repository\CommentRepository;
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
+use DateTime;
 
 /**
  * Class CreateCommentService
@@ -40,8 +41,7 @@ class CreateCommentService
      * @param array $data
      *
      * @return CustomResponseInterface
-     * @throws CommentException
-     * @throws DataObjectManagerException
+     * @throws DataObjectManagerException|NoSuchEntityException
      */
     public function execute(int $userId, array $data): CustomResponseInterface
     {
@@ -62,7 +62,7 @@ class CreateCommentService
      * @param array $data
      *
      * @return Comment
-     * @throws CommentException
+     * @throws NoSuchEntityException
      */
     private function getNewComment(int $userId, array $data): Comment
     {
@@ -70,10 +70,6 @@ class CreateCommentService
 
         /** @var Article $article */
         $article = $this->articleRepository->get($data['article_id']);
-
-        if (!$article) {
-            throw new CommentException(__('Related article was not found.'), 404);
-        }
 
         return $comment
             ->setContent($data['content'])
@@ -84,6 +80,6 @@ class CreateCommentService
             ->setArticleId($article->getId())
             ->setLikes(0)
             ->setDislikes(0)
-            ->setCreatedAt(new \DateTime());
+            ->setCreatedAt(new DateTime());
     }
 }

@@ -1,13 +1,14 @@
 <?php
 /**
- * Ares (https://ares.to)
- *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ * @copyright Copyright (c) Ares (https://www.ares.to)
+ *  
+ * @see LICENSE (MIT)
  */
 
 namespace Ares\Rcon\Service;
 
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\Rcon\Exception\RconException;
 use Ares\Rcon\Model\Rcon;
@@ -47,15 +48,12 @@ class ExecuteRconCommandService
      * @throws JsonException
      * @throws RconException
      * @throws RoleException
+     * @throws NoSuchEntityException
      */
     public function execute(int $userId, array $data, bool $fromSystem = false): CustomResponseInterface
     {
         /** @var \Ares\Rcon\Entity\Rcon $existingCommand */
         $existingCommand = $this->rconRepository->get($data['command'], 'command');
-
-        if (!$existingCommand) {
-            throw new RconException(__('Could not found the given command to execute'), 404);
-        }
 
         if (!$fromSystem && $existingCommand->getPermission() !== null) {
             $permissionName = $existingCommand

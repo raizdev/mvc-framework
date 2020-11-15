@@ -1,19 +1,20 @@
 <?php
 /**
- * Ares (https://ares.to)
- *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ * @copyright Copyright (c) Ares (https://www.ares.to)
+ *  
+ * @see LICENSE (MIT)
  */
 
 namespace Ares\Forum\Service\Comment;
 
 use Ares\Forum\Entity\Comment;
 use Ares\Forum\Entity\Thread;
-use Ares\Forum\Exception\CommentException;
 use Ares\Forum\Repository\CommentRepository;
 use Ares\Forum\Repository\ThreadRepository;
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
+use DateTime;
 
 /**
  * Class CreateCommentService
@@ -38,8 +39,8 @@ class CreateCommentService
      * @param array $data
      *
      * @return CustomResponseInterface
-     * @throws CommentException
      * @throws DataObjectManagerException
+     * @throws NoSuchEntityException
      */
     public function execute(int $userId, array $data): CustomResponseInterface
     {
@@ -57,7 +58,7 @@ class CreateCommentService
      * @param array $data
      *
      * @return Comment
-     * @throws CommentException
+     * @throws NoSuchEntityException
      */
     public function getNewComment(int $userId, array $data): Comment
     {
@@ -66,10 +67,6 @@ class CreateCommentService
         /** @var Thread $thread */
         $thread = $this->threadRepository->get($data['thread_id']);
 
-        if (!$thread) {
-            throw new CommentException(__('Related Thread was not found.'), 404);
-        }
-
         return $comment
             ->setThreadId($thread->getId())
             ->setUserId($userId)
@@ -77,6 +74,6 @@ class CreateCommentService
             ->setIsEdited(0)
             ->setLikes(0)
             ->setDislikes(0)
-            ->setCreatedAt(new \DateTime());
+            ->setCreatedAt(new DateTime());
     }
 }

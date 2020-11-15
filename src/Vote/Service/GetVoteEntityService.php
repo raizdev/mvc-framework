@@ -1,8 +1,8 @@
 <?php
 /**
- * Ares (https://ares.to)
+ * @copyright Copyright (c) Ares (https://www.ares.to)
  *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ * @see LICENSE (MIT)
  */
 
 namespace Ares\Vote\Service;
@@ -48,7 +48,7 @@ class GetVoteEntityService
      *
      * @param int $entity
      *
-     * @return BaseRepository|null
+     * @return BaseRepository
      * @throws VoteException
      */
     public function execute(int $entity): BaseRepository

@@ -1,8 +1,8 @@
 <?php
 /**
- * Ares (https://ares.to)
+ * @copyright Copyright (c) Ares (https://www.ares.to)
  *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ * @see LICENSE (MIT)
  */
 
 namespace Ares\User\Service\Auth;
@@ -11,6 +11,7 @@ use Ares\Ban\Entity\Ban;
 use Ares\Ban\Exception\BanException;
 use Ares\Ban\Repository\BanRepository;
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Factory\DataObjectManagerFactory;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\Framework\Service\TokenService;
@@ -51,18 +52,19 @@ class LoginService
      * @throws DataObjectManagerException
      * @throws LoginException
      * @throws ValidateException
+     * @throws NoSuchEntityException
      */
     public function login(array $data): CustomResponseInterface
     {
         /** @var User $user */
-        $user = $this->userRepository->get($data['username'], 'username');
+        $user = $this->userRepository->get($data['username'], 'username', true);
 
-        if ($user === null || !password_verify($data['password'], $user->getPassword())) {
+        if (!$user || !password_verify($data['password'], $user->getPassword())) {
             throw new LoginException(__('general.failed'), 403);
         }
 
         /** @var Ban $isBanned */
-        $isBanned = $this->banRepository->get($user->getId(), 'user_id');
+        $isBanned = $this->banRepository->get($user->getId(), 'user_id', true);
 
         if ($isBanned && $isBanned->getBanExpire() > time()) {
             throw new BanException(__('general.banned', [$isBanned->getBanReason()]), 401);

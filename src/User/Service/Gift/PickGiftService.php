@@ -1,13 +1,14 @@
 <?php
 /**
- * Ares (https://ares.to)
+ * @copyright Copyright (c) Ares (https://www.ares.to)
  *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ * @see LICENSE (MIT)
  */
 
 namespace Ares\User\Service\Gift;
 
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\Rcon\Exception\RconException;
 use Ares\Rcon\Service\ExecuteRconCommandService;
@@ -47,11 +48,12 @@ class PickGiftService
      *
      * @return CustomResponseInterface
      * @throws DailyGiftException
+     * @throws NoSuchEntityException
      */
     public function execute(User $user): CustomResponseInterface
     {
         /** @var DailyGift $dailyGift */
-        $dailyGift = $this->dailyGiftRepository->get($user->getId(), 'user_id');
+        $dailyGift = $this->dailyGiftRepository->get($user->getId(), 'user_id', true);
 
         try {
             if (!$dailyGift) {

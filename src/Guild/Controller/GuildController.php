@@ -1,8 +1,8 @@
 <?php
 /**
- * Ares (https://ares.to)
+ * @copyright Copyright (c) Ares (https://www.ares.to)
  *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ * @see LICENSE (MIT)
  */
 
 namespace Ares\Guild\Controller;
@@ -50,6 +50,9 @@ class GuildController extends BaseController
         /** @var Guild $guild */
         $guild = $this->guildRepository->getGuild($id);
 
+        /**
+         * @TODO UJEFU
+         */
         if (!$guild) {
             throw new GuildException(__('No specific Guild found'));
         }

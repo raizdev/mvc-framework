@@ -1,8 +1,8 @@
 <?php
 /**
- * Ares (https://ares.to)
+ * @copyright Copyright (c) Ares (https://www.ares.to)
  *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ * @see LICENSE (MIT)
  */
 
 namespace Ares\User\Repository;
@@ -46,15 +46,17 @@ class UserBadgeRepository extends BaseRepository
     }
 
     /**
+     * @param int $profileId
      * @param int $page
      * @param int $resultPerPage
      *
      * @return LengthAwarePaginator
      * @throws DataObjectManagerException
      */
-    public function getPaginatedBadgeList(int $page, int $resultPerPage): LengthAwarePaginator
+    public function getPaginatedBadgeList(int $profileId, int $page, int $resultPerPage): LengthAwarePaginator
     {
         $searchCriteria = $this->getDataObjectManager()
+            ->where('user_id', $profileId)
             ->orderBy('id', 'DESC');
 
         return $this->getPaginatedList($searchCriteria, $page, $resultPerPage);

@@ -1,17 +1,19 @@
 <?php
 /**
- * Ares (https://ares.to)
- *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ * @copyright Copyright (c) Ares (https://www.ares.to)
+ *  
+ * @see LICENSE (MIT)
  */
 
 namespace Ares\Role\Service;
 
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\Role\Entity\Permission;
 use Ares\Role\Exception\RoleException;
 use Ares\Role\Repository\PermissionRepository;
+use DateTime;
 
 /**
  * Class CreatePermissionService
@@ -33,13 +35,14 @@ class CreatePermissionService
      * @param array $data
      *
      * @return CustomResponseInterface
-     * @throws RoleException
      * @throws DataObjectManagerException
+     * @throws RoleException
+     * @throws NoSuchEntityException
      */
     public function execute(array $data): CustomResponseInterface
     {
         /** @var Permission $existingPermission */
-        $existingPermission = $this->permissionRepository->get($data['name'], 'name');
+        $existingPermission = $this->permissionRepository->get($data['name'], 'name', true);
 
         if ($existingPermission) {
             throw new RoleException(__('There is already a Permission with that name'));
@@ -66,7 +69,7 @@ class CreatePermissionService
         $permission
             ->setName($data['name'])
             ->setDescription($data['description'])
-            ->setCreatedAt(new \DateTime());
+            ->setCreatedAt(new DateTime());
 
         return $permission;
     }

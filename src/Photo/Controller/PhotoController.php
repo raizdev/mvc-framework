@@ -1,14 +1,15 @@
 <?php
 /**
- * Ares (https://ares.to)
+ * @copyright Copyright (c) Ares (https://www.ares.to)
  *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ * @see LICENSE (MIT)
  */
 
 namespace Ares\Photo\Controller;
 
 use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
 use Ares\Photo\Entity\Photo;
@@ -46,7 +47,7 @@ class PhotoController extends BaseController
      *
      * @return Response
      * @throws DataObjectManagerException
-     * @throws PhotoException
+     * @throws NoSuchEntityException
      */
     public function photo(Request $request, Response $response, array $args): Response
     {
@@ -55,10 +56,6 @@ class PhotoController extends BaseController
 
         /** @var Photo $photo */
         $photo = $this->photoRepository->get($id);
-
-        if (!$photo) {
-            throw new PhotoException(__('No Photo was found'), 404);
-        }
         $photo->getUser();
 
         return $this->respond(
@@ -73,7 +70,7 @@ class PhotoController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws PhotoException
+     * @throws NoSuchEntityException
      * @throws ValidationException
      */
     public function search(Request $request, Response $response): Response
@@ -93,10 +90,6 @@ class PhotoController extends BaseController
 
         /** @var Photo $photo */
         $photo = $this->photoRepository->get($user->getId(), 'user_id');
-
-        if (!$photo || !$user) {
-            throw new PhotoException(__('No Photo was found'), 404);
-        }
 
         return $this->respond(
             $response,

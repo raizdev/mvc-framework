@@ -1,8 +1,8 @@
 <?php
 /**
- * Ares (https://ares.to)
+ * @copyright Copyright (c) Ares (https://www.ares.to)
  *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ * @see LICENSE (MIT)
  */
 
 namespace Ares\Guestbook\Controller;
@@ -10,6 +10,7 @@ namespace Ares\Guestbook\Controller;
 use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
 use Ares\Guestbook\Exception\GuestbookException;
@@ -18,7 +19,6 @@ use Ares\Guestbook\Service\CreateGuestbookEntryService;
 use Ares\Guild\Entity\Guild;
 use Ares\Guild\Repository\GuildRepository;
 use Ares\User\Entity\User;
-use Ares\User\Exception\UserException;
 use Ares\User\Repository\UserRepository;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -48,14 +48,15 @@ class GuestbookController extends BaseController
     ) {}
 
     /**
-     * @param Request $request
+     * @param Request  $request
      * @param Response $response
      *
      * @return Response
+     * @throws AuthenticationException
      * @throws DataObjectManagerException
      * @throws GuestbookException
      * @throws ValidationException
-     * @throws AuthenticationException
+     * @throws NoSuchEntityException
      */
     public function create(Request $request, Response $response): Response
     {
@@ -78,10 +79,10 @@ class GuestbookController extends BaseController
         $user = user($request);
 
         /** @var User $profile */
-        $profile = $this->userRepository->get($profileId);
+        $profile = $this->userRepository->get($profileId, 'id', true);
 
         /** @var Guild $guild */
-        $guild = $this->guildRepository->get($guildId);
+        $guild = $this->guildRepository->get($guildId, 'id', true);
 
         if (!$profile && !$guild) {
             throw new GuestbookException(__('The associated Entities could not be found'));

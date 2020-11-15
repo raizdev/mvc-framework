@@ -1,8 +1,8 @@
 <?php
 /**
- * Ares (https://ares.to)
+ * @copyright Copyright (c) Ares (https://www.ares.to)
  *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ * @see LICENSE (MIT)
  */
 
 namespace Ares\Forum\Service\Thread;
@@ -54,6 +54,9 @@ class EditThreadService
         /** @var string $content */
         $content = $data['content'];
 
+        /**
+         * @TODO ueufe
+         */
         $searchCriteria = $this->threadRepository
             ->getDataObjectManager()
             ->where([
