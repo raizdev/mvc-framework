@@ -60,7 +60,7 @@ class LoginService
         $user = $this->userRepository->get($data['username'], 'username', true);
 
         if (!$user || !password_verify($data['password'], $user->getPassword())) {
-            throw new LoginException(__('general.failed'), 403);
+            throw new LoginException(__('Data combination was not found'), 403);
         }
 
         /** @var Ban $isBanned */

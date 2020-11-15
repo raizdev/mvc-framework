@@ -57,16 +57,16 @@ class ThreadController extends BaseController
         $parsedData = $request->getParsedBody();
 
         $this->validationService->validate($parsedData, [
-            ThreadInterface::COLUMN_TITLE => 'required',
-            ThreadInterface::COLUMN_DESCRIPTION => 'required',
-            ThreadInterface::COLUMN_CONTENT => 'required',
+            ThreadInterface::COLUMN_TITLE => 'nullable',
+            ThreadInterface::COLUMN_DESCRIPTION => 'nullable',
+            ThreadInterface::COLUMN_CONTENT => 'nullable',
             ThreadInterface::COLUMN_TOPIC_ID => 'required|numeric'
         ]);
 
         /** @var User $user */
-        $user = user($request);
+        $userId = user($request)->getId();
 
-        $customResponse = $this->createThreadService->execute($user->getId(), $parsedData);
+        $customResponse = $this->createThreadService->execute($userId, $parsedData);
 
         return $this->respond(
             $response,
@@ -75,12 +75,13 @@ class ThreadController extends BaseController
     }
 
     /**
-     * @param Request     $request
-     * @param Response    $response
-     * @param             $args
+     * @param Request  $request
+     * @param Response $response
+     * @param array    $args
      *
      * @return Response
-     * @throws ThreadException|DataObjectManagerException
+     * @throws DataObjectManagerException
+     * @throws NoSuchEntityException
      */
     public function thread(Request $request, Response $response, array $args): Response
     {
@@ -96,10 +97,6 @@ class ThreadController extends BaseController
                 $topicId,
                 $slug
             );
-
-        if (!$thread) {
-            throw new ThreadException(__('No Thread was found'), 404);
-        }
 
         return $this->respond(
             $response,

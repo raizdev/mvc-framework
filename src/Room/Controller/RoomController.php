@@ -93,16 +93,12 @@ class RoomController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws RoomException
+     * @throws NoSuchEntityException
      */
     public function mostVisited(Request $request, Response $response): Response
     {
         /** @var Room $room */
         $room = $this->roomRepository->getMostVisitedRoom();
-
-        if (!$room) {
-            throw new RoomException(__('No Room was found'), 404);
-        }
 
         return $this->respond(
             $response,

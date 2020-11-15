@@ -8,6 +8,7 @@
 namespace Ares\Payment\Service;
 
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\Payment\Entity\Payment;
 use Ares\Payment\Exception\PaymentException;
@@ -36,6 +37,7 @@ class CreatePaymentService
      * @return CustomResponseInterface
      * @throws DataObjectManagerException
      * @throws PaymentException
+     * @throws NoSuchEntityException
      */
     public function execute(int $userId, array $data): CustomResponseInterface
     {

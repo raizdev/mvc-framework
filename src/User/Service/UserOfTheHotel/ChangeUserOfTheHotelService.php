@@ -41,7 +41,7 @@ class ChangeUserOfTheHotelService
     /**
      * @return CustomResponseInterface
      *
-     * @throws DataObjectManagerException
+     * @throws DataObjectManagerException|NoSuchEntityException
      */
     public function execute(): CustomResponseInterface
     {

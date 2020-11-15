@@ -8,10 +8,12 @@
 namespace Ares\Article\Service;
 
 use Ares\Article\Entity\Article;
+use Ares\Article\Exception\ArticleException;
 use Ares\Article\Repository\ArticleRepository;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
+use Cocur\Slugify\Slugify;
 use DateTime;
 
 /**
@@ -25,9 +27,11 @@ class EditArticleService
      * EditArticleService constructor.
      *
      * @param ArticleRepository $articleRepository
+     * @param Slugify           $slug
      */
     public function __construct(
-        private ArticleRepository $articleRepository
+        private ArticleRepository $articleRepository,
+        private Slugify $slug
     ) {}
 
     /**
@@ -35,7 +39,7 @@ class EditArticleService
      *
      * @return CustomResponseInterface
      * @throws DataObjectManagerException
-     * @throws NoSuchEntityException
+     * @throws NoSuchEntityException|ArticleException
      */
     public function execute(array $data): CustomResponseInterface
     {
@@ -45,13 +49,18 @@ class EditArticleService
         /** @var Article $article */
         $article = $this->articleRepository->get($articleId);
 
+        if ($article->getTitle() === $data['title']) {
+            throw new ArticleException(__('Article with given Title already exists'));
+        }
+
         $article
-            ->setTitle($data['title'])
-            ->setDescription($data['description'])
-            ->setContent($data['content'])
-            ->setImage($data['image'])
-            ->setHidden($data['hidden'])
-            ->setPinned($data['pinned'])
+            ->setTitle($data['title'] ?: $article->getTitle())
+            ->setSlug($this->slug->slugify($data['title']))
+            ->setDescription($data['description'] ?: $article->getDescription())
+            ->setContent($data['content'] ?: $article->getContent())
+            ->setImage($data['image'] ?: $article->getImage())
+            ->setHidden($data['hidden'] ?: $article->getHidden())
+            ->setPinned($data['pinned'] ?: $article->getPinned())
             ->setUpdatedAt(new DateTime());
 
         /** @var Article $article */

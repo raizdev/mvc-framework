@@ -1,7 +1,7 @@
 <?php
 /**
  * @copyright Copyright (c) Ares (https://www.ares.to)
- *  
+ *
  * @see LICENSE (MIT)
  */
 
@@ -50,6 +50,10 @@ class EditTopicService
 
         /** @var Topic $topic */
         $topic = $this->topicRepository->get($topicId);
+
+        if ($topic->getTitle() === $title) {
+            throw new TopicException(__('Topic with the title %s already exists', [$title]));
+        }
 
         $topic
             ->setTitle($title)

@@ -1,7 +1,7 @@
 <?php
 /**
  * @copyright Copyright (c) Ares (https://www.ares.to)
- *  
+ *
  * @see LICENSE (MIT)
  */
 
@@ -60,7 +60,7 @@ class ChangeUsernameService
         }
 
         /** @var User $usernameExists */
-        $usernameExists = $this->userRepository->get($username, 'username');
+        $usernameExists = $this->userRepository->get($username, 'username', true);
 
         if ($usernameExists) {
             throw new UserSettingsException(__('User with given username already exists'));

@@ -92,6 +92,7 @@ class ArticleController extends BaseController
      *
      * @return Response
      * @throws DataObjectManagerException
+     * @throws NoSuchEntityException
      */
     public function article(Request $request, Response $response, array $args): Response
     {
@@ -115,7 +116,7 @@ class ArticleController extends BaseController
      * @return Response
      * @throws DataObjectManagerException
      * @throws NoSuchEntityException
-     * @throws ValidationException
+     * @throws ValidationException|ArticleException
      */
     public function editArticle(Request $request, Response $response): Response
     {
@@ -124,10 +125,10 @@ class ArticleController extends BaseController
 
         $this->validationService->validate($parsedData, [
             ArticleInterface::COLUMN_ID => 'required|numeric',
-            ArticleInterface::COLUMN_TITLE => 'required',
-            ArticleInterface::COLUMN_DESCRIPTION => 'required',
-            ArticleInterface::COLUMN_CONTENT => 'required',
-            ArticleInterface::COLUMN_IMAGE => 'required',
+            ArticleInterface::COLUMN_TITLE => 'nullable',
+            ArticleInterface::COLUMN_DESCRIPTION => 'nullable',
+            ArticleInterface::COLUMN_CONTENT => 'nullable',
+            ArticleInterface::COLUMN_IMAGE => 'nullable',
             ArticleInterface::COLUMN_HIDDEN => 'required|numeric',
             ArticleInterface::COLUMN_PINNED => 'required|numeric'
         ]);

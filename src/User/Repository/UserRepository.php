@@ -7,6 +7,7 @@
 
 namespace Ares\User\Repository;
 
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Model\Query\Collection;
 use Ares\User\Entity\User;
 use Ares\Framework\Repository\BaseRepository;
@@ -55,6 +56,7 @@ class UserRepository extends BaseRepository
      * @param string|null $mail
      *
      * @return User|null
+     * @throws NoSuchEntityException
      */
     public function getRegisteredUser(?string $username, ?string $mail): ?User
     {
@@ -62,6 +64,6 @@ class UserRepository extends BaseRepository
             ->where('username', $username)
             ->orWhere('mail', $mail);
 
-        return $this->getList($searchCriteria, false)->first();
+        return $this->getOneBy($searchCriteria, true, false);
     }
 }

@@ -8,6 +8,7 @@
 namespace Ares\Article\Repository;
 
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Framework\Model\Query\Collection;
 use Ares\Framework\Model\Query\PaginatedCollection;
@@ -122,7 +123,7 @@ class ArticleRepository extends BaseRepository
      * @param string $slug
      *
      * @return Article|null
-     * @throws DataObjectManagerException
+     * @throws DataObjectManagerException|NoSuchEntityException
      */
     public function getArticleWithCommentCount(string $slug): ?Article
     {
@@ -142,7 +143,7 @@ class ArticleRepository extends BaseRepository
             ->where('slug', $slug)
             ->addRelation('user');
 
-        return $this->getList($searchCriteria)->first();
+        return $this->getOneBy($searchCriteria);
     }
 
     /**
@@ -150,6 +151,7 @@ class ArticleRepository extends BaseRepository
      * @param string $slug
      *
      * @return Article|null
+     * @throws NoSuchEntityException
      */
     public function getExistingArticle(string $title, string $slug): ?Article
     {
@@ -159,6 +161,6 @@ class ArticleRepository extends BaseRepository
                 'slug' => $slug
             ]);
 
-        return $this->getList($searchCriteria)->first();
+        return $this->getOneBy($searchCriteria, true);
     }
 }
