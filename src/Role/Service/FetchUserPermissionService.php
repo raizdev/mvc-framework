@@ -1,8 +1,8 @@
 <?php
 /**
- * Ares (https://ares.to)
- *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ * @copyright Copyright (c) Ares (https://www.ares.to)
+ *  
+ * @see LICENSE (MIT)
  */
 
 namespace Ares\Role\Service;
@@ -19,28 +19,15 @@ use Ares\Role\Repository\RoleUserRepository;
 class FetchUserPermissionService
 {
     /**
-     * @var RoleUserRepository
-     */
-    private RoleUserRepository $roleUserRepository;
-
-    /**
-     * @var RoleHierarchyRepository
-     */
-    private RoleHierarchyRepository $roleHierarchyRepository;
-
-    /**
      * FetchUserPermissionService constructor.
      *
      * @param RoleUserRepository      $roleUserRepository
      * @param RoleHierarchyRepository $roleHierarchyRepository
      */
     public function __construct(
-        RoleUserRepository $roleUserRepository,
-        RoleHierarchyRepository $roleHierarchyRepository
-    ) {
-        $this->roleUserRepository = $roleUserRepository;
-        $this->roleHierarchyRepository = $roleHierarchyRepository;
-    }
+        private RoleUserRepository $roleUserRepository,
+        private RoleHierarchyRepository $roleHierarchyRepository
+    ) {}
 
     /**
      * @param int $userId

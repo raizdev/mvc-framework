@@ -1,8 +1,8 @@
 <?php
 /**
- * Ares (https://ares.to)
+ * @copyright Copyright (c) Ares (https://www.ares.to)
  *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ * @see LICENSE (MIT)
  */
 
 namespace Ares\User\Service\Auth;
@@ -27,31 +27,6 @@ use ReallySimpleJWT\Exception\ValidateException;
 class RegisterService
 {
     /**
-     * @var UserRepository
-     */
-    private UserRepository $userRepository;
-
-    /**
-     * @var TokenService
-     */
-    private TokenService $tokenService;
-
-    /**
-     * @var Config
-     */
-    private Config $config;
-
-    /**
-     * @var TicketService
-     */
-    private TicketService $ticketService;
-
-    /**
-     * @var CreateCurrencyService
-     */
-    private CreateCurrencyService $createCurrencyService;
-
-    /**
      * LoginService constructor.
      *
      * @param   UserRepository         $userRepository
@@ -61,18 +36,12 @@ class RegisterService
      * @param   CreateCurrencyService  $createCurrencyService
      */
     public function __construct(
-        UserRepository $userRepository,
-        TokenService $tokenService,
-        TicketService $ticketService,
-        Config $config,
-        CreateCurrencyService $createCurrencyService
-    ) {
-        $this->userRepository        = $userRepository;
-        $this->tokenService          = $tokenService;
-        $this->ticketService         = $ticketService;
-        $this->config                = $config;
-        $this->createCurrencyService = $createCurrencyService;
-    }
+        private UserRepository $userRepository,
+        private TokenService $tokenService,
+        private TicketService $ticketService,
+        private Config $config,
+        private CreateCurrencyService $createCurrencyService
+    ) {}
 
     /**
      * Registers a new User.
@@ -90,8 +59,8 @@ class RegisterService
         /** @var User $isAlreadyRegistered */
         $isAlreadyRegistered = $this->userRepository
             ->getRegisteredUser(
-                (string) $data['username'],
-                (string) $data['mail']
+                $data['username'],
+                $data['mail']
             );
 
         if ($isAlreadyRegistered) {
@@ -113,13 +82,13 @@ class RegisterService
             $this->createCurrencyService->execute(
                 $user->getId(),
                 UserCurrencyTypeInterface::CURRENCY_TYPE_POINTS,
-                (int) $this->config->get('hotel_settings.start_points')
+                $this->config->get('hotel_settings.start_points')
             );
 
             $this->createCurrencyService->execute(
                 $user->getId(),
                 UserCurrencyTypeInterface::CURRENCY_TYPE_PIXELS,
-                (int) $this->config->get('hotel_settings.start_pixels')
+                $this->config->get('hotel_settings.start_pixels')
             );
         } catch (Exception $exception) {
             throw new RegisterException($exception->getMessage(), $exception->getCode());

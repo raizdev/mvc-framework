@@ -1,17 +1,18 @@
 <?php
 /**
- * Ares (https://ares.to)
- *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ * @copyright Copyright (c) Ares (https://www.ares.to)
+ *  
+ * @see LICENSE (MIT)
  */
 
 namespace Ares\Forum\Service\Topic;
 
 use Ares\Forum\Entity\Topic;
-use Ares\Forum\Exception\TopicException;
 use Ares\Forum\Repository\TopicRepository;
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
+use DateTime;
 
 /**
  * Class EditTopicService
@@ -21,27 +22,20 @@ use Ares\Framework\Interfaces\CustomResponseInterface;
 class EditTopicService
 {
     /**
-     * @var TopicRepository
-     */
-    private TopicRepository $topicRepository;
-
-    /**
      * EditTopicService constructor.
      *
      * @param   TopicRepository  $topicRepository
      */
     public function __construct(
-        TopicRepository $topicRepository
-    ) {
-        $this->topicRepository = $topicRepository;
-    }
+        private TopicRepository $topicRepository
+    ) {}
 
     /**
      * @param array $data
      *
      * @return CustomResponseInterface
-     * @throws TopicException
      * @throws DataObjectManagerException
+     * @throws NoSuchEntityException
      */
     public function execute(array $data): CustomResponseInterface
     {
@@ -57,14 +51,10 @@ class EditTopicService
         /** @var Topic $topic */
         $topic = $this->topicRepository->get($topicId);
 
-        if (!$topic) {
-            throw new TopicException(__('No Topic was found'));
-        }
-
         $topic
             ->setTitle($title)
             ->setDescription($description)
-            ->setUpdatedAt(new \DateTime());
+            ->setUpdatedAt(new DateTime());
 
         /** @var Topic $topic */
         $topic = $this->topicRepository->save($topic);

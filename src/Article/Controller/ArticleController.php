@@ -1,8 +1,8 @@
 <?php
 /**
- * Ares (https://ares.to)
+ * @copyright Copyright (c) Ares (https://www.ares.to)
  *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ * @see LICENSE (MIT)
  */
 
 namespace Ares\Article\Controller;
@@ -15,10 +15,11 @@ use Ares\Article\Exception\ArticleException;
 use Ares\Article\Repository\ArticleRepository;
 use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Exception\ValidationException;
+use Ares\Framework\Model\Query\PaginatedCollection;
 use Ares\Framework\Service\ValidationService;
 use Ares\User\Entity\User;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -30,26 +31,6 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class ArticleController extends BaseController
 {
     /**
-     * @var ArticleRepository
-     */
-    private ArticleRepository $articleRepository;
-
-    /**
-     * @var CreateArticleService
-     */
-    private CreateArticleService $createArticleService;
-
-    /**
-     * @var ValidationService
-     */
-    private ValidationService $validationService;
-
-    /**
-     * @var EditArticleService
-     */
-    private EditArticleService $editArticleService;
-
-    /**
      * NewsController constructor.
      *
      * @param ArticleRepository    $articleRepository
@@ -58,21 +39,16 @@ class ArticleController extends BaseController
      * @param ValidationService    $validationService
      */
     public function __construct(
-        ArticleRepository $articleRepository,
-        CreateArticleService $createArticleService,
-        EditArticleService $editArticleService,
-        ValidationService $validationService
-    ) {
-        $this->articleRepository    = $articleRepository;
-        $this->createArticleService = $createArticleService;
-        $this->editArticleService   = $editArticleService;
-        $this->validationService    = $validationService;
-    }
+        private ArticleRepository $articleRepository,
+        private CreateArticleService $createArticleService,
+        private EditArticleService $editArticleService,
+        private ValidationService $validationService
+    ) {}
 
     /**
      * Creates new article.
      *
-     * @param Request $request
+     * @param Request  $request
      * @param Response $response
      *
      * @return Response
@@ -80,6 +56,7 @@ class ArticleController extends BaseController
      * @throws DataObjectManagerException
      * @throws ValidationException
      * @throws AuthenticationException
+     * @throws NoSuchEntityException
      */
     public function create(Request $request, Response $response): Response
     {
@@ -107,13 +84,14 @@ class ArticleController extends BaseController
     }
 
     /**
-     * @param Request     $request
-     * @param Response    $response
+     * @param Request  $request
+     * @param Response $response
      *
-     * @param             $args
+     * @param array    $args
      *
      * @return Response
-     * @throws ArticleException|DataObjectManagerException
+     * @throws DataObjectManagerException
+     * @throws NoSuchEntityException
      */
     public function article(Request $request, Response $response, array $args): Response
     {
@@ -121,11 +99,7 @@ class ArticleController extends BaseController
         $slug = $args['slug'];
 
         /** @var Article $article */
-        $article = $this->articleRepository->getArticleWithCommentCount((string) $slug);
-
-        if (!$article) {
-            throw new ArticleException(__('No specific Article found'), 404);
-        }
+        $article = $this->articleRepository->get($slug, 'slug');
         $article->getUser();
 
         return $this->respond(
@@ -140,8 +114,8 @@ class ArticleController extends BaseController
      * @param Response $response
      *
      * @return Response
-     * @throws ArticleException
      * @throws DataObjectManagerException
+     * @throws NoSuchEntityException
      * @throws ValidationException
      */
     public function editArticle(Request $request, Response $response): Response
@@ -204,11 +178,11 @@ class ArticleController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        /** @var LengthAwarePaginator $articles */
+        /** @var PaginatedCollection $articles */
         $articles = $this->articleRepository
             ->getPaginatedArticleList(
-                (int) $page,
-                (int) $resultPerPage
+                $page,
+                $resultPerPage
             );
 
         return $this->respond(
@@ -234,7 +208,7 @@ class ArticleController extends BaseController
         /** @var int $id */
         $id = $args['id'];
 
-        $deleted = $this->articleRepository->delete((int) $id);
+        $deleted = $this->articleRepository->delete($id);
 
         if (!$deleted) {
             throw new ArticleException(__('Article could not be deleted'), 409);

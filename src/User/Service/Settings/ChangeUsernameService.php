@@ -1,13 +1,14 @@
 <?php
 /**
- * Ares (https://ares.to)
- *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ * @copyright Copyright (c) Ares (https://www.ares.to)
+ *  
+ * @see LICENSE (MIT)
  */
 
 namespace Ares\User\Service\Settings;
 
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\User\Entity\User;
 use Ares\User\Entity\UserSetting;
@@ -23,28 +24,15 @@ use Ares\User\Repository\UserSettingRepository;
 class ChangeUsernameService
 {
     /**
-     * @var UserRepository
-     */
-    private UserRepository $userRepository;
-
-    /**
-     * @var UserSettingRepository
-     */
-    private UserSettingRepository $userSettingRepository;
-
-    /**
      * ChangeUsernameService constructor.
      *
      * @param UserRepository $userRepository
      * @param UserSettingRepository $userSettingRepository
      */
     public function __construct(
-        UserRepository $userRepository,
-        UserSettingRepository $userSettingRepository
-    ) {
-        $this->userRepository = $userRepository;
-        $this->userSettingRepository = $userSettingRepository;
-    }
+        private UserRepository $userRepository,
+        private UserSettingRepository $userSettingRepository
+    ) {}
 
     /**
      * Changes user name by given data.
@@ -54,8 +42,9 @@ class ChangeUsernameService
      * @param string $password
      *
      * @return CustomResponseInterface
-     * @throws UserSettingsException
      * @throws DataObjectManagerException
+     * @throws UserSettingsException
+     * @throws NoSuchEntityException
      */
     public function execute(User $user, string $username, string $password): CustomResponseInterface
     {
@@ -64,10 +53,6 @@ class ChangeUsernameService
 
         if (!password_verify($password, $user->getPassword())) {
             throw new UserSettingsException(__('Given old password does not match the current password'));
-        }
-
-        if (!$userSetting) {
-            throw new UserSettingsException(__('Settings for given user does not exist'));
         }
 
         if (!$userSetting->getCanChangeName()) {

@@ -1,8 +1,8 @@
 <?php
 /**
- * Ares (https://ares.to)
- *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ * @copyright Copyright (c) Ares (https://www.ares.to)
+ *  
+ * @see LICENSE (MIT)
  */
 
 namespace Ares\User\Service\Currency;
@@ -19,20 +19,13 @@ use Exception;
 class UpdateCurrencyService
 {
     /**
-     * @var UserCurrencyRepository
-     */
-    private UserCurrencyRepository $userCurrencyRepository;
-
-    /**
      * UpdateCurrencyService constructor.
      *
      * @param UserCurrencyRepository $userCurrencyRepository
      */
     public function __construct(
-        UserCurrencyRepository $userCurrencyRepository
-    ) {
-        $this->userCurrencyRepository = $userCurrencyRepository;
-    }
+        private UserCurrencyRepository $userCurrencyRepository
+    ) {}
 
     /**
      * Updates currency by given data.
@@ -56,8 +49,8 @@ class UpdateCurrencyService
             $currency->setAmount($amount);
             try {
                 $this->userCurrencyRepository->save($currency);
-            } catch (Exception $exception) {
-                throw new UserCurrencyException(__('Currency could not be updated'), 422);
+            } catch (Exception) {
+                throw new UserCurrencyException(__('Currency could not be updated.'), 422);
             }
         }
     }

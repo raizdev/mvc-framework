@@ -1,8 +1,8 @@
 <?php
 /**
- * Ares (https://ares.to)
+ * @copyright Copyright (c) Ares (https://www.ares.to)
  *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ * @see LICENSE (MIT)
  */
 
 namespace Ares\Payment\Service;
@@ -20,22 +20,14 @@ use Ares\Payment\Repository\PaymentRepository;
  */
 class CreatePaymentService
 {
-
-    /**
-     * @var PaymentRepository
-     */
-    private PaymentRepository $paymentRepository;
-
     /**
      * CreatePaymentService constructor.
      *
      * @param   PaymentRepository  $paymentRepository
      */
     public function __construct(
-        PaymentRepository $paymentRepository
-    ) {
-        $this->paymentRepository = $paymentRepository;
-    }
+        private PaymentRepository $paymentRepository
+    ) {}
 
     /**
      * @param int   $userId

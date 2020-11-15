@@ -1,8 +1,8 @@
 <?php
 /**
- * Ares (https://ares.to)
+ * @copyright Copyright (c) Ares (https://www.ares.to)
  *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ * @see LICENSE (MIT)
  */
 
 namespace Ares\Role\Repository;
@@ -33,7 +33,7 @@ class RoleUserRepository extends BaseRepository
      * @return array|null
      * @throws QueryException
      */
-    public function getUserRoleIds($userId): ?array
+    public function getUserRoleIds(int $userId): ?array
     {
         $searchCriteria = $this->getDataObjectManager()
             ->select('role_id')

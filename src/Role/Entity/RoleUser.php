@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 /**
- * Ares (https://ares.to)
+ * @copyright Copyright (c) Ares (https://www.ares.to)
  *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ * @see LICENSE (MIT)
  */
 
 namespace Ares\Role\Entity;
@@ -61,9 +61,9 @@ class RoleUser extends DataObject implements RoleUserInterface
      *
      * @return RoleUser
      */
-    public function setRoleId(int $role_id): RoleUser
+    public function setRoleId(int $roleId): RoleUser
     {
-        return $this->setData(RoleUserInterface::COLUMN_ROLE_ID, $role_id);
+        return $this->setData(RoleUserInterface::COLUMN_ROLE_ID, $roleId);
     }
 
     /**
@@ -75,13 +75,13 @@ class RoleUser extends DataObject implements RoleUserInterface
     }
 
     /**
-     * @param int $user_id
+     * @param int $userId
      *
      * @return RoleUser
      */
-    public function setUserId(int $user_id): RoleUser
+    public function setUserId(int $userId): RoleUser
     {
-        return $this->setData(RoleUserInterface::COLUMN_USER_ID, $user_id);
+        return $this->setData(RoleUserInterface::COLUMN_USER_ID, $userId);
     }
 
     /**
@@ -93,13 +93,13 @@ class RoleUser extends DataObject implements RoleUserInterface
     }
 
     /**
-     * @param DateTime $created_at
+     * @param DateTime $createdAt
      *
      * @return RoleUser
      */
-    public function setCreatedAt(DateTime $created_at)
+    public function setCreatedAt(DateTime $createdAt)
     {
-        return $this->setData(RoleUserInterface::COLUMN_CREATED_AT, $created_at);
+        return $this->setData(RoleUserInterface::COLUMN_CREATED_AT, $createdAt);
     }
 
     /**

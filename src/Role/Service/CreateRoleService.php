@@ -1,17 +1,19 @@
 <?php
 /**
- * Ares (https://ares.to)
- *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ * @copyright Copyright (c) Ares (https://www.ares.to)
+ *  
+ * @see LICENSE (MIT)
  */
 
 namespace Ares\Role\Service;
 
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\Role\Entity\Role;
 use Ares\Role\Exception\RoleException;
 use Ares\Role\Repository\RoleRepository;
+use DateTime;
 
 /**
  * Class CreateRoleService
@@ -21,32 +23,26 @@ use Ares\Role\Repository\RoleRepository;
 class CreateRoleService
 {
     /**
-     * @var RoleRepository
-     */
-    private RoleRepository $roleRepository;
-
-    /**
      * CreateRoleService constructor.
      *
      * @param RoleRepository $roleRepository
      */
     public function __construct(
-        RoleRepository $roleRepository
-    ) {
-        $this->roleRepository = $roleRepository;
-    }
+        private RoleRepository $roleRepository
+    ) {}
 
     /**
      * @param array $data
      *
      * @return CustomResponseInterface
-     * @throws RoleException
      * @throws DataObjectManagerException
+     * @throws RoleException
+     * @throws NoSuchEntityException
      */
     public function execute(array $data): CustomResponseInterface
     {
         /** @var Role $existingRole */
-        $existingRole = $this->roleRepository->get($data['name'], 'name');
+        $existingRole = $this->roleRepository->get($data['name'], 'name', true);
 
         if ($existingRole) {
             throw new RoleException(__('Role %s already exists', [$existingRole->getName()]));
@@ -73,7 +69,7 @@ class CreateRoleService
         $role
             ->setName($data['name'])
             ->setDescription($data['description'])
-            ->setCreatedAt(new \DateTime());
+            ->setCreatedAt(new DateTime());
 
         return $role;
     }

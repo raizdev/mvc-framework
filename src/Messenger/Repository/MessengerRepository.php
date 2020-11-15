@@ -1,8 +1,8 @@
 <?php
 /**
- * Ares (https://ares.to)
+ * @copyright Copyright (c) Ares (https://www.ares.to)
  *
- * @license https://gitlab.com/arescms/ares-backend/LICENSE (MIT License)
+ * @see LICENSE (MIT)
  */
 
 namespace Ares\Messenger\Repository;
@@ -11,7 +11,6 @@ use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Model\Query\PaginatedCollection;
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Messenger\Entity\MessengerFriendship;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 /**
  * Class MessengerRepository
@@ -34,10 +33,10 @@ class MessengerRepository extends BaseRepository
      * @param int $page
      * @param int $resultPerPage
      *
-     * @return LengthAwarePaginator
+     * @return PaginatedCollection
      * @throws DataObjectManagerException
      */
-    public function getPaginatedMessengerFriends(int $userId, int $page, int $resultPerPage): LengthAwarePaginator
+    public function getPaginatedMessengerFriends(int $userId, int $page, int $resultPerPage): PaginatedCollection
     {
         $searchCriteria = $this->getDataObjectManager()
             ->select([
