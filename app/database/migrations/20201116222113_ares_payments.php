@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 use Phinx\Migration\AbstractMigration;
 
+/**
+ * Class AresPayments
+ */
 final class AresPayments extends AbstractMigration
 {
     public function change(): void

@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 use Phinx\Migration\AbstractMigration;
 
+/**
+ * Class AresRolesPermission
+ */
 final class AresRolesPermission extends AbstractMigration
 {
     public function change(): void

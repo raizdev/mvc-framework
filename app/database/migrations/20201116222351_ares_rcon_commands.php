@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 use Phinx\Migration\AbstractMigration;
 
+/**
+ * Class AresRconCommands
+ */
 final class AresRconCommands extends AbstractMigration
 {
     public function change(): void
