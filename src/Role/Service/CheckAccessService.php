@@ -55,7 +55,7 @@ class CheckAccessService
 
         $roleIds = $this->roleUserRepository->getUserRoleIds($userId);
 
-        if (count($roleIds) > 0) {
+        if ($roleIds && count($roleIds) > 0) {
             $allRoleIds = $this->roleHierarchyRepository
                 ->getAllRoleIdsHierarchy($roleIds);
 
