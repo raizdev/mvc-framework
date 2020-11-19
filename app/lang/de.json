@@ -56,6 +56,7 @@
   "User with given E-Mail already exists": "User mit angegebener E-Mail existiert bereits",
   "Settings for given user does not exist": "Einstellungen für angegebenen User existieren nicht",
   "User is not allowed to change the Username": "User ist nicht berechtigt den Usernamen zu ändern",
+  "You cannot use the same Username or a User with this username already exists": "Du kannst nicht den selben Usernamen benutzen oder es existiert schon ein User mit diesem Usernamen",
   "User with given username already exists": "User mit angegebenen Username existiert bereits",
 
   "You dont have the special rights to execute that action": "Du besitzt nicht die nötigen Rechte um die Aktion auszuführen",

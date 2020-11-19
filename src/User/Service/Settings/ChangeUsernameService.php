@@ -62,8 +62,8 @@ class ChangeUsernameService
         /** @var User $usernameExists */
         $usernameExists = $this->userRepository->get($username, 'username', true);
 
-        if ($usernameExists) {
-            throw new UserSettingsException(__('User with given username already exists'));
+        if ($usernameExists || $user->getUsername() === $usernameExists) {
+            throw new UserSettingsException(__('You cannot use the same Username or a User with this username already exists'));
         }
 
         /** @var User $user */

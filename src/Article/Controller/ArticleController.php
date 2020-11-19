@@ -65,7 +65,7 @@ class ArticleController extends BaseController
         $parsedData = $request->getParsedBody();
 
         $this->validationService->validate($parsedData, [
-            ArticleInterface::COLUMN_TITLE => 'required|regex:/^[a-zA-Z0-9]+$/',
+            ArticleInterface::COLUMN_TITLE => 'required',
             ArticleInterface::COLUMN_DESCRIPTION => 'required',
             ArticleInterface::COLUMN_CONTENT => 'required',
             ArticleInterface::COLUMN_IMAGE => 'required',

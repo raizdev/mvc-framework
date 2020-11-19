@@ -1,7 +1,7 @@
 <?php
 /**
  * @copyright Copyright (c) Ares (https://www.ares.to)
- *  
+ *
  * @see LICENSE (MIT)
  */
 
@@ -43,13 +43,8 @@ class ChangePasswordService
     public function execute(User $user, string $password, string $oldPassword): CustomResponseInterface
     {
         $currentPassword = $user->getPassword();
-        $passwordHashed = password_hash(
-            $password,
-            PASSWORD_ARGON2ID,
-            ['memory_cost' => 8, 'time_cost' => 1, 'threads' => 1]
-        );
 
-        if (!password_verify($oldPassword, $passwordHashed)) {
+        if (!password_verify($oldPassword, $currentPassword)) {
             throw new UserSettingsException(__('Given old password does not match the current password'));
         }
 
@@ -57,8 +52,15 @@ class ChangePasswordService
             throw new UserSettingsException(__('Given password should be a different password than the current'));
         }
 
+        /** @var mixed $passwordHashed */
+        $passwordHashed = password_hash(
+            $password,
+            PASSWORD_ARGON2ID,
+            ['memory_cost' => 8, 'time_cost' => 1, 'threads' => 1]
+        );
+
         /** @var User $user */
-        $user = $this->userRepository->save($user->setPassword($password));
+        $user = $this->userRepository->save($user->setPassword($passwordHashed));
 
         return response()
             ->setData($user);

@@ -43,14 +43,14 @@ class RconHelper
             'data' => $parameter
         ], JSON_THROW_ON_ERROR);
 
-        $executor = socket_write($socket, $encodedData, strlen($encodedData));
+        $executor = @socket_write($socket, $encodedData, strlen($encodedData));
 
         if (!$executor) {
             throw new RconException(__('Could not send the provided Command'));
         }
 
         return json_decode(
-            socket_read($socket, 2048), true, 512, JSON_THROW_ON_ERROR
+            @socket_read($socket, 2048), true, 512, JSON_THROW_ON_ERROR
         );
     }
 
@@ -90,7 +90,7 @@ class RconHelper
      */
     public function connectToSocket($socket, $host, $port): bool
     {
-        return socket_connect($socket, $host, $port);
+        return @socket_connect($socket, $host, $port);
     }
 
     /**
@@ -101,7 +101,7 @@ class RconHelper
      */
     public function createSocket(): \Socket
     {
-        $socket = socket_create(
+        $socket = @socket_create(
             AF_INET,
             SOCK_STREAM,
             SOL_TCP

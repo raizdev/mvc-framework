@@ -152,7 +152,7 @@ class UserSettingsController extends BaseController
 
         $customResponse = $this->changeEmailService->execute(
             $user,
-            $parsedData['email'],
+            $parsedData['mail'],
             $parsedData['password']
         );
 
