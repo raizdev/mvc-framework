@@ -49,6 +49,7 @@ class UserController extends BaseController
         $user = user($request);
         $user->getRoles();
         $user->getCurrencies();
+        $user->getPermissions();
 
         return $this->respond(
             $response,
