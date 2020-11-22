@@ -410,10 +410,6 @@ class User extends DataObject implements UserInterface
             return $permissions;
         }
 
-        if (!isset($this)) {
-            return null;
-        }
-
         /** @var RoleUserRepository $roleUserRepository */
         $roleUserRepository = repository(RoleUserRepository::class);
 
@@ -422,6 +418,10 @@ class User extends DataObject implements UserInterface
 
         /** @var array $userRoleIds */
         $userRoleIds = $roleUserRepository->getUserRoleIds($this->getId());
+
+        if (!isset($this) || !$userRoleIds) {
+            return null;
+        }
 
         /** @var array $allRoleIds */
         $allRoleIds = $roleHierarchyRepository->getAllRoleIdsHierarchy($userRoleIds);
