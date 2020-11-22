@@ -86,7 +86,7 @@ class RoleUserRepository extends BaseRepository
 
         return array_values(
             array_unique(
-                $this->getList($searchCriteria)->get('name')
+                $this->getList($searchCriteria)->get('name') ?? []
             )
         );
     }
