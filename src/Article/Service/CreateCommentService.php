@@ -1,7 +1,7 @@
 <?php
 /**
  * @copyright Copyright (c) Ares (https://www.ares.to)
- *  
+ *
  * @see LICENSE (MIT)
  */
 
@@ -9,12 +9,14 @@ namespace Ares\Article\Service;
 
 use Ares\Article\Entity\Article;
 use Ares\Article\Entity\Comment;
+use Ares\Article\Exception\CommentException;
 use Ares\Article\Repository\ArticleRepository;
 use Ares\Article\Repository\CommentRepository;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use DateTime;
+use PHLAK\Config\Config;
 
 /**
  * Class CreateCommentService
@@ -28,10 +30,12 @@ class CreateCommentService
      *
      * @param ArticleRepository $articleRepository
      * @param CommentRepository $commentRepository
+     * @param Config            $config
      */
     public function __construct(
         private ArticleRepository $articleRepository,
-        private CommentRepository $commentRepository
+        private CommentRepository $commentRepository,
+        private Config $config
     ) {}
 
     /**
@@ -42,10 +46,20 @@ class CreateCommentService
      *
      * @return CustomResponseInterface
      * @throws DataObjectManagerException|NoSuchEntityException
+     * @throws CommentException
      */
     public function execute(int $userId, array $data): CustomResponseInterface
     {
-        $comment = $this->getNewComment($userId, $data);
+        /** @var Article $article */
+        $article = $this->articleRepository->get($data['article_id']);
+
+        $commentCount = $this->commentRepository->getUserCommentCount($userId, $article->getId());
+
+        if ($commentCount >= $this->config->get('hotel_settings.news.comment_max')) {
+            throw new CommentException(__('User exceeded allowed comments'));
+        }
+
+        $comment = $this->getNewComment($userId, $article->getId(), $data);
 
         /** @var Comment $comment */
         $comment = $this->commentRepository->save($comment);
@@ -59,17 +73,14 @@ class CreateCommentService
      * Returns new comment object with data.
      *
      * @param int   $userId
+     * @param int   $articleId
      * @param array $data
      *
      * @return Comment
-     * @throws NoSuchEntityException
      */
-    private function getNewComment(int $userId, array $data): Comment
+    private function getNewComment(int $userId, int $articleId, array $data): Comment
     {
         $comment = new Comment();
-
-        /** @var Article $article */
-        $article = $this->articleRepository->get($data['article_id']);
 
         return $comment
             ->setContent($data['content'])
@@ -77,7 +88,7 @@ class CreateCommentService
             ->setUserId($userId)
             ->setLikes(0)
             ->setDislikes(0)
-            ->setArticleId($article->getId())
+            ->setArticleId($articleId)
             ->setLikes(0)
             ->setDislikes(0)
             ->setCreatedAt(new DateTime());

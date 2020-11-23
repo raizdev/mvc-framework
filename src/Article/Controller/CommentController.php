@@ -53,7 +53,7 @@ class CommentController extends BaseController
      * @throws AuthenticationException
      * @throws DataObjectManagerException
      * @throws ValidationException
-     * @throws NoSuchEntityException
+     * @throws NoSuchEntityException|CommentException
      */
     public function create(Request $request, Response $response): Response
     {
