@@ -76,5 +76,6 @@
   "Could not create the socket": "Socket konnte nicht erstellt werden",
   "The command %s already exists": "Kommando %s existiert bereits",
   "Permission %s already exists": "Permission %s existiert bereits",
-  "Role %s already exists": "Rolle %s existiert bereits"
+  "Role %s already exists": "Rolle %s existiert bereits",
+  "User exceeded allowed comments": "User hat zu viele Kommentare gepostet"
 }
