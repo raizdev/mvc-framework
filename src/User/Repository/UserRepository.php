@@ -66,4 +66,18 @@ class UserRepository extends BaseRepository
 
         return $this->getOneBy($searchCriteria, true, false);
     }
+
+    /**
+     * @param string $username
+     *
+     * @return string|null
+     * @throws NoSuchEntityException
+     */
+    public function getUserLook(string $username): ?string
+    {
+        $searchCriteria = $this->getDataObjectManager()
+            ->where('username', $username);
+
+        return $this->getOneBy($searchCriteria)?->getLook();
+    }
 }

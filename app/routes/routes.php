@@ -1,7 +1,7 @@
 <?php
 /**
  * @copyright Copyright (c) Ares (https://www.ares.to)
- *  
+ *
  * @see LICENSE (MIT)
  */
 
@@ -234,7 +234,11 @@ return function (App $app) {
             ->add(\Ares\Framework\Middleware\AuthMiddleware::class);
 
         // Authentication
-        $group->post('/login', \Ares\User\Controller\AuthController::class . ':login');
+        $group->group('/login', function ($group) {
+            $group->post('', \Ares\User\Controller\AuthController::class . ':login');
+            $group->post('/look', \Ares\User\Controller\UserController::class . ':getLook');
+        });
+
         $group->group('/register', function ($group) {
             $group->post('', \Ares\User\Controller\AuthController::class . ':register');
             $group->get('/looks', \Ares\User\Controller\AuthController::class . ':viableLooks');
