@@ -14,11 +14,15 @@ final class Users extends AbstractMigration
 
         $created_at = $table->hasColumn('created_at');
         $updated_at = $table->hasColumn('updated_at');
+        $real_name  = $table->hasColumn('real_name');
 
         $table->changeColumn('password', 'string', ['limit' => 255])
-            ->changeColumn('real_name', 'string', ['limit' => 25, 'null' => true])
             ->save();
 
+        if ($real_name) {
+            $table->changeColumn('real_name', 'string', ['limit' => 25, 'null' => true])
+                ->save();
+        }
         if (!$created_at && !$updated_at) {
             $table->addColumn('created_at', 'datetime')
                 ->addColumn('updated_at', 'datetime', ['null' => true])
