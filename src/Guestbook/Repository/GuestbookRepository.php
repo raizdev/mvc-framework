@@ -77,7 +77,7 @@ class GuestbookRepository extends BaseRepository
             ->where([
                 'user_id' => $userId,
                 'profile_id' => $profileId
-            ])->orWhere([
+            ])->where([
                 'user_id' => $userId,
                 'guild_id' => $guildId
             ]);

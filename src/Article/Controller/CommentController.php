@@ -8,10 +8,10 @@
 namespace Ares\Article\Controller;
 
 use Ares\Article\Entity\Contract\CommentInterface;
-use Ares\Article\Exception\CommentException;
 use Ares\Article\Repository\CommentRepository;
 use Ares\Article\Service\CreateCommentService;
 use Ares\Article\Service\EditCommentService;
+use Ares\Article\Exception\CommentException;
 use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;

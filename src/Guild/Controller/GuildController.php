@@ -11,7 +11,6 @@ use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Guild\Entity\Guild;
-use Ares\Guild\Exception\GuildException;
 use Ares\Guild\Repository\GuildMemberRepository;
 use Ares\Guild\Repository\GuildRepository;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -25,7 +24,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class GuildController extends BaseController
 {
     /**
-     * RoomController constructor.
+     * GuildController constructor.
      *
      * @param   GuildRepository         $guildRepository
      * @param   GuildMemberRepository   $guildMemberRepository
