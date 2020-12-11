@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3d49931d03037c2b6a18a578d25c4226",
+    "content-hash": "20096aa78afa781d209319a5d55ad12a",
     "packages": [
         {
             "name": "cakephp/core",
@@ -2648,12 +2648,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "4d1c896dddbc29ebecd76e819e0bdb02b55bd2aa"
+                "reference": "a3545743754dcab960a6e0145c5b4f909a406e40"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/4d1c896dddbc29ebecd76e819e0bdb02b55bd2aa",
-                "reference": "4d1c896dddbc29ebecd76e819e0bdb02b55bd2aa",
+                "url": "https://api.github.com/repos/symfony/console/zipball/a3545743754dcab960a6e0145c5b4f909a406e40",
+                "reference": "a3545743754dcab960a6e0145c5b4f909a406e40",
                 "shasum": ""
             },
             "require": {
@@ -2734,7 +2734,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-12-05T16:13:03+00:00"
+            "time": "2020-12-08T17:04:48+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -3657,12 +3657,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "723890858796e8c9e9a7f87a4d8680d8305d5c1b"
+                "reference": "d2d600fb284494bdb1270a1d19dcf27cb57e3264"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/723890858796e8c9e9a7f87a4d8680d8305d5c1b",
-                "reference": "723890858796e8c9e9a7f87a4d8680d8305d5c1b",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/d2d600fb284494bdb1270a1d19dcf27cb57e3264",
+                "reference": "d2d600fb284494bdb1270a1d19dcf27cb57e3264",
                 "shasum": ""
             },
             "require": {
@@ -3721,7 +3721,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-12-05T10:59:40+00:00"
+            "time": "2020-12-08T17:04:48+00:00"
         },
         {
             "name": "tuupola/callable-handler",
