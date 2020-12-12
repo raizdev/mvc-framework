@@ -11,6 +11,7 @@ use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\Guestbook\Entity\Guestbook;
 use Ares\Guestbook\Exception\GuestbookException;
+use Ares\Guestbook\Interfaces\Response\GuestbookResponseCodeInterface;
 use Ares\Guestbook\Repository\GuestbookRepository;
 use PHLAK\Config\Config;
 
@@ -44,7 +45,10 @@ class CreateGuestbookEntryService
         $commentCount = $this->guestbookRepository->getUserCommentCount($userId, $data['profile_id'], $data['guild_id']);
 
         if ($commentCount >= $this->config->get('hotel_settings.guestbook.comment_max')) {
-            throw new GuestbookException(__('User exceeded allowed comments'));
+            throw new GuestbookException(
+                __('User exceeded allowed comments'),
+                GuestbookResponseCodeInterface::RESPONSE_GUESTBOOK_USER_EXCEEDED_COMMENTS
+            );
         }
 
         $entry = $this->getNewEntry($userId, $data);

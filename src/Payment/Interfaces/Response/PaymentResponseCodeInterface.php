@@ -20,5 +20,5 @@ interface PaymentResponseCodeInterface extends CustomResponseCodeInterface
     public const RESPONSE_PAYMENT_NOT_DELETED = 10823;
 
     /** @var int */
-    public const RESPONSE_PAYMENT_ALREADY_ONGOING = 1850;
+    public const RESPONSE_PAYMENT_ALREADY_ONGOING = 10850;
 }
