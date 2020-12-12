@@ -145,7 +145,7 @@ class RegisterService
     {
         /** @var int $maxAccountsPerIp */
         $maxAccountsPerIp = $this->config->get('hotel_settings.register.max_accounts_per_ip');
-        $accountExistence = $this->userRepository->getAccountCountByIp($data['ip_Register']);
+        $accountExistence = $this->userRepository->getAccountCountByIp($data['ip_register']);
 
         if ($accountExistence >= $maxAccountsPerIp) {
             throw new RegisterException(

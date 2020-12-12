@@ -36,8 +36,9 @@ class HashService
     {
         return password_hash(
             $password,
-            $this->config->get('api_settings.password.algorithm') ?? PASSWORD_ARGON2ID,
-            [
+            json_decode(
+                $this->config->get('api_settings.password.algorithm')
+            ) ?? PASSWORD_ARGON2ID, [
                 'memory_cost' => $this->config->get('api_settings.password.memory_cost'),
                 'time_cost' => $this->config->get('api_settings.password.time_cost'),
                 'threads' => $this->config->get('api_settings.password.threads')
