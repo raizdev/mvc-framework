@@ -48,6 +48,12 @@
       "password_confirmation:same": "register.password.same",
       "password:min": "register.password.min"
     },
+    "password": {
+      "algorithm": "PASSWORD_ARGON2ID",
+      "memory_cost": 8,
+      "time_cost": 1,
+      "threads": 1
+    },
     "slug": {
       "trim": true
     }

@@ -14,6 +14,7 @@ use Ares\User\Entity\User;
 use Ares\User\Exception\UserSettingsException;
 use Ares\User\Interfaces\Response\UserResponseCodeInterface;
 use Ares\User\Repository\UserRepository;
+use Ares\User\Service\Auth\HashService;
 
 /**
  * Class ChangePasswordService
@@ -26,9 +27,11 @@ class ChangePasswordService
      * ChangePasswordService constructor.
      *
      * @param UserRepository $userRepository
+     * @param HashService $hashService
      */
     public function __construct(
-        private UserRepository $userRepository
+        private UserRepository $userRepository,
+        private HashService $hashService
     ) {}
 
     /**
@@ -62,12 +65,8 @@ class ChangePasswordService
             );
         }
 
-        /** @var mixed $passwordHashed */
-        $passwordHashed = password_hash(
-            $password,
-            PASSWORD_ARGON2ID,
-            ['memory_cost' => 8, 'time_cost' => 1, 'threads' => 1]
-        );
+        /** @var string $passwordHashed */
+        $passwordHashed = $this->hashService->hash($password);
 
         /** @var User $user */
         $user = $this->userRepository->save($user->setPassword($passwordHashed));

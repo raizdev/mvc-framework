@@ -30,16 +30,18 @@ class RegisterService
     /**
      * LoginService constructor.
      *
-     * @param   UserRepository         $userRepository
-     * @param   TokenService           $tokenService
-     * @param   TicketService          $ticketService
-     * @param   Config                 $config
-     * @param   CreateCurrencyService  $createCurrencyService
+     * @param UserRepository        $userRepository
+     * @param TokenService          $tokenService
+     * @param TicketService         $ticketService
+     * @param HashService           $hashService
+     * @param Config                $config
+     * @param CreateCurrencyService $createCurrencyService
      */
     public function __construct(
         private UserRepository $userRepository,
         private TokenService $tokenService,
         private TicketService $ticketService,
+        private HashService $hashService,
         private Config $config,
         private CreateCurrencyService $createCurrencyService
     ) {}
@@ -119,12 +121,7 @@ class RegisterService
 
         return $user
             ->setUsername($data['username'])
-            ->setPassword(password_hash(
-                    $data['password'],
-                    PASSWORD_ARGON2ID,
-                    ['memory_cost' => 8, 'time_cost' => 1, 'threads' => 1]
-                )
-            )
+            ->setPassword($this->hashService->hash($data['password']))
             ->setMail($data['mail'])
             ->setLook($data['look'])
             ->setGender($data['gender'])
