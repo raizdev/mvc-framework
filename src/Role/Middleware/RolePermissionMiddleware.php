@@ -7,10 +7,10 @@
 
 namespace Ares\Role\Middleware;
 
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Role\Exception\RoleException;
 use Ares\Role\Interfaces\Response\RoleResponseCodeInterface;
 use Ares\Role\Service\CheckAccessService;
-use Illuminate\Database\QueryException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -38,8 +38,7 @@ class RolePermissionMiddleware implements MiddlewareInterface
      * @param RequestHandlerInterface $handler
      *
      * @return ResponseInterface
-     * @throws QueryException
-     * @throws RoleException
+     * @throws RoleException|NoSuchEntityException
      */
     public function process(
         ServerRequestInterface $request,
