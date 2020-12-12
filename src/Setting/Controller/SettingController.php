@@ -14,7 +14,6 @@ use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
 use Ares\Setting\Entity\Contract\SettingInterface;
 use Ares\Setting\Entity\Setting;
-use Ares\Setting\Exception\SettingException;
 use Ares\Setting\Repository\SettingRepository;
 use Ares\Setting\Service\UpdateSettingService;
 use Psr\Http\Message\ResponseInterface as Response;

@@ -8,6 +8,7 @@
 namespace Ares\Role\Middleware;
 
 use Ares\Role\Exception\RoleException;
+use Ares\Role\Interfaces\Response\RoleResponseCodeInterface;
 use Ares\Role\Service\CheckAccessService;
 use Illuminate\Database\QueryException;
 use Psr\Http\Message\ResponseInterface;
@@ -59,7 +60,10 @@ class RolePermissionMiddleware implements MiddlewareInterface
         $isPermitted = $this->checkAccessService->execute($userId, $permissionName);
 
         if (!$isPermitted) {
-            throw new RoleException(__('You dont have the special rights to execute that action'), 403);
+            throw new RoleException(
+                __('You dont have the special rights to execute that action'),
+                RoleResponseCodeInterface::RESPONSE_ROLE_NO_RIGHTS_TO_EXECUTE_ACTION
+            );
         }
 
         return $handler->handle($request);

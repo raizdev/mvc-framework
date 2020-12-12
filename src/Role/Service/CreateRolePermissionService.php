@@ -1,7 +1,7 @@
 <?php
 /**
  * @copyright Copyright (c) Ares (https://www.ares.to)
- *  
+ *
  * @see LICENSE (MIT)
  */
 
@@ -14,6 +14,7 @@ use Ares\Role\Entity\Permission;
 use Ares\Role\Entity\Role;
 use Ares\Role\Entity\RolePermission;
 use Ares\Role\Exception\RoleException;
+use Ares\Role\Interfaces\Response\RoleResponseCodeInterface;
 use Ares\Role\Repository\PermissionRepository;
 use Ares\Role\Repository\RolePermissionRepository;
 use Ares\Role\Repository\RoleRepository;
@@ -69,7 +70,10 @@ class CreateRolePermissionService
             );
 
         if ($existingRolePermission) {
-            throw new RoleException(__('There is already a Permission assigned to that Role'));
+            throw new RoleException(
+                __('There is already a Permission assigned to that Role'),
+                RoleResponseCodeInterface::RESPONSE_ROLE_PERMISSION_ALREADY_ASSIGNED_TO_ROLE
+            );
         }
 
         $rolePermission = $this->getNewRolePermission($role->getId(), $permission->getId());
