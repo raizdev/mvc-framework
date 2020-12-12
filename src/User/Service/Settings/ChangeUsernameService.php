@@ -10,6 +10,7 @@ namespace Ares\User\Service\Settings;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
+use Ares\Framework\Interfaces\HttpResponseCodeInterface;
 use Ares\User\Entity\User;
 use Ares\User\Entity\UserSetting;
 use Ares\User\Exception\UserSettingsException;
@@ -55,14 +56,16 @@ class ChangeUsernameService
         if (!password_verify($password, $user->getPassword())) {
             throw new UserSettingsException(
                 __('Given old password does not match the current password'),
-                UserResponseCodeInterface::RESPONSE_SETTINGS_DIFFERENT_PASSWORD
+                UserResponseCodeInterface::RESPONSE_SETTINGS_DIFFERENT_PASSWORD,
+                HttpResponseCodeInterface::HTTP_RESPONSE_UNPROCESSABLE_ENTITY
             );
         }
 
         if (!$userSetting->getCanChangeName()) {
             throw new UserSettingsException(
                 __('User is not allowed to change the Username'),
-                UserResponseCodeInterface::RESPONSE_SETTINGS_NOT_ALLOWED_TO_CHANGE_USERNAME
+                UserResponseCodeInterface::RESPONSE_SETTINGS_NOT_ALLOWED_TO_CHANGE_USERNAME,
+                HttpResponseCodeInterface::HTTP_RESPONSE_UNPROCESSABLE_ENTITY
             );
         }
 
@@ -72,7 +75,8 @@ class ChangeUsernameService
         if ($usernameExists || $user->getUsername() === $usernameExists) {
             throw new UserSettingsException(
                 __('You cannot use the same Username or a User with this username already exists'),
-                UserResponseCodeInterface::RESPONSE_SETTINGS_USER_USERNAME_EXISTS
+                UserResponseCodeInterface::RESPONSE_SETTINGS_USER_USERNAME_EXISTS,
+                HttpResponseCodeInterface::HTTP_RESPONSE_UNPROCESSABLE_ENTITY
             );
         }
 

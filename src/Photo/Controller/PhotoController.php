@@ -11,6 +11,7 @@ use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Exception\ValidationException;
+use Ares\Framework\Interfaces\HttpResponseCodeInterface;
 use Ares\Framework\Service\ValidationService;
 use Ares\Photo\Entity\Photo;
 use Ares\Photo\Exception\PhotoException;
@@ -148,7 +149,8 @@ class PhotoController extends BaseController
         if (!$photo) {
             throw new PhotoException(
                 __('Photo could not be deleted'),
-                PhotoResponseCodeInterface::RESPONSE_PHOTO_NOT_DELETED
+                PhotoResponseCodeInterface::RESPONSE_PHOTO_NOT_DELETED,
+                HttpResponseCodeInterface::HTTP_RESPONSE_UNPROCESSABLE_ENTITY
             );
         }
 

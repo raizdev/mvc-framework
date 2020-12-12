@@ -14,6 +14,7 @@ use Ares\Article\Repository\ArticleRepository;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
+use Ares\Framework\Interfaces\HttpResponseCodeInterface;
 use Cocur\Slugify\Slugify;
 
 /**
@@ -52,7 +53,8 @@ class EditArticleService
         if ($article->getTitle() === $data['title']) {
             throw new ArticleException(
                 __('Article with given Title already exists'),
-                ArticleResponseCodeInterface::RESPONSE_ARTICLE_TITLE_EXIST
+                ArticleResponseCodeInterface::RESPONSE_ARTICLE_TITLE_EXIST,
+                HttpResponseCodeInterface::HTTP_RESPONSE_UNPROCESSABLE_ENTITY
             );
         }
 

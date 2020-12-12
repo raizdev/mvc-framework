@@ -16,6 +16,7 @@ use Ares\Article\Repository\CommentRepository;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
+use Ares\Framework\Interfaces\HttpResponseCodeInterface;
 use PHLAK\Config\Config;
 
 /**
@@ -58,7 +59,8 @@ class CreateCommentService
         if ($commentCount >= $this->config->get('hotel_settings.news.comment_max')) {
             throw new CommentException(
                 __('User exceeded allowed comments'),
-                ArticleResponseCodeInterface::RESPONSE_ARTICLE_COMMENT_EXCEEDED
+                ArticleResponseCodeInterface::RESPONSE_ARTICLE_COMMENT_EXCEEDED,
+                HttpResponseCodeInterface::HTTP_RESPONSE_UNPROCESSABLE_ENTITY
             );
         }
 

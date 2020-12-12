@@ -10,6 +10,7 @@ namespace Ares\Role\Service;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
+use Ares\Framework\Interfaces\HttpResponseCodeInterface;
 use Ares\Role\Entity\Permission;
 use Ares\Role\Entity\Role;
 use Ares\Role\Entity\RolePermission;
@@ -18,7 +19,6 @@ use Ares\Role\Interfaces\Response\RoleResponseCodeInterface;
 use Ares\Role\Repository\PermissionRepository;
 use Ares\Role\Repository\RolePermissionRepository;
 use Ares\Role\Repository\RoleRepository;
-use DateTime;
 
 /**
  * Class CreateChildPermission
@@ -72,7 +72,8 @@ class CreateRolePermissionService
         if ($existingRolePermission) {
             throw new RoleException(
                 __('There is already a Permission assigned to that Role'),
-                RoleResponseCodeInterface::RESPONSE_ROLE_PERMISSION_ALREADY_ASSIGNED_TO_ROLE
+                RoleResponseCodeInterface::RESPONSE_ROLE_PERMISSION_ALREADY_ASSIGNED_TO_ROLE,
+                HttpResponseCodeInterface::HTTP_RESPONSE_UNPROCESSABLE_ENTITY
             );
         }
 
@@ -98,7 +99,7 @@ class CreateRolePermissionService
         $rolePermission
             ->setRoleId($roleId)
             ->setPermissionId($permissionId)
-            ->setCreatedAt(new DateTime());
+            ->setCreatedAt(new \DateTime());
 
         return $rolePermission;
     }

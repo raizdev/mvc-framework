@@ -19,6 +19,7 @@ use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Exception\ValidationException;
+use Ares\Framework\Interfaces\HttpResponseCodeInterface;
 use Ares\Framework\Service\ValidationService;
 use Ares\User\Entity\User;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -163,7 +164,8 @@ class ThreadController extends BaseController
         if (!$deleted) {
             throw new ThreadException(
                 __('Thread could not be deleted.'),
-                ForumResponseCodeInterface::RESPONSE_FORUM_THREAD_NOT_DELETED
+                ForumResponseCodeInterface::RESPONSE_FORUM_THREAD_NOT_DELETED,
+                HttpResponseCodeInterface::HTTP_RESPONSE_UNPROCESSABLE_ENTITY
             );
         }
 

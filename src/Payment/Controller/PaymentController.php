@@ -12,6 +12,7 @@ use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Exception\ValidationException;
+use Ares\Framework\Interfaces\HttpResponseCodeInterface;
 use Ares\Framework\Service\ValidationService;
 use Ares\Payment\Entity\Contract\PaymentInterface;
 use Ares\Payment\Entity\Payment;
@@ -150,7 +151,8 @@ class PaymentController extends BaseController
         if (!$deleted) {
             throw new PaymentException(
                 __('Payment could not be deleted'),
-                PaymentResponseCodeInterface::RESPONSE_PAYMENT_NOT_DELETED
+                PaymentResponseCodeInterface::RESPONSE_PAYMENT_NOT_DELETED,
+                HttpResponseCodeInterface::HTTP_RESPONSE_UNPROCESSABLE_ENTITY
             );
         }
 

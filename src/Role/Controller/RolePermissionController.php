@@ -12,6 +12,7 @@ use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Exception\ValidationException as ValidationExceptionAlias;
+use Ares\Framework\Interfaces\HttpResponseCodeInterface;
 use Ares\Framework\Service\ValidationService;
 use Ares\Role\Entity\Contract\PermissionInterface;
 use Ares\Role\Exception\RoleException;
@@ -170,7 +171,8 @@ class RolePermissionController extends BaseController
         if (!$deleted) {
             throw new RoleException(
                 __('Permission could not be deleted'),
-                RoleResponseCodeInterface::RESPONSE_ROLE_PERMISSION_NOT_DELETED
+                RoleResponseCodeInterface::RESPONSE_ROLE_PERMISSION_NOT_DELETED,
+                HttpResponseCodeInterface::HTTP_RESPONSE_UNPROCESSABLE_ENTITY
             );
         }
 

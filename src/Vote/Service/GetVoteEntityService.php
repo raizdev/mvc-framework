@@ -10,6 +10,7 @@ namespace Ares\Vote\Service;
 use Ares\Article\Repository\ArticleRepository;
 use Ares\Article\Repository\CommentRepository;
 use Ares\Forum\Repository\ThreadRepository;
+use Ares\Framework\Interfaces\HttpResponseCodeInterface;
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Forum\Repository\CommentRepository as ThreadCommentRepository;
 use Ares\Guestbook\Repository\GuestbookRepository;
@@ -71,7 +72,8 @@ class GetVoteEntityService
                 throw new VoteException(
                     __('Entity with id %s does not exist',
                         [$entity]),
-                    VoteResponseCodeInterface::RESPONSE_VOTE_ENTITY_NOT_EXIST
+                    VoteResponseCodeInterface::RESPONSE_VOTE_ENTITY_NOT_EXIST,
+                    HttpResponseCodeInterface::HTTP_RESPONSE_NOT_FOUND
                 );
         }
     }

@@ -14,6 +14,7 @@ use Ares\Forum\Repository\TopicRepository;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
+use Ares\Framework\Interfaces\HttpResponseCodeInterface;
 use Cocur\Slugify\Slugify;
 
 /**
@@ -58,7 +59,8 @@ class CreateTopicService
             throw new TopicException(
                 __('Topic with the title %s already exists',
                     [$existingTopic->getTitle()]),
-                ForumResponseCodeInterface::RESPONSE_FORUM_TOPIC_ALREADY_EXIST
+                ForumResponseCodeInterface::RESPONSE_FORUM_TOPIC_ALREADY_EXIST,
+                HttpResponseCodeInterface::HTTP_RESPONSE_UNPROCESSABLE_ENTITY
             );
         }
 
@@ -70,7 +72,7 @@ class CreateTopicService
     }
 
     /**
-     * @param   array  $data
+     * @param array  $data
      *
      * @return Topic
      */

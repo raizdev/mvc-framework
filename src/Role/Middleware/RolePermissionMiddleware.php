@@ -8,6 +8,7 @@
 namespace Ares\Role\Middleware;
 
 use Ares\Framework\Exception\NoSuchEntityException;
+use Ares\Framework\Interfaces\HttpResponseCodeInterface;
 use Ares\Role\Exception\RoleException;
 use Ares\Role\Interfaces\Response\RoleResponseCodeInterface;
 use Ares\Role\Service\CheckAccessService;
@@ -61,7 +62,8 @@ class RolePermissionMiddleware implements MiddlewareInterface
         if (!$isPermitted) {
             throw new RoleException(
                 __('You dont have the special rights to execute that action'),
-                RoleResponseCodeInterface::RESPONSE_ROLE_NO_RIGHTS_TO_EXECUTE_ACTION
+                RoleResponseCodeInterface::RESPONSE_ROLE_NO_RIGHTS_TO_EXECUTE_ACTION,
+                HttpResponseCodeInterface::HTTP_RESPONSE_FORBIDDEN
             );
         }
 

@@ -10,6 +10,7 @@ namespace Ares\Role\Service;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
+use Ares\Framework\Interfaces\HttpResponseCodeInterface;
 use Ares\Role\Entity\Role;
 use Ares\Role\Entity\RoleHierarchy;
 use Ares\Role\Exception\RoleException;
@@ -56,7 +57,8 @@ class CreateChildRoleService
         if ($isCycle) {
             throw new RoleException(
                 __('Cycle detected for given Role notations'),
-                RoleResponseCodeInterface::RESPONSE_ROLE_CYCLE_DETECTED
+                RoleResponseCodeInterface::RESPONSE_ROLE_CYCLE_DETECTED,
+                HttpResponseCodeInterface::HTTP_RESPONSE_UNPROCESSABLE_ENTITY
             );
         }
 

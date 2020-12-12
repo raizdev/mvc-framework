@@ -19,6 +19,7 @@ use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Exception\ValidationException;
+use Ares\Framework\Interfaces\HttpResponseCodeInterface;
 use Ares\Framework\Model\Query\PaginatedCollection;
 use Ares\Framework\Service\ValidationService;
 use Ares\User\Entity\User;
@@ -160,7 +161,8 @@ class CommentController extends BaseController
         if (!$deleted) {
             throw new CommentException(
                 __('Comment could not be deleted'),
-                ForumResponseCodeInterface::RESPONSE_FORUM_COMMENT_NOT_DELETED
+                ForumResponseCodeInterface::RESPONSE_FORUM_COMMENT_NOT_DELETED,
+                HttpResponseCodeInterface::HTTP_RESPONSE_UNPROCESSABLE_ENTITY
             );
         }
 

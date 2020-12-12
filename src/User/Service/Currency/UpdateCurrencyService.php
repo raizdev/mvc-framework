@@ -7,6 +7,7 @@
 
 namespace Ares\User\Service\Currency;
 
+use Ares\Framework\Interfaces\HttpResponseCodeInterface;
 use Ares\User\Exception\UserCurrencyException;
 use Ares\User\Interfaces\Response\UserResponseCodeInterface;
 use Ares\User\Repository\UserCurrencyRepository;
@@ -45,7 +46,8 @@ class UpdateCurrencyService
         if (!$currencies) {
             throw new UserCurrencyException(
                 __('No Currencies were found'),
-                UserResponseCodeInterface::RESPONSE_CURRENCY_NOT_FOUND
+                UserResponseCodeInterface::RESPONSE_CURRENCY_NOT_FOUND,
+                HttpResponseCodeInterface::HTTP_RESPONSE_NOT_FOUND
             );
         }
 
@@ -56,7 +58,8 @@ class UpdateCurrencyService
             } catch (Exception) {
                 throw new UserCurrencyException(
                     __('Currency could not be updated.'),
-                    UserResponseCodeInterface::RESPONSE_CURRENCY_NOT_UPDATED
+                    UserResponseCodeInterface::RESPONSE_CURRENCY_NOT_UPDATED,
+                    HttpResponseCodeInterface::HTTP_RESPONSE_UNPROCESSABLE_ENTITY
                 );
             }
         }

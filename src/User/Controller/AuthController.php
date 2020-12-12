@@ -13,6 +13,7 @@ use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Exception\ValidationException;
+use Ares\Framework\Interfaces\HttpResponseCodeInterface;
 use Ares\Framework\Service\ValidationService;
 use Ares\User\Entity\Contract\UserInterface;
 use Ares\User\Entity\User;
@@ -148,7 +149,8 @@ class AuthController extends BaseController
         if (!is_array($boyLooks) || !is_array($girlLooks)) {
             throw new RegisterException(
                 __('There are no viable Looks available'),
-                UserResponseCodeInterface::RESPONSE_AUTH_REGISTER_NO_VIABLE_LOOKS
+                UserResponseCodeInterface::RESPONSE_AUTH_REGISTER_NO_VIABLE_LOOKS,
+                HttpResponseCodeInterface::HTTP_RESPONSE_NOT_FOUND
             );
         }
 

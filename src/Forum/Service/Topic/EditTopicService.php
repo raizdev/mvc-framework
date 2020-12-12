@@ -13,6 +13,7 @@ use Ares\Forum\Repository\TopicRepository;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
+use Ares\Framework\Interfaces\HttpResponseCodeInterface;
 
 /**
  * Class EditTopicService
@@ -55,7 +56,8 @@ class EditTopicService
             throw new TopicException(
                 __('Topic with the title %s already exists',
                     [$title]),
-                ForumResponseCodeInterface::RESPONSE_FORUM_TOPIC_ALREADY_EXIST
+                ForumResponseCodeInterface::RESPONSE_FORUM_TOPIC_ALREADY_EXIST.
+                HttpResponseCodeInterface::HTTP_RESPONSE_UNPROCESSABLE_ENTITY
             );
         }
 

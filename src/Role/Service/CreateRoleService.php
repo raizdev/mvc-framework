@@ -10,6 +10,7 @@ namespace Ares\Role\Service;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
+use Ares\Framework\Interfaces\HttpResponseCodeInterface;
 use Ares\Role\Entity\Role;
 use Ares\Role\Exception\RoleException;
 use Ares\Role\Interfaces\Response\RoleResponseCodeInterface;
@@ -48,7 +49,8 @@ class CreateRoleService
             throw new RoleException(
                 __('Role %s already exists',
                     [$existingRole->getName()]),
-                RoleResponseCodeInterface::RESPONSE_ROLE_ALREADY_EXIST
+                RoleResponseCodeInterface::RESPONSE_ROLE_ALREADY_EXIST,
+                HttpResponseCodeInterface::HTTP_RESPONSE_UNPROCESSABLE_ENTITY
             );
         }
 

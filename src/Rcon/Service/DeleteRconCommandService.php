@@ -10,6 +10,7 @@ namespace Ares\Rcon\Service;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
+use Ares\Framework\Interfaces\HttpResponseCodeInterface;
 use Ares\Rcon\Entity\Rcon;
 use Ares\Rcon\Exception\RconException;
 use Ares\Rcon\Interfaces\Response\RconResponseCodeInterface;
@@ -48,7 +49,8 @@ class DeleteRconCommandService
         if (!$deleted) {
             throw new RconException(
                 __('Command could not be deleted'),
-                RconResponseCodeInterface::RESPONSE_RCON_COMMAND_NOT_DELETED
+                RconResponseCodeInterface::RESPONSE_RCON_COMMAND_NOT_DELETED,
+                HttpResponseCodeInterface::HTTP_RESPONSE_UNPROCESSABLE_ENTITY
             );
         }
 

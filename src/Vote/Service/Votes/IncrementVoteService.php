@@ -8,6 +8,7 @@
 namespace Ares\Vote\Service\Votes;
 
 use Ares\Framework\Exception\NoSuchEntityException;
+use Ares\Framework\Interfaces\HttpResponseCodeInterface;
 use Ares\Framework\Model\DataObject;
 use Ares\Vote\Exception\VoteException;
 use Ares\Vote\Interfaces\Response\VoteResponseCodeInterface;
@@ -55,7 +56,8 @@ class IncrementVoteService
         if (!$entityRepository) {
             throw new VoteException(
                 __('Related EntityRepository could not be found'),
-                VoteResponseCodeInterface::RESPONSE_VOTE_ENTITY_REPOSITORY_NOT_FOUND
+                VoteResponseCodeInterface::RESPONSE_VOTE_ENTITY_REPOSITORY_NOT_FOUND,
+                HttpResponseCodeInterface::HTTP_RESPONSE_NOT_FOUND
             );
         }
 

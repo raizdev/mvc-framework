@@ -16,6 +16,7 @@ use Ares\Forum\Repository\TopicRepository;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
+use Ares\Framework\Interfaces\HttpResponseCodeInterface;
 use Cocur\Slugify\Slugify;
 
 /**
@@ -79,7 +80,8 @@ class CreateThreadService
         if (!$topic || $existingThread) {
             throw new ThreadException(
                 __('There is already an existing Thread or the Topic could not be found'),
-                ForumResponseCodeInterface::RESPONSE_FORUM_THREAD_THREAD_EXISTS_OR_NO_TOPIC
+                ForumResponseCodeInterface::RESPONSE_FORUM_THREAD_THREAD_EXISTS_OR_NO_TOPIC,
+                HttpResponseCodeInterface::HTTP_RESPONSE_UNPROCESSABLE_ENTITY
             );
         }
 

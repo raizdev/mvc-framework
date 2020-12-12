@@ -18,6 +18,7 @@ use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Exception\ValidationException;
+use Ares\Framework\Interfaces\HttpResponseCodeInterface;
 use Ares\Framework\Service\ValidationService;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -150,7 +151,8 @@ class TopicController extends BaseController
         if (!$deleted) {
             throw new TopicException(
                 __('Topic could not be deleted'),
-                ForumResponseCodeInterface::RESPONSE_FORUM_TOPIC_NOT_DELETED
+                ForumResponseCodeInterface::RESPONSE_FORUM_TOPIC_NOT_DELETED,
+                HttpResponseCodeInterface::HTTP_RESPONSE_UNPROCESSABLE_ENTITY
             );
         }
 

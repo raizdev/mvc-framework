@@ -9,6 +9,7 @@ namespace Ares\Rcon\Service;
 
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
+use Ares\Framework\Interfaces\HttpResponseCodeInterface;
 use Ares\Rcon\Exception\RconException;
 use Ares\Rcon\Interfaces\Response\RconResponseCodeInterface;
 use Ares\Rcon\Model\Rcon;
@@ -67,7 +68,8 @@ class ExecuteRconCommandService
             if (!$hasAccess) {
                 throw new RoleException(
                     __('You dont have the special rights to execute that action'),
-                    RconResponseCodeInterface::RESPONSE_RCON_NO_RIGHTS_TO_EXECUTE
+                    RconResponseCodeInterface::RESPONSE_RCON_NO_RIGHTS_TO_EXECUTE,
+                    HttpResponseCodeInterface::HTTP_RESPONSE_FORBIDDEN
                 );
             }
 

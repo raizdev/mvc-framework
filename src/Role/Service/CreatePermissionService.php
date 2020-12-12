@@ -10,6 +10,7 @@ namespace Ares\Role\Service;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
+use Ares\Framework\Interfaces\HttpResponseCodeInterface;
 use Ares\Role\Entity\Permission;
 use Ares\Role\Exception\RoleException;
 use Ares\Role\Interfaces\Response\RoleResponseCodeInterface;
@@ -48,7 +49,8 @@ class CreatePermissionService
             throw new RoleException(
                 __('Permission %s already exists',
                     [$existingPermission->getName()]),
-                RoleResponseCodeInterface::RESPONSE_ROLE_PERMISSION_ALREADY_EXIST
+                RoleResponseCodeInterface::RESPONSE_ROLE_PERMISSION_ALREADY_EXIST,
+                HttpResponseCodeInterface::HTTP_RESPONSE_UNPROCESSABLE_ENTITY
             );
         }
 

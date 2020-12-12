@@ -19,6 +19,7 @@ use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Exception\ValidationException;
+use Ares\Framework\Interfaces\HttpResponseCodeInterface;
 use Ares\Framework\Model\Query\PaginatedCollection;
 use Ares\Framework\Service\ValidationService;
 use Ares\User\Entity\User;
@@ -214,7 +215,8 @@ class ArticleController extends BaseController
         if (!$deleted) {
             throw new ArticleException(
                 __('Article could not be deleted'),
-                ArticleResponseCodeInterface::RESPONSE_ARTICLE_NOT_DELETED
+                ArticleResponseCodeInterface::RESPONSE_ARTICLE_NOT_DELETED,
+                HttpResponseCodeInterface::HTTP_RESPONSE_UNPROCESSABLE_ENTITY
             );
         }
 

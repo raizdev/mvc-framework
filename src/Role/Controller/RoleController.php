@@ -11,6 +11,7 @@ use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Exception\ValidationException;
+use Ares\Framework\Interfaces\HttpResponseCodeInterface;
 use Ares\Framework\Service\ValidationService;
 use Ares\Role\Entity\Contract\RoleHierarchyInterface;
 use Ares\Role\Entity\Contract\RoleInterface;
@@ -178,7 +179,8 @@ class RoleController extends BaseController
         if (!$deleted) {
             throw new RoleException(
                 __('Role could not be deleted'),
-                RoleResponseCodeInterface::RESPONSE_ROLE_NOT_DELETED
+                RoleResponseCodeInterface::RESPONSE_ROLE_NOT_DELETED,
+                HttpResponseCodeInterface::HTTP_RESPONSE_UNPROCESSABLE_ENTITY
             );
         }
 

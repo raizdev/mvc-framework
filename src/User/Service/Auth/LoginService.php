@@ -14,6 +14,7 @@ use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Factory\DataObjectManagerFactory;
 use Ares\Framework\Interfaces\CustomResponseInterface;
+use Ares\Framework\Interfaces\HttpResponseCodeInterface;
 use Ares\Framework\Service\TokenService;
 use Ares\User\Entity\User;
 use Ares\User\Exception\LoginException;
@@ -63,7 +64,8 @@ class LoginService
         if (!$user || !password_verify($data['password'], $user->getPassword())) {
             throw new LoginException(
                 __('Data combination was not found'),
-                UserResponseCodeInterface::RESPONSE_AUTH_LOGIN_FAILED
+                UserResponseCodeInterface::RESPONSE_AUTH_LOGIN_FAILED,
+                HttpResponseCodeInterface::HTTP_RESPONSE_NOT_FOUND
             );
         }
 
@@ -74,7 +76,9 @@ class LoginService
             throw new BanException(
                 __('You are banned because of %s',
                     [$isBanned->getBanReason()]),
-                UserResponseCodeInterface::RESPONSE_AUTH_LOGIN_BANNED);
+                UserResponseCodeInterface::RESPONSE_AUTH_LOGIN_BANNED,
+                HttpResponseCodeInterface::HTTP_RESPONSE_FORBIDDEN
+            );
         }
 
         $user->setLastLogin(time());

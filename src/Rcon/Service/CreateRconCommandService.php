@@ -10,6 +10,7 @@ namespace Ares\Rcon\Service;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
+use Ares\Framework\Interfaces\HttpResponseCodeInterface;
 use Ares\Rcon\Entity\Rcon;
 use Ares\Rcon\Exception\RconException;
 use Ares\Rcon\Interfaces\Response\RconResponseCodeInterface;
@@ -48,7 +49,8 @@ class CreateRconCommandService
             throw new RconException(
                 __('The command %s already exists',
                     [$existingCommand->getCommand()]),
-                RconResponseCodeInterface::RESPONSE_RCON_COMMAND_ALREADY_EXIST
+                RconResponseCodeInterface::RESPONSE_RCON_COMMAND_ALREADY_EXIST,
+                HttpResponseCodeInterface::HTTP_RESPONSE_UNPROCESSABLE_ENTITY
             );
         }
 

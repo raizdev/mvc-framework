@@ -9,6 +9,7 @@ namespace Ares\User\Service\Auth;
 
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
+use Ares\Framework\Interfaces\HttpResponseCodeInterface;
 use Ares\Framework\Service\TokenService;
 use Ares\User\Entity\User;
 use Ares\User\Exception\RegisterException;
@@ -66,7 +67,8 @@ class RegisterService
         if ($isAlreadyRegistered) {
             throw new RegisterException(
                 __('Username or E-Mail is already taken'),
-                UserResponseCodeInterface::RESPONSE_AUTH_REGISTER_TAKEN
+                UserResponseCodeInterface::RESPONSE_AUTH_REGISTER_TAKEN,
+                HttpResponseCodeInterface::HTTP_RESPONSE_UNPROCESSABLE_ENTITY
             );
         }
 
@@ -152,7 +154,8 @@ class RegisterService
             throw new RegisterException(
                 __('You can only have %s Accounts',
                     [$maxAccountsPerIp]),
-                UserResponseCodeInterface::RESPONSE_AUTH_REGISTER_EXCEEDED
+                UserResponseCodeInterface::RESPONSE_AUTH_REGISTER_EXCEEDED,
+                HttpResponseCodeInterface::HTTP_RESPONSE_FORBIDDEN
             );
         }
 
@@ -179,7 +182,8 @@ class RegisterService
         if ($data['gender'] !== "M" && $data['gender'] !== "F") {
             throw new RegisterException(
                 __('The gender must be valid'),
-                UserResponseCodeInterface::RESPONSE_AUTH_REGISTER_GENDER
+                UserResponseCodeInterface::RESPONSE_AUTH_REGISTER_GENDER,
+                HttpResponseCodeInterface::HTTP_RESPONSE_UNPROCESSABLE_ENTITY
             );
         }
 

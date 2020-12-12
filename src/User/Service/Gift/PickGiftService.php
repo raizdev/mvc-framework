@@ -10,6 +10,7 @@ namespace Ares\User\Service\Gift;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
+use Ares\Framework\Interfaces\HttpResponseCodeInterface;
 use Ares\Rcon\Exception\RconException;
 use Ares\Rcon\Service\ExecuteRconCommandService;
 use Ares\Role\Exception\RoleException;
@@ -67,7 +68,8 @@ class PickGiftService
             if (time() <= $pickTime) {
                 throw new DailyGiftException(
                     __('User already picked the daily gift.'),
-                    UserResponseCodeInterface::RESPONSE_GIFT_ALREADY_PICKED
+                    UserResponseCodeInterface::RESPONSE_GIFT_ALREADY_PICKED,
+                    HttpResponseCodeInterface::HTTP_RESPONSE_UNPROCESSABLE_ENTITY
                 );
             }
             $this->applyGift($dailyGift, $user, $dailyGift->getAmount());

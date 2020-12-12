@@ -12,6 +12,7 @@ use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Exception\ValidationException;
+use Ares\Framework\Interfaces\HttpResponseCodeInterface;
 use Ares\Framework\Service\ValidationService;
 use Ares\User\Entity\User;
 use Ares\Vote\Entity\Contract\VoteInterface;
@@ -95,7 +96,8 @@ class VoteController extends BaseController
             $this->deleteVoteService->execute($user->getId(), $parsedData);
             throw new VoteException(
                 __('The entity could not be incremented'),
-                VoteResponseCodeInterface::RESPONSE_VOTE_ENTITY_COULD_NOT_BE_INCREMENTED
+                VoteResponseCodeInterface::RESPONSE_VOTE_ENTITY_COULD_NOT_BE_INCREMENTED,
+                HttpResponseCodeInterface::HTTP_RESPONSE_UNPROCESSABLE_ENTITY
             );
         }
 
@@ -161,7 +163,8 @@ class VoteController extends BaseController
         if (!$customResponse->getData()) {
             throw new VoteException(
                 __('Vote could not be deleted'),
-                VoteResponseCodeInterface::RESPONSE_VOTE_ENTITY_NOT_DELETED
+                VoteResponseCodeInterface::RESPONSE_VOTE_ENTITY_NOT_DELETED,
+                HttpResponseCodeInterface::HTTP_RESPONSE_UNPROCESSABLE_ENTITY
             );
         }
 
@@ -176,7 +179,8 @@ class VoteController extends BaseController
             $this->createVoteService->execute($user->getId(), $parsedData);
             throw new VoteException(
                 __('The entity could not be incremented'),
-                VoteResponseCodeInterface::RESPONSE_VOTE_ENTITY_COULD_NOT_BE_INCREMENTED
+                VoteResponseCodeInterface::RESPONSE_VOTE_ENTITY_COULD_NOT_BE_INCREMENTED,
+                HttpResponseCodeInterface::HTTP_RESPONSE_UNPROCESSABLE_ENTITY
             );
         }
 

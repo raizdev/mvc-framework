@@ -10,6 +10,7 @@ namespace Ares\Vote\Service;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
+use Ares\Framework\Interfaces\HttpResponseCodeInterface;
 use Ares\Framework\Model\DataObject;
 use Ares\Vote\Entity\Vote;
 use Ares\Vote\Exception\VoteException;
@@ -54,7 +55,8 @@ class CreateVoteService
         if ($existingVote) {
             throw new VoteException(
                 __('User already voted for this entity'),
-                VoteResponseCodeInterface::RESPONSE_VOTE_ENTITY_ALREADY_VOTED
+                VoteResponseCodeInterface::RESPONSE_VOTE_ENTITY_ALREADY_VOTED,
+                HttpResponseCodeInterface::HTTP_RESPONSE_UNPROCESSABLE_ENTITY
             );
         }
 
@@ -63,7 +65,8 @@ class CreateVoteService
         if (!$entityRepository) {
             throw new VoteException(
                 __('Related EntityRepository could not be found'),
-                VoteResponseCodeInterface::RESPONSE_VOTE_ENTITY_REPOSITORY_NOT_FOUND
+                VoteResponseCodeInterface::RESPONSE_VOTE_ENTITY_REPOSITORY_NOT_FOUND,
+                HttpResponseCodeInterface::HTTP_RESPONSE_NOT_FOUND
             );
         }
 

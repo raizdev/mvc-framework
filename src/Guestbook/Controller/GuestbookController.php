@@ -12,6 +12,7 @@ use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Exception\ValidationException;
+use Ares\Framework\Interfaces\HttpResponseCodeInterface;
 use Ares\Framework\Service\ValidationService;
 use Ares\Guestbook\Entity\Contract\GuestbookInterface;
 use Ares\Guestbook\Exception\GuestbookException;
@@ -89,7 +90,8 @@ class GuestbookController extends BaseController
         if (!$profile && !$guild) {
             throw new GuestbookException(
                 __('The associated Entities could not be found'),
-                GuestbookResponseCodeInterface::RESPONSE_GUESTBOOK_ASSOCIATED_ENTITIES_NOT_FOUND
+                GuestbookResponseCodeInterface::RESPONSE_GUESTBOOK_ASSOCIATED_ENTITIES_NOT_FOUND,
+                HttpResponseCodeInterface::HTTP_RESPONSE_NOT_FOUND
             );
         }
 
@@ -193,7 +195,8 @@ class GuestbookController extends BaseController
         if (!$deleted) {
             throw new GuestbookException(
                 __('Guestbook entry could not be deleted'),
-                GuestbookResponseCodeInterface::RESPONSE_GUESTBOOK_ENTRY_NOT_DELETED
+                GuestbookResponseCodeInterface::RESPONSE_GUESTBOOK_ENTRY_NOT_DELETED,
+                HttpResponseCodeInterface::HTTP_RESPONSE_UNPROCESSABLE_ENTITY
             );
         }
 
