@@ -10,6 +10,7 @@ namespace Ares\Forum\Controller;
 use Ares\Forum\Entity\Contract\ThreadInterface;
 use Ares\Forum\Entity\Thread;
 use Ares\Forum\Exception\ThreadException;
+use Ares\Forum\Interfaces\Response\ForumResponseCodeInterface;
 use Ares\Forum\Repository\ThreadRepository;
 use Ares\Forum\Service\Thread\CreateThreadService;
 use Ares\Forum\Service\Thread\EditThreadService;
@@ -23,10 +24,15 @@ use Ares\User\Entity\User;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
+/**
+ * Class ThreadController
+ *
+ * @package Ares\Forum\Controller
+ */
 class ThreadController extends BaseController
 {
     /**
-     * CommentController constructor.
+     * ThreadController constructor.
      *
      * @param   ThreadRepository        $threadRepository
      * @param   CreateThreadService     $createThreadService
@@ -155,7 +161,10 @@ class ThreadController extends BaseController
         $deleted = $this->threadRepository->delete($id);
 
         if (!$deleted) {
-            throw new ThreadException(__('Thread could not be deleted.'), 409);
+            throw new ThreadException(
+                __('Thread could not be deleted.'),
+                ForumResponseCodeInterface::RESPONSE_FORUM_THREAD_NOT_DELETED
+            );
         }
 
         return $this->respond(

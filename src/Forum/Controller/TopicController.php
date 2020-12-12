@@ -10,6 +10,7 @@ namespace Ares\Forum\Controller;
 use Ares\Forum\Entity\Contract\TopicInterface;
 use Ares\Forum\Entity\Topic;
 use Ares\Forum\Exception\TopicException;
+use Ares\Forum\Interfaces\Response\ForumResponseCodeInterface;
 use Ares\Forum\Repository\TopicRepository;
 use Ares\Forum\Service\Topic\CreateTopicService;
 use Ares\Forum\Service\Topic\EditTopicService;
@@ -147,7 +148,10 @@ class TopicController extends BaseController
         $deleted = $this->topicRepository->delete($id);
 
         if (!$deleted) {
-            throw new TopicException(__('Topic could not be deleted'), 409);
+            throw new TopicException(
+                __('Topic could not be deleted'),
+                ForumResponseCodeInterface::RESPONSE_FORUM_TOPIC_NOT_DELETED
+            );
         }
 
         return $this->respond(

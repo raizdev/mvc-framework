@@ -13,9 +13,7 @@ use Ares\Forum\Repository\ThreadRepository;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
-use Ares\User\Entity\User;
 use Cocur\Slugify\Slugify;
-use DateTime;
 
 /**
  * Class EditThreadService
@@ -58,7 +56,7 @@ class EditThreadService
             ->setSlug($this->slug->slugify($data['title']))
             ->setDescription($data['description'] ?: $thread->getDescription())
             ->setContent($data['content'] ?: $thread->getContent())
-            ->setUpdatedAt(new DateTime());
+            ->setUpdatedAt(new \DateTime());
 
         /** @var Thread $thread */
         $thread = $this->threadRepository->save($thread);

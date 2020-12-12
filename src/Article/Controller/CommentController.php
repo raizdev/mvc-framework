@@ -8,6 +8,7 @@
 namespace Ares\Article\Controller;
 
 use Ares\Article\Entity\Contract\CommentInterface;
+use Ares\Article\Interfaces\Response\ArticleResponseCodeInterface;
 use Ares\Article\Repository\CommentRepository;
 use Ares\Article\Service\CreateCommentService;
 use Ares\Article\Service\EditCommentService;
@@ -154,7 +155,10 @@ class CommentController extends BaseController
         $deleted = $this->commentRepository->delete($id);
 
         if (!$deleted) {
-            throw new CommentException(__('Comment could not be deleted'), 409);
+            throw new CommentException(
+                __('Comment could not be deleted'),
+                ArticleResponseCodeInterface::RESPONSE_ARTICLE_COMMENT_NOT_DELETED
+            );
         }
 
         return $this->respond(

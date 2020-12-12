@@ -15,6 +15,7 @@ use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
 use Ares\Guestbook\Entity\Contract\GuestbookInterface;
 use Ares\Guestbook\Exception\GuestbookException;
+use Ares\Guestbook\Interfaces\Response\GuestbookResponseCodeInterface;
 use Ares\Guestbook\Repository\GuestbookRepository;
 use Ares\Guestbook\Service\CreateGuestbookEntryService;
 use Ares\Guild\Entity\Guild;
@@ -86,7 +87,10 @@ class GuestbookController extends BaseController
         $guild = $this->guildRepository->get($guildId, 'id', true);
 
         if (!$profile && !$guild) {
-            throw new GuestbookException(__('The associated Entities could not be found'));
+            throw new GuestbookException(
+                __('The associated Entities could not be found'),
+                GuestbookResponseCodeInterface::RESPONSE_GUESTBOOK_ASSOCIATED_ENTITIES_NOT_FOUND
+            );
         }
 
         $parsedData['profile_id'] = (!$profile) ? null : $profile->getId();
@@ -187,7 +191,10 @@ class GuestbookController extends BaseController
         $deleted = $this->guestbookRepository->delete($id);
 
         if (!$deleted) {
-            throw new GuestbookException(__('Guestbook entry could not be deleted'), 409);
+            throw new GuestbookException(
+                __('Guestbook entry could not be deleted'),
+                GuestbookResponseCodeInterface::RESPONSE_GUESTBOOK_ENTRY_NOT_DELETED
+            );
         }
 
         return $this->respond(

@@ -20,7 +20,6 @@ use Ares\Rcon\Service\DeleteRconCommandService;
 use Ares\Rcon\Service\ExecuteRconCommandService;
 use Ares\Role\Exception\RoleException;
 use Ares\User\Entity\User;
-use JsonException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -52,10 +51,7 @@ class RconController extends BaseController
      *
      * @return Response
      * @throws AuthenticationException
-     * @throws DataObjectManagerException
-     * @throws JsonException
      * @throws RconException
-     * @throws RoleException
      * @throws ValidationException
      * @throws NoSuchEntityException
      */

@@ -12,6 +12,7 @@ use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\Payment\Entity\Payment;
 use Ares\Payment\Exception\PaymentException;
+use Ares\Payment\Interfaces\Response\PaymentResponseCodeInterface;
 use Ares\Payment\Repository\PaymentRepository;
 
 /**
@@ -47,7 +48,10 @@ class CreatePaymentService
         $existingPayment = $this->paymentRepository->getExistingPayment($payment->getUserId());
 
         if ($existingPayment) {
-            throw new PaymentException(__('You already have an ongoing payment'));
+            throw new PaymentException(
+                __('You already have an ongoing payment'),
+                PaymentResponseCodeInterface::RESPONSE_PAYMENT_ALREADY_ONGOING
+            );
         }
 
         /** @var Payment $payment */

@@ -10,6 +10,7 @@ namespace Ares\Forum\Controller;
 use Ares\Forum\Entity\Comment;
 use Ares\Forum\Entity\Contract\CommentInterface;
 use Ares\Forum\Exception\CommentException;
+use Ares\Forum\Interfaces\Response\ForumResponseCodeInterface;
 use Ares\Forum\Repository\CommentRepository;
 use Ares\Forum\Service\Comment\CreateCommentService;
 use Ares\Forum\Service\Comment\EditCommentService;
@@ -157,7 +158,10 @@ class CommentController extends BaseController
         $deleted = $this->commentRepository->delete($id);
 
         if (!$deleted) {
-            throw new CommentException(__('Comment could not be deleted'), 409);
+            throw new CommentException(
+                __('Comment could not be deleted'),
+                ForumResponseCodeInterface::RESPONSE_FORUM_COMMENT_NOT_DELETED
+            );
         }
 
         return $this->respond(

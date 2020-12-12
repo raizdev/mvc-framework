@@ -13,6 +13,7 @@ use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\Framework\Model\DataObject;
 use Ares\Vote\Entity\Vote;
 use Ares\Vote\Exception\VoteException;
+use Ares\Vote\Interfaces\Response\VoteResponseCodeInterface;
 use Ares\Vote\Repository\VoteRepository;
 
 /**
@@ -51,13 +52,19 @@ class CreateVoteService
         $existingVote = $this->voteRepository->getExistingVote($vote, $userId);
 
         if ($existingVote) {
-            throw new VoteException(__('User already voted for this entity'), 422);
+            throw new VoteException(
+                __('User already voted for this entity'),
+                VoteResponseCodeInterface::RESPONSE_VOTE_ENTITY_ALREADY_VOTED
+            );
         }
 
         $entityRepository = $this->getVoteEntityService->execute($vote->getVoteEntity());
 
         if (!$entityRepository) {
-            throw new VoteException(__('Related EntityRepository could not be found'));
+            throw new VoteException(
+                __('Related EntityRepository could not be found'),
+                VoteResponseCodeInterface::RESPONSE_VOTE_ENTITY_REPOSITORY_NOT_FOUND
+            );
         }
 
         /** @var DataObject $entity */

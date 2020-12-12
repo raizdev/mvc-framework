@@ -80,4 +80,16 @@ class UserRepository extends BaseRepository
 
         return $this->getOneBy($searchCriteria)?->getLook();
     }
+
+    /**
+     * @param string $ipRegister
+     *
+     * @return int
+     */
+    public function getAccountCountByIp(string $ipRegister): int
+    {
+        return $this->getDataObjectManager()
+            ->where('ip_register', $ipRegister)
+            ->count();
+    }
 }

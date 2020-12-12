@@ -11,7 +11,6 @@ use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\Vote\Entity\Vote;
-use Ares\Vote\Exception\VoteException;
 use Ares\Vote\Repository\VoteRepository;
 
 /**

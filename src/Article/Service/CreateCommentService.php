@@ -10,12 +10,12 @@ namespace Ares\Article\Service;
 use Ares\Article\Entity\Article;
 use Ares\Article\Entity\Comment;
 use Ares\Article\Exception\CommentException;
+use Ares\Article\Interfaces\Response\ArticleResponseCodeInterface;
 use Ares\Article\Repository\ArticleRepository;
 use Ares\Article\Repository\CommentRepository;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
-use DateTime;
 use PHLAK\Config\Config;
 
 /**
@@ -56,7 +56,10 @@ class CreateCommentService
         $commentCount = $this->commentRepository->getUserCommentCount($userId, $article->getId());
 
         if ($commentCount >= $this->config->get('hotel_settings.news.comment_max')) {
-            throw new CommentException(__('User exceeded allowed comments'));
+            throw new CommentException(
+                __('User exceeded allowed comments'),
+                ArticleResponseCodeInterface::RESPONSE_ARTICLE_COMMENT_EXCEEDED
+            );
         }
 
         $comment = $this->getNewComment($userId, $article->getId(), $data);
@@ -91,6 +94,6 @@ class CreateCommentService
             ->setArticleId($articleId)
             ->setLikes(0)
             ->setDislikes(0)
-            ->setCreatedAt(new DateTime());
+            ->setCreatedAt(new \DateTime());
     }
 }

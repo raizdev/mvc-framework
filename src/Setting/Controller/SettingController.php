@@ -5,39 +5,38 @@
  * @see LICENSE (MIT)
  */
 
-namespace Ares\Settings\Controller;
+namespace Ares\Setting\Controller;
 
 use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
-use Ares\Settings\Entity\Contract\SettingInterface;
-use Ares\Settings\Entity\Setting;
-use Ares\Settings\Exception\SettingsException;
-use Ares\Settings\Repository\SettingsRepository;
-use Ares\Settings\Service\UpdateSettingsService;
+use Ares\Setting\Entity\Contract\SettingInterface;
+use Ares\Setting\Entity\Setting;
+use Ares\Setting\Repository\SettingRepository;
+use Ares\Setting\Service\UpdateSettingService;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 /**
- * Class SettingsController
+ * Class SettingController
  *
- * @package Ares\Settings\Controller
+ * @package Ares\Setting\Controller
  */
-class SettingsController extends BaseController
+class SettingController extends BaseController
 {
     /**
      * SettingsController constructor.
      *
-     * @param   ValidationService       $validationService
-     * @param   SettingsRepository      $settingsRepository
-     * @param   UpdateSettingsService   $updateSettingsService
+     * @param   ValidationService    $validationService
+     * @param   SettingRepository    $settingsRepository
+     * @param   UpdateSettingService $updateSettingsService
      */
     public function __construct(
         private ValidationService $validationService,
-        private SettingsRepository $settingsRepository,
-        private UpdateSettingsService $updateSettingsService
+        private SettingRepository $settingsRepository,
+        private UpdateSettingService $updateSettingsService
     ) {}
 
     /**

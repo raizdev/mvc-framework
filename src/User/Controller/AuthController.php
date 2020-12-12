@@ -18,11 +18,11 @@ use Ares\User\Entity\Contract\UserInterface;
 use Ares\User\Entity\User;
 use Ares\User\Exception\LoginException;
 use Ares\User\Exception\RegisterException;
+use Ares\User\Interfaces\Response\UserResponseCodeInterface;
 use Ares\User\Service\Auth\DetermineIpService;
 use Ares\User\Service\Auth\LoginService;
 use Ares\User\Service\Auth\RegisterService;
 use Ares\User\Service\Auth\TicketService;
-use Exception;
 use PHLAK\Config\Config;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -98,7 +98,7 @@ class AuthController extends BaseController
      * @param Response $response
      *
      * @return Response Returns a Response with the given Data
-     * @throws Exception
+     * @throws \Exception
      */
     public function register(Request $request, Response $response): Response
     {
@@ -106,7 +106,7 @@ class AuthController extends BaseController
         $parsedData = $request->getParsedBody();
 
         $this->validationService->validate($parsedData, [
-            UserInterface::COLUMN_USERNAME => 'required|min:3|max:12|regex:/^[a-zA-Z\d]+$/',
+            UserInterface::COLUMN_USERNAME => 'required|min:2|max:12|regex:/^[a-zA-Z\d]+$/',
             UserInterface::COLUMN_MAIL => 'required|email|min:9',
             UserInterface::COLUMN_LOOK => 'required',
             UserInterface::COLUMN_GENDER => 'required|default:M|regex:/[M.F]/',
@@ -146,7 +146,10 @@ class AuthController extends BaseController
         $girlLooks = $this->config->get('hotel_settings.register.looks.girl');
 
         if (!is_array($boyLooks) || !is_array($girlLooks)) {
-            throw new RegisterException(__('There are no viable Looks available'));
+            throw new RegisterException(
+                __('There are no viable Looks available'),
+                UserResponseCodeInterface::RESPONSE_AUTH_REGISTER_NO_VIABLE_LOOKS
+            );
         }
 
         /** @var array $boyList */

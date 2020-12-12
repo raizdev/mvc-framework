@@ -8,6 +8,7 @@
 namespace Ares\Rcon\Helper;
 
 use Ares\Rcon\Exception\RconException;
+use Ares\Rcon\Interfaces\Response\RconResponseCodeInterface;
 use PHLAK\Config\Config;
 
 /**
@@ -46,7 +47,10 @@ class RconHelper
         $executor = @socket_write($socket, $encodedData, strlen($encodedData));
 
         if (!$executor) {
-            throw new RconException(__('Could not send the provided Command'));
+            throw new RconException(
+                __('Could not send the provided Command'),
+            RconResponseCodeInterface::RESPONSE_RCON_COULD_NOT_SEND_COMMAND
+            );
         }
 
         return json_decode(
@@ -73,7 +77,10 @@ class RconHelper
         $isConnectionEstablished = $this->connectToSocket($socket, $host, $port);
 
         if (!$isConnectionEstablished) {
-            throw new RconException(__('Could not establish a connection to the rcon server'));
+            throw new RconException(
+                __('Could not establish a connection to the rcon server'),
+                RconResponseCodeInterface::RESPONSE_RCON_NO_CONNECTION
+            );
         }
 
         return $this;
@@ -108,7 +115,10 @@ class RconHelper
         );
 
         if (!$socket) {
-            throw new RconException(__('Could not create the socket'), 409);
+            throw new RconException(
+                __('Could not create the socket'),
+                RconResponseCodeInterface::RESPONSE_RCON_COULD_NOT_CREATE_SOCKET
+            );
         }
 
         return $socket;

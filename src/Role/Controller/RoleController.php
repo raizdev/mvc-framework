@@ -16,6 +16,7 @@ use Ares\Role\Entity\Contract\RoleHierarchyInterface;
 use Ares\Role\Entity\Contract\RoleInterface;
 use Ares\Role\Entity\Contract\RoleUserInterface;
 use Ares\Role\Exception\RoleException;
+use Ares\Role\Interfaces\Response\RoleResponseCodeInterface;
 use Ares\Role\Repository\RoleRepository;
 use Ares\Role\Service\AssignUserToRoleService;
 use Ares\Role\Service\CreateChildRoleService;
@@ -175,7 +176,10 @@ class RoleController extends BaseController
         $deleted = $this->roleRepository->delete($id);
 
         if (!$deleted) {
-            throw new RoleException(__('Role could not be deleted'), 409);
+            throw new RoleException(
+                __('Role could not be deleted'),
+                RoleResponseCodeInterface::RESPONSE_ROLE_NOT_DELETED
+            );
         }
 
         return $this->respond(

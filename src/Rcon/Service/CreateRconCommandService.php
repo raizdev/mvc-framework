@@ -12,6 +12,7 @@ use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\Rcon\Entity\Rcon;
 use Ares\Rcon\Exception\RconException;
+use Ares\Rcon\Interfaces\Response\RconResponseCodeInterface;
 use Ares\Rcon\Repository\RconRepository;
 
 /**
@@ -44,7 +45,11 @@ class CreateRconCommandService
         $existingCommand = $this->rconRepository->get($data['command'], 'command', true);
 
         if ($existingCommand) {
-            throw new RconException(__('The command %s already exists'), [$existingCommand->getCommand()]);
+            throw new RconException(
+                __('The command %s already exists',
+                    [$existingCommand->getCommand()]),
+                RconResponseCodeInterface::RESPONSE_RCON_COMMAND_ALREADY_EXIST
+            );
         }
 
         $command = $this->getNewCommand($data);

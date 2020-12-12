@@ -5,28 +5,28 @@
  * @see LICENSE (MIT)
  */
 
-namespace Ares\Settings\Service;
+namespace Ares\Setting\Service;
 
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
-use Ares\Settings\Entity\Setting;
-use Ares\Settings\Repository\SettingsRepository;
+use Ares\Setting\Entity\Setting;
+use Ares\Setting\Repository\SettingRepository;
 
 /**
  * Class UpdateSettingsService
  *
- * @package Ares\Settings\Service
+ * @package Ares\Setting\Service
  */
-class UpdateSettingsService
+class UpdateSettingService
 {
     /**
-     * UpdateSettingsService constructor.
+     * UpdateSettingService constructor.
      *
-     * @param   SettingsRepository  $settingsRepository
+     * @param   SettingRepository $settingsRepository
      */
     public function __construct(
-        private SettingsRepository $settingsRepository
+        private SettingRepository $settingsRepository
     ) {}
 
     /**
