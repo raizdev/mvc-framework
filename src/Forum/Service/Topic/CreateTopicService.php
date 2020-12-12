@@ -9,12 +9,12 @@ namespace Ares\Forum\Service\Topic;
 
 use Ares\Forum\Entity\Topic;
 use Ares\Forum\Exception\TopicException;
+use Ares\Forum\Interfaces\Response\ForumResponseCodeInterface;
 use Ares\Forum\Repository\TopicRepository;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Cocur\Slugify\Slugify;
-use DateTime;
 
 /**
  * Class CreateTopicService
@@ -55,7 +55,11 @@ class CreateTopicService
             );
 
         if ($existingTopic) {
-            throw new TopicException(__('Topic with the title %s already exists', [$existingTopic->getTitle()]));
+            throw new TopicException(
+                __('Topic with the title %s already exists',
+                    [$existingTopic->getTitle()]),
+                ForumResponseCodeInterface::RESPONSE_FORUM_TOPIC_ALREADY_EXIST
+            );
         }
 
         /** @var Topic $topic */
@@ -78,6 +82,6 @@ class CreateTopicService
             ->setTitle($data['title'])
             ->setSlug($this->slug->slugify($data['title']))
             ->setDescription($data['description'])
-            ->setCreatedAt(new DateTime());
+            ->setCreatedAt(new \DateTime());
     }
 }

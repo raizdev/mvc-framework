@@ -8,11 +8,11 @@
 namespace Ares\Forum\Service\Topic;
 
 use Ares\Forum\Entity\Topic;
+use Ares\Forum\Interfaces\Response\ForumResponseCodeInterface;
 use Ares\Forum\Repository\TopicRepository;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
-use DateTime;
 
 /**
  * Class EditTopicService
@@ -24,7 +24,7 @@ class EditTopicService
     /**
      * EditTopicService constructor.
      *
-     * @param   TopicRepository  $topicRepository
+     * @param TopicRepository  $topicRepository
      */
     public function __construct(
         private TopicRepository $topicRepository
@@ -52,13 +52,17 @@ class EditTopicService
         $topic = $this->topicRepository->get($topicId);
 
         if ($topic->getTitle() === $title) {
-            throw new TopicException(__('Topic with the title %s already exists', [$title]));
+            throw new TopicException(
+                __('Topic with the title %s already exists',
+                    [$title]),
+                ForumResponseCodeInterface::RESPONSE_FORUM_TOPIC_ALREADY_EXIST
+            );
         }
 
         $topic
             ->setTitle($title)
             ->setDescription($description)
-            ->setUpdatedAt(new DateTime());
+            ->setUpdatedAt(new \DateTime());
 
         /** @var Topic $topic */
         $topic = $this->topicRepository->save($topic);
