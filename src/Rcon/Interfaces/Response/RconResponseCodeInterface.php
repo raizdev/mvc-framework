@@ -28,7 +28,9 @@ interface RconResponseCodeInterface extends CustomResponseCodeInterface
     /** @var int */
     public const RESPONSE_RCON_COULD_NOT_CREATE_SOCKET = 10695;
 
+    /** @var int */
     public const RESPONSE_RCON_COMMAND_ALREADY_EXIST = 10722;
 
+    /** @var int */
     public const RESPONSE_RCON_COMMAND_NOT_DELETED = 10749;
 }
