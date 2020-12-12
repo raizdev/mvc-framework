@@ -11,6 +11,7 @@ use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\User\Entity\User;
 use Ares\User\Exception\UserSettingsException;
+use Ares\User\Interfaces\Response\UserResponseCodeInterface;
 use Ares\User\Repository\UserRepository;
 
 /**
@@ -45,11 +46,17 @@ class ChangePasswordService
         $currentPassword = $user->getPassword();
 
         if (!password_verify($oldPassword, $currentPassword)) {
-            throw new UserSettingsException(__('Given old password does not match the current password'));
+            throw new UserSettingsException(
+                __('Given old password does not match the current password'),
+                UserResponseCodeInterface::RESPONSE_SETTINGS_OLD_NOT_EQUALS_NEW
+            );
         }
 
         if (password_verify($password, $currentPassword)) {
-            throw new UserSettingsException(__('Given password should be a different password than the current'));
+            throw new UserSettingsException(
+                __('Given password should be a different password than the current'),
+                UserResponseCodeInterface::RESPONSE_SETTINGS_DIFFERENT_PASSWORD
+            );
         }
 
         /** @var mixed $passwordHashed */

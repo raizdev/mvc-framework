@@ -23,10 +23,15 @@ use Ares\User\Entity\User;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
+/**
+ * Class ThreadController
+ *
+ * @package Ares\Forum\Controller
+ */
 class ThreadController extends BaseController
 {
     /**
-     * CommentController constructor.
+     * ThreadController constructor.
      *
      * @param   ThreadRepository        $threadRepository
      * @param   CreateThreadService     $createThreadService

@@ -1,27 +1,27 @@
 <?php
 /**
  * @copyright Copyright (c) Ares (https://www.ares.to)
- *  
+ *
  * @see LICENSE (MIT)
  */
 
-namespace Ares\Settings\Repository;
+namespace Ares\Setting\Repository;
 
 use Ares\Framework\Repository\BaseRepository;
-use Ares\Settings\Entity\Setting;
+use Ares\Setting\Entity\Setting;
 
 /**
  * Class SettingsRepository
  *
- * @package Ares\Settings\Repository
+ * @package Ares\Setting\Repository
  */
-class SettingsRepository extends BaseRepository
+class SettingRepository extends BaseRepository
 {
     /** @var string */
-    protected string $cachePrefix = 'ARES_SETTINGS_';
+    protected string $cachePrefix = 'ARES_SETTING_';
 
     /** @var string */
-    protected string $cacheCollectionPrefix = 'ARES_SETTINGS_COLLECTION_';
+    protected string $cacheCollectionPrefix = 'ARES_SETTING_COLLECTION_';
 
     /** @var string */
     protected string $entity = Setting::class;

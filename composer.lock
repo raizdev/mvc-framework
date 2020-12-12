@@ -542,12 +542,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/collections.git",
-                "reference": "99889ebfe8eb73afa6859b316657f8cac6d20b1c"
+                "reference": "ef846f0babc11c1494f5e162a465669fe1f572ac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/collections/zipball/99889ebfe8eb73afa6859b316657f8cac6d20b1c",
-                "reference": "99889ebfe8eb73afa6859b316657f8cac6d20b1c",
+                "url": "https://api.github.com/repos/illuminate/collections/zipball/ef846f0babc11c1494f5e162a465669fe1f572ac",
+                "reference": "ef846f0babc11c1494f5e162a465669fe1f572ac",
                 "shasum": ""
             },
             "require": {
@@ -584,7 +584,7 @@
             ],
             "description": "The Illuminate Collections package.",
             "homepage": "https://laravel.com",
-            "time": "2020-11-30T17:50:03+00:00"
+            "time": "2020-12-11T20:00:14+00:00"
         },
         {
             "name": "illuminate/container",
@@ -639,12 +639,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/contracts.git",
-                "reference": "bc44f2bda2eb397e4c227958d02dd1381b8344f7"
+                "reference": "bd002bbff2c2fff258058dd2e680def930327715"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/contracts/zipball/bc44f2bda2eb397e4c227958d02dd1381b8344f7",
-                "reference": "bc44f2bda2eb397e4c227958d02dd1381b8344f7",
+                "url": "https://api.github.com/repos/illuminate/contracts/zipball/bd002bbff2c2fff258058dd2e680def930327715",
+                "reference": "bd002bbff2c2fff258058dd2e680def930327715",
                 "shasum": ""
             },
             "require": {
@@ -675,7 +675,7 @@
             ],
             "description": "The Illuminate Contracts package.",
             "homepage": "https://laravel.com",
-            "time": "2020-11-30T16:23:02+00:00"
+            "time": "2020-12-11T20:00:14+00:00"
         },
         {
             "name": "illuminate/database",
@@ -683,12 +683,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/database.git",
-                "reference": "85c3f80e6a1b8ae3603a33a8a9f67a3aa4d228b9"
+                "reference": "efaa375e092c9ae21e3ee4af74a884d9a7a3122d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/database/zipball/85c3f80e6a1b8ae3603a33a8a9f67a3aa4d228b9",
-                "reference": "85c3f80e6a1b8ae3603a33a8a9f67a3aa4d228b9",
+                "url": "https://api.github.com/repos/illuminate/database/zipball/efaa375e092c9ae21e3ee4af74a884d9a7a3122d",
+                "reference": "efaa375e092c9ae21e3ee4af74a884d9a7a3122d",
                 "shasum": ""
             },
             "require": {
@@ -739,7 +739,7 @@
                 "orm",
                 "sql"
             ],
-            "time": "2020-12-11T14:16:03+00:00"
+            "time": "2020-12-11T20:00:14+00:00"
         },
         {
             "name": "illuminate/macroable",
@@ -2646,12 +2646,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "ddc59f8d4b9e48faaf3056363f702e3915c552c6"
+                "reference": "1ba3caf8ed39a49e39fc8a6cad666724524a5342"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/ddc59f8d4b9e48faaf3056363f702e3915c552c6",
-                "reference": "ddc59f8d4b9e48faaf3056363f702e3915c552c6",
+                "url": "https://api.github.com/repos/symfony/console/zipball/1ba3caf8ed39a49e39fc8a6cad666724524a5342",
+                "reference": "1ba3caf8ed39a49e39fc8a6cad666724524a5342",
                 "shasum": ""
             },
             "require": {
@@ -2732,7 +2732,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-12-10T20:00:07+00:00"
+            "time": "2020-12-12T00:32:42+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",

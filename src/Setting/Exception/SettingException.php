@@ -5,15 +5,15 @@
  * @see LICENSE (MIT)
  */
 
-namespace Ares\Settings\Exception;
+namespace Ares\Setting\Exception;
 
 use Ares\Framework\Exception\BaseException;
 
 /**
- * Class SettingsException
+ * Class SettingException
  *
- * @package Ares\Settings\Exception
+ * @package Ares\Setting\Exception
  */
-class SettingsException extends BaseException
+class SettingException extends BaseException
 {
 }

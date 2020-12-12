@@ -5,12 +5,12 @@
  * @see LICENSE (MIT)
  */
 
-namespace Ares\Settings\Entity\Contract;
+namespace Ares\Setting\Entity\Contract;
 
 /**
  * Interface SettingInterface
  *
- * @package Ares\Settings\Entity\Contract
+ * @package Ares\Setting\Entity\Contract
  */
 interface SettingInterface
 {

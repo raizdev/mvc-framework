@@ -1,19 +1,19 @@
 <?php declare(strict_types=1);
 /**
  * @copyright Copyright (c) Ares (https://www.ares.to)
- *  
+ *
  * @see LICENSE (MIT)
  */
 
-namespace Ares\Settings\Entity;
+namespace Ares\Setting\Entity;
 
 use Ares\Framework\Model\DataObject;
-use Ares\Settings\Entity\Contract\SettingInterface;
+use Ares\Setting\Entity\Contract\SettingInterface;
 
 /**
- * Class Settings
+ * Class Setting
  *
- * @package Ares\Settings\Entity
+ * @package Ares\Setting\Entity
  */
 class Setting extends DataObject implements SettingInterface
 {

@@ -247,9 +247,9 @@ return function (App $app) {
         // Global Settings
         $group->group('/settings', function ($group) {
             $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}',
-                \Ares\Settings\Controller\SettingsController::class . ':list');
-            $group->post('/get', \Ares\Settings\Controller\SettingsController::class . ':get');
-            $group->put('/set', \Ares\Settings\Controller\SettingsController::class . ':set')
+                \Ares\Setting\Controller\SettingController::class . ':list');
+            $group->post('/get', \Ares\Setting\Controller\SettingController::class . ':get');
+            $group->put('/set', \Ares\Setting\Controller\SettingController::class . ':set')
                 ->setName('set-global-setting');
         });
 
