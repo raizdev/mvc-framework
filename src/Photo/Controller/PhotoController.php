@@ -14,6 +14,7 @@ use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
 use Ares\Photo\Entity\Photo;
 use Ares\Photo\Exception\PhotoException;
+use Ares\Photo\Interfaces\Response\PhotoResponseCodeInterface;
 use Ares\Photo\Repository\PhotoRepository;
 use Ares\User\Entity\Contract\UserInterface;
 use Ares\User\Entity\User;
@@ -145,7 +146,10 @@ class PhotoController extends BaseController
         $photo = $this->photoRepository->delete($id);
 
         if (!$photo) {
-            throw new PhotoException(__('Photo could not be deleted'));
+            throw new PhotoException(
+                __('Photo could not be deleted'),
+                PhotoResponseCodeInterface::RESPONSE_PHOTO_NOT_DELETED
+            );
         }
 
         return $this->respond(
