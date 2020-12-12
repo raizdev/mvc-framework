@@ -42,7 +42,12 @@ class CreateGuestbookEntryService
      */
     public function execute(int $userId, array $data): CustomResponseInterface
     {
-        $commentCount = $this->guestbookRepository->getUserCommentCount($userId, $data['profile_id'], $data['guild_id']);
+        $commentCount = $this->guestbookRepository
+            ->getUserCommentCount(
+                $userId,
+                $data['profile_id'],
+                $data['guild_id']
+            );
 
         if ($commentCount >= $this->config->get('hotel_settings.guestbook.comment_max')) {
             throw new GuestbookException(
