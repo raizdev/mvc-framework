@@ -8,6 +8,7 @@
 namespace Ares\Article\Controller;
 
 use Ares\Article\Entity\Contract\ArticleInterface;
+use Ares\Article\Interfaces\Response\ArticleResponseCodeInterface;
 use Ares\Article\Service\CreateArticleService;
 use Ares\Article\Service\EditArticleService;
 use Ares\Framework\Controller\BaseController;
@@ -211,7 +212,10 @@ class ArticleController extends BaseController
         $deleted = $this->articleRepository->delete($id);
 
         if (!$deleted) {
-            throw new ArticleException(__('Article could not be deleted'), 409);
+            throw new ArticleException(
+                __('Article could not be deleted'),
+                ArticleResponseCodeInterface::RESPONSE_ARTICLE_NOT_DELETED
+            );
         }
 
         return $this->respond(
