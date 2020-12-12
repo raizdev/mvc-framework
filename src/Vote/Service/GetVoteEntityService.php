@@ -2,7 +2,7 @@
 /**
  * @copyright Copyright (c) Ares (https://www.ares.to)
  *
- * @see LICENSE (MIT)
+ * @see       LICENSE (MIT)
  */
 
 namespace Ares\Vote\Service;
@@ -15,6 +15,7 @@ use Ares\Forum\Repository\CommentRepository as ThreadCommentRepository;
 use Ares\Guestbook\Repository\GuestbookRepository;
 use Ares\Photo\Repository\PhotoRepository;
 use Ares\Vote\Exception\VoteException;
+use Ares\Vote\Interfaces\Response\VoteResponseCodeInterface;
 use Ares\Vote\Interfaces\VoteEntityInterface;
 
 /**
@@ -41,7 +42,9 @@ class GetVoteEntityService
         private ThreadCommentRepository $threadCommentRepository,
         private GuestbookRepository $guestbookRepository,
         private PhotoRepository $photoRepository
-    ) {}
+    )
+    {
+    }
 
     /**
      * Takes id and entity and loads specific entity.
@@ -63,11 +66,15 @@ class GetVoteEntityService
             case $entity === VoteEntityInterface::FORUM_COMMENT_VOTE_ENTITY:
                 return $this->threadCommentRepository;
             case $entity === VoteEntityInterface::GUESTBOOK_VOTE_ENTITY:
-               return $this->guestbookRepository;
+                return $this->guestbookRepository;
             case $entity === VoteEntityInterface::PHOTO_VOTE_ENTITY:
                 return $this->photoRepository;
             default:
-                throw new VoteException(__('Entity with id %s does not exist', [$entity]), 404);
+                throw new VoteException(
+                    __('Entity with id %s does not exist',
+                        [$entity]),
+                    VoteResponseCodeInterface::RESPONSE_VOTE_ENTITY_NOT_EXIST
+                );
         }
     }
 }
