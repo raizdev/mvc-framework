@@ -42,9 +42,7 @@ class GetVoteEntityService
         private ThreadCommentRepository $threadCommentRepository,
         private GuestbookRepository $guestbookRepository,
         private PhotoRepository $photoRepository
-    )
-    {
-    }
+    ) {}
 
     /**
      * Takes id and entity and loads specific entity.
