@@ -16,6 +16,7 @@ use Ares\Framework\Service\ValidationService;
 use Ares\Payment\Entity\Contract\PaymentInterface;
 use Ares\Payment\Entity\Payment;
 use Ares\Payment\Exception\PaymentException;
+use Ares\Payment\Interfaces\Response\PaymentResponseCodeInterface;
 use Ares\Payment\Repository\PaymentRepository;
 use Ares\Payment\Service\CreatePaymentService;
 use Ares\User\Entity\User;
@@ -147,7 +148,10 @@ class PaymentController extends BaseController
         $deleted = $this->paymentRepository->delete($id);
 
         if (!$deleted) {
-            throw new PaymentException(__('Payment could not be deleted'), 409);
+            throw new PaymentException(
+                __('Payment could not be deleted'),
+                PaymentResponseCodeInterface::RESPONSE_PAYMENT_NOT_DELETED
+            );
         }
 
         return $this->respond(
