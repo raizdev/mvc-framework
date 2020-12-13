@@ -33,7 +33,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class ArticleController extends BaseController
 {
     /**
-     * NewsController constructor.
+     * ArticleController constructor.
      *
      * @param ArticleRepository    $articleRepository
      * @param CreateArticleService $createArticleService
