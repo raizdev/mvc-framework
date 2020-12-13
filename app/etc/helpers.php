@@ -9,6 +9,7 @@ use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
+use Ares\Framework\Interfaces\HttpResponseCodeInterface;
 use Ares\Framework\Model\CustomResponse;
 use Ares\Framework\Model\Query\Collection;
 use Ares\Framework\Proxy\App;
@@ -175,7 +176,11 @@ if (!function_exists('user')) {
         $user = $userRepository->get((int) $authUser, User::COLUMN_ID, $isCached);
 
         if (!$user) {
-            throw new AuthenticationException(__('User doesnt exists.'), 404);
+            throw new AuthenticationException(
+                __('User doesnt exists.'),
+                \Ares\User\Interfaces\Response\UserResponseCodeInterface::RESPONSE_NOT_ALLOWED,
+                HttpResponseCodeInterface::HTTP_RESPONSE_UNAUTHORIZED
+            );
         }
 
         return $user;

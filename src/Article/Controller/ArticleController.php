@@ -8,8 +8,8 @@
 namespace Ares\Article\Controller;
 
 use Ares\Article\Entity\Contract\ArticleInterface;
-use Ares\Article\Interfaces\Response\ArticleResponseCodeInterface;
 use Ares\Article\Service\CreateArticleService;
+use Ares\Article\Service\DeleteArticleService;
 use Ares\Article\Service\EditArticleService;
 use Ares\Framework\Controller\BaseController;
 use Ares\Article\Entity\Article;
@@ -19,7 +19,6 @@ use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Exception\ValidationException;
-use Ares\Framework\Interfaces\HttpResponseCodeInterface;
 use Ares\Framework\Model\Query\PaginatedCollection;
 use Ares\Framework\Service\ValidationService;
 use Ares\User\Entity\User;
@@ -40,12 +39,14 @@ class ArticleController extends BaseController
      * @param CreateArticleService $createArticleService
      * @param EditArticleService   $editArticleService
      * @param ValidationService    $validationService
+     * @param DeleteArticleService $deleteArticleService
      */
     public function __construct(
         private ArticleRepository $articleRepository,
         private CreateArticleService $createArticleService,
         private EditArticleService $editArticleService,
-        private ValidationService $validationService
+        private ValidationService $validationService,
+        private DeleteArticleService $deleteArticleService
     ) {}
 
     /**
@@ -210,20 +211,11 @@ class ArticleController extends BaseController
         /** @var int $id */
         $id = $args['id'];
 
-        $deleted = $this->articleRepository->delete($id);
-
-        if (!$deleted) {
-            throw new ArticleException(
-                __('Article could not be deleted'),
-                ArticleResponseCodeInterface::RESPONSE_ARTICLE_NOT_DELETED,
-                HttpResponseCodeInterface::HTTP_RESPONSE_UNPROCESSABLE_ENTITY
-            );
-        }
+        $customResponse = $this->deleteArticleService->execute($id);
 
         return $this->respond(
             $response,
-            response()
-                ->setData(true)
+            $customResponse
         );
     }
 }

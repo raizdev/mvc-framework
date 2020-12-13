@@ -11,15 +11,14 @@ use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
-use Ares\Framework\Exception\ValidationException as ValidationExceptionAlias;
-use Ares\Framework\Interfaces\HttpResponseCodeInterface;
+use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
 use Ares\Role\Entity\Contract\PermissionInterface;
 use Ares\Role\Exception\RoleException;
-use Ares\Role\Interfaces\Response\RoleResponseCodeInterface;
 use Ares\Role\Repository\PermissionRepository;
 use Ares\Role\Service\CreateRolePermissionService;
 use Ares\Role\Service\CreatePermissionService;
+use Ares\Role\Service\DeleteRolePermissionService;
 use Ares\Role\Service\FetchUserPermissionService;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -39,13 +38,15 @@ class RolePermissionController extends BaseController
      * @param CreateRolePermissionService $createRolePermissionService
      * @param FetchUserPermissionService  $fetchUserPermissionService
      * @param ValidationService           $validationService
+     * @param DeleteRolePermissionService $deleteRolePermissionService
      */
     public function __construct(
         private PermissionRepository $permissionRepository,
         private CreatePermissionService $createPermissionService,
         private CreateRolePermissionService $createRolePermissionService,
         private FetchUserPermissionService $fetchUserPermissionService,
-        private ValidationService $validationService
+        private ValidationService $validationService,
+        private DeleteRolePermissionService $deleteRolePermissionService
     ) {}
 
     /**
@@ -106,7 +107,7 @@ class RolePermissionController extends BaseController
      * @throws DataObjectManagerException
      * @throws NoSuchEntityException
      * @throws RoleException
-     * @throws ValidationExceptionAlias
+     * @throws ValidationException
      */
     public function createPermission(Request $request, Response $response): Response
     {
@@ -133,7 +134,7 @@ class RolePermissionController extends BaseController
      * @throws DataObjectManagerException
      * @throws NoSuchEntityException
      * @throws RoleException
-     * @throws ValidationExceptionAlias
+     * @throws ValidationException
      */
     public function createRolePermission(Request $request, Response $response): Response
     {
@@ -166,20 +167,11 @@ class RolePermissionController extends BaseController
         /** @var int $id */
         $id = $args['id'];
 
-        $deleted = $this->permissionRepository->delete($id);
-
-        if (!$deleted) {
-            throw new RoleException(
-                __('Permission could not be deleted'),
-                RoleResponseCodeInterface::RESPONSE_ROLE_PERMISSION_NOT_DELETED,
-                HttpResponseCodeInterface::HTTP_RESPONSE_UNPROCESSABLE_ENTITY
-            );
-        }
+        $customResponse = $this->deleteRolePermissionService->execute($id);
 
         return $this->respond(
             $response,
-            response()
-                ->setData(true)
+            $customResponse
         );
     }
 }

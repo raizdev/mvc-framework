@@ -86,12 +86,7 @@ class SettingController extends BaseController
         /** @var int $resultPerPage */
         $resultPerPage = $args['rpp'];
 
-        $settings = $this->settingsRepository
-            ->getPaginatedList(
-                $this->settingsRepository->getDataObjectManager(),
-                $page,
-                $resultPerPage
-            );
+        $settings = $this->settingsRepository->getPaginatedSettingList($page, $resultPerPage);
 
         return $this->respond(
             $response,

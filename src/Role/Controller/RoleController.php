@@ -11,17 +11,16 @@ use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Exception\ValidationException;
-use Ares\Framework\Interfaces\HttpResponseCodeInterface;
 use Ares\Framework\Service\ValidationService;
 use Ares\Role\Entity\Contract\RoleHierarchyInterface;
 use Ares\Role\Entity\Contract\RoleInterface;
 use Ares\Role\Entity\Contract\RoleUserInterface;
 use Ares\Role\Exception\RoleException;
-use Ares\Role\Interfaces\Response\RoleResponseCodeInterface;
 use Ares\Role\Repository\RoleRepository;
 use Ares\Role\Service\AssignUserToRoleService;
 use Ares\Role\Service\CreateChildRoleService;
 use Ares\Role\Service\CreateRoleService;
+use Ares\Role\Service\DeleteRoleService;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -39,6 +38,7 @@ class RoleController extends BaseController
      * @param CreateChildRoleService  $createChildRoleService
      * @param AssignUserToRoleService $assignUserToRoleService
      * @param ValidationService       $validationService
+     * @param DeleteRoleService       $deleteRoleService
      * @param RoleRepository          $roleRepository
      */
     public function __construct(
@@ -46,6 +46,7 @@ class RoleController extends BaseController
         private CreateChildRoleService $createChildRoleService,
         private AssignUserToRoleService $assignUserToRoleService,
         private ValidationService $validationService,
+        private DeleteRoleService $deleteRoleService,
         private RoleRepository $roleRepository
     ) {}
 
@@ -174,20 +175,11 @@ class RoleController extends BaseController
         /** @var int $id */
         $id = $args['id'];
 
-        $deleted = $this->roleRepository->delete($id);
-
-        if (!$deleted) {
-            throw new RoleException(
-                __('Role could not be deleted'),
-                RoleResponseCodeInterface::RESPONSE_ROLE_NOT_DELETED,
-                HttpResponseCodeInterface::HTTP_RESPONSE_UNPROCESSABLE_ENTITY
-            );
-        }
+        $customResponse = $this->deleteRoleService->execute($id);
 
         return $this->respond(
             $response,
-            response()
-                ->setData(true)
+            $customResponse
         );
     }
 }

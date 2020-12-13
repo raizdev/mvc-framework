@@ -10,16 +10,15 @@ namespace Ares\Forum\Controller;
 use Ares\Forum\Entity\Comment;
 use Ares\Forum\Entity\Contract\CommentInterface;
 use Ares\Forum\Exception\CommentException;
-use Ares\Forum\Interfaces\Response\ForumResponseCodeInterface;
 use Ares\Forum\Repository\CommentRepository;
 use Ares\Forum\Service\Comment\CreateCommentService;
+use Ares\Forum\Service\Comment\DeleteCommentService;
 use Ares\Forum\Service\Comment\EditCommentService;
 use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Exception\ValidationException;
-use Ares\Framework\Interfaces\HttpResponseCodeInterface;
 use Ares\Framework\Model\Query\PaginatedCollection;
 use Ares\Framework\Service\ValidationService;
 use Ares\User\Entity\User;
@@ -36,16 +35,18 @@ class CommentController extends BaseController
     /**
      * CommentController constructor.
      *
-     * @param   CommentRepository       $commentRepository
-     * @param   CreateCommentService    $createCommentService
-     * @param   EditCommentService      $editCommentService
-     * @param   ValidationService       $validationService
+     * @param CommentRepository    $commentRepository
+     * @param CreateCommentService $createCommentService
+     * @param EditCommentService   $editCommentService
+     * @param ValidationService    $validationService
+     * @param DeleteCommentService $deleteCommentService
      */
     public function __construct(
         private CommentRepository $commentRepository,
         private CreateCommentService $createCommentService,
         private EditCommentService $editCommentService,
-        private ValidationService $validationService
+        private ValidationService $validationService,
+        private DeleteCommentService $deleteCommentService
     ) {}
 
     /**
@@ -156,20 +157,11 @@ class CommentController extends BaseController
         /** @var int $id */
         $id = $args['id'];
 
-        $deleted = $this->commentRepository->delete($id);
-
-        if (!$deleted) {
-            throw new CommentException(
-                __('Comment could not be deleted'),
-                ForumResponseCodeInterface::RESPONSE_FORUM_COMMENT_NOT_DELETED,
-                HttpResponseCodeInterface::HTTP_RESPONSE_UNPROCESSABLE_ENTITY
-            );
-        }
+        $customResponse = $this->deleteCommentService->execute($id);
 
         return $this->respond(
             $response,
-            response()
-                ->setData(true)
+            $customResponse
         );
     }
 }

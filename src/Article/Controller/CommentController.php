@@ -8,9 +8,9 @@
 namespace Ares\Article\Controller;
 
 use Ares\Article\Entity\Contract\CommentInterface;
-use Ares\Article\Interfaces\Response\ArticleResponseCodeInterface;
 use Ares\Article\Repository\CommentRepository;
 use Ares\Article\Service\CreateCommentService;
+use Ares\Article\Service\DeleteCommentService;
 use Ares\Article\Service\EditCommentService;
 use Ares\Article\Exception\CommentException;
 use Ares\Framework\Controller\BaseController;
@@ -18,7 +18,6 @@ use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Exception\ValidationException;
-use Ares\Framework\Interfaces\HttpResponseCodeInterface;
 use Ares\Framework\Model\Query\PaginatedCollection;
 use Ares\Framework\Service\ValidationService;
 use Ares\User\Entity\User;
@@ -39,12 +38,14 @@ class CommentController extends BaseController
      * @param ValidationService    $validationService
      * @param CreateCommentService $createCommentService
      * @param EditCommentService   $editCommentService
+     * @param DeleteCommentService $deleteCommentService
      */
     public function __construct(
         private CommentRepository $commentRepository,
         private ValidationService $validationService,
         private CreateCommentService $createCommentService,
-        private EditCommentService $editCommentService
+        private EditCommentService $editCommentService,
+        private DeleteCommentService $deleteCommentService
     ) {}
 
     /**
@@ -153,20 +154,11 @@ class CommentController extends BaseController
         /** @var int $id */
         $id = $args['id'];
 
-        $deleted = $this->commentRepository->delete($id);
-
-        if (!$deleted) {
-            throw new CommentException(
-                __('Comment could not be deleted'),
-                ArticleResponseCodeInterface::RESPONSE_ARTICLE_COMMENT_NOT_DELETED,
-                HttpResponseCodeInterface::HTTP_RESPONSE_UNPROCESSABLE_ENTITY
-            );
-        }
+        $customResponse = $this->deleteCommentService->execute($id);
 
         return $this->respond(
             $response,
-            response()
-                ->setData(true)
+            $customResponse
         );
     }
 }

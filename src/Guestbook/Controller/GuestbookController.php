@@ -19,6 +19,7 @@ use Ares\Guestbook\Exception\GuestbookException;
 use Ares\Guestbook\Interfaces\Response\GuestbookResponseCodeInterface;
 use Ares\Guestbook\Repository\GuestbookRepository;
 use Ares\Guestbook\Service\CreateGuestbookEntryService;
+use Ares\Guestbook\Service\DeleteGuestbookEntryService;
 use Ares\Guild\Entity\Guild;
 use Ares\Guild\Repository\GuildRepository;
 use Ares\User\Entity\User;
@@ -41,13 +42,15 @@ class GuestbookController extends BaseController
      * @param GuildRepository             $guildRepository
      * @param ValidationService           $validationService
      * @param CreateGuestbookEntryService $createGuestbookEntryService
+     * @param DeleteGuestbookEntryService $deleteGuestbookEntryService
      */
     public function __construct(
         private GuestbookRepository $guestbookRepository,
         private UserRepository $userRepository,
         private GuildRepository $guildRepository,
         private ValidationService $validationService,
-        private CreateGuestbookEntryService $createGuestbookEntryService
+        private CreateGuestbookEntryService $createGuestbookEntryService,
+        private DeleteGuestbookEntryService $deleteGuestbookEntryService
     ) {}
 
     /**
@@ -190,20 +193,11 @@ class GuestbookController extends BaseController
         /** @var int $id */
         $id = $args['id'];
 
-        $deleted = $this->guestbookRepository->delete($id);
-
-        if (!$deleted) {
-            throw new GuestbookException(
-                __('Guestbook entry could not be deleted'),
-                GuestbookResponseCodeInterface::RESPONSE_GUESTBOOK_ENTRY_NOT_DELETED,
-                HttpResponseCodeInterface::HTTP_RESPONSE_UNPROCESSABLE_ENTITY
-            );
-        }
+        $customResponse = $this->deleteGuestbookEntryService->execute($id);
 
         return $this->respond(
             $response,
-            response()
-                ->setData(true)
+            $customResponse
         );
     }
 }

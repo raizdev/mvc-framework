@@ -23,7 +23,7 @@ class UpdateSettingService
     /**
      * UpdateSettingService constructor.
      *
-     * @param   SettingRepository $settingsRepository
+     * @param SettingRepository $settingsRepository
      */
     public function __construct(
         private SettingRepository $settingsRepository

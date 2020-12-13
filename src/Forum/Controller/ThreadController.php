@@ -10,16 +10,15 @@ namespace Ares\Forum\Controller;
 use Ares\Forum\Entity\Contract\ThreadInterface;
 use Ares\Forum\Entity\Thread;
 use Ares\Forum\Exception\ThreadException;
-use Ares\Forum\Interfaces\Response\ForumResponseCodeInterface;
 use Ares\Forum\Repository\ThreadRepository;
 use Ares\Forum\Service\Thread\CreateThreadService;
+use Ares\Forum\Service\Thread\DeleteThreadService;
 use Ares\Forum\Service\Thread\EditThreadService;
 use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Exception\ValidationException;
-use Ares\Framework\Interfaces\HttpResponseCodeInterface;
 use Ares\Framework\Service\ValidationService;
 use Ares\User\Entity\User;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -35,16 +34,18 @@ class ThreadController extends BaseController
     /**
      * ThreadController constructor.
      *
-     * @param   ThreadRepository        $threadRepository
-     * @param   CreateThreadService     $createThreadService
-     * @param   EditThreadService       $editThreadService
-     * @param   ValidationService       $validationService
+     * @param ThreadRepository    $threadRepository
+     * @param CreateThreadService $createThreadService
+     * @param EditThreadService   $editThreadService
+     * @param ValidationService   $validationService
+     * @param DeleteThreadService $deleteThreadService
      */
     public function __construct(
         private ThreadRepository $threadRepository,
         private CreateThreadService $createThreadService,
         private EditThreadService $editThreadService,
-        private ValidationService $validationService
+        private ValidationService $validationService,
+        private DeleteThreadService $deleteThreadService
     ) {}
 
     /**
@@ -159,20 +160,11 @@ class ThreadController extends BaseController
         /** @var int $id */
         $id = $args['id'];
 
-        $deleted = $this->threadRepository->delete($id);
-
-        if (!$deleted) {
-            throw new ThreadException(
-                __('Thread could not be deleted.'),
-                ForumResponseCodeInterface::RESPONSE_FORUM_THREAD_NOT_DELETED,
-                HttpResponseCodeInterface::HTTP_RESPONSE_UNPROCESSABLE_ENTITY
-            );
-        }
+        $customResponse = $this->deleteThreadService->execute($id);
 
         return $this->respond(
             $response,
-            response()
-                ->setData(true)
+            $customResponse
         );
     }
 }
