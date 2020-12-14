@@ -153,9 +153,20 @@ class ArticleController extends BaseController
      * @return Response
      * @throws DataObjectManagerException
      */
-    public function pinned(Request $request, Response $response): Response
+    public function pinned(Request $request, Response $response, array $args): Response
     {
-        $pinnedArticles = $this->articleRepository->getPinnedArticles();
+        /** @var int $page */
+        $page = $args['page'];
+
+        /** @var int $resultPerPage */
+        $resultPerPage = $args['rpp'];
+
+        /** @var PaginatedCollection $pinnedArticles */
+        $pinnedArticles = $this->articleRepository
+            ->getPaginatedPinnedArticles(
+                $page,
+                $resultPerPage
+            );
 
         return $this->respond(
             $response,

@@ -62,10 +62,10 @@ class ArticleRepository extends BaseRepository
     }
 
     /**
-     * @return Collection|null
+     * @return PaginatedCollection
      * @throws DataObjectManagerException
      */
-    public function getPinnedArticles(): ?Collection
+    public function getPaginatedPinnedArticles(int $page, int $resultPerPage): PaginatedCollection
     {
         $searchCriteria = $this->getDataObjectManager()
             ->select([
@@ -84,10 +84,9 @@ class ArticleRepository extends BaseRepository
                 'hidden' => 0
             ])->groupBy('ares_articles.id')
             ->orderBy('ares_articles.id', 'DESC')
-            ->limit(3)
             ->addRelation('user');
 
-        return $this->getList($searchCriteria);
+        return $this->getPaginatedList($searchCriteria, $page, $resultPerPage);
     }
 
     /**
