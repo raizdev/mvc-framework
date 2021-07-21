@@ -161,7 +161,7 @@ if (!function_exists('user')) {
      * @throws AuthenticationException
      * @throws NoSuchEntityException
      */
-    function user(Request $request, bool $isCached = true): User {
+    function user(Request $request, bool $isCached = false): User {
         /** @var array $user */
         $authUser = $request->getAttribute('ares_uid');
 
