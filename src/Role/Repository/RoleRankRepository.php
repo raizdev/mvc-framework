@@ -7,66 +7,65 @@
 
 namespace Ares\Role\Repository;
 
+
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Repository\BaseRepository;
-use Ares\Role\Entity\RoleUser;
+use Ares\Role\Entity\RoleRank;
+use Ares\Role\Entity\Contract\RoleRankInterface;
 use Illuminate\Database\QueryException;
 
 /**
- * Class RoleUserRepository
+ * Class RoleRankRepository
  *
  * @package Ares\Role\Repository
  */
-class RoleUserRepository extends BaseRepository
-{
-    /** @var string */
-    protected string $cachePrefix = 'ARES_ROLE_USER_';
+class RoleRankRepository extends BaseRepository {
 
     /** @var string */
-    protected string $cacheCollectionPrefix = 'ARES_ROLE_USER_COLLECTION_';
+    protected string $cachePrefix = 'ARES_ROLE_RANK_';
 
     /** @var string */
-    protected string $entity = RoleUser::class;
+    protected string $cacheCollectionPrefix = 'ARES_ROLE_RANK_COLLECTION_';
+
+    /** @var string */
+    protected string $entity = RoleRank::class;
 
     /**
-     * @param int $userId
+     * @param int $rankId
      *
      * @return array|null
      * @throws QueryException
      */
-    public function getUserRoleIds(int $userId): ?array
-    {
+    public function getRankRoleIds(int $rankId) : ?array {
         $searchCriteria = $this->getDataObjectManager()
-            ->select('role_id')
-            ->where('user_id', $userId);
+        ->select('role_id')
+        ->where('rank_id', $rankId);
 
         return $this->getList($searchCriteria)->get('role_id');
     }
 
     /**
      * @param int $roleId
-     * @param int $userId
+     * @param int $rankId
      *
-     * @return RoleUser|null
+     * @return RoleRank|null
      * @throws NoSuchEntityException
      */
-    public function getUserAssignedRole(int $roleId, int $userId): ?RoleUser
-    {
-        $searchCriteria = $this->getDataObjectManager()
-            ->where([
-                'role_id' => $roleId,
-                'user_id' => $userId
-            ]);
+    public function getRankAssignedRole(int $roleId, int $rankId): ?RoleRank {
+        $searchCriteria = $this->getDataObjectManager()->where([
+            RoleRankInterface::COLUMN_ROLE_ID => $roleId,
+            RoleRankInterface::COLUMN_RANK_ID => $rankId
+        ]);
 
-        return $this->getOneBy($searchCriteria, true);
+        return $this->getOneBy($searchCriteria, true, false);
     }
 
     /**
-     * @param array $allUserRoleIds
+     * @param array $allRankRoleIds
      *
      * @return array|null
      */
-    public function getUserPermissions(array $allUserRoleIds): ?array
+    public function getRankPermissions(array $allRankRoleIds): ?array
     {
         $searchCriteria = $this->getDataObjectManager()
             ->select([
@@ -81,7 +80,7 @@ class RoleUserRepository extends BaseRepository
                 'ares_roles_permission.permission_id'
             )->whereIn(
                 'ares_roles_permission.role_id',
-                $allUserRoleIds
+                $allRankRoleIds
             )->select('ares_permissions.name');
 
         return array_values(

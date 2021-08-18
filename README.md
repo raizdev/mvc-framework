@@ -22,7 +22,7 @@ $ cd ares-habbo-backend
 ```
 ##### 3. Copy dotenv config.
 ```console
-$ cp .env.example .env 
+$ cp .env_example .env 
 ```
 ##### 4. Install composer dependencies.
 ```console

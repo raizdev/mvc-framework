@@ -108,11 +108,10 @@ class CreateChildRoleService
     private function checkForCycle(int $parentRoleId, int $childRoleId): bool
     {
         $hasChildRole = $this->roleHierarchyRepository->hasChildRoleId($parentRoleId, $childRoleId);
+        $hasParentRole = $this->roleHierarchyRepository->hasParentRoleId($parentRoleId, $childRoleId);
+        $areBrothers = $this->roleHierarchyRepository->areBrothers($parentRoleId, $childRoleId);
+        $parentIsGrandChild = $this->roleHierarchyRepository->roleIsGrandChild($parentRoleId);
 
-        if (!$hasChildRole) {
-            return false;
-        }
-
-        return true;
+        return $hasChildRole || $hasParentRole || $areBrothers || $parentIsGrandChild;
     }
 }

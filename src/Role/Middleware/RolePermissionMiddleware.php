@@ -55,9 +55,9 @@ class RolePermissionMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         }
 
-        $userId = $this->fetchUserId($request);
-
-        $isPermitted = $this->checkAccessService->execute($userId, $permissionName);
+        $userRank = user($request)->getRank();
+        
+        $isPermitted = $this->checkAccessService->execute($userRank, $permissionName);
 
         if (!$isPermitted) {
             throw new RoleException(
@@ -68,21 +68,5 @@ class RolePermissionMiddleware implements MiddlewareInterface
         }
 
         return $handler->handle($request);
-    }
-
-    /**
-     * @param ServerRequestInterface $request
-     *
-     * @return int|null
-     */
-    private function fetchUserId(ServerRequestInterface $request): ?int
-    {
-        /** @var array $user */
-        $user = $request->getAttribute('ares_uid');
-        if (isset($user)) {
-            return json_decode(json_encode($user), true);
-        }
-
-        return null;
     }
 }

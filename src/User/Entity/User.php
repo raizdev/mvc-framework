@@ -11,7 +11,7 @@ use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Model\DataObject;
 use Ares\Role\Repository\RoleHierarchyRepository;
 use Ares\Role\Repository\RoleRepository;
-use Ares\Role\Repository\RoleUserRepository;
+use Ares\Role\Repository\RoleRankRepository;
 use Ares\User\Entity\Contract\UserInterface;
 use Ares\User\Repository\UserCurrencyRepository;
 use Ares\User\Repository\UserRepository;
@@ -410,14 +410,14 @@ class User extends DataObject implements UserInterface
             return $permissions;
         }
 
-        /** @var RoleUserRepository $roleUserRepository */
-        $roleUserRepository = repository(RoleUserRepository::class);
+        /** @var RoleRankRepository $roleRankRepository */
+        $roleRankRepository = repository(RoleRankRepository::class);
 
         /** @var RoleHierarchyRepository $roleHierarchyRepository */
         $roleHierarchyRepository = repository(RoleHierarchyRepository::class);
 
         /** @var array $userRoleIds */
-        $userRoleIds = $roleUserRepository->getUserRoleIds($this->getId());
+        $userRoleIds = $roleRankRepository->getRankRoleIds($this->getRank());
 
         if (!isset($this) || !$userRoleIds) {
             return null;
@@ -427,7 +427,7 @@ class User extends DataObject implements UserInterface
         $allRoleIds = $roleHierarchyRepository->getAllRoleIdsHierarchy($userRoleIds);
 
         /** @var array $permissions */
-        $permissions = $roleUserRepository->getUserPermissions($allRoleIds);
+        $permissions = $roleRankRepository->getRankPermissions($allRoleIds);
 
         if (!$permissions) {
             return null;

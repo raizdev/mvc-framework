@@ -37,8 +37,30 @@ class RoleHierarchyRepository extends BaseRepository
         $searchCriteria = $this->getDataObjectManager()
             ->whereIn('parent_role_id', $parentIds);
 
+        if($searchCriteria->count() == 0) {
+            return [];
+        }
+
         return $this->getList($searchCriteria)->get('child_role_id');
     }
+
+    /**
+     * @param array $childIds
+     *
+     * @return array|null
+     */
+    private function getParentIds(array $childIds): ?array
+    {
+        $searchCriteria = $this->getDataObjectManager()
+            ->whereIn('child_role_id', $childIds);
+
+        if($searchCriteria->count() == 0) {
+            return [];
+        }
+
+        return $this->getList($searchCriteria)->get('parent_role_id');
+    }
+
 
     /**
      * @param array $parentIds
@@ -85,6 +107,85 @@ class RoleHierarchyRepository extends BaseRepository
                     return true;
                 }
             }
+        }
+
+        return false;
+    }
+
+     /**
+     * @param int $parentRoleId
+     * @param int $findingParentId
+     *
+     * @return bool
+     * @throws QueryException
+     */
+    public function hasParentRoleId(int $parentRoleId, int $findingParentId): bool
+    {
+        $parentIds = $this->getParentIds([$parentRoleId]);
+
+        if(count($parentIds) > 0) {
+            if(in_array($findingParentId, $parentIds, true)) {
+                return true;
+            }
+
+            foreach($parentIds as $parentId) {
+                if($this->hasParentRoleId($parentId, $findingParentId)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+    * @param int $parentRoleId
+    * @param int $childRoleId
+    *
+    * @return bool
+    * @throws QueryException
+    */
+    public function areBrothers(int $parentRoleId, int $childRoleId) : bool {
+        $parentParentIds = $this->getParentIds([$parentRoleId]);
+        $childParentIds = $this->getParentIds([$childRoleId]);
+
+        if(count($parentParentIds) > 0 && count($childParentIds) > 0) {
+            if($parentParentIds === $childParentIds) {
+                return true;
+            }
+
+            foreach($childParentIds as $parentId) {
+                if($this->areBrothers($parentId, $parentRoleId)) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
+
+    /**
+    * @param int $parentRoleId
+    * @param int $parentsCount
+    *
+    * @return bool
+    * @throws QueryException
+    */
+    public function roleIsGrandChild(int $parentRoleId, $parentsCount = 0) : bool {
+        $parentParentIds = $this->getParentIds([$parentRoleId]);
+        
+        if(count($parentParentIds) > 0) {
+            $parentsCount++;
+
+            if($parentsCount == 2) {
+                return true;
+            }
+
+            foreach($parentParentIds as $parentId) {
+                if($this->roleIsGrandChild($parentId, $parentsCount)) {
+                    return true;
+                }
+            } 
         }
 
         return false;

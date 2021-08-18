@@ -154,31 +154,29 @@ return function (App $app) {
 
             // Roles, Permissions
             $group->group('/roles', function ($group) {
-                $group->get('/user/permissions', \Ares\Role\Controller\RolePermissionController::class . ':userPermissions');
-                $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}',
-                    \Ares\Role\Controller\RoleController::class . ':list')
-                    ->setName('list-all-roles');
-                $group->post('/create', \Ares\Role\Controller\RoleController::class . ':createRole')
-                    ->setName('create-role');
-                $group->post('create_child', \Ares\Role\Controller\RoleController::class . ':createChildRole')
-                    ->setName('create-child-role');
-                $group->post('/assign', \Ares\Role\Controller\RoleController::class . ':assignRole')
-                    ->setName('assign-role');
-                $group->delete('', \Ares\Role\Controller\RoleController::class . ':deleteRole')
-                    ->setName('delete-role');
+                $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Role\Controller\RoleController::class . ':list')->setName('list-all-roles');
 
-                // Permissions
-                $group->group('/permissions', function ($group) {
-                    $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}',
-                        \Ares\Role\Controller\RolePermissionController::class . ':list')
-                        ->setName('list-all-permissions');
-                    $group->post('/create', \Ares\Role\Controller\RolePermissionController::class . ':createPermission')
-                        ->setName('create-permission');
-                    $group->post('/create_role_permission', \Ares\Role\Controller\RolePermissionController::class . ':createRolePermission')
-                        ->setName('create-role-permission');
-                    $group->delete('', \Ares\Role\Controller\RolePermissionController::class . ':deleteRolePermission')
-                        ->setName('delete-role-permission');
+                $group->group('/create', function ($group) {
+                    $group->post('/role', \Ares\Role\Controller\RoleController::class . ':createRole')->setName('create-role');
+                    $group->post('/permission', \Ares\Role\Controller\RolePermissionController::class . ':createPermission')->setName('create-permission');
                 });
+                
+                $group->group('/assign', function ($group) {
+                    $group->post('/rank', \Ares\Role\Controller\RoleController::class . ':assignRole')->setName('assign-role');
+                    $group->post('/child', \Ares\Role\Controller\RoleController::class . ':createChildRole')->setName('create-child-role');
+                    $group->post('/permission', \Ares\Role\Controller\RolePermissionController::class . ':createRolePermission')->setName('create-role-permission');
+                });
+                
+                $group->group('/delete', function ($group) {
+                    $group->delete('/role', \Ares\Role\Controller\RoleController::class . ':deleteRole')->setName('delete-role');
+                    $group->delete('/permission', \Ares\Role\Controller\RolePermissionController::class . ':deleteRolePermission')->setName('delete-role-permission');
+                });
+
+                $group->group('/permissions', function ($group) {
+                    $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Role\Controller\RolePermissionController::class . ':list')->setName('list-all-permissions');
+                });
+
+                $group->get('/view/my-permissions', \Ares\Role\Controller\RolePermissionController::class . ':userPermissions');
             });
 
             // Payments
