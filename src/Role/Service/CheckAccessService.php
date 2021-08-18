@@ -12,7 +12,8 @@ use Ares\Role\Entity\Permission;
 use Ares\Role\Repository\PermissionRepository;
 use Ares\Role\Repository\RoleHierarchyRepository;
 use Ares\Role\Repository\RolePermissionRepository;
-use Ares\Role\Repository\RoleUserRepository;
+use Ares\Role\Repository\RoleRankRepository;
+use Ares\User\Repository\UserRepository;
 
 /**
  * Class CheckAccessService
@@ -25,15 +26,17 @@ class CheckAccessService
      * CheckAccessService constructor.
      *
      * @param PermissionRepository     $permissionRepository
-     * @param RoleUserRepository       $roleUserRepository
+     * @param RoleRankRepository       $roleRankRepository
      * @param RoleHierarchyRepository  $roleHierarchyRepository
      * @param RolePermissionRepository $rolePermissionRepository
+     * @param UserRepository           $userRepository
      */
     public function __construct(
         private PermissionRepository $permissionRepository,
-        private RoleUserRepository $roleUserRepository,
+        private RoleRankRepository $roleRankRepository,
         private RoleHierarchyRepository $roleHierarchyRepository,
-        private RolePermissionRepository $rolePermissionRepository
+        private RolePermissionRepository $rolePermissionRepository,
+        private UserRepository $userRepository
     ) {}
 
     /**
@@ -43,27 +46,22 @@ class CheckAccessService
      * @return bool
      * @throws NoSuchEntityException
      */
-    public function execute(int $userId, ?string $permissionName): bool
+    public function execute(int $userRank, ?string $permissionName): bool
     {
         /** @var Permission $permission */
         $permission = $this->permissionRepository->get($permissionName, 'name', true);
-
+        
         // When there's no permission set, set anonymous(logged in) access
         if (!$permission) {
             return true;
         }
 
-        $roleIds = $this->roleUserRepository->getUserRoleIds($userId);
+        $roleIds = $this->roleRankRepository->getRankRoleIds($userRank);
 
         if ($roleIds && count($roleIds) > 0) {
-            $allRoleIds = $this->roleHierarchyRepository
-                ->getAllRoleIdsHierarchy($roleIds);
+            $allRoleIds = $this->roleHierarchyRepository->getAllRoleIdsHierarchy($roleIds);
 
-            return $this->rolePermissionRepository
-                ->isPermissionAssigned(
-                    $permission->getId(),
-                    $allRoleIds
-                );
+            return $this->rolePermissionRepository->isPermissionAssigned($permission->getId(), $allRoleIds);
         }
 
         return false;

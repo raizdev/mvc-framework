@@ -88,10 +88,10 @@ class RolePermissionController extends BaseController
      */
     public function userPermissions(Request $request, Response $response): Response
     {
-        /** @var int $userId */
-        $userId = user($request)->getId();
+        /** @var int $userRank */
+        $userRank = user($request)->getRank();
 
-        $customResponse = $this->fetchUserPermissionService->execute($userId);
+        $customResponse = $this->fetchUserPermissionService->execute($userRank);
 
         return $this->respond(
             $response,

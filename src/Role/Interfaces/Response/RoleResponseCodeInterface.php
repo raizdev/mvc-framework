@@ -23,7 +23,7 @@ interface RoleResponseCodeInterface extends CustomResponseCodeInterface
     public const RESPONSE_ROLE_NO_RIGHTS_TO_EXECUTE_ACTION = 10479;
 
     /** @var int */
-    public const RESPONSE_ROLE_ALREADY_ASSIGNED_TO_USER = 10506;
+    public const RESPONSE_ROLE_ALREADY_ASSIGNED_TO_RANK = 10506;
 
     /** @var int */
     public const RESPONSE_ROLE_ALREADY_EXIST = 10604;

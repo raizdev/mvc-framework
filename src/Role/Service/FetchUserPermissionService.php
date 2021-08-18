@@ -9,7 +9,7 @@ namespace Ares\Role\Service;
 
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\Role\Repository\RoleHierarchyRepository;
-use Ares\Role\Repository\RoleUserRepository;
+use Ares\Role\Repository\RoleRankRepository;
 
 /**
  * Class FetchUserPermissionService
@@ -21,11 +21,11 @@ class FetchUserPermissionService
     /**
      * FetchUserPermissionService constructor.
      *
-     * @param RoleUserRepository      $roleUserRepository
+     * @param RoleRankRepository      $roleRankRepository
      * @param RoleHierarchyRepository $roleHierarchyRepository
      */
     public function __construct(
-        private RoleUserRepository $roleUserRepository,
+        private RoleRankRepository $roleRankRepository,
         private RoleHierarchyRepository $roleHierarchyRepository
     ) {}
 
@@ -34,24 +34,21 @@ class FetchUserPermissionService
      *
      * @return CustomResponseInterface
      */
-    public function execute(int $userId): CustomResponseInterface
+    public function execute(int $rank): CustomResponseInterface
     {
-        /** @var array $userRoleIds */
-        $userRoleIds = $this->roleUserRepository->getUserRoleIds($userId);
-
-        if (!$userRoleIds) {
-            return response()
-                ->setData([]);
+        /** @var array $rankRoleIds */
+        $rankRoleIds = $this->roleRankRepository->getRankRoleIds($rank);
+        
+        if (!$rankRoleIds) {
+            return response()->setData([]);
         }
 
         /** @var array $allRoleIds */
-        $allRoleIds = $this->roleHierarchyRepository
-            ->getAllRoleIdsHierarchy($userRoleIds);
+        $allRoleIds = $this->roleHierarchyRepository->getAllRoleIdsHierarchy($rankRoleIds);
 
         /** @var array $permissions */
-        $permissions = $this->roleUserRepository->getUserPermissions($allRoleIds);
+        $permissions = $this->roleRankRepository->getRankPermissions($allRoleIds);
 
-        return response()
-            ->setData($permissions);
+        return response()->setData($permissions);
     }
 }

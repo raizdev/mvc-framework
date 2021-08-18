@@ -13,7 +13,7 @@ final class AresRoles extends AbstractMigration
         $table = $this->table('ares_roles');
 
         $data = [
-            ['name' => 'Admin', "description" => 'The Admin User Role', 'status' => 1, 'created_at' => date('Y-m-d H:i:s')],
+            ['id'=> '1', 'name' => 'Root', "description" => 'Root', 'status' => 1, 'created_at' => date('Y-m-d H:i:s')],
         ];
 
         $table->addColumn('name', 'string', ['limit' => 100])

@@ -14,10 +14,10 @@ use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Service\ValidationService;
 use Ares\Role\Entity\Contract\RoleHierarchyInterface;
 use Ares\Role\Entity\Contract\RoleInterface;
-use Ares\Role\Entity\Contract\RoleUserInterface;
+use Ares\Role\Entity\Contract\RoleRankInterface;
 use Ares\Role\Exception\RoleException;
 use Ares\Role\Repository\RoleRepository;
-use Ares\Role\Service\AssignUserToRoleService;
+use Ares\Role\Service\AssignRankToRoleService;
 use Ares\Role\Service\CreateChildRoleService;
 use Ares\Role\Service\CreateRoleService;
 use Ares\Role\Service\DeleteRoleService;
@@ -36,7 +36,7 @@ class RoleController extends BaseController
      *
      * @param CreateRoleService       $createRoleService
      * @param CreateChildRoleService  $createChildRoleService
-     * @param AssignUserToRoleService $assignUserToRoleService
+     * @param AssignRankToRoleService $assignRankToRoleService
      * @param ValidationService       $validationService
      * @param DeleteRoleService       $deleteRoleService
      * @param RoleRepository          $roleRepository
@@ -44,7 +44,7 @@ class RoleController extends BaseController
     public function __construct(
         private CreateRoleService $createRoleService,
         private CreateChildRoleService $createChildRoleService,
-        private AssignUserToRoleService $assignUserToRoleService,
+        private AssignRankToRoleService $assignRankToRoleService,
         private ValidationService $validationService,
         private DeleteRoleService $deleteRoleService,
         private RoleRepository $roleRepository
@@ -94,7 +94,8 @@ class RoleController extends BaseController
         $parsedData = $request->getParsedBody();
 
         $this->validationService->validate($parsedData, [
-            RoleInterface::COLUMN_NAME => 'required'
+            RoleInterface::COLUMN_NAME => 'required',
+            RoleInterface::COLUMN_DESCRIPTION => 'required'
         ]);
 
         $customResponse = $this->createRoleService->execute($parsedData);
@@ -149,11 +150,11 @@ class RoleController extends BaseController
         $parsedData = $request->getParsedBody();
 
         $this->validationService->validate($parsedData, [
-            RoleUserInterface::COLUMN_USER_ID => 'numeric|required',
-            RoleUserInterface::COLUMN_ROLE_ID => 'numeric|required'
+            RoleRankInterface::COLUMN_RANK_ID => 'numeric|required',
+            RoleRankInterface::COLUMN_ROLE_ID => 'numeric|required'
         ]);
 
-        $customResponse = $this->assignUserToRoleService->execute($parsedData);
+        $customResponse = $this->assignRankToRoleService->execute($parsedData);
 
         return $this->respond(
             $response,
