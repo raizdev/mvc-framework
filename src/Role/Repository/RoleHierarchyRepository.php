@@ -37,7 +37,9 @@ class RoleHierarchyRepository extends BaseRepository
         $searchCriteria = $this->getDataObjectManager()
             ->whereIn('parent_role_id', $parentIds);
 
-        if($searchCriteria->count() == 0) return [];
+        if($searchCriteria->count() == 0) {
+            return [];
+        }
 
         return $this->getList($searchCriteria)->get('child_role_id');
     }
@@ -52,7 +54,9 @@ class RoleHierarchyRepository extends BaseRepository
         $searchCriteria = $this->getDataObjectManager()
             ->whereIn('child_role_id', $childIds);
 
-        if($searchCriteria->count() == 0) return [];
+        if($searchCriteria->count() == 0) {
+            return [];
+        }
 
         return $this->getList($searchCriteria)->get('parent_role_id');
     }
@@ -134,6 +138,13 @@ class RoleHierarchyRepository extends BaseRepository
         return false;
     }
 
+    /**
+    * @param int $parentRoleId
+    * @param int $childRoleId
+    *
+    * @return bool
+    * @throws QueryException
+    */
     public function areBrothers(int $parentRoleId, int $childRoleId) : bool {
         $parentParentIds = $this->getParentIds([$parentRoleId]);
         $childParentIds = $this->getParentIds([$childRoleId]);
@@ -153,6 +164,13 @@ class RoleHierarchyRepository extends BaseRepository
         return false;
     }
 
+    /**
+    * @param int $parentRoleId
+    * @param int $parentsCount
+    *
+    * @return bool
+    * @throws QueryException
+    */
     public function roleIsGrandChild(int $parentRoleId, $parentsCount = 0) : bool {
         $parentParentIds = $this->getParentIds([$parentRoleId]);
         
