@@ -40,8 +40,8 @@ return function (App $app) {
                     ->setName('create-article');
                 $group->put('/edit', \Ares\Article\Controller\ArticleController::class . ':editArticle')
                     ->setName('edit-article');
-                $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}',
-                    \Ares\Article\Controller\ArticleController::class . ':list');
+                $group->get('/list/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Article\Controller\ArticleController::class . ':list');
+                $group->get('/all/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Article\Controller\ArticleController::class . ':allList')->setName('view-all-articles');
                 $group->get('/pinned/{page:[0-9]+}/{rpp:[0-9]+}', \Ares\Article\Controller\ArticleController::class . ':pinned');
                 $group->get('/{slug}', \Ares\Article\Controller\ArticleController::class . ':article');
                 $group->delete('/{id:[0-9]+}', \Ares\Article\Controller\ArticleController::class . ':delete')

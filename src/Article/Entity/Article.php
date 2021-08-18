@@ -138,6 +138,24 @@ class Article extends DataObject implements ArticleInterface
     }
 
     /**
+     * @return string
+     */
+    public function getThumbnail(): string
+    {
+        return $this->getData(ArticleInterface::COLUMN_THUMBNAIL);
+    }
+
+    /**
+     * @param string $thumbnail
+     *
+     * @return Article
+     */
+    public function setThumbnail(string $thumbnail): Article
+    {
+        return $this->setData(ArticleInterface::COLUMN_THUMBNAIL, $thumbnail);
+    }
+
+    /**
      * @return int|null
      */
     public function getAuthorId(): ?int

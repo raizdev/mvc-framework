@@ -20,6 +20,7 @@ interface ArticleInterface
     public const COLUMN_DESCRIPTION = 'description';
     public const COLUMN_CONTENT = 'content';
     public const COLUMN_IMAGE = 'image';
+    public const COLUMN_THUMBNAIL = 'thumbnail';
     public const COLUMN_AUTHOR_ID = 'author_id';
     public const COLUMN_HIDDEN = 'hidden';
     public const COLUMN_PINNED = 'pinned';
