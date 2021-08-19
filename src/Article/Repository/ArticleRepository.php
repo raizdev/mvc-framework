@@ -42,8 +42,8 @@ class ArticleRepository extends BaseRepository
     {
         $searchCriteria = $this->getDataObjectManager()
             ->select([
-                'ares_articles.id', 'ares_articles.author_id', 'ares_articles.title', 'ares_articles.slug',
-                'ares_articles.description', 'ares_articles.image', 'ares_articles.likes', 'ares_articles.dislikes',
+                'ares_articles.id', 'ares_articles.author_id', 'ares_articles.hidden', 'ares_articles.pinned', 'ares_articles.title', 'ares_articles.slug',
+                'ares_articles.description', 'ares_articles.image', 'ares_articles.thumbnail', 'ares_articles.likes', 'ares_articles.dislikes',
                 'ares_articles.created_at'
             ])->selectRaw(
                 'count(ares_articles_comments.article_id) as comments'
@@ -69,8 +69,8 @@ class ArticleRepository extends BaseRepository
     {
         $searchCriteria = $this->getDataObjectManager()
             ->select([
-                'ares_articles.id', 'ares_articles.author_id', 'ares_articles.title', 'ares_articles.slug',
-                'ares_articles.description', 'ares_articles.image', 'ares_articles.likes', 'ares_articles.dislikes',
+                'ares_articles.id', 'ares_articles.author_id', 'ares_articles.hidden', 'ares_articles.pinned', 'ares_articles.title', 'ares_articles.slug',
+                'ares_articles.description', 'ares_articles.image', 'ares_articles.thumbnail', 'ares_articles.likes', 'ares_articles.dislikes',
                 'ares_articles.created_at'
             ])->selectRaw(
                 'count(ares_articles_comments.article_id) as comments'
@@ -92,16 +92,20 @@ class ArticleRepository extends BaseRepository
     /**
      * @param int $page
      * @param int $resultPerPage
+     * @param boolean $showHidden
+     * @param boolean $ascendingOrder
      *
      * @return PaginatedCollection
      * @throws DataObjectManagerException
      */
-    public function getPaginatedArticleList(int $page, int $resultPerPage): PaginatedCollection
+    public function getPaginatedArticleList(int $page, int $resultPerPage, bool $showHidden = false, bool $ascendingOrder = false): PaginatedCollection
     {
+        $order = $ascendingOrder ? 'ASC' : 'DESC';
+
         $searchCriteria = $this->getDataObjectManager()
             ->select([
                 'ares_articles.id', 'ares_articles.author_id', 'ares_articles.title', 'ares_articles.slug',
-                'ares_articles.description', 'ares_articles.image', 'ares_articles.likes', 'ares_articles.dislikes',
+                'ares_articles.description', 'ares_articles.image', 'ares_articles.thumbnail', 'ares_articles.likes', 'ares_articles.dislikes',
                 'ares_articles.created_at'
             ])->selectRaw(
                 'count(ares_articles_comments.article_id) as comments'
@@ -111,9 +115,12 @@ class ArticleRepository extends BaseRepository
                 '=',
                 'ares_articles_comments.article_id'
             )->groupBy('ares_articles.id')
-            ->where('ares_articles.hidden', 0)
-            ->orderBy('ares_articles.id', 'DESC')
+            ->orderBy('ares_articles.id', $order)
             ->addRelation('user');
+
+            if(!$showHidden) {
+                $searchCriteria = $searchCriteria->where('ares_articles.hidden', 0);
+            }
 
         return $this->getPaginatedList($searchCriteria, $page, $resultPerPage);
     }
@@ -130,7 +137,7 @@ class ArticleRepository extends BaseRepository
             ->select([
                 'ares_articles.id', 'ares_articles.author_id', 'ares_articles.content',
                 'ares_articles.title', 'ares_articles.slug', 'ares_articles.description',
-                'ares_articles.image', 'ares_articles.likes', 'ares_articles.dislikes', 'ares_articles.created_at'
+                'ares_articles.image', 'ares_articles.thumbnail', 'ares_articles.likes', 'ares_articles.dislikes', 'ares_articles.created_at'
             ])->selectRaw(
                 'count(ares_articles_comments.article_id) as comments'
             )->leftJoin(
@@ -142,7 +149,7 @@ class ArticleRepository extends BaseRepository
             ->where('slug', $slug)
             ->addRelation('user');
 
-        return $this->getOneBy($searchCriteria);
+        return $this->getOneBy($searchCriteria, false, false);
     }
 
     /**
@@ -160,6 +167,6 @@ class ArticleRepository extends BaseRepository
                 'slug' => $slug
             ]);
 
-        return $this->getOneBy($searchCriteria, true);
+        return $this->getOneBy($searchCriteria, true, false);
     }
 }

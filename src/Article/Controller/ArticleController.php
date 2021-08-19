@@ -72,6 +72,7 @@ class ArticleController extends BaseController
             ArticleInterface::COLUMN_DESCRIPTION => 'required',
             ArticleInterface::COLUMN_CONTENT => 'required',
             ArticleInterface::COLUMN_IMAGE => 'required',
+            ArticleInterface::COLUMN_THUMBNAIL => 'required',
             ArticleInterface::COLUMN_HIDDEN => 'required|numeric',
             ArticleInterface::COLUMN_PINNED => 'required|numeric'
         ]);
@@ -128,10 +129,11 @@ class ArticleController extends BaseController
 
         $this->validationService->validate($parsedData, [
             ArticleInterface::COLUMN_ID => 'required|numeric',
-            ArticleInterface::COLUMN_TITLE => 'nullable|regex:/^[a-zA-Z0-9]+$/',
-            ArticleInterface::COLUMN_DESCRIPTION => 'nullable',
-            ArticleInterface::COLUMN_CONTENT => 'nullable',
-            ArticleInterface::COLUMN_IMAGE => 'nullable',
+            ArticleInterface::COLUMN_TITLE => 'required',
+            ArticleInterface::COLUMN_DESCRIPTION => 'required',
+            ArticleInterface::COLUMN_CONTENT => 'required',
+            ArticleInterface::COLUMN_IMAGE => 'required',
+            ArticleInterface::COLUMN_THUMBNAIL => 'required',
             ArticleInterface::COLUMN_HIDDEN => 'required|numeric',
             ArticleInterface::COLUMN_PINNED => 'required|numeric'
         ]);
@@ -204,6 +206,29 @@ class ArticleController extends BaseController
             response()
                 ->setData($articles)
         );
+    }
+
+    /**
+     * @param Request     $request
+     * @param Response    $response
+     *
+     * @param             $args
+     *
+     * @return Response
+     * @throws DataObjectManagerException
+     */
+    public function allList(Request $request, Response $response, array $args): Response
+    {
+        /** @var int $page */
+        $page = $args['page'];
+
+        /** @var int $resultPerPage */
+        $resultPerPage = $args['rpp'];
+
+        /** @var PaginatedCollection $articles */
+        $articles = $this->articleRepository->getPaginatedArticleList($page, $resultPerPage, true, true);
+
+        return $this->respond($response, response()->setData($articles));
     }
 
     /**

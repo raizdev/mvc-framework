@@ -86,6 +86,7 @@ class CreateArticleService
             ->setDescription($data['description'])
             ->setContent($data['content'])
             ->setImage($data['image'])
+            ->setThumbnail($data['thumbnail'])
             ->setAuthorId($userId)
             ->setHidden($data['hidden'])
             ->setPinned($data['pinned'])

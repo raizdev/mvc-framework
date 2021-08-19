@@ -16,6 +16,7 @@ final class AresArticles extends AbstractMigration
             ->addColumn('description', 'text')
             ->addColumn('content', 'text')
             ->addColumn('image', 'text')
+            ->addColumn('thumbnail', 'text')
             ->addColumn('author_id', 'integer', ['limit' => 11])
             ->addColumn('hidden', 'integer', ['limit' => 11])
             ->addColumn('pinned', 'integer', ['limit' => 11])

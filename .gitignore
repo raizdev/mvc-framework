@@ -13,4 +13,4 @@
 /tmp/Logs
 /tmp/Cache
 /.env
-
+public/web.config
