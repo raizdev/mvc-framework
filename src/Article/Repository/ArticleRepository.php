@@ -118,11 +118,9 @@ class ArticleRepository extends BaseRepository
             ->orderBy('ares_articles.id', $order)
             ->addRelation('user');
 
-            if(!$showHidden)
-            {
+            if(!$showHidden) {
                 $searchCriteria = $searchCriteria->where('ares_articles.hidden', 0);
             }
-
 
         return $this->getPaginatedList($searchCriteria, $page, $resultPerPage);
     }
