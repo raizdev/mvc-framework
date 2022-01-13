@@ -123,6 +123,7 @@ class RegisterService
             ->setUsername($data['username'])
             ->setPassword($this->hashService->hash($data['password']))
             ->setMail($data['mail'])
+            ->setAccountCreated(time())
             ->setLook($data['look'])
             ->setGender($data['gender'])
             ->setCredits($this->config->get('hotel_settings.start_credits'))
