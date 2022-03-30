@@ -18,6 +18,7 @@ interface UserInterface
     public const COLUMN_USERNAME = 'username';
     public const COLUMN_PASSWORD = 'password';
     public const COLUMN_MAIL = 'mail';
+    public const COLUMN_ACCOUNT_CREATED = 'account_created';
     public const COLUMN_LAST_LOGIN = 'last_login';
     public const COLUMN_LAST_ONLINE = 'last_online';
     public const COLUMN_MOTTO = 'motto';
