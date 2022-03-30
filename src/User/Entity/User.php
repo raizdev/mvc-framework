@@ -332,6 +332,24 @@ class User extends DataObject implements UserInterface
     }
 
     /**
+     * @return int|NOTnull
+     */
+    public function getAccountCreated(): ?int
+    {
+        return $this->getData(UserInterface::COLUMN_ACCOUNT_CREATED);
+    }
+
+    /**
+     * @param int|NOTnull $lastOnline
+     *
+     * @return User
+     */
+    public function setAccountCreated(?int $lastOnline): User
+    {
+        return $this->setData(UserInterface::COLUMN_ACCOUNT_CREATED, $lastOnline);
+    }
+    
+    /**
      * @return \DateTime
      */
     public function getUpdatedAt(): \DateTime
