@@ -8,6 +8,7 @@
 namespace Ares\Payment\Entity;
 
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Model\DataObject;
 use Ares\Payment\Entity\Contract\PaymentInterface;
 use Ares\Payment\Repository\PaymentRepository;
@@ -123,6 +124,7 @@ class Payment extends DataObject implements PaymentInterface
      * @return User|null
      *
      * @throws DataObjectManagerException
+     * @throws NoSuchEntityException
      */
     public function getUser(): ?User
     {
@@ -131,10 +133,6 @@ class Payment extends DataObject implements PaymentInterface
 
         if ($user) {
             return $user;
-        }
-
-        if (!isset($this)) {
-            return null;
         }
 
         /** @var PaymentRepository $paymentRepository **/

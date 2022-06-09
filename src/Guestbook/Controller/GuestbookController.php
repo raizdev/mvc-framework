@@ -45,12 +45,12 @@ class GuestbookController extends BaseController
      * @param DeleteGuestbookEntryService $deleteGuestbookEntryService
      */
     public function __construct(
-        private GuestbookRepository $guestbookRepository,
-        private UserRepository $userRepository,
-        private GuildRepository $guildRepository,
-        private ValidationService $validationService,
-        private CreateGuestbookEntryService $createGuestbookEntryService,
-        private DeleteGuestbookEntryService $deleteGuestbookEntryService
+        private readonly GuestbookRepository         $guestbookRepository,
+        private readonly UserRepository              $userRepository,
+        private readonly GuildRepository             $guildRepository,
+        private readonly ValidationService           $validationService,
+        private readonly CreateGuestbookEntryService $createGuestbookEntryService,
+        private readonly DeleteGuestbookEntryService $deleteGuestbookEntryService
     ) {}
 
     /**
@@ -114,9 +114,9 @@ class GuestbookController extends BaseController
     }
 
     /**
-     * @param Request     $request
-     * @param Response    $response
-     * @param             $args
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
      *
      * @return Response
      * @throws DataObjectManagerException
@@ -147,9 +147,9 @@ class GuestbookController extends BaseController
     }
 
     /**
-     * @param Request     $request
-     * @param Response    $response
-     * @param             $args
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
      *
      * @return Response
      * @throws DataObjectManagerException
@@ -180,13 +180,13 @@ class GuestbookController extends BaseController
     }
 
     /**
-     * @param Request     $request
-     * @param Response    $response
-     * @param             $args
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
      *
      * @return Response
-     * @throws GuestbookException
      * @throws DataObjectManagerException
+     * @throws GuestbookException
      */
     public function delete(Request $request, Response $response, array $args): Response
     {

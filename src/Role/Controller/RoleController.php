@@ -42,12 +42,12 @@ class RoleController extends BaseController
      * @param RoleRepository          $roleRepository
      */
     public function __construct(
-        private CreateRoleService $createRoleService,
-        private CreateChildRoleService $createChildRoleService,
-        private AssignRankToRoleService $assignRankToRoleService,
-        private ValidationService $validationService,
-        private DeleteRoleService $deleteRoleService,
-        private RoleRepository $roleRepository
+        private readonly CreateRoleService       $createRoleService,
+        private readonly CreateChildRoleService  $createChildRoleService,
+        private readonly AssignRankToRoleService $assignRankToRoleService,
+        private readonly ValidationService       $validationService,
+        private readonly DeleteRoleService       $deleteRoleService,
+        private readonly RoleRepository $roleRepository
     ) {}
 
     /**
@@ -163,13 +163,13 @@ class RoleController extends BaseController
     }
 
     /**
-     * @param Request     $request
-     * @param Response    $response
-     * @param             $args
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
      *
      * @return Response
-     * @throws RoleException
      * @throws DataObjectManagerException
+     * @throws RoleException
      */
     public function deleteRole(Request $request, Response $response, array $args): Response
     {

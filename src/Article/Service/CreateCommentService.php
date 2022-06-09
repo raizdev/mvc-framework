@@ -17,7 +17,7 @@ use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\Framework\Interfaces\HttpResponseCodeInterface;
-use PHLAK\Config\Config;
+use Ares\Framework\Config;
 
 /**
  * Class CreateCommentService
@@ -34,9 +34,9 @@ class CreateCommentService
      * @param Config            $config
      */
     public function __construct(
-        private ArticleRepository $articleRepository,
-        private CommentRepository $commentRepository,
-        private Config $config
+        private readonly ArticleRepository $articleRepository,
+        private readonly CommentRepository $commentRepository,
+        private readonly Config $config
     ) {}
 
     /**

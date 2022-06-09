@@ -35,9 +35,9 @@ class CreateRolePermissionService
      * @param RoleRepository           $roleRepository
      */
     public function __construct(
-        private RolePermissionRepository $rolePermissionRepository,
-        private PermissionRepository $permissionRepository,
-        private RoleRepository $roleRepository
+        private readonly RolePermissionRepository $rolePermissionRepository,
+        private readonly PermissionRepository     $permissionRepository,
+        private readonly RoleRepository $roleRepository
     ) {}
 
     /**

@@ -7,7 +7,6 @@
 
 namespace Ares\Role\Repository;
 
-
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Role\Entity\RoleRank;

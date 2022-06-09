@@ -8,6 +8,7 @@
 namespace Ares\Photo\Entity;
 
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Model\DataObject;
 use Ares\Photo\Entity\Contract\PhotoInterface;
 use Ares\Photo\Repository\PhotoRepository;
@@ -159,6 +160,7 @@ class Photo extends DataObject implements PhotoInterface
      * @return User|null
      *
      * @throws DataObjectManagerException
+     * @throws NoSuchEntityException
      */
     public function getUser(): ?User
     {
@@ -167,10 +169,6 @@ class Photo extends DataObject implements PhotoInterface
 
         if ($user) {
             return $user;
-        }
-
-        if (!isset($this)) {
-            return null;
         }
 
         /** @var PhotoRepository $photoRepository */

@@ -6,5 +6,5 @@
  */
 
 // Routing
-$routes = require __DIR__ . '/../routes/routes.php';
-$routes($app);
+$middleware = require_once __DIR__ . '/middleware.php';
+$middleware($app);

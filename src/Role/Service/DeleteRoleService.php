@@ -27,7 +27,7 @@ class DeleteRoleService
      * @param RoleRepository $roleRepository
      */
     public function __construct(
-        private RoleRepository $roleRepository
+        private readonly RoleRepository $roleRepository
     ) {}
 
     /**

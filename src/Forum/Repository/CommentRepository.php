@@ -11,6 +11,7 @@ use Ares\Forum\Entity\Comment;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Model\Query\PaginatedCollection;
 use Ares\Framework\Repository\BaseRepository;
+use Illuminate\Contracts\Container\BindingResolutionException;
 
 /**
  * Class CommentRepository
@@ -34,7 +35,7 @@ class CommentRepository extends BaseRepository
      * @param int $resultPerPage
      *
      * @return PaginatedCollection
-     * @throws DataObjectManagerException
+     * @throws DataObjectManagerException|BindingResolutionException
      */
     public function getPaginatedThreadCommentList(int $threadId, int $page, int $resultPerPage): PaginatedCollection
     {

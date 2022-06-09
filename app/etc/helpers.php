@@ -59,6 +59,17 @@ if (!function_exists('app_dir')) {
     }
 }
 
+if (!function_exists('src_dir')) {
+    /**
+     * Returns directory path of src.
+     *
+     * @return string
+     */
+    function src_dir(): string {
+        return __DIR__ . '/../../src';
+    }
+}
+
 if (!function_exists('base_dir')) {
     /**
      * Returns directory path of root.

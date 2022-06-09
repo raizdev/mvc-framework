@@ -24,7 +24,7 @@ use Ares\User\Service\Auth\DetermineIpService;
 use Ares\User\Service\Auth\LoginService;
 use Ares\User\Service\Auth\RegisterService;
 use Ares\User\Service\Auth\TicketService;
-use PHLAK\Config\Config;
+use Ares\Framework\Config;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use ReallySimpleJWT\Exception\ValidateException;
@@ -47,12 +47,12 @@ class AuthController extends BaseController
      * @param Config $config
      */
     public function __construct(
-        private ValidationService $validationService,
-        private LoginService $loginService,
-        private RegisterService $registerService,
-        private TicketService $ticketService,
-        private DetermineIpService $determineIpService,
-        private Config $config
+        private readonly ValidationService  $validationService,
+        private readonly LoginService       $loginService,
+        private readonly RegisterService    $registerService,
+        private readonly TicketService      $ticketService,
+        private readonly DetermineIpService $determineIpService,
+        private readonly Config $config
     ) {}
 
     /**

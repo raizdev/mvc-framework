@@ -37,10 +37,10 @@ class RconController extends BaseController
      * @param ValidationService         $validationService
      */
     public function __construct(
-        private ExecuteRconCommandService $executeRconCommandService,
+        private readonly ExecuteRconCommandService $executeRconCommandService,
         private DeleteRconCommandService $deleteRconCommandService,
         private CreateRconCommandService $createRconCommandService,
-        private ValidationService $validationService
+        private readonly ValidationService $validationService
     ) {}
 
     /**

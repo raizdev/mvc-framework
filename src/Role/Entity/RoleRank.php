@@ -4,13 +4,16 @@
  *
  * @see LICENSE (MIT)
  */
+
 namespace Ares\Role\Entity;
 
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Model\DataObject;
 use Ares\Role\Entity\Contract\RoleRankInterface;
 use Ares\Permission\Repository\PermissionRepository;
 use Ares\Permission\Entity\Permission;
+use Ares\Role\Repository\RoleRankRepository;
 use DateTime;
 
 /**
@@ -52,8 +55,7 @@ class RoleRank extends DataObject implements RoleRankInterface
     }
 
     /**
-     * @param int $role_id
-     *
+     * @param int $roleId
      * @return RoleRank
      */
     public function setRoleId(int $roleId) : RoleRank {
@@ -91,15 +93,15 @@ class RoleRank extends DataObject implements RoleRankInterface
      *
      * @return RoleRank
      */
-    public function setCreatedAt(DateTime $createdAt)
+    public function setCreatedAt(DateTime $createdAt): RoleRank
     {
         return $this->setData(RoleRankInterface::COLUMN_CREATED_AT, $createdAt);
     }
 
     /**
-     * @return Rank|null
+     * @return RoleRank|null
      *
-     * @throws DataObjectManagerException
+     * @throws DataObjectManagerException|NoSuchEntityException
      */
     public function getRank() : ?Permission {
         $rank = $this->getData('rank');
@@ -108,14 +110,10 @@ class RoleRank extends DataObject implements RoleRankInterface
             return $rank;
         }
 
-        if(!isset($this)) {
-            return null;
-        }
-
         $roleRankRepository = repository(RoleRankRepository::class);
-
         $rankRepository = repository(PermissionRepository::class);
 
+        /** @var RoleRank $rank */
         $rank = $roleRankRepository->getOneToOne(
             $rankRepository,
             $this->getRankId(),
@@ -131,13 +129,13 @@ class RoleRank extends DataObject implements RoleRankInterface
         return $rank;
     }
 
-    
+
     /**
-    * @param Permission $rank
-    *
-    * @return RoleRank
-    */
-    public function setRank(Permission $rank) : RoleRank {
+     * @param RoleRank $rank
+     *
+     * @return RoleRank
+     */
+    public function setRank(RoleRank $rank) : RoleRank {
         return $this->setData('rank', $rank);
     }
 }

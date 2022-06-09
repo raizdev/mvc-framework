@@ -31,8 +31,8 @@ class CreateVoteService
      * @param GetVoteEntityService $getVoteEntityService
      */
     public function __construct(
-        private VoteRepository $voteRepository,
-        private GetVoteEntityService $getVoteEntityService
+        private readonly VoteRepository $voteRepository,
+        private readonly GetVoteEntityService $getVoteEntityService
     ) {}
 
     /**

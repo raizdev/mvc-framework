@@ -29,7 +29,7 @@ class ChangeEmailService
      * @param UserRepository $userRepository
      */
     public function __construct(
-        private UserRepository $userRepository
+        private readonly UserRepository $userRepository
     ) {}
 
     /**

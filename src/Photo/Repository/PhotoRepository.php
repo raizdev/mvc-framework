@@ -11,6 +11,7 @@ use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Model\Query\PaginatedCollection;
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Photo\Entity\Photo;
+use Illuminate\Contracts\Container\BindingResolutionException;
 
 /**
  * Class PhotoRepository
@@ -33,7 +34,7 @@ class PhotoRepository extends BaseRepository
      * @param int $resultPerPage
      *
      * @return PaginatedCollection
-     * @throws DataObjectManagerException
+     * @throws DataObjectManagerException|BindingResolutionException
      */
     public function getPaginatedPhotoList(int $page, int $resultPerPage): PaginatedCollection
     {
@@ -50,7 +51,7 @@ class PhotoRepository extends BaseRepository
      * @param int $resultPerPage
      *
      * @return PaginatedCollection
-     * @throws DataObjectManagerException
+     * @throws DataObjectManagerException|BindingResolutionException
      */
     public function getPaginatedUserPhotoList(int $userId, int $page, int $resultPerPage): PaginatedCollection
     {

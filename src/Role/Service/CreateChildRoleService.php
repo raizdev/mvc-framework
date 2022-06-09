@@ -17,6 +17,7 @@ use Ares\Role\Exception\RoleException;
 use Ares\Role\Interfaces\Response\RoleResponseCodeInterface;
 use Ares\Role\Repository\RoleHierarchyRepository;
 use Ares\Role\Repository\RoleRepository;
+use Illuminate\Database\QueryException;
 
 /**
  * Class CreateChildRoleService
@@ -32,8 +33,8 @@ class CreateChildRoleService
      * @param RoleRepository          $roleRepository
      */
     public function __construct(
-        private RoleHierarchyRepository $roleHierarchyRepository,
-        private RoleRepository $roleRepository
+        private readonly RoleHierarchyRepository $roleHierarchyRepository,
+        private readonly RoleRepository $roleRepository
     ) {}
 
     /**

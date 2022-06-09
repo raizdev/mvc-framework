@@ -41,12 +41,12 @@ class RolePermissionController extends BaseController
      * @param DeleteRolePermissionService $deleteRolePermissionService
      */
     public function __construct(
-        private PermissionRepository $permissionRepository,
-        private CreatePermissionService $createPermissionService,
-        private CreateRolePermissionService $createRolePermissionService,
-        private FetchUserPermissionService $fetchUserPermissionService,
-        private ValidationService $validationService,
-        private DeleteRolePermissionService $deleteRolePermissionService
+        private readonly PermissionRepository        $permissionRepository,
+        private readonly CreatePermissionService     $createPermissionService,
+        private readonly CreateRolePermissionService $createRolePermissionService,
+        private readonly FetchUserPermissionService  $fetchUserPermissionService,
+        private readonly ValidationService           $validationService,
+        private readonly DeleteRolePermissionService $deleteRolePermissionService
     ) {}
 
     /**

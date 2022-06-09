@@ -31,8 +31,8 @@ class CreateArticleService
      * @param Slugify           $slug
      */
     public function __construct(
-        private ArticleRepository $articleRepository,
-        private Slugify $slug
+        private readonly ArticleRepository $articleRepository,
+        private readonly Slugify $slug
     ) {}
 
     /**

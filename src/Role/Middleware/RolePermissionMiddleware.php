@@ -7,6 +7,7 @@
 
 namespace Ares\Role\Middleware;
 
+use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\HttpResponseCodeInterface;
 use Ares\Role\Exception\RoleException;
@@ -31,7 +32,7 @@ class RolePermissionMiddleware implements MiddlewareInterface
      * @param CheckAccessService $checkAccessService
      */
     public function __construct(
-        private CheckAccessService $checkAccessService
+        private readonly CheckAccessService $checkAccessService
     ) {}
 
     /**
@@ -39,7 +40,7 @@ class RolePermissionMiddleware implements MiddlewareInterface
      * @param RequestHandlerInterface $handler
      *
      * @return ResponseInterface
-     * @throws RoleException|NoSuchEntityException
+     * @throws RoleException|NoSuchEntityException|AuthenticationException
      */
     public function process(
         ServerRequestInterface $request,

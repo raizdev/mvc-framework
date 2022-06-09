@@ -12,6 +12,7 @@ use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Model\Query\PaginatedCollection;
 use Ares\Framework\Repository\BaseRepository;
+use Illuminate\Contracts\Container\BindingResolutionException;
 
 /**
  * Class ThreadRepository
@@ -56,7 +57,7 @@ class ThreadRepository extends BaseRepository
      * @param int $resultPerPage
      *
      * @return PaginatedCollection
-     * @throws DataObjectManagerException
+     * @throws DataObjectManagerException|BindingResolutionException
      */
     public function getPaginatedThreadList(int $topicId, int $page, int $resultPerPage): PaginatedCollection
     {

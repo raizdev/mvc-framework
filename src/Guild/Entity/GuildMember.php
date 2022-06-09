@@ -8,6 +8,7 @@
 namespace Ares\Guild\Entity;
 
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Model\DataObject;
 use Ares\Framework\Model\Query\Collection;
 use Ares\Guild\Entity\Contract\GuildMemberInterface;
@@ -125,7 +126,7 @@ class GuildMember extends DataObject implements GuildMemberInterface
     /**
      * @return User|null
      *
-     * @throws DataObjectManagerException
+     * @throws DataObjectManagerException|NoSuchEntityException
      */
     public function getUser(): ?User
     {
@@ -134,10 +135,6 @@ class GuildMember extends DataObject implements GuildMemberInterface
 
         if ($user) {
             return $user;
-        }
-
-        if (!isset($this)) {
-            return null;
         }
 
         /** @var GuildMemberRepository $guildMemberRepository */
@@ -173,7 +170,7 @@ class GuildMember extends DataObject implements GuildMemberInterface
     }
 
     /**
-     * @return Collection|array|mixed|null
+     * @return Collection|null
      * @throws DataObjectManagerException
      */
     public function getGuilds(): ?Collection
@@ -182,10 +179,6 @@ class GuildMember extends DataObject implements GuildMemberInterface
 
         if ($guilds) {
             return $guilds;
-        }
-
-        if (!isset($this)) {
-            return null;
         }
 
         /** @var GuildMemberRepository $guildMemberRepository */

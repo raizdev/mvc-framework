@@ -11,6 +11,7 @@ use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Model\Query\PaginatedCollection;
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Guestbook\Entity\Guestbook;
+use Illuminate\Contracts\Container\BindingResolutionException;
 
 /**
  * Class GuestbookRepository
@@ -34,7 +35,7 @@ class GuestbookRepository extends BaseRepository
      * @param int $resultPerPage
      *
      * @return PaginatedCollection
-     * @throws DataObjectManagerException
+     * @throws DataObjectManagerException|BindingResolutionException
      */
     public function getPaginatedProfileEntries(int $profileId, int $page, int $resultPerPage): PaginatedCollection
     {
@@ -52,7 +53,7 @@ class GuestbookRepository extends BaseRepository
      * @param int $resultPerPage
      *
      * @return PaginatedCollection
-     * @throws DataObjectManagerException
+     * @throws DataObjectManagerException|BindingResolutionException
      */
     public function getPaginatedGuildEntries(int $guildId, int $page, int $resultPerPage): PaginatedCollection
     {

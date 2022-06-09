@@ -23,20 +23,13 @@ use Ares\Vote\Service\GetVoteEntityService;
 class IncrementVoteService
 {
     /**
-     * @var GetVoteEntityService
-     */
-    private GetVoteEntityService $getVoteEntityService;
-
-    /**
      * DecrementVoteService constructor.
      *
      * @param GetVoteEntityService $getVoteEntityService
      */
     public function __construct(
-        GetVoteEntityService $getVoteEntityService
-    ) {
-        $this->getVoteEntityService = $getVoteEntityService;
-    }
+        private readonly GetVoteEntityService $getVoteEntityService
+    ) {}
 
     /**
      * Increments votes by given data.

@@ -8,6 +8,7 @@
 namespace Ares\Forum\Service\Topic;
 
 use Ares\Forum\Entity\Topic;
+use Ares\Forum\Exception\TopicException;
 use Ares\Forum\Interfaces\Response\ForumResponseCodeInterface;
 use Ares\Forum\Repository\TopicRepository;
 use Ares\Framework\Exception\DataObjectManagerException;
@@ -28,7 +29,7 @@ class EditTopicService
      * @param TopicRepository  $topicRepository
      */
     public function __construct(
-        private TopicRepository $topicRepository
+        private readonly TopicRepository $topicRepository
     ) {}
 
     /**
@@ -37,6 +38,7 @@ class EditTopicService
      * @return CustomResponseInterface
      * @throws DataObjectManagerException
      * @throws NoSuchEntityException
+     * @throws TopicException
      */
     public function execute(array $data): CustomResponseInterface
     {

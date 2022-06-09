@@ -34,9 +34,9 @@ class SettingController extends BaseController
      * @param   UpdateSettingService $updateSettingsService
      */
     public function __construct(
-        private ValidationService $validationService,
-        private SettingRepository $settingsRepository,
-        private UpdateSettingService $updateSettingsService
+        private readonly ValidationService $validationService,
+        private readonly SettingRepository $settingsRepository,
+        private readonly UpdateSettingService $updateSettingsService
     ) {}
 
     /**

@@ -20,7 +20,7 @@ class Rcon
     /**
      * @var resource
      */
-    private $socket;
+    private mixed $socket;
 
     /**
      * Rcon constructor.
@@ -28,7 +28,7 @@ class Rcon
      * @param RconHelper $rconHelper
      */
     public function __construct(
-        private RconHelper $rconHelper
+        private readonly RconHelper $rconHelper
     ) {}
 
     /**

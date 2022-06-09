@@ -26,7 +26,7 @@ class DeleteVoteService
      * @param VoteRepository $voteRepository
      */
     public function __construct(
-        private VoteRepository $voteRepository
+        private readonly VoteRepository $voteRepository
     ) {}
 
     /**

@@ -30,17 +30,18 @@ class GuildController extends BaseController
      * @param   GuildMemberRepository   $guildMemberRepository
      */
     public function __construct(
-        private GuildRepository $guildRepository,
-        private GuildMemberRepository $guildMemberRepository
+        private readonly GuildRepository $guildRepository,
+        private readonly GuildMemberRepository $guildMemberRepository
     ) {}
 
     /**
-     * @param Request     $request
-     * @param Response    $response
-     * @param             $args
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
      *
      * @return Response
-     * @throws DataObjectManagerException|NoSuchEntityException
+     * @throws DataObjectManagerException
+     * @throws NoSuchEntityException
      */
     public function guild(Request $request, Response $response, array $args): Response
     {
@@ -58,10 +59,10 @@ class GuildController extends BaseController
     }
 
     /**
-     * @param Request     $request
-     * @param Response    $response
+     * @param Request $request
+     * @param Response $response
      *
-     * @param             $args
+     * @param array $args
      *
      * @return Response
      * @throws DataObjectManagerException

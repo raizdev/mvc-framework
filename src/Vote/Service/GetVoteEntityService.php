@@ -37,12 +37,12 @@ class GetVoteEntityService
      * @param PhotoRepository         $photoRepository
      */
     public function __construct(
-        private ArticleRepository $articleRepository,
-        private CommentRepository $commentRepository,
-        private ThreadRepository $threadRepository,
-        private ThreadCommentRepository $threadCommentRepository,
-        private GuestbookRepository $guestbookRepository,
-        private PhotoRepository $photoRepository
+        private readonly ArticleRepository       $articleRepository,
+        private readonly CommentRepository       $commentRepository,
+        private readonly ThreadRepository        $threadRepository,
+        private readonly ThreadCommentRepository $threadCommentRepository,
+        private readonly GuestbookRepository     $guestbookRepository,
+        private readonly PhotoRepository $photoRepository
     ) {}
 
     /**
@@ -55,26 +55,19 @@ class GetVoteEntityService
      */
     public function execute(int $entity): BaseRepository
     {
-        switch (true) {
-            case $entity === VoteEntityInterface::ARTICLE_VOTE_ENTITY:
-                return $this->articleRepository;
-            case $entity === VoteEntityInterface::ARTICLE_COMMENT_VOTE_ENTITY:
-                return $this->commentRepository;
-            case $entity === VoteEntityInterface::FORUM_VOTE_ENTITY:
-                return $this->threadRepository;
-            case $entity === VoteEntityInterface::FORUM_COMMENT_VOTE_ENTITY:
-                return $this->threadCommentRepository;
-            case $entity === VoteEntityInterface::GUESTBOOK_VOTE_ENTITY:
-                return $this->guestbookRepository;
-            case $entity === VoteEntityInterface::PHOTO_VOTE_ENTITY:
-                return $this->photoRepository;
-            default:
-                throw new VoteException(
-                    __('Entity with id %s does not exist',
-                        [$entity]),
-                    VoteResponseCodeInterface::RESPONSE_VOTE_ENTITY_NOT_EXIST,
-                    HttpResponseCodeInterface::HTTP_RESPONSE_NOT_FOUND
-                );
-        }
+        return match (true) {
+            $entity === VoteEntityInterface::ARTICLE_VOTE_ENTITY => $this->articleRepository,
+            $entity === VoteEntityInterface::ARTICLE_COMMENT_VOTE_ENTITY => $this->commentRepository,
+            $entity === VoteEntityInterface::FORUM_VOTE_ENTITY => $this->threadRepository,
+            $entity === VoteEntityInterface::FORUM_COMMENT_VOTE_ENTITY => $this->threadCommentRepository,
+            $entity === VoteEntityInterface::GUESTBOOK_VOTE_ENTITY => $this->guestbookRepository,
+            $entity === VoteEntityInterface::PHOTO_VOTE_ENTITY => $this->photoRepository,
+            default => throw new VoteException(
+                __('Entity with id %s does not exist',
+                    [$entity]),
+                VoteResponseCodeInterface::RESPONSE_VOTE_ENTITY_NOT_EXIST,
+                HttpResponseCodeInterface::HTTP_RESPONSE_NOT_FOUND
+            ),
+        };
     }
 }

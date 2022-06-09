@@ -29,7 +29,7 @@ class CreateRconCommandService
      * @param RconRepository $rconRepository
      */
     public function __construct(
-        private RconRepository $rconRepository
+        private readonly RconRepository $rconRepository
     ) {}
 
     /**

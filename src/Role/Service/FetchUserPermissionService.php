@@ -25,8 +25,8 @@ class FetchUserPermissionService
      * @param RoleHierarchyRepository $roleHierarchyRepository
      */
     public function __construct(
-        private RoleRankRepository $roleRankRepository,
-        private RoleHierarchyRepository $roleHierarchyRepository
+        private readonly RoleRankRepository $roleRankRepository,
+        private readonly RoleHierarchyRepository $roleHierarchyRepository
     ) {}
 
     /**

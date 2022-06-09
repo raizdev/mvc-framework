@@ -28,7 +28,7 @@ class RoomController extends BaseController
      * @param RoomRepository $roomRepository
      */
     public function __construct(
-        private RoomRepository $roomRepository
+        private readonly RoomRepository $roomRepository
     ) {}
 
     /**
@@ -47,8 +47,8 @@ class RoomController extends BaseController
 
         /** @var Room $room */
         $room = $this->roomRepository->get($id);
-        $room->getGuild();
-        $room->getUser();
+        $room?->getGuild();
+        $room?->getUser();
 
         return $this->respond(
             $response,
@@ -58,10 +58,10 @@ class RoomController extends BaseController
     }
 
     /**
-     * @param Request  $request
+     * @param Request $request
      * @param Response $response
      *
-     * @param          $args
+     * @param array $args
      *
      * @return Response
      * @throws DataObjectManagerException

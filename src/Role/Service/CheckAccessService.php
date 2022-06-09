@@ -32,15 +32,15 @@ class CheckAccessService
      * @param UserRepository           $userRepository
      */
     public function __construct(
-        private PermissionRepository $permissionRepository,
-        private RoleRankRepository $roleRankRepository,
-        private RoleHierarchyRepository $roleHierarchyRepository,
-        private RolePermissionRepository $rolePermissionRepository,
+        private readonly PermissionRepository     $permissionRepository,
+        private readonly RoleRankRepository       $roleRankRepository,
+        private readonly RoleHierarchyRepository  $roleHierarchyRepository,
+        private readonly RolePermissionRepository $rolePermissionRepository,
         private UserRepository $userRepository
     ) {}
 
     /**
-     * @param int         $userId
+     * @param int $userRank
      * @param string|null $permissionName
      *
      * @return bool

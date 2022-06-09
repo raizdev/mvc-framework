@@ -11,6 +11,7 @@ use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Model\Query\PaginatedCollection;
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Role\Entity\Role;
+use Illuminate\Contracts\Container\BindingResolutionException;
 
 /**
  * Class RoleRepository
@@ -33,7 +34,7 @@ class RoleRepository extends BaseRepository
      * @param int $resultPerPage
      *
      * @return PaginatedCollection
-     * @throws DataObjectManagerException
+     * @throws DataObjectManagerException|BindingResolutionException
      */
     public function getPaginatedRoles(int $page, int $resultPerPage): PaginatedCollection
     {

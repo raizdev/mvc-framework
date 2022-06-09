@@ -32,9 +32,9 @@ class ChangeUserOfTheHotelService
      * @param UserRepository           $userRepository
      */
     public function __construct(
-        private UserSettingRepository $userSettingRepository,
-        private UserOfTheHotelRepository $userOfTheHotelRepository,
-        private UserRepository $userRepository
+        private readonly UserSettingRepository    $userSettingRepository,
+        private readonly UserOfTheHotelRepository $userOfTheHotelRepository,
+        private readonly UserRepository $userRepository
     ) {}
 
     /**

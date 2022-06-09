@@ -38,9 +38,9 @@ class LoginService
      * @param DataObjectManagerFactory $dataObjectManagerFactory
      */
     public function __construct(
-        private UserRepository $userRepository,
-        private BanRepository $banRepository,
-        private TokenService $tokenService,
+        private readonly UserRepository  $userRepository,
+        private readonly BanRepository   $banRepository,
+        private readonly TokenService    $tokenService,
         private DataObjectManagerFactory $dataObjectManagerFactory
     ) {}
 

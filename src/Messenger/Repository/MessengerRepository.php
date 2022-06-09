@@ -11,6 +11,7 @@ use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Model\Query\PaginatedCollection;
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Messenger\Entity\MessengerFriendship;
+use Illuminate\Contracts\Container\BindingResolutionException;
 
 /**
  * Class MessengerRepository
@@ -34,7 +35,7 @@ class MessengerRepository extends BaseRepository
      * @param int $resultPerPage
      *
      * @return PaginatedCollection
-     * @throws DataObjectManagerException
+     * @throws DataObjectManagerException|BindingResolutionException
      */
     public function getPaginatedMessengerFriends(int $userId, int $page, int $resultPerPage): PaginatedCollection
     {

@@ -27,7 +27,7 @@ class DeleteArticleService
      * @param ArticleRepository $articleRepository
      */
     public function __construct(
-        private ArticleRepository $articleRepository
+        private readonly ArticleRepository $articleRepository
     ) {}
 
     /**

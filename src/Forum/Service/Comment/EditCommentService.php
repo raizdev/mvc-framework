@@ -26,7 +26,7 @@ class EditCommentService
      * @param   CommentRepository  $commentRepository
      */
     public function __construct(
-        private CommentRepository $commentRepository
+        private readonly CommentRepository $commentRepository
     ) {}
 
     /**

@@ -38,9 +38,9 @@ class PhotoController extends BaseController
      * @param   ValidationService       $validationService
      */
     public function __construct(
-        private PhotoRepository $photoRepository,
-        private UserRepository $userRepository,
-        private ValidationService $validationService
+        private readonly PhotoRepository $photoRepository,
+        private readonly UserRepository  $userRepository,
+        private readonly ValidationService $validationService
     ) {}
 
     /**
@@ -131,13 +131,13 @@ class PhotoController extends BaseController
     }
 
     /**
-     * @param Request     $request
-     * @param Response    $response
-     * @param             $args
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
      *
      * @return Response
-     * @throws PhotoException
      * @throws DataObjectManagerException
+     * @throws PhotoException
      */
     public function delete(Request $request, Response $response, array $args): Response
     {

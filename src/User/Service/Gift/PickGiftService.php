@@ -19,7 +19,7 @@ use Ares\User\Entity\User;
 use Ares\User\Exception\Gift\DailyGiftException;
 use Ares\User\Interfaces\Response\UserResponseCodeInterface;
 use Ares\User\Repository\Gift\DailyGiftRepository;
-use PHLAK\Config\Config;
+use Ares\Framework\Config;
 
 /**
  * Class PickGiftService
@@ -36,9 +36,9 @@ class PickGiftService
      * @param Config                    $config
      */
     public function __construct(
-        private DailyGiftRepository $dailyGiftRepository,
-        private ExecuteRconCommandService $executeRconCommandService,
-        private Config $config
+        private readonly DailyGiftRepository       $dailyGiftRepository,
+        private readonly ExecuteRconCommandService $executeRconCommandService,
+        private readonly Config $config
     ) {}
 
     /**
@@ -73,7 +73,7 @@ class PickGiftService
                 );
             }
             $this->applyGift($dailyGift, $user, $dailyGift->getAmount());
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
             throw new DailyGiftException(
                 $exception->getMessage(),
                 $exception->getCode(),
@@ -125,7 +125,7 @@ class PickGiftService
                 ],
                 true
             );
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
             throw new DailyGiftException(
                 $exception->getMessage(),
                 $exception->getCode(),
@@ -143,9 +143,7 @@ class PickGiftService
      *
      * @return DailyGift|null
      * @throws DataObjectManagerException
-     * @throws \JsonException
      * @throws RconException
-     * @throws RoleException
      * @throws \Exception
      */
     private function getNewDailyGift(User $user): ?DailyGift

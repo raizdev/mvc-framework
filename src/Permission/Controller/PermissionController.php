@@ -23,10 +23,10 @@ class PermissionController extends BaseController
     /**
      * PermissionController constructor.
      *
-     * @param PermissionRepository   $permissionRepository
+     * @param PermissionRepository $permissionRepository
      */
     public function __construct(
-        private PermissionRepository $permissionRepository
+        private readonly PermissionRepository $permissionRepository
     ) {}
 
     /**

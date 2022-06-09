@@ -30,7 +30,7 @@ class DailyGiftController extends BaseController
      * @param PickGiftService $pickGiftService
      */
     public function __construct(
-        private PickGiftService $pickGiftService
+        private readonly PickGiftService $pickGiftService
     ) {}
 
     /**

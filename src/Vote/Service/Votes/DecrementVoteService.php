@@ -7,7 +7,6 @@
 
 namespace Ares\Vote\Service\Votes;
 
-use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\HttpResponseCodeInterface;
 use Ares\Framework\Model\DataObject;
@@ -15,7 +14,6 @@ use Ares\Vote\Exception\VoteException;
 use Ares\Vote\Interfaces\Response\VoteResponseCodeInterface;
 use Ares\Vote\Interfaces\VoteTypeInterface;
 use Ares\Vote\Service\GetVoteEntityService;
-use Psr\Http\Message\ResponseInterface;
 
 /**
  * Class DecrementVoteService
@@ -25,20 +23,13 @@ use Psr\Http\Message\ResponseInterface;
 class DecrementVoteService
 {
     /**
-     * @var GetVoteEntityService
-     */
-    private GetVoteEntityService $getVoteEntityService;
-
-    /**
      * DecrementVoteService constructor.
      *
-     * @param   GetVoteEntityService  $getVoteEntityService
+     * @param GetVoteEntityService  $getVoteEntityService
      */
     public function __construct(
-        GetVoteEntityService $getVoteEntityService
-    ) {
-        $this->getVoteEntityService = $getVoteEntityService;
-    }
+        private readonly GetVoteEntityService $getVoteEntityService
+    ) {}
 
     /**
      * Decrements votes by given data.

@@ -32,8 +32,8 @@ class EditArticleService
      * @param Slugify           $slug
      */
     public function __construct(
-        private ArticleRepository $articleRepository,
-        private Slugify $slug
+        private readonly ArticleRepository $articleRepository,
+        private readonly Slugify $slug
     ) {}
 
     /**
@@ -49,13 +49,20 @@ class EditArticleService
         $articleId = $data['id'];
 
         /** @var Article $article */
-        $article = $this->articleRepository->get($articleId, ArticleInterface::COLUMN_ID, false, false);
+        $article = $this->articleRepository->get(
+            $articleId,
+            ArticleInterface::COLUMN_ID,
+            false,
+            false
+        );
         
         /** @var Article $existingArticle */
-        $existingArticle = $this->articleRepository->getExistingArticle($article->getTitle(), $article->getSlug());
+        $existingArticle = $this->articleRepository->getExistingArticle(
+            $article->getTitle(),
+            $article->getSlug()
+        );
 
         if ($existingArticle && $existingArticle->getId() !== $article->getId()) {
-
             throw new ArticleException(
                 __('Article with given Title already exists'),
                 ArticleResponseCodeInterface::RESPONSE_ARTICLE_TITLE_EXIST,

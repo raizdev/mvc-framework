@@ -17,6 +17,7 @@ use Ares\Room\Repository\RoomRepository;
 use Ares\User\Entity\User;
 use Ares\User\Repository\UserBadgeRepository;
 use Ares\User\Repository\UserRepository;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -38,12 +39,12 @@ class ProfileController extends BaseController
      * @param UserBadgeRepository   $userBadgeRepository
      */
     public function __construct(
-        private UserRepository $userRepository,
-        private RoomRepository $roomRepository,
-        private GuildMemberRepository $guildMemberRepository,
-        private MessengerRepository $messengerRepository,
-        private PhotoRepository $photoRepository,
-        private UserBadgeRepository $userBadgeRepository
+        private readonly UserRepository        $userRepository,
+        private readonly RoomRepository        $roomRepository,
+        private readonly GuildMemberRepository $guildMemberRepository,
+        private readonly MessengerRepository   $messengerRepository,
+        private readonly PhotoRepository       $photoRepository,
+        private readonly UserBadgeRepository $userBadgeRepository
     ) {}
 
     /**
@@ -155,7 +156,7 @@ class ProfileController extends BaseController
      *
      * @return Response
      * @throws DataObjectManagerException
-     * @throws NoSuchEntityException
+     * @throws NoSuchEntityException|BindingResolutionException
      */
     public function roomList(Request $request, Response $response, array $args): Response
     {

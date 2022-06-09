@@ -7,7 +7,7 @@
 
 namespace Ares\User\Service\Auth;
 
-use PHLAK\Config\Config;
+use Ares\Framework\Config;
 
 /**
  * Class HashService
@@ -22,7 +22,7 @@ class HashService
      * @param Config $config
      */
     public function __construct(
-      private Config $config
+      private readonly Config $config
     ) {}
 
     /**

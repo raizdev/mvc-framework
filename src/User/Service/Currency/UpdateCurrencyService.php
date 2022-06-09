@@ -26,7 +26,7 @@ class UpdateCurrencyService
      * @param UserCurrencyRepository $userCurrencyRepository
      */
     public function __construct(
-        private UserCurrencyRepository $userCurrencyRepository
+        private readonly UserCurrencyRepository $userCurrencyRepository
     ) {}
 
     /**

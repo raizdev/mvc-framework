@@ -11,6 +11,7 @@ use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Model\Query\PaginatedCollection;
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Guild\Entity\GuildMember;
+use Illuminate\Contracts\Container\BindingResolutionException;
 
 /**
  * Class GuildMemberRepository
@@ -34,7 +35,7 @@ class GuildMemberRepository extends BaseRepository
      * @param int $resultPerPage
      *
      * @return PaginatedCollection
-     * @throws DataObjectManagerException
+     * @throws DataObjectManagerException|BindingResolutionException
      */
     public function getPaginatedProfileGuilds(int $profileId, int $page, int $resultPerPage): PaginatedCollection
     {
@@ -71,7 +72,7 @@ class GuildMemberRepository extends BaseRepository
      * @param int $resultPerPage
      *
      * @return PaginatedCollection
-     * @throws DataObjectManagerException
+     * @throws DataObjectManagerException|BindingResolutionException
      */
     public function getPaginatedGuildMembers(int $guildId, int $page, int $resultPerPage): PaginatedCollection
     {

@@ -10,9 +10,9 @@ namespace Ares\Article\Repository;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Repository\BaseRepository;
-use Ares\Framework\Model\Query\Collection;
 use Ares\Framework\Model\Query\PaginatedCollection;
 use Ares\Article\Entity\Article;
+use Illuminate\Contracts\Container\BindingResolutionException;
 
 /**
  * Class ArticleRepository
@@ -36,7 +36,7 @@ class ArticleRepository extends BaseRepository
      * @param int    $resultPerPage
      *
      * @return PaginatedCollection
-     * @throws DataObjectManagerException
+     * @throws DataObjectManagerException|BindingResolutionException
      */
     public function searchArticles(string $term, int $page, int $resultPerPage): PaginatedCollection
     {
@@ -62,7 +62,10 @@ class ArticleRepository extends BaseRepository
     }
 
     /**
+     * @param int $page
+     * @param int $resultPerPage
      * @return PaginatedCollection
+     * @throws BindingResolutionException
      * @throws DataObjectManagerException
      */
     public function getPaginatedPinnedArticles(int $page, int $resultPerPage): PaginatedCollection
@@ -96,7 +99,7 @@ class ArticleRepository extends BaseRepository
      * @param boolean $ascendingOrder
      *
      * @return PaginatedCollection
-     * @throws DataObjectManagerException
+     * @throws DataObjectManagerException|BindingResolutionException
      */
     public function getPaginatedArticleList(int $page, int $resultPerPage, bool $showHidden = false, bool $ascendingOrder = false): PaginatedCollection
     {

@@ -32,9 +32,9 @@ class ExecuteRconCommandService
      * @param CheckAccessService $checkAccessService
      */
     public function __construct(
-        private RconRepository $rconRepository,
-        private Rcon $rcon,
-        private CheckAccessService $checkAccessService
+        private readonly RconRepository $rconRepository,
+        private readonly Rcon           $rcon,
+        private readonly CheckAccessService $checkAccessService
     ) {}
 
     /**

@@ -42,11 +42,11 @@ class CommentController extends BaseController
      * @param DeleteCommentService $deleteCommentService
      */
     public function __construct(
-        private CommentRepository $commentRepository,
-        private CreateCommentService $createCommentService,
-        private EditCommentService $editCommentService,
-        private ValidationService $validationService,
-        private DeleteCommentService $deleteCommentService
+        private readonly CommentRepository    $commentRepository,
+        private readonly CreateCommentService $createCommentService,
+        private readonly EditCommentService   $editCommentService,
+        private readonly ValidationService    $validationService,
+        private readonly DeleteCommentService $deleteCommentService
     ) {}
 
     /**
@@ -110,9 +110,9 @@ class CommentController extends BaseController
     }
 
     /**
-     * @param Request     $request
-     * @param Response    $response
-     * @param             $args
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
      *
      * @return Response
      * @throws DataObjectManagerException
@@ -144,9 +144,9 @@ class CommentController extends BaseController
     }
 
     /**
-     * @param Request     $request
-     * @param Response    $response
-     * @param             $args
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
      *
      * @return Response
      * @throws CommentException

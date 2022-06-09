@@ -27,7 +27,7 @@ class DeleteThreadService
      * @param ThreadRepository $threadRepository
      */
     public function __construct(
-        private ThreadRepository $threadRepository
+        private readonly ThreadRepository $threadRepository
     ) {}
 
     /**

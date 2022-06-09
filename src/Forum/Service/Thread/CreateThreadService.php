@@ -34,9 +34,9 @@ class CreateThreadService
      * @param Slugify          $slug
      */
     public function __construct(
-        private ThreadRepository $threadRepository,
-        private TopicRepository $topicRepository,
-        private Slugify $slug
+        private readonly ThreadRepository $threadRepository,
+        private readonly TopicRepository  $topicRepository,
+        private readonly Slugify $slug
     ) {}
 
     /**

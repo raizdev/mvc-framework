@@ -10,6 +10,7 @@ namespace Ares\Article\Entity;
 use Ares\Article\Entity\Contract\ArticleInterface;
 use Ares\Article\Repository\ArticleRepository;
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Model\DataObject;
 use Ares\User\Entity\User;
 use Ares\User\Repository\UserRepository;
@@ -114,7 +115,7 @@ class Article extends DataObject implements ArticleInterface
      *
      * @return Article
      */
-    public function setContent(string $content)
+    public function setContent(string $content): Article
     {
         return $this->setData(ArticleInterface::COLUMN_CONTENT, $content);
     }
@@ -284,7 +285,7 @@ class Article extends DataObject implements ArticleInterface
     /**
      * @return User|null
      *
-     * @throws DataObjectManagerException
+     * @throws DataObjectManagerException|NoSuchEntityException
      */
     public function getUser(): ?User
     {
@@ -293,10 +294,6 @@ class Article extends DataObject implements ArticleInterface
 
         if ($user) {
             return $user;
-        }
-
-        if (!isset($this)) {
-            return null;
         }
 
         /** @var ArticleRepository $articleRepository */

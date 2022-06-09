@@ -12,6 +12,7 @@ use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Model\Query\PaginatedCollection;
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Guild\Entity\Guild;
+use Illuminate\Contracts\Container\BindingResolutionException;
 
 /**
  * Class GuildRepository
@@ -35,7 +36,7 @@ class GuildRepository extends BaseRepository
      * @param int    $resultPerPage
      *
      * @return PaginatedCollection
-     * @throws DataObjectManagerException
+     * @throws DataObjectManagerException|BindingResolutionException
      */
     public function searchGuilds(string $term, int $page, int $resultPerPage): PaginatedCollection
     {
@@ -84,7 +85,7 @@ class GuildRepository extends BaseRepository
      * @param int $resultPerPage
      *
      * @return PaginatedCollection
-     * @throws DataObjectManagerException
+     * @throws DataObjectManagerException|BindingResolutionException
      */
     public function getPaginatedGuildList(int $page, int $resultPerPage): PaginatedCollection
     {

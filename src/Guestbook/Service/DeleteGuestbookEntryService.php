@@ -27,7 +27,7 @@ class DeleteGuestbookEntryService
      * @param GuestbookRepository $guestbookRepository
      */
     public function __construct(
-        private GuestbookRepository $guestbookRepository
+        private readonly GuestbookRepository $guestbookRepository
     ) {}
 
     /**

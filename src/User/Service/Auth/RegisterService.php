@@ -17,7 +17,7 @@ use Ares\User\Interfaces\Response\UserResponseCodeInterface;
 use Ares\User\Interfaces\UserCurrencyTypeInterface;
 use Ares\User\Repository\UserRepository;
 use Ares\User\Service\Currency\CreateCurrencyService;
-use PHLAK\Config\Config;
+use Ares\Framework\Config;
 use ReallySimpleJWT\Exception\ValidateException;
 
 /**
@@ -38,12 +38,12 @@ class RegisterService
      * @param CreateCurrencyService $createCurrencyService
      */
     public function __construct(
-        private UserRepository $userRepository,
-        private TokenService $tokenService,
-        private TicketService $ticketService,
-        private HashService $hashService,
-        private Config $config,
-        private CreateCurrencyService $createCurrencyService
+        private readonly UserRepository $userRepository,
+        private readonly TokenService   $tokenService,
+        private readonly TicketService  $ticketService,
+        private readonly HashService    $hashService,
+        private readonly Config         $config,
+        private readonly CreateCurrencyService $createCurrencyService
     ) {}
 
     /**
@@ -97,7 +97,7 @@ class RegisterService
                 UserCurrencyTypeInterface::CURRENCY_TYPE_PIXELS,
                 $this->config->get('hotel_settings.start_pixels')
             );
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
             throw new RegisterException($exception->getMessage(), $exception->getCode());
         }
 
@@ -185,7 +185,11 @@ class RegisterService
             );
         }
 
-        if (!in_array($data['look'], $looks, true)) {
+        if (!in_array(
+            $data['look'],
+            $looks,
+            true)
+        ) {
             $data['look'] = $this->config->get('hotel_settings.register.looks.fallback_look');
         }
 

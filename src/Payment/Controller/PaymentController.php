@@ -39,10 +39,10 @@ class PaymentController extends BaseController
      * @param DeletePaymentService $deletePaymentService
      */
     public function __construct(
-        private PaymentRepository $paymentRepository,
-        private CreatePaymentService $createPaymentService,
-        private ValidationService $validationService,
-        private DeletePaymentService $deletePaymentService
+        private readonly PaymentRepository    $paymentRepository,
+        private readonly CreatePaymentService $createPaymentService,
+        private readonly ValidationService    $validationService,
+        private readonly DeletePaymentService $deletePaymentService
     ) {}
 
     /**
@@ -105,9 +105,9 @@ class PaymentController extends BaseController
     }
 
     /**
-     * @param Request     $request
-     * @param Response    $response
-     * @param             $args
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
      *
      * @return Response
      * @throws DataObjectManagerException
@@ -134,9 +134,9 @@ class PaymentController extends BaseController
     }
 
     /**
-     * @param Request     $request
-     * @param Response    $response
-     * @param             $args
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
      *
      * @return Response
      * @throws DataObjectManagerException

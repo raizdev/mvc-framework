@@ -10,6 +10,7 @@ namespace Ares\Ban\Entity;
 use Ares\Ban\Entity\Contract\BanInterface;
 use Ares\Ban\Repository\BanRepository;
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Model\DataObject;
 use Ares\User\Entity\User;
 use Ares\User\Repository\UserRepository;
@@ -212,7 +213,7 @@ class Ban extends DataObject implements BanInterface
     /**
      * @return User|null
      *
-     * @throws DataObjectManagerException
+     * @throws DataObjectManagerException|NoSuchEntityException
      */
     public function getUser(): ?User
     {
@@ -221,10 +222,6 @@ class Ban extends DataObject implements BanInterface
 
         if ($user) {
             return $user;
-        }
-
-        if (!isset($this)) {
-            return null;
         }
 
         /** @var BanRepository $banRepository */

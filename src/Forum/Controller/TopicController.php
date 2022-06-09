@@ -39,11 +39,11 @@ class TopicController extends BaseController
      * @param DeleteTopicService $deleteTopicService
      */
     public function __construct(
-        private TopicRepository $topicRepository,
-        private CreateTopicService $createTopicService,
-        private EditTopicService $editTopicService,
-        private ValidationService $validationService,
-        private DeleteTopicService $deleteTopicService
+        private readonly TopicRepository    $topicRepository,
+        private readonly CreateTopicService $createTopicService,
+        private readonly EditTopicService   $editTopicService,
+        private readonly ValidationService  $validationService,
+        private readonly DeleteTopicService $deleteTopicService
     ) {}
 
     /**
@@ -134,13 +134,13 @@ class TopicController extends BaseController
     }
 
     /**
-     * @param Request     $request
-     * @param Response    $response
-     * @param             $args
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
      *
      * @return Response
-     * @throws TopicException
      * @throws DataObjectManagerException
+     * @throws TopicException
      */
     public function delete(Request $request, Response $response, array $args): Response
     {

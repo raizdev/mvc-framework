@@ -27,7 +27,7 @@ class UserOfTheHotelController extends BaseController
      * @param ChangeUserOfTheHotelService $changeUserOfTheHotelService
      */
     public function __construct(
-        private ChangeUserOfTheHotelService $changeUserOfTheHotelService
+        private readonly ChangeUserOfTheHotelService $changeUserOfTheHotelService
     ) {}
 
     /**

@@ -26,7 +26,7 @@ class UpdateSettingService
      * @param SettingRepository $settingsRepository
      */
     public function __construct(
-        private SettingRepository $settingsRepository
+        private readonly SettingRepository $settingsRepository
     ) {}
 
     /**

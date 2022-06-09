@@ -99,10 +99,6 @@ class UserCurrency extends DataObject implements UserCurrencyInterface
             return $user;
         }
 
-        if (!isset($this)) {
-            return null;
-        }
-
         /** @var UserRepository $userRepository */
         $userRepository = repository(UserRepository::class);
 

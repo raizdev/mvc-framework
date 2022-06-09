@@ -332,7 +332,7 @@ class User extends DataObject implements UserInterface
     }
 
     /**
-     * @return int|NOTnull
+     * @return int|null
      */
     public function getAccountCreated(): ?int
     {
@@ -340,7 +340,7 @@ class User extends DataObject implements UserInterface
     }
 
     /**
-     * @param int|NOTnull $lastOnline
+     * @param int|null $lastOnline
      *
      * @return User
      */
@@ -377,10 +377,6 @@ class User extends DataObject implements UserInterface
 
         if ($roles) {
             return $roles;
-        }
-
-        if (!isset($this)) {
-            return null;
         }
 
         /** @var UserRepository $userRepository */
@@ -437,7 +433,7 @@ class User extends DataObject implements UserInterface
         /** @var array $userRoleIds */
         $userRoleIds = $roleRankRepository->getRankRoleIds($this->getRank());
 
-        if (!isset($this) || !$userRoleIds) {
+        if (!$userRoleIds) {
             return null;
         }
 
@@ -457,7 +453,7 @@ class User extends DataObject implements UserInterface
     }
 
     /**
-     * @param Collection $permissions
+     * @param array $permissions
      *
      * @return User
      */
@@ -477,10 +473,6 @@ class User extends DataObject implements UserInterface
 
         if ($currencies) {
             return $currencies;
-        }
-
-        if (!isset($this)) {
-            return null;
         }
 
         /** @var UserRepository $userRepository */

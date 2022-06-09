@@ -41,11 +41,11 @@ class UserSettingsController extends BaseController
      * @param ChangeUsernameService        $changeUsernameService
      */
     public function __construct(
-        private ValidationService $validationService,
-        private ChangeGeneralSettingsService $changeGeneralSettingsService,
-        private ChangePasswordService $changePasswordService,
-        private ChangeEmailService $changeEmailService,
-        private ChangeUsernameService $changeUsernameService
+        private readonly ValidationService            $validationService,
+        private readonly ChangeGeneralSettingsService $changeGeneralSettingsService,
+        private readonly ChangePasswordService        $changePasswordService,
+        private readonly ChangeEmailService           $changeEmailService,
+        private readonly ChangeUsernameService $changeUsernameService
     ) {}
 
     /**

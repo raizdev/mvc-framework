@@ -30,8 +30,8 @@ class ChangePasswordService
      * @param HashService $hashService
      */
     public function __construct(
-        private UserRepository $userRepository,
-        private HashService $hashService
+        private readonly UserRepository $userRepository,
+        private readonly HashService $hashService
     ) {}
 
     /**

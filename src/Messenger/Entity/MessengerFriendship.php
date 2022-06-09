@@ -8,6 +8,7 @@
 namespace Ares\Messenger\Entity;
 
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Model\DataObject;
 use Ares\Messenger\Entity\Contract\MessengerFriendshipInterface;
 use Ares\Messenger\Repository\MessengerRepository;
@@ -122,6 +123,7 @@ class MessengerFriendship extends DataObject implements MessengerFriendshipInter
     /**
      * @return User|null
      * @throws DataObjectManagerException
+     * @throws NoSuchEntityException
      */
     public function getUser(): ?User
     {
@@ -129,10 +131,6 @@ class MessengerFriendship extends DataObject implements MessengerFriendshipInter
 
         if ($user) {
             return $user;
-        }
-
-        if (!isset($this)) {
-            return null;
         }
 
         /** @var MessengerRepository $messengerRepository */

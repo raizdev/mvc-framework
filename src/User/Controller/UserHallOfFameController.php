@@ -25,14 +25,14 @@ class UserHallOfFameController extends BaseController
     /**
      * UserHallOfFameController constructor.
      *
-     * @param UserRepository         $userRepository
+     * @param UserRepository $userRepository
      * @param UserSettingRepository  $userSettingRepository
      * @param UserCurrencyRepository $userCurrencyRepository
      */
     public function __construct(
-        private UserRepository $userRepository,
-        private UserSettingRepository $userSettingRepository,
-        private UserCurrencyRepository $userCurrencyRepository
+        private readonly UserRepository $userRepository,
+        private readonly UserSettingRepository $userSettingRepository,
+        private readonly UserCurrencyRepository $userCurrencyRepository
     ) {}
 
     /**

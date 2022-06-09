@@ -8,6 +8,7 @@
 namespace Ares\Guild\Entity;
 
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Model\DataObject;
 use Ares\Guild\Entity\Contract\GuildInterface;
 use Ares\Guild\Repository\GuildRepository;
@@ -190,10 +191,6 @@ class Guild extends DataObject implements GuildInterface
             return $user;
         }
 
-        if (!isset($this)) {
-            return null;
-        }
-
         /** @var GuildRepository $guildRepository */
         $guildRepository = repository(GuildRepository::class);
 
@@ -229,7 +226,7 @@ class Guild extends DataObject implements GuildInterface
     /**
      * @return Room|null
      *
-     * @throws DataObjectManagerException
+     * @throws DataObjectManagerException|NoSuchEntityException
      */
     public function getRoom(): ?Room
     {
@@ -238,10 +235,6 @@ class Guild extends DataObject implements GuildInterface
 
         if ($room) {
             return $room;
-        }
-
-        if (!isset($this)) {
-            return null;
         }
 
         /** @var GuildRepository $guildRepository */

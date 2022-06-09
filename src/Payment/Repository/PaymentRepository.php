@@ -12,6 +12,7 @@ use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Model\Query\PaginatedCollection;
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Payment\Entity\Payment;
+use Illuminate\Contracts\Container\BindingResolutionException;
 
 /**
  * Class PaymentRepository
@@ -34,7 +35,7 @@ class PaymentRepository extends BaseRepository
      * @param int $resultPerPage
      *
      * @return PaginatedCollection
-     * @throws DataObjectManagerException
+     * @throws DataObjectManagerException|BindingResolutionException
      */
     public function getPaginatedPayments(int $page, int $resultPerPage): PaginatedCollection
     {

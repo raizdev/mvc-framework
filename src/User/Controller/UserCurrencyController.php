@@ -30,8 +30,8 @@ class UserCurrencyController extends BaseController
      * @param   UpdateCurrencyService  $updateCurrencyService
      */
     public function __construct(
-        private ValidationService $validationService,
-        private UpdateCurrencyService $updateCurrencyService
+        private readonly ValidationService $validationService,
+        private readonly UpdateCurrencyService $updateCurrencyService
     ) {}
 
     /**

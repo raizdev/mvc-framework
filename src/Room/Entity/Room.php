@@ -8,6 +8,7 @@
 namespace Ares\Room\Entity;
 
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Model\DataObject;
 use Ares\Guild\Entity\Guild;
 use Ares\Guild\Repository\GuildRepository;
@@ -197,7 +198,7 @@ class Room extends DataObject implements RoomInterface
     /**
      * @return User|null
      *
-     * @throws DataObjectManagerException
+     * @throws DataObjectManagerException|NoSuchEntityException
      */
     public function getUser(): ?User
     {
@@ -206,10 +207,6 @@ class Room extends DataObject implements RoomInterface
 
         if ($user) {
             return $user;
-        }
-
-        if (!isset($this)) {
-            return null;
         }
 
         /** @var RoomRepository $roomRepository */

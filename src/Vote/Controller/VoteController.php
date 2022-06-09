@@ -44,12 +44,12 @@ class VoteController extends BaseController
      * @param   DecrementVoteService    $decrementVoteService
      */
     public function __construct(
-        private VoteRepository $voteRepository,
-        private ValidationService $validationService,
-        private CreateVoteService $createVoteService,
-        private DeleteVoteService $deleteVoteService,
-        private IncrementVoteService $incrementVoteService,
-        private DecrementVoteService $decrementVoteService
+        private readonly VoteRepository       $voteRepository,
+        private readonly ValidationService    $validationService,
+        private readonly CreateVoteService    $createVoteService,
+        private readonly DeleteVoteService    $deleteVoteService,
+        private readonly IncrementVoteService $incrementVoteService,
+        private readonly DecrementVoteService $decrementVoteService
     ) {}
 
     /**

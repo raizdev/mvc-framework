@@ -12,6 +12,7 @@ use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Model\Query\PaginatedCollection;
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Room\Entity\Room;
+use Illuminate\Contracts\Container\BindingResolutionException;
 
 /**
  * Class RoomRepository
@@ -37,7 +38,7 @@ class RoomRepository extends BaseRepository
      * @param int    $resultPerPage
      *
      * @return PaginatedCollection
-     * @throws DataObjectManagerException
+     * @throws DataObjectManagerException|BindingResolutionException
      */
     public function searchRooms(string $term, int $page, int $resultPerPage): PaginatedCollection
     {
@@ -53,7 +54,7 @@ class RoomRepository extends BaseRepository
      * @param int $resultPerPage
      *
      * @return PaginatedCollection
-     * @throws DataObjectManagerException
+     * @throws DataObjectManagerException|BindingResolutionException
      */
     public function getPaginatedRoomList(int $page, int $resultPerPage): PaginatedCollection
     {
@@ -71,7 +72,7 @@ class RoomRepository extends BaseRepository
      * @param int $resultPerPage
      *
      * @return PaginatedCollection
-     * @throws DataObjectManagerException
+     * @throws DataObjectManagerException|BindingResolutionException
      */
     public function getUserRoomsPaginatedList(int $ownerId, int $page, int $resultPerPage): PaginatedCollection
     {

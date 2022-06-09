@@ -8,6 +8,7 @@
 namespace Ares\Guestbook\Entity;
 
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Model\DataObject;
 use Ares\Guestbook\Entity\Contract\GuestbookInterface;
 use Ares\Guestbook\Repository\GuestbookRepository;
@@ -194,7 +195,7 @@ class Guestbook extends DataObject implements GuestbookInterface
     /**
      * @return User|null
      *
-     * @throws DataObjectManagerException
+     * @throws DataObjectManagerException|NoSuchEntityException
      */
     public function getUser(): ?User
     {
@@ -203,10 +204,6 @@ class Guestbook extends DataObject implements GuestbookInterface
 
         if ($user) {
             return $user;
-        }
-
-        if (!isset($this)) {
-            return null;
         }
 
         /** @var GuestbookRepository $guestBookRepository */

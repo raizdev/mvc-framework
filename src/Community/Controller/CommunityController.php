@@ -12,6 +12,7 @@ use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Guild\Repository\GuildRepository;
 use Ares\Room\Repository\RoomRepository;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -30,9 +31,9 @@ class CommunityController extends BaseController
      * @param   ArticleRepository  $articleRepository
      */
     public function __construct(
-        private GuildRepository $guildRepository,
-        private RoomRepository $roomRepository,
-        private ArticleRepository $articleRepository
+        private readonly GuildRepository $guildRepository,
+        private readonly RoomRepository  $roomRepository,
+        private readonly ArticleRepository $articleRepository
     ) {}
 
     /**
@@ -43,7 +44,7 @@ class CommunityController extends BaseController
      * @param array    $args
      *
      * @return Response
-     * @throws DataObjectManagerException
+     * @throws DataObjectManagerException|BindingResolutionException
      */
     public function searchRooms(Request $request, Response $response, array $args): Response
     {
@@ -78,7 +79,7 @@ class CommunityController extends BaseController
      * @param array    $args
      *
      * @return Response
-     * @throws DataObjectManagerException
+     * @throws DataObjectManagerException|BindingResolutionException
      */
     public function searchGuilds(Request $request, Response $response, array $args): Response
     {
@@ -108,9 +109,9 @@ class CommunityController extends BaseController
     /**
      * Searches with term in groups, rooms and news.
      *
-     * @param Request     $request
-     * @param Response    $response
-     * @param             $args
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
      *
      * @return Response
      * @throws DataObjectManagerException

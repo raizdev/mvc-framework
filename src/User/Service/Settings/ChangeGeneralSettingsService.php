@@ -31,8 +31,8 @@ class ChangeGeneralSettingsService
      * @param ExecuteRconCommandService $executeRconCommandService
      */
     public function __construct(
-        private UserSettingRepository $userSettingRepository,
-        private ExecuteRconCommandService $executeRconCommandService
+        private readonly UserSettingRepository $userSettingRepository,
+        private readonly ExecuteRconCommandService $executeRconCommandService
     ) {}
 
     /**

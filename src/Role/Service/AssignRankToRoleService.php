@@ -35,9 +35,9 @@ class AssignRankToRoleService {
      * @param PermissionRepository  $permissionRepository
      */
     public function __construct(
-        private RoleRankRepository $roleRankRepository,
-        private RoleRepository $roleRepository,
-        private PermissionRepository $permissionRepository
+        private readonly RoleRankRepository $roleRankRepository,
+        private readonly RoleRepository     $roleRepository,
+        private readonly PermissionRepository $permissionRepository
     ) {}
 
     /**

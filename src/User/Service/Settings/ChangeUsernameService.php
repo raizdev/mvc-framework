@@ -32,8 +32,8 @@ class ChangeUsernameService
      * @param UserSettingRepository $userSettingRepository
      */
     public function __construct(
-        private UserRepository $userRepository,
-        private UserSettingRepository $userSettingRepository
+        private readonly UserRepository $userRepository,
+        private readonly UserSettingRepository $userSettingRepository
     ) {}
 
     /**

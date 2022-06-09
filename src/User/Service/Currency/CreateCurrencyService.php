@@ -22,10 +22,10 @@ class CreateCurrencyService
     /**
      * CreateCurrencyService constructor.
      *
-     * @param   UserCurrencyRepository  $userCurrencyRepository
+     * @param UserCurrencyRepository $userCurrencyRepository
      */
     public function __construct(
-        private UserCurrencyRepository $userCurrencyRepository
+        private readonly UserCurrencyRepository $userCurrencyRepository
     ) {}
 
     /**

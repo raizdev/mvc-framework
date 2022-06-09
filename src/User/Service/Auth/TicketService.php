@@ -24,7 +24,7 @@ class TicketService
      * @param UserRepository $userRepository
      */
     public function __construct(
-        private UserRepository $userRepository
+        private readonly UserRepository $userRepository
     ) {}
 
     /**
@@ -34,7 +34,7 @@ class TicketService
      *
      * @return string
      * @throws DataObjectManagerException
-     * @throws Exception
+     * @throws \Exception
      */
     public function generate(User $user): string
     {

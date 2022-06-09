@@ -27,7 +27,7 @@ class DeleteTopicService
      * @param TopicRepository $topicRepository
      */
     public function __construct(
-        private TopicRepository $topicRepository
+        private readonly TopicRepository $topicRepository
     ) {}
 
     /**

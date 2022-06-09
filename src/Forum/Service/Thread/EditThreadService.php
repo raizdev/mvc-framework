@@ -29,8 +29,8 @@ class EditThreadService
      * @param Slugify          $slug
      */
     public function __construct(
-        private ThreadRepository $threadRepository,
-        private Slugify $slug
+        private readonly ThreadRepository $threadRepository,
+        private readonly Slugify $slug
     ) {}
 
     /**

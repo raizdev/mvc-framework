@@ -8,13 +8,14 @@
 namespace Ares\Guestbook\Service;
 
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Interfaces\CustomResponseInterface;
 use Ares\Framework\Interfaces\HttpResponseCodeInterface;
 use Ares\Guestbook\Entity\Guestbook;
 use Ares\Guestbook\Exception\GuestbookException;
 use Ares\Guestbook\Interfaces\Response\GuestbookResponseCodeInterface;
 use Ares\Guestbook\Repository\GuestbookRepository;
-use PHLAK\Config\Config;
+use Ares\Framework\Config;
 
 /**
  * Class CreateGuestbookEntryService
@@ -27,11 +28,11 @@ class CreateGuestbookEntryService
      * CreateGuestbookEntryService constructor.
      *
      * @param GuestbookRepository $guestbookRepository
-     * @param Config              $config
+     * @param Config $config
      */
     public function __construct(
-        private GuestbookRepository $guestbookRepository,
-        private Config $config
+        private readonly GuestbookRepository $guestbookRepository,
+        private readonly Config $config
     ) {}
 
     /**
@@ -39,7 +40,7 @@ class CreateGuestbookEntryService
      * @param array $data
      *
      * @return CustomResponseInterface
-     * @throws DataObjectManagerException|GuestbookException
+     * @throws DataObjectManagerException|GuestbookException|NoSuchEntityException
      */
     public function execute(int $userId, array $data): CustomResponseInterface
     {

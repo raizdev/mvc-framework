@@ -27,7 +27,7 @@ class DeletePaymentService
      * @param PaymentRepository $paymentRepository
      */
     public function __construct(
-        private PaymentRepository $paymentRepository
+        private readonly PaymentRepository $paymentRepository
     ) {}
 
     /**

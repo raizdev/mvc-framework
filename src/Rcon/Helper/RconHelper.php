@@ -9,7 +9,7 @@ namespace Ares\Rcon\Helper;
 
 use Ares\Rcon\Exception\RconException;
 use Ares\Rcon\Interfaces\Response\RconResponseCodeInterface;
-use PHLAK\Config\Config;
+use Ares\Framework\Config;
 
 /**
  * Class RconHelper
@@ -24,7 +24,7 @@ class RconHelper
      * @param Config $config
      */
     public function __construct(
-        private Config $config
+        private readonly Config $config
     ) {}
 
     /**

@@ -29,8 +29,8 @@ class CreateCommentService
      * @param   ThreadRepository   $threadRepository
      */
     public function __construct(
-        private CommentRepository $commentRepository,
-        private ThreadRepository $threadRepository
+        private readonly CommentRepository $commentRepository,
+        private readonly ThreadRepository $threadRepository
     ) {}
 
     /**

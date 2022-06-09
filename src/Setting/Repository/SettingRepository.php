@@ -11,6 +11,7 @@ use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Model\Query\PaginatedCollection;
 use Ares\Framework\Repository\BaseRepository;
 use Ares\Setting\Entity\Setting;
+use Illuminate\Contracts\Container\BindingResolutionException;
 
 /**
  * Class SettingsRepository
@@ -33,7 +34,7 @@ class SettingRepository extends BaseRepository
      * @param int $resultPerPage
      *
      * @return PaginatedCollection
-     * @throws DataObjectManagerException
+     * @throws DataObjectManagerException|BindingResolutionException
      */
     public function getPaginatedSettingList(int $page, int $resultPerPage): PaginatedCollection
     {

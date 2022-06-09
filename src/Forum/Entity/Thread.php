@@ -10,6 +10,7 @@ namespace Ares\Forum\Entity;
 use Ares\Forum\Entity\Contract\ThreadInterface;
 use Ares\Forum\Repository\ThreadRepository;
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Model\DataObject;
 use Ares\User\Entity\User;
 use Ares\User\Repository\UserRepository;
@@ -225,7 +226,7 @@ class Thread extends DataObject implements ThreadInterface
     /**
      * @return User|null
      *
-     * @throws DataObjectManagerException
+     * @throws DataObjectManagerException|NoSuchEntityException
      */
     public function getUser(): ?User
     {
@@ -234,10 +235,6 @@ class Thread extends DataObject implements ThreadInterface
 
         if ($user) {
             return $user;
-        }
-
-        if (!isset($this)) {
-            return null;
         }
 
         /** @var ThreadRepository $threadRepository */

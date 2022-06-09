@@ -7,6 +7,7 @@
 
 namespace Ares\User\Controller;
 
+use Ares\Framework\Mapping\Annotation as AR;
 use Ares\Framework\Controller\BaseController;
 use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;
@@ -21,6 +22,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 /**
  * Class UserController
+ * @AR\Router
  *
  * @package Ares\User\Controller
  */
@@ -33,8 +35,8 @@ class UserController extends BaseController
      * @param ValidationService $validationService
      */
     public function __construct(
-        private UserRepository $userRepository,
-        private ValidationService $validationService
+        private readonly UserRepository $userRepository,
+        private readonly ValidationService $validationService
     ) {}
 
     /**
@@ -52,9 +54,9 @@ class UserController extends BaseController
     {
         /** @var User $user */
         $user = user($request);
-        $user->getRoles();
-        $user->getCurrencies();
-        $user->getPermissions();
+        $user?->getRoles();
+        $user?->getCurrencies();
+        $user?->getPermissions();
 
         return $this->respond(
             $response,
@@ -91,6 +93,12 @@ class UserController extends BaseController
 
     /**
      * Gets all current Online User and counts them
+     *
+     * @AR\Route(
+     *     name="user/online",
+     *     methods={"GET"},
+     *     pattern="/user/online"
+     * )
      *
      * @param Request  $request
      * @param Response $response

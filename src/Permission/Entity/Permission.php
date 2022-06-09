@@ -150,10 +150,6 @@ class Permission extends DataObject implements PermissionInterface
             return $users;
         }
 
-        if (!isset($this)) {
-            return null;
-        }
-
         /** @var PermissionRepository $permissionRepository */
         $permissionRepository = repository(PermissionRepository::class);
 

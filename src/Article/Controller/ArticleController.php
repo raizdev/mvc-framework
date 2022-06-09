@@ -15,6 +15,7 @@ use Ares\Framework\Controller\BaseController;
 use Ares\Article\Entity\Article;
 use Ares\Article\Exception\ArticleException;
 use Ares\Article\Repository\ArticleRepository;
+use Ares\Framework\Mapping\Annotation as AR;
 use Ares\Framework\Exception\AuthenticationException;
 use Ares\Framework\Exception\DataObjectManagerException;
 use Ares\Framework\Exception\NoSuchEntityException;
@@ -22,11 +23,20 @@ use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Model\Query\PaginatedCollection;
 use Ares\Framework\Service\ValidationService;
 use Ares\User\Entity\User;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Ares\Framework\Middleware\AuthMiddleware;
 
 /**
  * Class ArticleController
+ *
+ * @AR\Router
+ * @AR\Group(
+ *     prefix="articles",
+ *     pattern="articles",
+ *     middleware={AuthMiddleware::class}
+ * )
  *
  * @package Ares\Article\Controller
  */
@@ -42,11 +52,11 @@ class ArticleController extends BaseController
      * @param DeleteArticleService $deleteArticleService
      */
     public function __construct(
-        private ArticleRepository $articleRepository,
-        private CreateArticleService $createArticleService,
-        private EditArticleService $editArticleService,
-        private ValidationService $validationService,
-        private DeleteArticleService $deleteArticleService
+        private readonly ArticleRepository    $articleRepository,
+        private readonly CreateArticleService $createArticleService,
+        private readonly EditArticleService   $editArticleService,
+        private readonly ValidationService    $validationService,
+        private readonly DeleteArticleService $deleteArticleService
     ) {}
 
     /**
@@ -89,6 +99,12 @@ class ArticleController extends BaseController
     }
 
     /**
+     * @AR\Route(
+     *     methods={"GET"},
+     *     placeholders={"id": "[0-9]+"},
+     *     pattern="/{id}"
+     * )
+     *
      * @param Request  $request
      * @param Response $response
      *
@@ -149,10 +165,11 @@ class ArticleController extends BaseController
     /**
      * Gets all Pinned Articles
      *
-     * @param Request  $request
+     * @param Request $request
      * @param Response $response
-     *
+     * @param array $args
      * @return Response
+     * @throws BindingResolutionException
      * @throws DataObjectManagerException
      */
     public function pinned(Request $request, Response $response, array $args): Response
@@ -178,13 +195,13 @@ class ArticleController extends BaseController
     }
 
     /**
-     * @param Request     $request
-     * @param Response    $response
+     * @param Request $request
+     * @param Response $response
      *
-     * @param             $args
+     * @param array $args
      *
      * @return Response
-     * @throws DataObjectManagerException
+     * @throws DataObjectManagerException|BindingResolutionException
      */
     public function list(Request $request, Response $response, array $args): Response
     {
@@ -209,13 +226,13 @@ class ArticleController extends BaseController
     }
 
     /**
-     * @param Request     $request
-     * @param Response    $response
+     * @param Request $request
+     * @param Response $response
      *
-     * @param             $args
+     * @param array $args
      *
      * @return Response
-     * @throws DataObjectManagerException
+     * @throws DataObjectManagerException|BindingResolutionException
      */
     public function allList(Request $request, Response $response, array $args): Response
     {
@@ -226,7 +243,12 @@ class ArticleController extends BaseController
         $resultPerPage = $args['rpp'];
 
         /** @var PaginatedCollection $articles */
-        $articles = $this->articleRepository->getPaginatedArticleList($page, $resultPerPage, true, true);
+        $articles = $this->articleRepository->getPaginatedArticleList(
+            $page,
+            $resultPerPage,
+            true,
+            true
+        );
 
         return $this->respond($response, response()->setData($articles));
     }
@@ -234,9 +256,9 @@ class ArticleController extends BaseController
     /**
      * Deletes specific article.
      *
-     * @param Request     $request
-     * @param Response    $response
-     * @param             $args
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
      *
      * @return Response
      * @throws ArticleException

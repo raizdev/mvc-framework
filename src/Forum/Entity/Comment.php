@@ -10,6 +10,7 @@ namespace Ares\Forum\Entity;
 use Ares\Forum\Entity\Contract\CommentInterface;
 use Ares\Forum\Repository\CommentRepository;
 use Ares\Framework\Exception\DataObjectManagerException;
+use Ares\Framework\Exception\NoSuchEntityException;
 use Ares\Framework\Model\DataObject;
 use Ares\User\Entity\User;
 use Ares\User\Repository\UserRepository;
@@ -213,6 +214,7 @@ class Comment extends DataObject implements CommentInterface
      * @return User|null
      *
      * @throws DataObjectManagerException
+     * @throws NoSuchEntityException
      */
     public function getUser(): ?User
     {
@@ -223,12 +225,8 @@ class Comment extends DataObject implements CommentInterface
             return $user;
         }
 
-        if (!isset($this)) {
-            return null;
-        }
-
         /** @var CommentRepository $commentRepository */
-        $commentRepository = repository(PhotoRepository::class);
+        $commentRepository = repository(CommentRepository::class);
 
         /** @var UserRepository $userRepository */
         $userRepository = repository(UserRepository::class);

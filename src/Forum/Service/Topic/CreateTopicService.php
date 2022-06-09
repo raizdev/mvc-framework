@@ -31,8 +31,8 @@ class CreateTopicService
      * @param Slugify         $slug
      */
     public function __construct(
-        private TopicRepository $topicRepository,
-        private Slugify $slug
+        private readonly TopicRepository $topicRepository,
+        private readonly Slugify $slug
     ) {}
 
     /**

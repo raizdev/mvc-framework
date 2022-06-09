@@ -41,11 +41,11 @@ class ThreadController extends BaseController
      * @param DeleteThreadService $deleteThreadService
      */
     public function __construct(
-        private ThreadRepository $threadRepository,
-        private CreateThreadService $createThreadService,
-        private EditThreadService $editThreadService,
-        private ValidationService $validationService,
-        private DeleteThreadService $deleteThreadService
+        private readonly ThreadRepository    $threadRepository,
+        private readonly CreateThreadService $createThreadService,
+        private EditThreadService            $editThreadService,
+        private readonly ValidationService   $validationService,
+        private readonly DeleteThreadService $deleteThreadService
     ) {}
 
     /**
@@ -114,9 +114,9 @@ class ThreadController extends BaseController
     }
 
     /**
-     * @param Request     $request
-     * @param Response    $response
-     * @param             $args
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
      *
      * @return Response
      * @throws DataObjectManagerException
@@ -147,13 +147,13 @@ class ThreadController extends BaseController
     }
 
     /**
-     * @param Request     $request
-     * @param Response    $response
-     * @param             $args
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
      *
      * @return Response
-     * @throws ThreadException
      * @throws DataObjectManagerException
+     * @throws ThreadException
      */
     public function delete(Request $request, Response $response, array $args): Response
     {

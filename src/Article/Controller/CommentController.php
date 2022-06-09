@@ -21,6 +21,7 @@ use Ares\Framework\Exception\ValidationException;
 use Ares\Framework\Model\Query\PaginatedCollection;
 use Ares\Framework\Service\ValidationService;
 use Ares\User\Entity\User;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -41,11 +42,11 @@ class CommentController extends BaseController
      * @param DeleteCommentService $deleteCommentService
      */
     public function __construct(
-        private CommentRepository $commentRepository,
-        private ValidationService $validationService,
-        private CreateCommentService $createCommentService,
-        private EditCommentService $editCommentService,
-        private DeleteCommentService $deleteCommentService
+        private readonly CommentRepository    $commentRepository,
+        private readonly ValidationService    $validationService,
+        private readonly CreateCommentService $createCommentService,
+        private readonly EditCommentService   $editCommentService,
+        private readonly DeleteCommentService $deleteCommentService
     ) {}
 
     /**
@@ -107,12 +108,12 @@ class CommentController extends BaseController
     }
 
     /**
-     * @param Request     $request
-     * @param Response    $response
-     * @param             $args
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
      *
      * @return Response
-     * @throws DataObjectManagerException
+     * @throws DataObjectManagerException|BindingResolutionException
      */
     public function list(Request $request, Response $response, array $args): Response
     {
@@ -141,9 +142,9 @@ class CommentController extends BaseController
     }
 
     /**
-     * @param Request     $request
-     * @param Response    $response
-     * @param             $args
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
      *
      * @return Response
      * @throws CommentException
