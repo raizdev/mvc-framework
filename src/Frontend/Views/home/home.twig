@@ -1,0 +1,8 @@
+{% extends "base.twig" %} 
+{% block body %}
+{% if not user %}
+    {% include 'auth/auth.twig' %}
+{%  else %}
+    {% include 'home/main.twig' %}
+{% endif %}
+{% endblock %}

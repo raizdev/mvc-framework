@@ -1,0 +1,32 @@
+{
+    "name": "raizdev/mvc-framework",
+    "description": "A PHP Framework",
+    "require": {
+        "sunrise/http-router": "^2.15",
+        "doctrine/annotations": "^1.13",
+        "sunrise/http-message": "^2.1",
+        "raizdev/phlak": "^1.0",
+        "vlucas/phpdotenv": "^5.5",
+        "odan/session": "^5.1",
+        "php-di/php-di": "^6.4",
+        "symfony/cache": "^6.1",
+        "monolog/monolog": "^3.2",
+        "league/container": "3.3.3",
+        "slim/flash": "^0.4.0",
+        "illuminate/database": "^10.47",
+        "illuminate/events": "^10.47",
+        "sunrise/http-router": "^2.15",
+        "doctrine/annotations": "^1.13",
+        "sunrise/http-message": "^2.1",
+        "sunrise/http-server-request": "^2.2",
+        "twig/twig": "^3.4",
+        "httpsoft/http-response": "^1.0",
+        "rakit/validation": "^1.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "StarreDEV\\Framework\\": "framework/",
+            "StarreDEV\\": "src/"
+        }
+    }
+}

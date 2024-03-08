@@ -1,0 +1,15 @@
+<h1>Single Error</h1>
+{% set errors = flash.get('errors') %}
+
+{{ firstFlashMessage('message') }}
+{{ errors.username }}<br />
+{{ errors.password }}
+
+<h1>All Errors</h1>
+{% for key, message in errors %}
+    <div class="alert alert-danger" role="alert">
+        {{ key }}: {{ message }}
+    </div>
+{% endfor %}
+
+{% block body %} {% endblock %}  
