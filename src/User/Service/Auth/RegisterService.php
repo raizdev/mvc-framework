@@ -58,8 +58,7 @@ class RegisterService
         $user = $this->userModel->create($parsedData);
 
         $this->session->set('user', $user);
-        $this->session->getFlash()->add('message', 'Je account is aangemaakt!');
-        return;
+        return $this->session->getFlash()->add('message', 'Je account is aangemaakt!');
     }
   
 }

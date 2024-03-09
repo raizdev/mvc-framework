@@ -46,8 +46,6 @@ class AuthController extends BaseController {
         /** @var array $parsedData */
         $parsedData = $request->getParsedBody();
       
-        $this->session->getFlash()->add('test', 'test bericht');
-      
         /** @var string $determinedIp */
         $determinedIp = $this->determineIpService->execute();
 
@@ -55,10 +53,7 @@ class AuthController extends BaseController {
 
         $customResponse = $this->loginService->login($parsedData);
 
-        return $this->twig->render(
-            $this->response->createResponse(200),
-            'home/home.twig'
-        );
+        return $this->response->createResponse(200)->withHeader('Location', '/');
     }
 
     #[Route(
@@ -113,6 +108,6 @@ class AuthController extends BaseController {
     {
         $this->session->destroy();
 
-        return (new ResponseFactory)->createResponse(200)->withHeader('Location', '/');
+        return $this->response->createResponse(200)->withHeader('Location', '/');
     }
 }

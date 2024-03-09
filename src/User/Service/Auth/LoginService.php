@@ -43,23 +43,13 @@ class LoginService
         $user = $this->userModel->firstWhere('username', $data['username']);
 
         if (!$user || !password_verify($data['password'], $user->password)) {
-            throw new LoginException(
-                __('Data combination was not found')
-            );
+            return $this->session->getFlash()->add('message', 'Gebruikersnaam en of wachtwoord verkeerd ingevuld!');
         }
-
-        // TODO implement banService
         
         $user->{UserInterface::COLUMN_IP_CURRENT} = $data[UserInterface::COLUMN_IP_CURRENT];
 
         $user->save();
         
-        $this->session->set('user', $user);
-
-        return response()->setData([
-            'pagetime'  => '/',
-            'status'    => 'success',
-            'message'   => __('Logged in successfully'),
-        ]);
+        return $this->session->set('user', $user);
     }
 }
