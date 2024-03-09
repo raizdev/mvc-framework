@@ -3,7 +3,8 @@ use PHLAK\Config\Config;
 use StarreDEV\Framework\Interfaces\CustomResponseInterface;
 use StarreDEV\Framework\Model\CustomResponse;
 use StarreDEV\Framework\Model\Container;
-use StarreDEV\Framework\Service\SessionService;
+use Odan\Session\PhpSession;
+use Psr\Container\ContainerInterface;
 
 use StarreDEV\Framework\Exception\AuthenticationException;
 use StarreDEV\Framework\Interfaces\HttpResponseCodeInterface;
@@ -76,26 +77,4 @@ if (!function_exists('debug')) {
 
 if (!function_exists('user')) {
 
-    function user($user_id) {
-
-        $session = new SessionService();
-        if(!$session->exists('user') || !empty($user_id)) {
-            throw new AuthenticationException(
-                __('Not logged in.'),
-                200,
-                HttpResponseCodeInterface::HTTP_RESPONSE_UNAUTHORIZED
-            );
-        }
-
-        $user = User::find($user_id);
-        if(!$user) {
-            throw new AuthenticationException(
-                __('User doesnt exists.'),
-                200,
-                HttpResponseCodeInterface::HTTP_RESPONSE_UNAUTHORIZED
-            );
-        }
-
-        return $user;
-    }
 }

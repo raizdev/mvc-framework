@@ -43,7 +43,7 @@ class LoginService
         $user = $this->userModel->firstWhere('username', $data['username']);
 
         if (!$user || !password_verify($data['password'], $user->password)) {
-            return $this->session->getFlash()->add('message', 'Gebruikersnaam en of wachtwoord verkeerd ingevuld!');
+            return $this->session->getFlash()->add('errors', 'Gebruikersnaam en of wachtwoord verkeerd ingevuld!');
         }
         
         $user->{UserInterface::COLUMN_IP_CURRENT} = $data[UserInterface::COLUMN_IP_CURRENT];

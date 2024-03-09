@@ -1,15 +1,73 @@
-<h1>Single Error</h1>
-{% set errors = flash.get('errors') %}
+<html>
+  <head>
+    <title>StarreDEV Framework</title>
+    <link rel="stylesheet" type="text/css" href="/assets/semantic.min.css">
+    <script
+      src="https://code.jquery.com/jquery-3.1.1.min.js"
+      integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+      crossorigin="anonymous">
+    </script>
+    <style type="text/css">
+    body > .grid {
+      height: 100%;
+    }
+    .image {
+      margin-top: -100px;
+    }
+    .column {
+      max-width: 450px;
+    }
+    body {
+      background-color: #FFFFFF;
+    }
+    .ui.menu .item img.logo {
+      margin-right: 1.5em;
+    }
+    .main.container {
+      margin-top: 7em;
+    }
+    .wireframe {
+      margin-top: 2em;
+    }
+    .ui.footer.segment {
+      margin: 5em 0em 0em;
+      padding: 5em 0em;
+    }
+  </style>
+  </head>
+  <body>
+    {% set errors = flash.get('errors') %}
+    {% block body %} {% endblock %}  
+  </body>
+  <script src="/assets/semantic.min.js"></script>
+  <script>
+  $( document ).ready(function() {
+      $(".create-account").click(function() {
+        $(".sign-in-form").hide();
+        $(".register-form").show();
+      })
+      
+      $(".sign-in").click(function() {
+        $(".sign-in-form").show();
+        $(".register-form").hide();
+      })
+      
+      $('.ui.form.sign-in-form').form({
+        fields: {
+          username : 'empty',
+          password : ['minLength[6]', 'empty']
+        }
+      });
+      
+      $('.ui.register-form').form({
+        fields: {
+          username : 'empty',
+          password : ['minLength[6]', 'empty'],
+          password_confirmation : ['minLength[6]', 'empty'],
+          email : 'empty'
+        }
+      });
+  })
+  </script>
+</html>
 
-{{ firstFlashMessage('message') }}
-{{ errors.username }}<br />
-{{ errors.password }}
-
-<h1>All Errors</h1>
-{% for key, message in errors %}
-    <div class="alert alert-danger" role="alert">
-        {{ key }}: {{ message }}
-    </div>
-{% endfor %}
-
-{% block body %} {% endblock %}  

@@ -1,16 +1,71 @@
-<h1>Inloggen</h1>
-<form method="post" action="/auth/sign-in">
-  <input type="text" name="username" placeholder="Username.." />
-  <input type="password" name="password" placeholder="Password.." />
-  <input type="submit" name="submit" />
-</form>
-
-<h1>Registeren</h1>
-<form method="post" action="/auth/account-registration">
-  <input type="text" name="username" placeholder="Username.." />
-  <input type="password" name="password" placeholder="Password.." />
-  <input type="password" name="password_confirmation" placeholder="Password Confirmation.." />
-  <input type="text" name="email" placeholder="Mail.." />
-
-  <button type="submit">Submit</button>
-</form>
+<div class="ui middle aligned center aligned grid">
+  <div class="column">
+    <form class="ui large form sign-in-form" method="post" action="/auth/sign-in">
+      <div class="ui stacked segment">
+        <div class="field">
+          <div class="ui left icon input">
+            <i class="user icon"></i>
+            <input type="text" name="username" placeholder="Username.." />
+          </div>
+        </div>
+        <div class="field">
+          <div class="ui left icon input">
+            <i class="lock icon"></i>
+            <input type="password" name="password" placeholder="Password.." />
+          </div>
+        </div>
+        <button class="ui fluid large teal submit primary button">
+          Inloggen
+        </button>
+      </div>
+     <div class="ui message">
+        Nieuw? <a href="#" class="create-account">Registeren</a>
+      </div>
+    </form>
+    <form class="ui large form register-form" method="post" action="/auth/sign-in" style="display: none">
+      <div class="ui stacked segment">
+        <div class="field">
+          <div class="ui left icon input">
+            <i class="user icon"></i>
+            <input type="text" name="username" placeholder="Username.." />
+          </div>
+        </div>
+        <div class="field">
+          <div class="ui left icon input">
+            <i class="lock icon"></i>
+            <input type="password" name="password" placeholder="Password.." />
+          </div>
+        </div>
+        <div class="field">
+          <div class="ui left icon input">
+            <i class="lock icon"></i>
+            <input type="password" name="password_confirmation" placeholder="Password confirmation.." />
+          </div>
+        </div>
+        <div class="field">
+          <div class="ui left icon input">
+            <i class="mail icon"></i>
+            <input type="text" name="email" placeholder="Email.." />
+          </div>
+        </div>
+        <button class="ui fluid large teal submit primary button">
+          Registreren
+        </button>
+      </div>
+      <div class="ui message">
+        Al account? <a href="#" class="sign-in">Inloggen</a>
+      </div>
+    </form>
+    {% if errors is not empty %}
+    <div class="ui error message">
+        <ul class="list">
+            {% for key, message in errors %}
+                <li>
+                    {{ key }}: {{ message }}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+  </div>
+</div>

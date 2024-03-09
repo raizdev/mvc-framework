@@ -1,5 +1,5 @@
 <?php
-namespace Orion\Controllers\Auth;
+namespace StarreDEV\Controllers\Auth;
 
 use Odan\Session\SessionInterface;
 use Sunrise\Http\Router\Annotation as Mapping;
@@ -53,7 +53,7 @@ class AuthController extends BaseController {
 
         $customResponse = $this->loginService->login($parsedData);
 
-        return $this->response->createResponse(200)->withHeader('Location', '/');
+        return $this->response->createResponse(302)->withHeader('Location', '/');
     }
 
     #[Route(
@@ -108,6 +108,6 @@ class AuthController extends BaseController {
     {
         $this->session->destroy();
 
-        return $this->response->createResponse(200)->withHeader('Location', '/');
+        return $this->response->createResponse(302)->withHeader('Location', '/');
     }
 }

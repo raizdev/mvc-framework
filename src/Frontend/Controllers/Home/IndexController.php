@@ -40,7 +40,8 @@ class IndexController {
     {
         return $this->twig->render(
             $this->response->createResponse(200),
-            'home/home.twig'
+            'home/home.twig',
+            ['testVar' => 'test variable']
         );
     }
 }
