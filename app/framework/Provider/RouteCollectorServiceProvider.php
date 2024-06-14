@@ -15,7 +15,6 @@ use Slim\Interfaces\RouteCollectorInterface;
 /**
  * Class RouteCollectorServiceProvider
  *
- * @package Ares\Framework\Provider
  */
 class RouteCollectorServiceProvider extends AbstractServiceProvider
 {

@@ -4,7 +4,6 @@ namespace Raizdev\Framework\Interfaces;
 /**
  * Interface ConfigInterface
  *
- * @package Ares\Framework\Interfaces
  */
 interface ConfigInterface
 {

@@ -1,5 +1,5 @@
 <?php
-namespace Ares\Framework\Helper;
+namespace Raizdev\Framework\Helper;
 
 /**
  * Class LocaleHelper

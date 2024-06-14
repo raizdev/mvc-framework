@@ -7,7 +7,6 @@ use Illuminate\Database\Capsule\Manager;
 /**
  * Class DataObjectManagerFactory
  *
- * @package Ares\Framework\Factory
  */
 class DataObjectManagerFactory
 {

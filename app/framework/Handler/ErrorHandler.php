@@ -17,7 +17,6 @@ use Throwable;
 /**
  * Class ErrorHandler
  *
- * @package Ares\Framework\Handler
  */
 class ErrorHandler implements ErrorHandlerInterface
 {

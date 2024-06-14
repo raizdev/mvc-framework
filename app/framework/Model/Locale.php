@@ -6,7 +6,6 @@ use Raizdev\Framework\Helper\LocaleHelper;
 /**
  * Class Locale
  *
- * @package Ares\Framework\Model
  */
 class Locale
 {
