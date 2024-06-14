@@ -1,24 +1,19 @@
 <?php
-/**
- * @copyright Copyright (c) Ares (https://www.ares.to)
- *
- * @see LICENSE (MIT)
- */
-
-use Ares\Framework\Exception\AuthenticationException;
-use Ares\Framework\Exception\DataObjectManagerException;
-use Ares\Framework\Exception\NoSuchEntityException;
-use Ares\Framework\Interfaces\CustomResponseInterface;
-use Ares\Framework\Interfaces\HttpResponseCodeInterface;
-use Ares\Framework\Model\CustomResponse;
-use Ares\Framework\Model\Query\Collection;
-use Ares\Framework\Proxy\App;
-use Ares\Framework\Repository\BaseRepository;
-use Ares\Framework\Service\LocaleService;
-use Ares\User\Entity\User;
-use Ares\User\Repository\UserRepository;
+use Raizdev\Framework\Exception\AuthenticationException;
+use Raizdev\Framework\Exception\DataObjectManagerException;
+use Raizdev\Framework\Exception\NoSuchEntityException;
+use Raizdev\Framework\Interfaces\CustomResponseInterface;
+use Raizdev\Framework\Interfaces\HttpResponseCodeInterface;
+use Raizdev\Framework\Model\CustomResponse;
+use Raizdev\Framework\Model\Query\Collection;
+use Raizdev\Framework\Proxy\App;
+use Raizdev\Framework\Repository\BaseRepository;
+use Raizdev\Framework\Service\LocaleService;
+use Raizdev\User\Repository\UserRepository;
 use League\Container\Container;
 use Psr\Http\Message\ServerRequestInterface as Request;
+
+use Raizdev\User\Model\UserModel;
 
 if (!function_exists('__')) {
     /**
@@ -126,53 +121,12 @@ if (!function_exists('container')) {
     }
 }
 
-if (!function_exists('repository')) {
-    /**
-     * Returns repository by given namespace.
-     *
-     * @param string $repository
-     * @return BaseRepository
-     */
-    function repository(string $repository): ?BaseRepository {
-        $container = container();
-        $repository = $container->get($repository);
-
-        if (!$repository instanceof BaseRepository) {
-            throw new DataObjectManagerException(
-                __('Tried to instantiating not existing repository "%s"', [$repository]),
-                500
-            );
-        }
-
-        return $repository;
-    }
-}
-
-if (!function_exists('accumulate')) {
-    /**
-     * Returns data as new collection.
-     *
-     * @param mixed $items
-     * @return Collection
-     */
-    function accumulate($items = null): Collection {
-        return new Collection($items);
-    }
-}
-
 if (!function_exists('user')) {
     /**
      * Returns current authenticated user.
-     * Required classes: \Ares\User\Repository\UserRepository, \Ares\User\Entity\User
      *
-     * @param Request $request
-     * @param bool    $isCached
-     *
-     * @return User
-     * @throws AuthenticationException
-     * @throws NoSuchEntityException
      */
-    function user(Request $request, bool $isCached = false): User {
+    function user(Request $request, bool $isCached = false) {
         /** @var array $user */
         $authUser = $request->getAttribute('ares_uid');
 
@@ -181,16 +135,15 @@ if (!function_exists('user')) {
         }
 
         /** @var UserRepository $userRepository */
-        $userRepository = container()->get(UserRepository::class);
+        $userRepository = container()->get(UserModel::class);
 
         /** @var User $user */
-        $user = $userRepository->get((int) $authUser, User::COLUMN_ID, $isCached);
+        $user = $userRepository->find((int) $authUser);
 
         if (!$user) {
             throw new AuthenticationException(
                 __('User doesnt exists.'),
-                \Ares\User\Interfaces\Response\UserResponseCodeInterface::RESPONSE_NOT_ALLOWED,
-                HttpResponseCodeInterface::HTTP_RESPONSE_UNAUTHORIZED
+                401, 401
             );
         }
 

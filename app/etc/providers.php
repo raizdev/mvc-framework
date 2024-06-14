@@ -1,52 +1,43 @@
 <?php
-/**
- * @copyright Copyright (c) Ares (https://www.ares.to)
- *  
- * @see LICENSE (MIT)
- */
-
-/**
- * Registers our ServiceProviders
- */
 return [
     // Adds our LocaleProvider to add locales
     $container->addServiceProvider(
-        new \Ares\Framework\Provider\LocaleServiceProvider()
+        new \Raizdev\Framework\Provider\LocaleServiceProvider()
     ),
     // Adds our ConfigProvider
     $container->addServiceProvider(
-        new \Ares\Framework\Provider\ConfigServiceProvider()
+        new \Raizdev\Framework\Provider\ConfigServiceProvider()
     ),
     // Adds our LoggingProvider
     $container->addServiceProvider(
-        new \Ares\Framework\Provider\LoggingServiceProvider()
+        new \Raizdev\Framework\Provider\LoggingServiceProvider()
     ),
     // Adds our AppProvider and creates App
     $container->addServiceProvider(
-        new \Ares\Framework\Provider\AppServiceProvider()
+        new \Raizdev\Framework\Provider\AppServiceProvider()
     ),
     // Adds our RouteCollectorProvider
     $container->addServiceProvider(
-        new \Ares\Framework\Provider\RouteCollectorServiceProvider()
+        new \Raizdev\Framework\Provider\RouteCollectorServiceProvider()
     ),
     // Adds our RouteProvider
     $container->addServiceProvider(
-        new \Ares\Framework\Provider\RouteServiceProvider()
+        new \Raizdev\Framework\Provider\RouteServiceProvider()
     ),
     // Adds our ValidationProvider
     $container->addServiceProvider(
-        new \Ares\Framework\Provider\ValidationServiceProvider()
+        new \Raizdev\Framework\Provider\ValidationServiceProvider()
     ),
     // Adds our CacheServiceProvider
     $container->addServiceProvider(
-        new \Ares\Framework\Provider\CacheServiceProvider()
+        new \Raizdev\Framework\Provider\CacheServiceProvider()
     ),
     // Adds our SlugServiceProvider
     $container->addServiceProvider(
-        new \Ares\Framework\Provider\SlugServiceProvider()
+        new \Raizdev\Framework\Provider\SlugServiceProvider()
     ),
     // Adds our ThrottleServiceProvider
     $container->addServiceProvider(
-        new \Ares\Framework\Provider\ThrottleServiceProvider()
+        new \Raizdev\Framework\Provider\ThrottleServiceProvider()
     )
 ];

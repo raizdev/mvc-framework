@@ -1,216 +1,154 @@
 <?php declare(strict_types=1);
-/**
- * @copyright Copyright (c) Ares (https://www.ares.to)
- *
- * @see LICENSE (MIT)
- */
 
-namespace Ares\User\Controller;
+namespace Raizdev\User\Controller;
 
-use Ares\Ban\Exception\BanException;
-use Ares\Framework\Controller\BaseController;
-use Ares\Framework\Exception\AuthenticationException;
-use Ares\Framework\Exception\DataObjectManagerException;
-use Ares\Framework\Exception\NoSuchEntityException;
-use Ares\Framework\Exception\ValidationException;
-use Ares\Framework\Interfaces\HttpResponseCodeInterface;
-use Ares\Framework\Service\ValidationService;
-use Ares\User\Entity\Contract\UserInterface;
-use Ares\User\Entity\User;
-use Ares\User\Exception\LoginException;
-use Ares\User\Exception\RegisterException;
-use Ares\User\Interfaces\Response\UserResponseCodeInterface;
-use Ares\User\Service\Auth\DetermineIpService;
-use Ares\User\Service\Auth\LoginService;
-use Ares\User\Service\Auth\RegisterService;
-use Ares\User\Service\Auth\TicketService;
-use Ares\Framework\Config;
+use Raizdev\User\Model\UserModel;
+use Raizdev\User\Exception\RegisterException;
+
+use Raizdev\Framework\Mapping\Annotation as AR;
+use Raizdev\Framework\Controller\BaseController;
+use Raizdev\Framework\Service\ValidationService;
+use Raizdev\Framework\Service\TokenService;
+
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use ReallySimpleJWT\Exception\ValidateException;
+use Raizdev\Framework\Config;
 
 /**
- * Class AuthController
- *
- * @package Ares\User\Controller\Auth
- */
+* Class AuthController
+*
+* @AR\Router
+* @AR\Group(
+*     prefix="auth",
+*     pattern="auth",
+* )
+*/
 class AuthController extends BaseController
 {
-    /**
-     * AuthController constructor.
-     *
-     * @param ValidationService $validationService
-     * @param LoginService $loginService
-     * @param RegisterService $registerService
-     * @param TicketService $ticketService
-     * @param DetermineIpService $determineIpService
-     * @param Config $config
-     */
     public function __construct(
-        private readonly ValidationService  $validationService,
-        private readonly LoginService       $loginService,
-        private readonly RegisterService    $registerService,
-        private readonly TicketService      $ticketService,
-        private readonly DetermineIpService $determineIpService,
-        private readonly Config $config
+        private ValidationService   $validationService,
+        private TokenService        $tokenService,
+        private UserModel           $userModel,
+        private Config              $config,
     ) {}
 
     /**
      * Logs the User in and parses a generated Token into response
-     *
-     * @param Request  $request
-     * @param Response $response
-     *
-     * @return Response Returns a Response with the given Data
-     * @throws BanException
-     * @throws DataObjectManagerException
-     * @throws LoginException
-     * @throws ValidateException
-     * @throws ValidationException
-     * @throws NoSuchEntityException
+     * 
+     * @AR\Route(
+     *     methods={"POST"},
+     *     pattern="/sign-in"
+     * )
      */
     public function login(Request $request, Response $response): Response
     {
         /** @var array $parsedData */
-        $parsedData = $request->getParsedBody();
+        $data = $request->getParsedBody();
 
-        $this->validationService->validate($parsedData, [
-            UserInterface::COLUMN_USERNAME => 'required',
-            UserInterface::COLUMN_PASSWORD => 'required'
-        ]);
+        $user = $this->userModel->firstWhere('username', $data['username']);
 
-        /** @var string $determinedIp */
-        $determinedIp = $this->determineIpService->execute();
+        if (!$user || !password_verify($data['password'], $user->password)) {
+            throw new RegisterException(
+                __('User credentials not right!'), 401, 401
+            );
+        }
 
-        $parsedData['ip_current'] = $determinedIp;
-
-        $customResponse = $this->loginService->login($parsedData);
+        $token = $this->tokenService->execute($user->id);
 
         return $this->respond(
             $response,
-            $customResponse
+            response()->setData([
+                'user'  => $user,
+                'token' => $token
+            ])
         );
     }
 
     /**
      * Registers the User and parses a generated Token into the response
      *
-     * @param Request $request
-     * @param Response $response
-     *
-     * @return Response Returns a Response with the given Data
-     * @throws \Exception
+     * @AR\Route(
+     *     methods={"POST"},
+     *     pattern="/registration"
+     * )
+     * 
      */
     public function register(Request $request, Response $response): Response
     {
         /** @var array $parsedData */
-        $parsedData = $request->getParsedBody();
+        $data = $request->getParsedBody();
 
-        $this->validationService->validate($parsedData, [
-            UserInterface::COLUMN_USERNAME => 'required|min:2|max:12|regex:/^[a-zA-Z\-\=\!\?\@\:\,\.\d]+$/',
-            UserInterface::COLUMN_MAIL => 'required|email|min:9',
-            UserInterface::COLUMN_LOOK => 'required',
-            UserInterface::COLUMN_GENDER => 'required|default:M|regex:/[M.F]/',
-            UserInterface::COLUMN_PASSWORD => 'required|min:6',
+        $this->validationService->validate($data, [
+            'username'              => 'required|min:2|max:12|regex:/^[a-zA-Z\-\=\!\?\@\:\,\.\d]+$/',
+            'email'                 => 'required|email|min:9',
+            'password'              => 'required|min:6',
             'password_confirmation' => 'required|same:password'
-        ]);
+        ]);  
 
-        /** @var string $determinedIp */
-        $determinedIp = $this->determineIpService->execute();
+        $user = $this->userModel->where('username', $data['username'])->orWhere('email', $data['email'])->get();
 
-        $parsedData['ip_register'] = $determinedIp;
-        $parsedData['ip_current'] = $determinedIp;
-
-        $customResponse = $this->registerService->register($parsedData);
-
-        return $this->respond(
-            $response,
-            $customResponse
-        );
-    }
-
-    /**
-     * Gets the viable Looks for the registration
-     *
-     * @param Request $request
-     * @param Response $response
-     *
-     * @return Response
-     * @throws RegisterException
-     */
-    public function viableLooks(Request $request, Response $response): Response
-    {
-        /** @var array $boyLooks */
-        $boyLooks = $this->config->get('hotel_settings.register.looks.boy');
-
-        /** @var array $girlLooks */
-        $girlLooks = $this->config->get('hotel_settings.register.looks.girl');
-
-        if (!is_array($boyLooks) || !is_array($girlLooks)) {
+        if($user->isNotEmpty()) {
             throw new RegisterException(
-                __('There are no viable Looks available'),
-                UserResponseCodeInterface::RESPONSE_AUTH_REGISTER_NO_VIABLE_LOOKS,
-                HttpResponseCodeInterface::HTTP_RESPONSE_NOT_FOUND
+                __('User already exists!')
             );
         }
 
-        /** @var array $boyList */
-        $boyList = array_values($boyLooks);
+        $data['password'] = $this->hash($data['password']);
 
-        /** @var array $girlList */
-        $girlList = array_values($girlLooks);
+        $user = $this->userModel->create($data);
 
-        return $this->respond(
-            $response,
-            response()
-                ->setData([
-                    'looks' => [
-                        'boys' => $boyList,
-                        'girls' => $girlList
-                    ]
-                ])
-        );
-    }
+        $token = $this->tokenService->execute($user->id);
 
-    /**
-     * Gets a new Ticket for the current User
-     *
-     * @param Request  $request
-     * @param Response $response
-     *
-     * @return Response
-     * @throws AuthenticationException
-     * @throws DataObjectManagerException
-     * @throws NoSuchEntityException
-     */
-    public function ticket(Request $request, Response $response): Response
-    {
-        /** @var User $user */
-        $user = user($request);
-
-        /** @var TicketService $ticket */
-        $ticket = $this->ticketService->generate($user);
-
-        return $this->respond(
-            $response,
-            response()
-                ->setData([
-                    'ticket' => $ticket
-                ])
-        );
+        return response()
+            ->setData([
+                'token' => $token
+            ]);
     }
 
     /**
      * Returns a response without the Authorization header
      * We could blacklist the token with redis-cache
-     *
-     * @param Request $request
-     * @param Response $response
-     *
-     * @return Response Returns a Response with the given Data
      */
     public function logout(Request $request, Response $response): Response
     {
         return $response->withoutHeader('Authorization');
+    }
+
+    /**
+     * Logs the User in and parses a generated Token into response
+     * 
+     * @AR\Route(
+     *     methods={"GET"},
+     *     pattern="/me"
+     * )
+     * 
+     */
+    public function me(Request $request, Response $response): Response
+    {
+        /** @var array $parsedData */
+        $data = $request->getParsedBody();
+
+        $user = user($request);
+
+        return $this->respond(
+            $response,
+            response()->setData([
+                'user' => user($request)
+            ])
+        );
+    }
+
+    public function hash(string $password): string
+    {
+        return password_hash(
+            $password,
+            json_decode(
+                $this->config->get('api_settings.password.algorithm')
+            ) ?? PASSWORD_ARGON2ID, [
+                'memory_cost' => $this->config->get('api_settings.password.memory_cost'),
+                'time_cost' => $this->config->get('api_settings.password.time_cost'),
+                'threads' => $this->config->get('api_settings.password.threads')
+            ]
+        );
     }
 }

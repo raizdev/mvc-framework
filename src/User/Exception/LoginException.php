@@ -1,19 +1,8 @@
 <?php
-/**
- * @copyright Copyright (c) Ares (https://www.ares.to)
- *
- * @see LICENSE (MIT)
- */
+namespace Raizdev\User\Exception;
 
-namespace Ares\User\Exception;
+use Raizdev\Framework\Exception\BaseException;
 
-use Ares\Framework\Exception\BaseException;
-
-/**
- * Class LoginException
- *
- * @package Ares\User\Exception
- */
 class LoginException extends BaseException
 {
 }

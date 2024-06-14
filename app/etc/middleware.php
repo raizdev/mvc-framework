@@ -1,17 +1,6 @@
 <?php
-/**
- * @copyright Copyright (c) Ares (https://www.ares.to)
- *
- * @see LICENSE (MIT)
- */
-
 use Slim\App;
 
-/**
- * Registers our Global Middleware
- *
- * @param App $app
- */
 return function (App $app) {
     $container = $app->getContainer();
     $logger = $container->get(\Psr\Log\LoggerInterface::class);
@@ -25,10 +14,10 @@ return function (App $app) {
         "cache" => $_ENV['TOKEN_DURATION']
     ]));
 
-    $app->add(\Ares\Framework\Middleware\BodyParserMiddleware::class);
-    $app->add(\Ares\Framework\Middleware\ClaimMiddleware::class);
+    $app->add(\Raizdev\Framework\Middleware\BodyParserMiddleware::class);
+    $app->add(\Raizdev\Framework\Middleware\ClaimMiddleware::class);
     $app->addRoutingMiddleware();
 
     $errorMiddleware = $app->addErrorMiddleware(true, true, true, $logger);
-    $errorMiddleware->setDefaultErrorHandler(\Ares\Framework\Handler\ErrorHandler::class);
+    $errorMiddleware->setDefaultErrorHandler(\Raizdev\Framework\Handler\ErrorHandler::class);
 };

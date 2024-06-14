@@ -1,13 +1,7 @@
 <?php
-/**
- * @copyright Copyright (c) Ares (https://www.ares.to)
- *  
- * @see LICENSE (MIT)
- */
-
 if ($_ENV['CACHE_ENABLED']) {
     $container->addServiceProvider(
-        new \Ares\Framework\Provider\CacheServiceProvider()
+        new \Raizdev\Framework\Provider\CacheServiceProvider()
     );
 }
 
