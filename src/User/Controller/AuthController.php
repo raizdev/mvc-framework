@@ -89,7 +89,7 @@ class AuthController extends BaseController
 
         if($user->isNotEmpty()) {
             throw new RegisterException(
-                __('User already exists!')
+                __('User already exists!'), 401, 401
             );
         }
 
@@ -99,10 +99,13 @@ class AuthController extends BaseController
 
         $token = $this->tokenService->execute($user->id);
 
-        return response()
-            ->setData([
+        return $this->respond(
+            $response,
+            response()->setData([
+                'user'  => $user,
                 'token' => $token
-            ]);
+            ])
+        );
     }
 
     /**
