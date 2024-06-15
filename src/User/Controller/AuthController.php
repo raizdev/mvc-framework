@@ -136,7 +136,7 @@ class AuthController extends BaseController
         return $this->respond(
             $response,
             response()->setData([
-                'user' => user($request)
+                'user' => $user
             ])
         );
     }
